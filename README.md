@@ -1,4 +1,4 @@
-# battle-bots-web-client
+# battle_bots_web_client
 
 ## How to get started
 * Install [Leiningen](http://leiningen.org/#docs)
