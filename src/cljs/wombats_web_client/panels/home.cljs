@@ -8,7 +8,7 @@
   (let [name (re-frame/subscribe [:name])]
     (fn []
       [re-com/title
-       :label (str "Hello from " @name ". This is the Home Page.")
+       :label (str "Hello from " @name ". This is the Wombats Home Page.")
        :level :level1])))
 
 (defn link-to-about-page []
