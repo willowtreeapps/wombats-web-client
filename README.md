@@ -15,3 +15,4 @@
 * [Reagent](http://holmsand.github.io/reagent/)
 * [Lein-figwheel](https://github.com/bhauman/lein-figwheel)
 * [Less](http://lesscss.org/)
+* [Re-com](https://github.com/Day8/re-com)
