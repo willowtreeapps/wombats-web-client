@@ -1,4 +1,4 @@
-(ns battle_bots_web_client.views
+(ns wombats_web_client.views
     (:require [re-frame.core :as re-frame]
               [re-com.core :as re-com]))
 

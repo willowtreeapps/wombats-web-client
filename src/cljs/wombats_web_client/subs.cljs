@@ -1,4 +1,4 @@
-(ns battle_bots_web_client.subs
+(ns wombats_web_client.subs
     (:require-macros [reagent.ratom :refer [reaction]])
     (:require [re-frame.core :as re-frame]))
 

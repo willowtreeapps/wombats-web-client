@@ -1,12 +1,12 @@
-(ns battle_bots_web_client.core
+(ns wombats_web_client.core
     (:require [reagent.core :as reagent]
               [re-frame.core :as re-frame]
               [devtools.core :as devtools]
-              [battle_bots_web_client.handlers]
-              [battle_bots_web_client.subs]
-              [battle_bots_web_client.routes :as routes]
-              [battle_bots_web_client.views :as views]
-              [battle_bots_web_client.config :as config]))
+              [wombats_web_client.handlers]
+              [wombats_web_client.subs]
+              [wombats_web_client.routes :as routes]
+              [wombats_web_client.views :as views]
+              [wombats_web_client.config :as config]))
 
 
 (defn dev-setup []
