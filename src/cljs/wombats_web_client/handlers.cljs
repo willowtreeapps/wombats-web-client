@@ -1,6 +1,6 @@
-(ns battle_bots_web_client.handlers
+(ns wombats_web_client.handlers
     (:require [re-frame.core :as re-frame]
-              [battle_bots_web_client.db :as db]))
+              [wombats_web_client.db :as db]))
 
 (re-frame/register-handler
  :initialize-db

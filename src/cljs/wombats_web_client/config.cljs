@@ -1,4 +1,4 @@
-(ns battle_bots_web_client.config)
+(ns wombats_web_client.config)
 
 (def debug?
   ^boolean js/goog.DEBUG)

@@ -1,4 +1,4 @@
-(ns battle_bots_web_client.routes
+(ns wombats_web_client.routes
     (:require-macros [secretary.core :refer [defroute]])
     (:import goog.History)
     (:require [secretary.core :as secretary]
