@@ -10,8 +10,8 @@
 * Changes to the code will be automatically rendered to the web.
 
 ## Dev Stack
-	* [Clojurescript](https://github.com/clojure/clojurescript)
-	* [Re-frame](https://github.com/Day8/re-frame/)
-	* [Reagent](http://holmsand.github.io/reagent/)
-	* [Lein-figwheel](https://github.com/bhauman/lein-figwheel)
-	* [Less](http://lesscss.org/)
+* [Clojurescript](https://github.com/clojure/clojurescript)
+* [Re-frame](https://github.com/Day8/re-frame/)
+* [Reagent](http://holmsand.github.io/reagent/)
+* [Lein-figwheel](https://github.com/bhauman/lein-figwheel)
+* [Less](http://lesscss.org/)
