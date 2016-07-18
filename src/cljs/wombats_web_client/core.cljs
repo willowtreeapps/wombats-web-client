@@ -3,7 +3,7 @@
               [re-frame.core :as re-frame]
               [devtools.core :as devtools]
               [wombats_web_client.handlers.root]
-              [wombats_web_client.subs]
+              [wombats_web_client.subs.root]
               [wombats_web_client.routes :as routes]
               [wombats_web_client.views :as views]
               [wombats_web_client.config :as config]))
