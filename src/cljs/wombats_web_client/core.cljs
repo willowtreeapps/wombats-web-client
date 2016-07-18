@@ -2,7 +2,7 @@
     (:require [reagent.core :as reagent]
               [re-frame.core :as re-frame]
               [devtools.core :as devtools]
-              [wombats_web_client.handlers]
+              [wombats_web_client.handlers.root]
               [wombats_web_client.subs]
               [wombats_web_client.routes :as routes]
               [wombats_web_client.views :as views]

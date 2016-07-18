@@ -3,3 +3,5 @@
 /resources/public/css
 *.log
 .DS_Store
+node_modules/
+out/

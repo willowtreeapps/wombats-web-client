@@ -1,4 +1,4 @@
-(ns wombats_web_client.handlers
+(ns wombats_web_client.handlers.ui
     (:require [re-frame.core :as re-frame]
               [wombats_web_client.db :as db]))
 
