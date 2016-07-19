@@ -3,4 +3,5 @@
               [wombats_web_client.db :as db]
 
               ;; Handlers
-              [wombats_web_client.handlers.ui]))
+              [wombats_web_client.handlers.ui]
+              [wombats_web_client.handlers.users]))
