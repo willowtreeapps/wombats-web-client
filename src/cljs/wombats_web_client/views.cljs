@@ -1,8 +1,13 @@
 (ns wombats_web_client.views
     (:require [re-frame.core :as re-frame]
               [re-com.core :as re-com]
+
+              ;; Panels
               [wombats_web_client.panels.home :as home]
-              [wombats_web_client.panels.about :as about]))
+              [wombats_web_client.panels.about :as about]
+
+              ;; Components
+              [wombats_web_client.components.navbar :as navbar]))
 
 ;; main
 
@@ -18,6 +23,7 @@
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])]
     (fn []
-      [re-com/v-box
-       :height "100%"
-       :children [[panels @active-panel]]])))
+      [:div
+        [navbar/root]
+        [:div.main-container
+         [show-panel @active-panel]]])))
