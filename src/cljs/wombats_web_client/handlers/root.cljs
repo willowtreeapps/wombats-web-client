@@ -30,7 +30,7 @@
   []
   (print "loading user")
   (get-current-user
-   #(re-frame/dispatch [:update-user-client %]) ; success function, % = payload
+   #(re-frame/dispatch [:update-user %]) ; success function, % = payload
    #(re-frame/dispatch [:update-errors %])))
 
 ; (defn initialize-socket-connection

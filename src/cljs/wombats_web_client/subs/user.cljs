@@ -5,9 +5,8 @@
 ;; Current User
 (re-frame/register-sub
   :user
-  (fn [db _]
+  (fn [db]
     (print "subs user")
-    (print (:user @db))
     (reaction (:user @db))))
 
 ;; All users (admin)

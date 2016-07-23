@@ -38,8 +38,9 @@
   "Navbar container"
   []
   (let [user (re-frame/subscribe [:user])]
-    (print "navbar:")
-    (print (re-frame/subscribe [:user]))
+    (print "navbar")
+    (print @user)
+    (print "test")
     (fn []
       [:nav.navbar
        [:ul.navbar-list
