@@ -6,7 +6,6 @@
 (re-frame/register-sub
   :user
   (fn [db]
-    (print "subs user")
     (reaction (:user @db))))
 
 ;; All users (admin)

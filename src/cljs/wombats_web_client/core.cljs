@@ -2,11 +2,11 @@
     (:require [reagent.core :as reagent]
               [re-frame.core :as re-frame]
               [devtools.core :as devtools]
-              [wombats_web_client.handlers.root]
-              [wombats_web_client.subs.root]
               [wombats_web_client.routes :as routes]
               [wombats_web_client.views :as views]
-              [wombats_web_client.config :as config]))
+              [wombats_web_client.config :as config]
+              [wombats_web_client.handlers.root]
+              [wombats_web_client.subs.root]))
 
 
 (defn dev-setup []
@@ -19,8 +19,8 @@
                   (.getElementById js/document "app")))
 
 (defn ^:export init []
-  (routes/app-routes)
+  (dev-setup)
   (re-frame/dispatch-sync [:initialize-db])
   (re-frame/dispatch [:bootstrap-app])
-  (dev-setup)
+  (routes/app-routes)
   (mount-root))

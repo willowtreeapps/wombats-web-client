@@ -1,5 +1,15 @@
 (ns wombats_web_client.components.navbar
-  (:require [re-frame.core :as re-frame]))
+  (:require [re-frame.core :as re-frame]
+            [wombats_web_client.utils.user :refer [isAdmin? isUser?]]))
+
+(defn authenticated-links [user]
+  [{:on-click #(println "TODO toggle menu")
+    :display (:login user)
+    :class-name "user-menu-button"
+    :children [:ul.user-menu {:class-name "open"}
+               [:li.user-menu-link
+                [:a {:href "#/my-settings"} "Settings"]
+                [:a {:href "#/signout"} "Sign out"]]]}])
 
 
 (def unauthenticated-links [{:path "http://52.91.73.222/signin/github"
@@ -14,7 +24,9 @@
 (defn resolve-navbar-items
   "renders role dependent links"
   [user]
-  (concat common-links unauthenticated-links))
+  (cond
+   (isUser? user) (concat common-links (authenticated-links user))
+   :else (concat common-links unauthenticated-links)))
 
 (defn render-item
   "Renders a single navbar item"
@@ -38,9 +50,6 @@
   "Navbar container"
   []
   (let [user (re-frame/subscribe [:user])]
-    (print "navbar")
-    (print @user)
-    (print "test")
     (fn []
       [:nav.navbar
        [:ul.navbar-list

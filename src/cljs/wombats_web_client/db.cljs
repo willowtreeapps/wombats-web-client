@@ -2,8 +2,9 @@
     (:require [wombats_web_client.services.utils :refer [get-item]]))
 
 (def default-db
-  {:bootstrapping? false
+  {:active-panel nil
    :auth-token (get-item "token")
+   :bootstrapping? false
    :name "WillowTree"
    :user nil
    :users []})

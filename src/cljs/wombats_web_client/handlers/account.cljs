@@ -7,12 +7,10 @@
                                                     delete-player-bot]]
             [wombats_web_client.services.utils :refer [set-item! remove-item!]]))
 
-
-(re-frame/register-handler
-  :update-user
-  (fn [db [_ user]]
-    (print "update-user")
-    (assoc db :user user)))
+(defn update-user
+  "updates the user object"
+  [db [_ user]]
+  (assoc db :user user))
 
 (defn update-auth-token
   "updates a users auth token"
@@ -79,7 +77,7 @@
       #(re-frame/dispatch [:update-errors %]))
     db))
 
-; (re-frame/register-handler :update-user update-user)
+(re-frame/register-handler :update-user update-user)
 (re-frame/register-handler :update-auth-token update-auth-token)
 
 (re-frame/register-handler :sign-in sign-in)
