@@ -8,7 +8,7 @@
 (defn get-current-user
   "fetches the current user object"
   [on-success on-error]
-  (GET "/api/v1/auth/account-details" {:response-format :json
+  (GET "http://52.91.73.222/api/v1/auth/account-details" {:response-format :json
                                        :keywords? true
                                        :headers (add-auth-header {})
                                        :handler on-success

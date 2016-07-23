@@ -2,12 +2,8 @@
     (:require [re-frame.core :as re-frame]
               [wombats_web_client.db :as db]))
 
-(re-frame/register-handler
- :initialize-db
- (fn  [_ _]
-   db/default-db))
+(defn- set-active-panel
+  [db [_ active-panel]]
+  (assoc db :active-panel active-panel))
 
-(re-frame/register-handler
- :set-active-panel
- (fn [db [_ active-panel]]
-   (assoc db :active-panel active-panel)))
+(re-frame/register-handler :set-active-panel set-active-panel)
