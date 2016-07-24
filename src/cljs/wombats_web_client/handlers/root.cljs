@@ -5,9 +5,10 @@
               [wombats_web_client.db :as db]
 
               ;; Handlers
+              [wombats_web_client.handlers.account]
+              [wombats_web_client.handlers.games]
               [wombats_web_client.handlers.ui]
               [wombats_web_client.handlers.users]
-              [wombats_web_client.handlers.account]
 
               [wombats_web_client.services.wombats :refer [get-current-user]]
               [wombats_web_client.services.utils :refer [set-item! get-item]]))

@@ -11,12 +11,19 @@
        :label (str "Hello from " @name ". This is the Wombats Home Page.")
        :level :level1])))
 
-(defn link-to-about-page []
-  [re-com/hyperlink-href
-   :label "go to About Page"
-   :href "#/about"])
+(defn game-list
+  [games]
+  [:div
+    [:ul.game-list
+    (doall (for [game games]
+            ^{:key (str (:_id game) "-" (count (:players game)))}
+            [:li
+              [:a {:href (str "#/preview/" (:_id game))} (:_id game)]]))]])
 
 (defn home-panel []
-  [re-com/v-box
-   :gap "1em"
-   :children [[home-title] [link-to-about-page]]])
+  (re-frame/dispatch [:fetch-games])
+  (let [games (re-frame/subscribe [:games])]
+    (fn []
+      [:div
+        [home-title]
+        [game-list @games]])))
