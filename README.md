@@ -1,4 +1,5 @@
 # Wombats Web Client
+![wombat_git](https://cloud.githubusercontent.com/assets/4649439/17083937/59e5a5f0-517d-11e6-92a2-976aee52d95c.png)  
 
 ## How to get started
 * Install [Leiningen](http://leiningen.org/#docs)
