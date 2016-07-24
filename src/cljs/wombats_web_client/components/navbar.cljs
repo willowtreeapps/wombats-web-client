@@ -8,8 +8,11 @@
     :class-name "user-menu-button"
     :children [:ul.user-menu {:class-name "open"}
                [:li.user-menu-link
-                [:a {:href "#/my-settings"} "Settings"]
-                [:a {:href "#/signout"} "Sign out"]]]}])
+                 [:a {:href "#/my-settings"} "Settings"]]
+               [:li.user-menu-link
+                 [:a {:href "#/games"} "Games"]]
+               [:li.user-menu-link
+                 [:a {:href "#/signout"} "Sign out"]]]}])
 
 
 (def unauthenticated-links [{:path "http://52.91.73.222/signin/github"
