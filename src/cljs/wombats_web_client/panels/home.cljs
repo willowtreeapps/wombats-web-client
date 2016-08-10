@@ -16,6 +16,8 @@
   [id]
   (re-frame/dispatch [:initialize-game id]))
 
+
+
 (defn game-list
   [games]
   [:div
@@ -27,14 +29,17 @@
                 (= (:state game) "pending")
                 [:div
                   [:p (str (:_id game))]
-                  [:button {:on-click #(initialize-game-action (:_id game))} "Initialize Game"]]
+                  [:button {:on-click #(initialize-game-action (:_id game))} "Initialize Game"]
+                  [:button {:on-click #(re-frame/dispatch [:delete-game (:_id game)])} "Delete Game"]]
                 (= (:state game) "initialized")
                 [:div
                   [:a {:href (str "#/preview/" (:_id game))} (:_id game)]
-                  [:p "Click id to preview."]]
+                  [:p "Click link to preview or start game"]\
+                  [:button {:on-click #(re-frame/dispatch [:delete-game (:_id game)])} "Delete Game"]]
                 (= (:state game) "finalized")
                 [:div
-                  [:p (str (:_id game) " is closed. Play featured pending.")]])]))]])
+                  [:p (str (:_id game) " is closed. Play featured pending.")]
+                  [:button {:on-click #(re-frame/dispatch [:delete-game (:_id game)])} "Delete Game"]])]))]])
 
 (defn create-game-button
   []

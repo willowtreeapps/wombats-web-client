@@ -85,7 +85,7 @@
 (defn del-game
   "deletes a game record"
   [_id on-success on-error]
-  (DELETE (str "/api/v1/game/" _id) {:keywords? true
+  (DELETE (str "http://52.91.73.222/api/v1/game/" _id) {:keywords? true
                                      :headers (add-auth-header {})
                                      :handler on-success
                                      :error-handler on-error}))
@@ -102,7 +102,7 @@
 (defn post-game-start
   "updates game state from initialized to started"
   [game-id on-success on-error]
-  (POST (str "api/v1/game/" game-id "/start") {:response-format :json
+  (POST (str "http://52.91.73.222/api/v1/game/" game-id "/start") {:response-format :json
                                                :keywords? true
                                                :headers (add-auth-header {})
                                                :handler on-success

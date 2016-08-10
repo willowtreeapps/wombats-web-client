@@ -15,18 +15,19 @@
   (first (filter (fn [game]
     (= (:_id game) game-id)) games)))
 
-(defn join-game-action
-  []
-  )
-
 (defn is-registered?
   [user players]
   (boolean (first (filter #(= (:_id user) (:_id %)) players))))
 
-(defn register-action
+(defn register-user-action
   "Calls dispatch to register user in game"
   [game-id user]
   (re-frame/dispatch [:register-user-in-game game-id (:_id user) (:repo (first (:bots user)))]))
+;
+; (defn start-game-action
+;   "Calls dispatch to finalize game. No other players can join afterwards."
+;   [game-id]
+;   (re-frame/dispatch [:start-game game-id]))
 
 (defn preview-game-panel [meta]
   (let [games (re-frame/subscribe [:games])
@@ -37,5 +38,9 @@
       [preview-title]
       [:div
         "players: " (str (:players (get-game id @games)))]
-      (cond (not (is-registered? @user (:players (get-game id @games))))
-        [:button {:on-click #(register-action id @user)} "Join Game"])])))
+      (cond
+        (not (is-registered? @user (:players (get-game id @games))))
+        [:button {:on-click #(register-user-action id @user)} "Join Game"]
+        ; (is-registered? @user (:players (get-game id @games)))
+        ; [:button {:on-click #(start-game-action (:_id (get-game id @games)))} "Start Game"]
+        )])))
