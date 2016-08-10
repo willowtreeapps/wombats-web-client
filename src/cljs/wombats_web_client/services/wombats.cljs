@@ -66,7 +66,7 @@
 (defn post-game
   "creates a new game record"
   [on-success on-error]
-  (POST "/api/v1/game" {:response-format :json
+  (POST "http://52.91.73.222/api/v1/game" {:response-format :json
                         :keywords? true
                         :headers (add-auth-header {})
                         :handler on-success
@@ -75,7 +75,7 @@
 (defn post-game-user
   "adds a user record to a game"
   [game-id user-id repo on-success on-error]
-  (POST (str "/api/v1/game/" game-id "/player/" user-id) {:response-format :json
+  (POST (str "http://52.91.73.222/api/v1/game/" game-id "/player/" user-id) {:response-format :json
                                                           :keywords? true
                                                           :headers (add-auth-header {})
                                                           :handler on-success
@@ -93,7 +93,7 @@
 (defn post-game-initialize
   "updates game state from pending to initialized"
   [game-id on-success on-error]
-  (POST (str "api/v1/game/" game-id "/initialize") {:response-format :json
+  (POST (str "http://52.91.73.222/api/v1/game/" game-id "/initialize") {:response-format :json
                                                     :keywords? true
                                                     :headers (add-auth-header {})
                                                     :handler on-success
