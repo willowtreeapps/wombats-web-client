@@ -23,13 +23,14 @@
   "Calls dispatch to register user in game"
   [game-id user]
   (re-frame/dispatch [:register-user-in-game game-id (:_id user) (:repo (first (:bots user)))]))
-;
-; (defn start-game-action
-;   "Calls dispatch to finalize game. No other players can join afterwards."
-;   [game-id]
-;   (re-frame/dispatch [:start-game game-id]))
+
+(defn start-game-action
+  "Calls dispatch to finalize game. No other players can join afterwards."
+  [game-id]
+  (re-frame/dispatch [:start-game game-id]))
 
 (defn preview-game-panel [meta]
+  (re-frame/dispatch [:fetch-games])
   (let [games (re-frame/subscribe [:games])
         user (re-frame/subscribe [:user])
         id (:id meta)]
@@ -41,6 +42,6 @@
       (cond
         (not (is-registered? @user (:players (get-game id @games))))
         [:button {:on-click #(register-user-action id @user)} "Join Game"]
-        ; (is-registered? @user (:players (get-game id @games)))
-        ; [:button {:on-click #(start-game-action (:_id (get-game id @games)))} "Start Game"]
-        )])))
+
+        (and (is-registered? @user (:players (get-game id @games))) (= (:state (get-game id @games)) "initialized"))
+        [:button {:on-click #(start-game-action (:_id (get-game id @games)))} "Start Game"])])))
