@@ -12,5 +12,17 @@
   (println error)
   db)
 
+(defn display-modal
+  "sets a new active modal"
+  [db [_ modal]]
+  (assoc db :active-modal modal))
+
+(defn clear-modal
+  "clears an active modal"
+  [db _]
+  (assoc db :active-modal nil))
+
 (re-frame/register-handler :set-active-panel set-active-panel)
 (re-frame/register-handler :update-errors update-errors)
+(re-frame/register-handler :display-modal display-modal)
+(re-frame/register-handler :clear-modal clear-modal)

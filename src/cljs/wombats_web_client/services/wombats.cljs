@@ -23,19 +23,10 @@
                               :handler on-success
                               :error-handler on-error}))
 
-(defn post-new-credentials
-  "Creates a new user and then authenticates"
-  [user-credentials on-success on-error]
-  (POST "/api/v1/auth/signup" {:response-format :json
-                               :keywords? true
-                               :params user-credentials
-                               :handler on-success
-                               :error-handler on-error}))
-
 (defn post-new-bot
   "Adds a bot repo to a users account"
   [bot player-id on-success on-error]
-  (POST (str "/api/v1/player/" player-id "/bot") {:response-format :json
+  (POST (str "http://52.91.73.222/api/v1/player/" player-id "/bot") {:response-format :json
                                                   :keywords? true
                                                   :headers (add-auth-header {})
                                                   :params bot
@@ -45,7 +36,7 @@
 (defn delete-player-bot
   "Remove a bot repo from a users account"
   [repo player-id on-success on-error]
-  (DELETE (str "/api/v1/player/" player-id "/bot/" repo) {:response-format :json
+  (DELETE (str "http://52.91.73.222/api/v1/player/" player-id "/bot/" repo) {:response-format :json
                                                           :keywords? true
                                                           :headers (add-auth-header {})
                                                           :handler on-success

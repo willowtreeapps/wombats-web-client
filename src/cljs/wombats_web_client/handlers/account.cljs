@@ -2,7 +2,6 @@
   (:require [re-frame.core :as re-frame]
             [wombats_web_client.services.wombats :refer [get-current-user
                                                     post-credentials
-                                                    post-new-credentials
                                                     post-new-bot
                                                     delete-player-bot]]
             [wombats_web_client.services.utils :refer [set-item! remove-item!]]))
@@ -35,15 +34,6 @@
     user-credentials
     #(re-frame/dispatch [:update-auth-token %])
     #(re-frame/dispatch [:update-errors %]))
-  db)
-
-(defn sign-up
-  "creates a new user account"
-  [db [_ user-credentials]]
-  (post-new-credentials
-   user-credentials
-   #(re-frame/dispatch [:update-auth-token %])
-   #(re-frame/dispatch [:udate-errors %]))
   db)
 
 (defn sign-out
@@ -79,9 +69,7 @@
 
 (re-frame/register-handler :update-user update-user)
 (re-frame/register-handler :update-auth-token update-auth-token)
-
 (re-frame/register-handler :sign-in sign-in)
-(re-frame/register-handler :sign-up sign-up)
 (re-frame/register-handler :sign-out sign-out)
 (re-frame/register-handler :get-user get-user)
 (re-frame/register-handler :add-bot add-bot)

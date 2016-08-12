@@ -8,7 +8,7 @@
     :class-name "user-menu-button"
     :children [:ul.user-menu {:class-name "open"}
                [:li.user-menu-link
-                 [:a {:href "#/my-settings"} "Settings"]]
+                 [:a {:href "#/settings"} "Settings"]]
                [:li.user-menu-link
                  [:a {:href "#/games"} "Games"]]
                [:li.user-menu-link
