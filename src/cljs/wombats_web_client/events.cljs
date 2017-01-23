@@ -1,6 +1,6 @@
-(ns wombats-client.events
+(ns wombats-web-client.events
     (:require [re-frame.core :as re-frame]
-              [wombats-client.db :as db]))
+              [wombats-web-client.db :as db]))
 
 (re-frame/reg-event-db
  :initialize-db

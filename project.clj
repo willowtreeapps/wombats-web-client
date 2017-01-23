@@ -1,4 +1,4 @@
-(defproject wombats-client "0.1.0-SNAPSHOT"
+(defproject wombats-web-client "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.229"]
                  [reagent "0.6.0"]
@@ -33,8 +33,8 @@
   {:builds
    [{:id           "dev"
      :source-paths ["src/cljs"]
-     :figwheel     {:on-jsload "wombats-client.core/mount-root"}
-     :compiler     {:main                 wombats-client.core
+     :figwheel     {:on-jsload "wombats-web-client.core/mount-root"}
+     :compiler     {:main                 wombats-web-client.core
                     :output-to            "resources/public/js/compiled/app.js"
                     :output-dir           "resources/public/js/compiled/out"
                     :asset-path           "js/compiled/out"
@@ -45,7 +45,7 @@
 
     {:id           "min"
      :source-paths ["src/cljs"]
-     :compiler     {:main            wombats-client.core
+     :compiler     {:main            wombats-web-client.core
                     :output-to       "resources/public/js/compiled/app.js"
                     :optimizations   :advanced
                     :closure-defines {goog.DEBUG false}
@@ -53,7 +53,7 @@
 
     {:id           "test"
      :source-paths ["src/cljs" "test/cljs"]
-     :compiler     {:main          wombats-client.runner
+     :compiler     {:main          wombats-web-client.runner
                     :output-to     "resources/public/js/compiled/test.js"
                     :output-dir    "resources/public/js/compiled/test/out"
                     :optimizations :none}}

@@ -1,12 +1,12 @@
-(ns wombats-client.core
+(ns wombats-web-client.core
     (:require [reagent.core :as reagent]
               [re-frame.core :as re-frame]
               [re-frisk.core :refer [enable-re-frisk!]]
-              [wombats-client.events]
-              [wombats-client.subs]
-              [wombats-client.routes :as routes]
-              [wombats-client.views :as views]
-              [wombats-client.config :as config]))
+              [wombats-web-client.events]
+              [wombats-web-client.subs]
+              [wombats-web-client.routes :as routes]
+              [wombats-web-client.views :as views]
+              [wombats-web-client.config :as config]))
 
 
 (defn dev-setup []

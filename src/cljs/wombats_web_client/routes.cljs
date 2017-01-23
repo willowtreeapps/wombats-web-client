@@ -1,4 +1,4 @@
-(ns wombats-client.routes
+(ns wombats-web-client.routes
     (:require-macros [secretary.core :refer [defroute]])
     (:import goog.History)
     (:require [secretary.core :as secretary]
@@ -19,10 +19,13 @@
   ;; --------------------
   ;; define routes here
   (defroute "/" []
-    (re-frame/dispatch [:set-active-panel :home-panel]))
+    (re-frame/dispatch [:set-active-panel :available-games-panel]))
 
-  (defroute "/about" []
-    (re-frame/dispatch [:set-active-panel :about-panel]))
+  (defroute "/my-games" []
+    (re-frame/dispatch [:set-active-panel :my-games-panel]))
+
+  (defroute "/account" []
+    (re-frame/dispatch [:set-active-panel :account-panel]))
 
 
   ;; --------------------
