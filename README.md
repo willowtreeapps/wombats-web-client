@@ -1,22 +1,45 @@
-# Wombats Web Client
-![wombat_git](https://cloud.githubusercontent.com/assets/4649439/17083937/59e5a5f0-517d-11e6-92a2-976aee52d95c.png)  
+# wombats-client
 
-## How to get started
-* Install [Leiningen](http://leiningen.org/#docs)
-  * Download the script (don't add a file extension)
-  * Run ```echo $PATH``` to see where to store script
-* Run ```lein figwheel dev``` to render the application
-* Open a new terminal tab or window and run ```lein less auto``` to render styles
-* Open localhost:3449/ in a web browser
-* Changes to the code will be automatically rendered to the web.
+A [re-frame](https://github.com/Day8/re-frame) application designed to ... well, that part is up to you.
 
-## Dev Stack
-* [Clojurescript](https://github.com/clojure/clojurescript)
-* [Re-frame](https://github.com/Day8/re-frame/)
-* [Reagent](http://holmsand.github.io/reagent/)
-* [Lein-figwheel](https://github.com/bhauman/lein-figwheel)
-* [Less](http://lesscss.org/)
-* [Re-com](https://github.com/Day8/re-com)
+## Development Mode
 
-## Project Progress
-* Go to our [Waffle.io Board](https://waffle.io/willowtreeapps/wombats-api)
+### Start Cider from Emacs:
+
+Put this in your Emacs config file:
+
+```
+(setq cider-cljs-lein-repl "(do (use 'figwheel-sidecar.repl-api) (start-figwheel!) (cljs-repl))")
+```
+
+Navigate to a clojurescript file and start a figwheel REPL with `cider-jack-in-clojurescript` or (`C-c M-J`)
+
+### Run application:
+
+```
+lein clean
+lein figwheel dev
+```
+
+Figwheel will automatically push cljs changes to the browser.
+
+Wait a bit, then browse to [http://localhost:3449](http://localhost:3449).
+
+### Run tests:
+
+```
+lein clean
+lein doo phantom test once
+```
+
+The above command assumes that you have [phantomjs](https://www.npmjs.com/package/phantomjs) installed. However, please note that [doo](https://github.com/bensu/doo) can be configured to run cljs.test in many other JS environments (chrome, ie, safari, opera, slimer, node, rhino, or nashorn).
+
+## Production Build
+
+
+To compile clojurescript to javascript:
+
+```
+lein clean
+lein cljsbuild once min
+```
