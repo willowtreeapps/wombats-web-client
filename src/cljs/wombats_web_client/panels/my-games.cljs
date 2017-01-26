@@ -15,5 +15,4 @@
 
 (defn my-games []
   (let [current-user (re-frame/subscribe [:current-user])]
-    (print @current-user)
     (if (nil? @current-user) login-prompt welcome)))

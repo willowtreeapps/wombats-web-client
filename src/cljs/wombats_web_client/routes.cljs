@@ -5,7 +5,7 @@
               [goog.events :as events]
               [goog.history.EventType :as EventType]
               [re-frame.core :as re-frame]
-              [wombats-web-client.events :refer [sign-out]]))
+              [wombats-web-client.events.user :refer [sign-out]]))
 
 (defn hook-browser-navigation! []
   (doto (History.)

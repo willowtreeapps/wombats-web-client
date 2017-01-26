@@ -24,7 +24,6 @@
 
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])]
-    (print "active panel: " @active-panel)
     (fn []
       [:div 
        [navbar/root]
