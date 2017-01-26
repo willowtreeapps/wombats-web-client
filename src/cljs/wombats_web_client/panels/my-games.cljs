@@ -8,5 +8,12 @@
     [:div (str "This is the My Games Page.")
      [:div [:a {:href "#/"} "go to Available Games page"]]]))
 
+(defn login-prompt []
+  (fn []
+    [:div (str "You must login to see your games.")
+     [:div [:a {:href "#/"} "go to Available Games page"]]]))
+
 (defn my-games []
-  (welcome))
+  (let [current-user (re-frame/subscribe [:current-user])]
+    (print @current-user)
+    (if (nil? @current-user) login-prompt welcome)))

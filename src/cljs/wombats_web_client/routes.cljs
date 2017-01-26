@@ -4,7 +4,8 @@
     (:require [secretary.core :as secretary]
               [goog.events :as events]
               [goog.history.EventType :as EventType]
-              [re-frame.core :as re-frame]))
+              [re-frame.core :as re-frame]
+              [wombats-web-client.events :refer [sign-out]]))
 
 (defn hook-browser-navigation! []
   (doto (History.)
@@ -18,6 +19,7 @@
   (secretary/set-config! :prefix "#")
   ;; --------------------
   ;; define routes here
+
   (defroute "/" []
     (re-frame/dispatch [:set-active-panel :available-games-panel]))
 
@@ -26,6 +28,11 @@
 
   (defroute "/account" []
     (re-frame/dispatch [:set-active-panel :account-panel]))
+
+  (defroute "/signout" []
+    (sign-out)
+    ;;(re-frame/dispatch [:set-active-panel :available-games-panel])
+    (set! (-> js/window .-location .-hash) "#/"))
 
 
   ;; --------------------

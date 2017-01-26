@@ -1,6 +1,9 @@
 (ns wombats-web-client.views
     (:require [re-frame.core :as re-frame]
               
+              ;; Components
+              [wombats-web-client.components.navbar :as navbar]
+
               ;; Panels
               [wombats-web-client.panels.available-games :as available-games-panel]
               [wombats-web-client.panels.my-games :as my-games-panel]
@@ -18,7 +21,11 @@
 (defn show-panel [panel-name]
   [panels panel-name])
 
+
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])]
+    (print "active panel: " @active-panel)
     (fn []
-      [show-panel @active-panel])))
+      [:div 
+       [navbar/root]
+       [show-panel @active-panel]])))
