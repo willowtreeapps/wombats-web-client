@@ -1,9 +1,9 @@
-(ns wombats-web-client.panels.available-games
+(ns wombats-web-client.panels.open-games
   (:require [re-frame.core :as re-frame]))
 
-;; Available Games Panel
+;; Open Games Panel
 
-(defn available-games
+(defn open-games
   []
   (fn []
-    [:div (str "This is the Available Games page.")]))
+    [:div (str "This is the Open Games page.")]))

@@ -8,7 +8,8 @@
                  [com.cemerick/url "0.1.1"]
                  [cljs-ajax "0.5.4"]]
 
-  :plugins [[lein-cljsbuild "1.1.4"]]
+  :plugins [[lein-cljsbuild "1.1.4"]
+            [lein-less "1.7.5"]]
 
   :min-lein-version "2.5.3"
 
@@ -16,6 +17,9 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "test/js"]
+
+  :less {:source-paths ["less"]
+         :target-path "resources/public/css"}
 
   :figwheel {:css-dirs ["resources/public/css"]}
 

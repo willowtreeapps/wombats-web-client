@@ -5,13 +5,11 @@
 
 (defn welcome []
   (fn []
-    [:div (str "This is the My Games Page.")
-     [:div [:a {:href "#/"} "go to Available Games page"]]]))
+    [:div (str "This is the My Games Page.")]))
 
 (defn login-prompt []
   (fn []
-    [:div (str "You must login to see your games.")
-     [:div [:a {:href "#/"} "go to Available Games page"]]]))
+    [:div (str "You must login to see your games.")]))
 
 (defn my-games []
   (let [current-user (re-frame/subscribe [:current-user])]

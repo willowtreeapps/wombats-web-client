@@ -25,3 +25,4 @@
   (fn [db [_ _]]
     (remove-item! token)
     (assoc db :auth-token nil :current-user nil)))
+
