@@ -4,7 +4,9 @@
                  [reagent "0.6.0"]
                  [re-frame "0.9.1"]
                  [re-frisk "0.3.2"]
-                 [secretary "1.2.3"]]
+                 [secretary "1.2.3"]
+                 [com.cemerick/url "0.1.1"]
+                 [cljs-ajax "0.5.4"]]
 
   :plugins [[lein-cljsbuild "1.1.4"]]
 

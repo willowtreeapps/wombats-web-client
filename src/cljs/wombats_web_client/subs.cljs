@@ -11,3 +11,8 @@
  :active-panel
  (fn [db _]
    (:active-panel db)))
+
+(re-frame/reg-sub
+ :current-user
+ (fn [db _]
+   (:current-user db)))
