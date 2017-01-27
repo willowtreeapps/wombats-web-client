@@ -1,13 +1,10 @@
-(ns wombats-web-client.db)
-
-(defn get-item
-  "Returns value of `key' from browser's localStorage."
-  [key]
-  (.getItem (.-localStorage js/window) key))
+(ns wombats-web-client.db
+  (:require [wombats-web-client.constants.local-storage :refer [token]]
+            [wombats-web-client.utils.local-storage :refer [get-item]]))
 
 (def default-db
   {:active-panel nil
-   :auth-token (get-item "token")
+   :auth-token (get-item token)
    :bootstrapping? false
    :name "WillowTree"
    :current-user nil

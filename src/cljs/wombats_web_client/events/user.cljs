@@ -3,7 +3,8 @@
             
             [wombats-web-client.db :as db]
             [wombats-web-client.utils.local-storage :refer [remove-item!]]
-            [wombats-web-client.services.user :refer [sign-out-user]]))
+            [wombats-web-client.services.user :refer [sign-out-user]]
+            [wombats-web-client.constants.local-storage :refer [token]]))
 
 ;; AUTH SPECIFIC
 (defn sign-out
@@ -22,5 +23,5 @@
 (re-frame/reg-event-db
   :sign-out
   (fn [db [_ _]]
-    (remove-item! "token")
+    (remove-item! token)
     (assoc db :auth-token nil :current-user nil)))
