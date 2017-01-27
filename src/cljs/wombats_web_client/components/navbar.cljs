@@ -1,13 +1,14 @@
 (ns wombats-web-client.components.navbar
-  (:require [re-frame.core :as re-frame]))
+  (:require [re-frame.core :as re-frame]
+            [wombats-web-client.constants.urls :refer [github-signin-url]]))
 
 (defn login []
-  [:a {:href "http://54.145.152.66/api/v1/auth/github/signin"} "Login"])
+  [:a {:href github-signin-url} "Login"])
 
 
 (defn welcome [current-user]
   (print "welcome" current-user)
-  [:div (str "hello " current-user ". This is the Available Games Page.")
+  [:div (str "hello " current-user ".")
    [:div [:a {:href "#/my-games"} "go to My Games page"]]
    [:div [:a {:href "#/account"} "go to My Wombats Account"]]
    [:div [:a {:href "#/signout"} "Sign out of Wombats"]]])

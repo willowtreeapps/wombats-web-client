@@ -5,6 +5,5 @@
 
 (defn available-games
   []
-  (print "render availablegames")
   (fn []
     [:div (str "This is the Available Games page.")]))
