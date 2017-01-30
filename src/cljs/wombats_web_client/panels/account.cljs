@@ -10,10 +10,15 @@
   (fn []
     (re-frame/dispatch [:set-modal add-wombat-modal])))
 
+(defn temp-prettify-wombat [wombat]
+  [:div {:key (:name wombat)} (str wombat)])
+
 (defn welcome []
-  [:div (str "This is the Account Management Page.")
-   [:div [:a {:href github-signout-url} "Log out"]]
-   [add-wombat-button/root (open-add-wombat-modal)]])
+  (let [my-wombats (re-frame/subscribe [:my-wombats])]
+    [:div (str "This is the Account Management Page.")
+     [:div [:a {:href github-signout-url} "Log out"]]
+     [:div (map temp-prettify-wombat @my-wombats)]
+     [add-wombat-button/root (open-add-wombat-modal)]]))
 
 (defn login-prompt []
   [:div (str "You must login to see your account.")])
