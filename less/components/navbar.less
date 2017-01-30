@@ -1,0 +1,47 @@
+@import "../colors";
+
+
+.navbar-component {
+   margin: 0;
+   height: 45px;
+   background-color: @card-grey;
+
+   .navbar {
+     list-style-type: none;
+     padding: 0;
+     margin: 0;
+     overflow: hidden;
+     display: inline;
+     
+     
+     .regular-link {
+       float: left;  
+
+       a {
+          display: inline-block;
+          color: @warm-grey;
+          text-align: center;
+          padding: 14px 16px;
+          text-decoration: none;
+          font-weight: bold;
+          letter-spacing: 2px;
+
+          &.active {
+             color: white;
+             border-bottom: 3px solid @wombat-green;
+             padding-bottom: 9px;
+          }
+       }
+
+       &.account {
+          float: right;
+          padding-right: 40px;
+       }
+     }
+   }
+
+   .wombat-logo {
+     float: left;
+     margin: 7px 40px 30px;
+   }
+}

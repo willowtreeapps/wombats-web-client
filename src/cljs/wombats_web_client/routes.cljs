@@ -21,7 +21,7 @@
   ;; define routes here
 
   (defroute "/" []
-    (re-frame/dispatch [:set-active-panel :available-games-panel]))
+    (re-frame/dispatch [:set-active-panel :open-games-panel]))
 
   (defroute "/my-games" []
     (re-frame/dispatch [:set-active-panel :my-games-panel]))
@@ -31,7 +31,6 @@
 
   (defroute "/signout" []
     (sign-out)
-    ;;(re-frame/dispatch [:set-active-panel :available-games-panel])
     (set! (-> js/window .-location .-hash) "#/"))
 
 
