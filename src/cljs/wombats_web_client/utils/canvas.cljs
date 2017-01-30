@@ -1,5 +1,5 @@
 (ns wombats-web-client.utils.canvas
-  "Used to interact with the canvas")
+  "Used to interact with a canvas element")
 
 (defn- context
   "Gets the 2d context of a canvas"
