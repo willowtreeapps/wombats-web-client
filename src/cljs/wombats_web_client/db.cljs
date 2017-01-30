@@ -8,4 +8,5 @@
    :bootstrapping? false
    :name "WillowTree"
    :current-user nil
-   :users []})
+   :users []
+   :modal nil})

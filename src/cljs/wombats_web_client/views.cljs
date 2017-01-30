@@ -21,10 +21,15 @@
 (defn show-panel [panel-name]
   [panels panel-name])
 
+(defn display-modal
+  [modal-form]
+  (if (not (nil? modal-form)) [modal-form]))
 
 (defn main-panel []
-  (let [active-panel (re-frame/subscribe [:active-panel])]
+  (let [active-panel (re-frame/subscribe [:active-panel])
+        modal (re-frame/subscribe [:modal])]
     (fn []
       [:div 
+       [display-modal @modal]
        [navbar/root]
        [show-panel @active-panel]])))

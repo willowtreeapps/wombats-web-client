@@ -16,6 +16,11 @@
 
 ;; USER SPECIFIC
 (re-frame/reg-event-db
+ :set-modal
+ (fn [db [_ modal-form]]
+   (assoc db :modal modal-form)))
+
+(re-frame/reg-event-db
  :update-user
  (fn [db [_ current-user]]
    (assoc db :current-user current-user)))
@@ -25,4 +30,3 @@
   (fn [db [_ _]]
     (remove-item! token)
     (assoc db :auth-token nil :current-user nil)))
-
