@@ -21,3 +21,8 @@
  :modal
  (fn [db _]
    (:modal db)))
+
+(re-frame/reg-sub
+ :my-wombats
+ (fn [db _]
+   (:my-wombats db)))

@@ -21,6 +21,10 @@
 (defn show-panel [panel-name]
   [panels panel-name])
 
+(defn display-overlay
+  [modal-form]
+  (if (not (nil? modal-form)) [:div.overlay]))
+
 (defn display-modal
   [modal-form]
   (if (not (nil? modal-form)) [modal-form]))
@@ -29,7 +33,9 @@
   (let [active-panel (re-frame/subscribe [:active-panel])
         modal (re-frame/subscribe [:modal])]
     (fn []
-      [:div 
-       [display-modal @modal]
-       [navbar/root]
-       [show-panel @active-panel]])))
+      (let [current-modal @modal]
+        [:div 
+         [display-overlay current-modal]
+         [display-modal current-modal]
+         [navbar/root]
+         [show-panel @active-panel]]))))

@@ -1,20 +1,12 @@
 (ns wombats-web-client.panels.account
   (:require [re-frame.core :as re-frame]
             [wombats-web-client.constants.urls :refer [github-signout-url]]
-            [wombats-web-client.components.add-button :as add-wombat-button]))
+            [wombats-web-client.components.add-button :as add-wombat-button]
+            [wombats-web-client.components.modals.add-wombat-modal :refer [add-wombat-modal]]))
 
 ;; User Account Panel
 
-(defn add-wombat-modal []
-  (fn []
-    [:div (str "ADD WOMBAT")
-     [:input {:type "button"
-              :value "Cancel"
-              :on-click (fn [] (re-frame/dispatch [:set-modal nil]))}]]))
-
 (defn open-add-wombat-modal []
-  ;; update app state to overlay modal  (update root to have modal overlay)
-  ;; pass form into modal state 
   (fn []
     (re-frame/dispatch [:set-modal add-wombat-modal])))
 
