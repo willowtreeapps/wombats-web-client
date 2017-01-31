@@ -1,8 +1,12 @@
 // SETTINGS
 @import "colors.less";
 
+// UTILS
+@import "forms.less";
 
 // COMPONENTS
+@import "components/modals/modal.less";
+@import "components/add-button.less";
 @import "components/navbar.less";
 
 
@@ -23,8 +27,10 @@ html {
     font-family: @font-family-primary;
     font-weight: @font-weight-primary;
     font-size: 14px;
+    min-height: 100%;
 }
 
 body {
   margin: 0;
+  position: relative;
 }

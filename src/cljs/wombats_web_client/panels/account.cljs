@@ -1,18 +1,31 @@
 (ns wombats-web-client.panels.account
   (:require [re-frame.core :as re-frame]
-            [wombats-web-client.constants.urls :refer [github-signout-url]]))
+            [wombats-web-client.constants.urls :refer [github-signout-url]]
+            [wombats-web-client.components.add-button :as add-wombat-button]
+            [wombats-web-client.components.modals.add-wombat-modal :refer [add-wombat-modal]]))
 
 ;; User Account Panel
 
-(defn welcome []
+(defn open-add-wombat-modal []
   (fn []
+    (re-frame/dispatch [:set-modal add-wombat-modal])))
+
+(defn temp-prettify-wombat [wombat]
+  [:div {:key (:name wombat)} (str wombat)])
+
+(defn welcome []
+  (let [my-wombats (re-frame/subscribe [:my-wombats])]
     [:div (str "This is the Account Management Page.")
-     [:div [:a {:href github-signout-url} "Log out"]]]))
+     [:div [:a {:href github-signout-url} "Log out"]]
+     [:div (map temp-prettify-wombat @my-wombats)]
+     [add-wombat-button/root (open-add-wombat-modal)]]))
 
 (defn login-prompt []
-  (fn []
-    [:div (str "You must login to see your account.")]))
+  [:div (str "You must login to see your account.")])
 
 (defn account []
   (let [current-user (re-frame/subscribe [:current-user])]
-    (if (nil? @current-user) login-prompt welcome)))
+    (fn []
+      (if (nil? @current-user)
+        [login-prompt]
+        [welcome]))))

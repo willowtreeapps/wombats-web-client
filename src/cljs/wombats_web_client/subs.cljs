@@ -16,3 +16,13 @@
  :current-user
  (fn [db _]
    (:current-user db)))
+
+(re-frame/reg-sub
+ :modal
+ (fn [db _]
+   (:modal db)))
+
+(re-frame/reg-sub
+ :my-wombats
+ (fn [db _]
+   (:my-wombats db)))
