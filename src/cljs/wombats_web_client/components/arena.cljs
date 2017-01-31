@@ -35,7 +35,8 @@
     :open
       nil
 
-    (js/console.log "Unhandled: " cell)))
+    ;;(js/console.log "Unhandled: " cell)
+))
 
 (defn arena
   "Renders the arena on a canvas element, and subscribes to arena updates"
@@ -59,4 +60,4 @@
 
             (draw-cell (get cell :cell-type) x-coord y-coord width height canvas-element)
 
-        canvas-element))))
+        canvas-element))))))
