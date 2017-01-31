@@ -9,6 +9,34 @@
       (canvas/draw-image canvas-element evt.srcElement x y width height)))
     (set! (.-src img) url)))
 
+(defn- draw-cell
+  "Draw an arena cell on the canvas"
+  [cell-type x y width height canvas-element]
+  (case cell-type
+
+    :wood-barrier
+      (draw-image canvas-element "images/arena-wall3.png" x y width height)
+
+    :steel-barrier
+      (draw-image canvas-element "images/arena-wall.png" x y width height)
+
+    :food
+      (draw-image canvas-element "images/arena-food.png" x y width height)
+
+    :poison
+      (draw-image canvas-element "images/arena-poison.png" x y width height)
+
+    :zakano
+      (draw-image canvas-element "images/arena-zakano.png" x y width height)
+
+    :wombat
+      (draw-image canvas-element "images/arena-wombat.png" x y width height)
+
+    :open
+      nil
+
+    (js/console.log "Unhandled: " cell)))
+
 (defn arena
   "Renders the arena on a canvas element, and subscribes to arena updates"
   []
@@ -29,29 +57,6 @@
             (def x-coord (* x width))
             (def y-coord (* y height))
 
-            (case (get cell :cell-type)
-
-              :wood-barrier
-                (draw-image canvas-element "images/arena-wall3.png" x-coord y-coord width height)
-
-              :steel-barrier
-                (draw-image canvas-element "images/arena-wall.png" x-coord y-coord width height)
-
-              :food
-                (draw-image canvas-element "images/arena-food.png" x-coord y-coord width height)
-
-              :poison
-                (draw-image canvas-element "images/arena-poison.png" x-coord y-coord width height)
-
-              :zakano
-                (draw-image canvas-element "images/arena-zakano.png" x-coord y-coord width height)
-
-              :wombat
-                (draw-image canvas-element "images/arena-wombat.png" x-coord y-coord width height)
-
-              :open
-                nil
-
-              (js/console.log "Unhandled: " cell))))
+            (draw-cell (get cell :cell-type) x-coord y-coord width height canvas-element)
 
         canvas-element))))
