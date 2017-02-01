@@ -1,13 +1,31 @@
 @import "../colors.less";
 @import "../objects/button.less";
 
-.logout {
-  .emphasized-button(@white, @black-20);
-}
+.account-panel {
+  padding: 60px;
 
-.title {
-  font-size: 30px;
-  font-weight: 600;
-  color: @white;
-  display: inline-block;
+  .header {
+    margin-bottom: 30px;
+
+    .title {
+      font-size: 30px;
+      font-weight: 600;
+      color: @white;
+      display: inline-block;
+    }
+  
+    .logout {
+      .emphasized-button(@white, @black-20);
+      float: right;
+    }
+  }
+
+  .wombats {
+    display: flex;
+    flex-flow: row wrap;
+
+    .wombat-card {
+      margin: 20px 40px 65px 0;
+    }
+  }
 }

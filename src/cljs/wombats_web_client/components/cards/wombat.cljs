@@ -15,7 +15,7 @@
 
 (defn wombat-information 
   [isUserHovering? name id url]
-  [:div.wombat-information
+  [:div.wombat-information {:class (when @isUserHovering? "hovering")}
    [:div.name name]
    (when @isUserHovering?
      [:div.hover-state-edit
@@ -31,6 +31,6 @@
         color (reagent/atom nil)]
     [:div.wombat-card {:key (:id wombat)
                        :onMouseOver #(reset! isUserHovering? true)
-                       :onMouseOut #(reset! isUserHovering? true)}
+                       :onMouseOut #(reset! isUserHovering? false)}
      [:img.wombat-image {:src (str "/images/wombat_purple_right.png")}]
      [wombat-information isUserHovering? (:name wombat) (:id wombat) (:url wombat)]]))

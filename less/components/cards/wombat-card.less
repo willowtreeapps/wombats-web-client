@@ -10,17 +10,13 @@
   .wombat-image {
     width: 142px;
     height: 142px;
-    margin: 20px 66px;
+    padding: 20px 66px;
   }
 
   .wombat-information {
     position: absolute;
-    bottom: -45px;
-
-     -webkit-transition: bottom 0.2s ease-in;
-    -moz-transition: bottom 0.2s ease-in;
-    -o-transition: bottom 0.2s ease-in;
-    transition: bottom 0.2s ease-in;
+   // bottom: -45px;
+   display: block;
 
     .name {
       background-color: @card-grey;
@@ -45,6 +41,10 @@
         .simple-button;
         float: right;
       }
+    }
+
+    &.hovering {
+      bottom: -45px;
     }
   }
 }

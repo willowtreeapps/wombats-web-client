@@ -11,17 +11,16 @@
   (fn []
     (re-frame/dispatch [:set-modal add-wombat-modal])))
 
-(defn temp-prettify-wombat [wombat]
-  [:div {:key (:id wombat)}
-   [:div "wombat image"]
-   [:div (:name wombat)]])
+(defn header []
+  [:div.header 
+     [:div.title "MY WOMBATS"]
+     [:div.logout [:a {:href github-signout-url} "LOG OUT"]]])
 
 (defn welcome []
   (let [my-wombats (re-frame/subscribe [:my-wombats])]
-    [:div.account
-     [:div.title "MY WOMBATS"]
-     [:div.logout [:a {:href github-signout-url} "LOG OUT"]]
-     [:div (map wombat-card/root @my-wombats)]
+    [:div.account-panel
+     [header]
+     [:div.wombats (map wombat-card/root @my-wombats)]
      [add-wombat-button/root (open-add-wombat-modal)]]))
 
 (defn login-prompt []
