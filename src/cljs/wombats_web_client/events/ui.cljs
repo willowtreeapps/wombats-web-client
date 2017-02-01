@@ -21,7 +21,7 @@
 
      ;; Access Token was pass by the server. Add token to storage,
      ;; sanitize the URL, and then load user.
-     (when access-token
+     (when access-token-val
        (set-item! token access-token-val)
        (strip-access-token))
 
