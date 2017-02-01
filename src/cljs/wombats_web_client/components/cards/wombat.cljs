@@ -11,6 +11,6 @@
    [:div "wombat image"]
    [:div (:name wombat)]
    [:div.hover-state-edit
-    [:input {:type "button"
+    [:input.simple-button {:type "button"
              :value "DELETE"
              :on-click (open-delete-wombat-modal (:id wombat))}]]])
