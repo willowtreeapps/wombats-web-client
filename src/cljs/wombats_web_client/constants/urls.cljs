@@ -11,3 +11,7 @@
 (defn my-wombats-url
   [id]
   (str base-api-url "/api/v1/users/" id "/wombats"))
+
+(defn my-wombat-by-id-url
+  [user-id id]
+  (str base-api-url "/api/v1/users/" user-id "/wombats/" id))

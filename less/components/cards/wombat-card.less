@@ -1,0 +1,44 @@
+@import "../../colors.less";
+
+.wombat-card {
+  position: relative;
+  background-color: @white;
+  width: 275px;
+  display: inline-block;
+  
+  .wombat-image {
+    width: 142px;
+    height: 142px;
+    margin: 20px 66px;
+  }
+
+  .wombat-information {
+    position: absolute;
+    bottom: -45px;
+
+     -webkit-transition: bottom 0.2s ease-in;
+    -moz-transition: bottom 0.2s ease-in;
+    -o-transition: bottom 0.2s ease-in;
+    transition: bottom 0.2s ease-in;
+
+    .name {
+      background-color: @card-grey;
+      color: @white;
+      font-size: 18px;
+      padding: 10px;
+      width: 255px;
+    }
+
+    .hover-state-edit {
+      height: 45px;
+      width: 245px;
+      background-color: @card-grey;
+      padding-right: 30px;
+
+      .delete {
+        .simple-button;
+        float: right;
+      }
+    }
+  }
+}
