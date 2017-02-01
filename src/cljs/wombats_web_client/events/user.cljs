@@ -1,6 +1,6 @@
 (ns wombats-web-client.events.user
   (:require [re-frame.core :as re-frame]
-            [ajax.core :refer [json-response-format GET POST ]]
+            [ajax.core :refer [json-response-format GET POST DELETE]]
             [ajax.edn :refer [edn-request-format]]
             [day8.re-frame.http-fx]
             [wombats-web-client.utils.auth :refer [add-auth-header]]
@@ -10,7 +10,8 @@
             [wombats-web-client.constants.local-storage :refer [token]]
             [wombats-web-client.constants.urls :refer [self-url 
                                                        github-signout-url 
-                                                       my-wombats-url]]))
+                                                       my-wombats-url
+                                                       my-wombat-by-id-url]]))
 
 ;; HELPERS
 (defn get-current-user-id []
@@ -57,12 +58,22 @@
   "creates and returns a wombat"
   [id name url on-success on-error]
   (POST (my-wombats-url id) {:response-format :json
-                                  :format (edn-request-format)
+                                :format (edn-request-format)
                                 :keywords? true
                                 :headers (add-auth-header {})
                                 :handler on-success
                                 :params {:wombat/name name :wombat/url url}
                                 :error-handler on-error}))
+
+(defn delete-wombat-by-id
+  "deletes wombat from db by id"
+  [user-id wombat-id on-success on-error]
+  (DELETE (my-wombat-by-id-url user-id wombat-id) {:response-format :json
+                                                   :format (edn-request-format)
+                                                   :keywoards? true
+                                                   :headers (add-auth-header {})
+                                                   :handler on-success
+                                                   :error-handler on-error}))
 
 (defn create-new-wombat
   [name url cb-success cb-error]
@@ -78,8 +89,17 @@
      (cb-error))))
 
 (defn delete-wombat
-  [id]
-  (print "delete-wombat event user"))
+  [id cb-success cb-error]
+  (print "id: " id)
+  (delete-wombat-by-id
+   (get-current-user-id)
+   id
+   (fn [] 
+     (get-all-wombats)
+     (cb-success))
+   (fn []
+     (print "error with deleting wombat by id")
+     (cb-error))))
 
 ;; USER SPECIFIC
 (defn get-current-user

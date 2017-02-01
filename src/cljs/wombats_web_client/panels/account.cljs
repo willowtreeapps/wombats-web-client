@@ -19,6 +19,7 @@
 (defn welcome []
   (let [my-wombats (re-frame/subscribe [:my-wombats])]
     [:div.account (str "This is the Account Management Page.")
+     [:div "MY WOMBATS"]
      [:div.logout [:a {:href github-signout-url} "LOG OUT"]]
      [:div (map wombat-card/root @my-wombats)]
      [add-wombat-button/root (open-add-wombat-modal)]]))

@@ -2,11 +2,8 @@
   (:require [re-frame.core :as re-frame]
             [wombats-web-client.components.modals.delete-wombat-modal :refer [delete-wombat-modal]]))
 
-(defn temp-modal []
-  )
 (defn open-delete-wombat-modal [id]
-  (fn [id]
-    (print "on delete click")
+  (fn []
     (re-frame/dispatch [:set-modal #(delete-wombat-modal id)])))
 
 (defn root [wombat]
