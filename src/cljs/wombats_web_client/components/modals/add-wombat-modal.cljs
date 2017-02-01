@@ -5,8 +5,8 @@
             [wombats-web-client.utils.forms :refer [text-input-with-label
                                                     cancel-modal-input]]))
 
-(def wombat-name (reagent/atom ""))
-(def wombat-url (reagent/atom ""))
+(def wombat-name (reagent/atom nil))
+(def wombat-url (reagent/atom nil))
 (def error (reagent/atom nil))
 
 (defn callback-success []
