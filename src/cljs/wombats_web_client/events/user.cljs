@@ -77,6 +77,10 @@
      (print "error with create-new-wombat")
      (cb-error))))
 
+(defn delete-wombat
+  [id]
+  (print "delete-wombat event user"))
+
 ;; USER SPECIFIC
 (defn get-current-user
   "fetches the current user object"
