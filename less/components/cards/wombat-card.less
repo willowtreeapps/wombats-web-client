@@ -1,4 +1,5 @@
 @import "../../colors.less";
+@import "../../objects/button.less";
 
 .wombat-card {
   position: relative;
@@ -36,6 +37,11 @@
       padding-right: 30px;
 
       .delete {
+        .simple-button;
+        float: right;
+      }
+      
+      .edit {
         .simple-button;
         float: right;
       }
