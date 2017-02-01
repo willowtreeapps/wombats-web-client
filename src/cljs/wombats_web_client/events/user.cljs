@@ -1,6 +1,6 @@
 (ns wombats-web-client.events.user
   (:require [re-frame.core :as re-frame]
-            [ajax.core :refer [json-response-format GET POST DELETE]]
+            [ajax.core :refer [json-response-format GET PUT POST DELETE]]
             [ajax.edn :refer [edn-request-format]]
             [day8.re-frame.http-fx]
             [wombats-web-client.utils.auth :refer [add-auth-header]]
@@ -75,6 +75,16 @@
                                                    :handler on-success
                                                    :error-handler on-error}))
 
+(defn edit-wombat
+  "edits wombat by id in db"
+  [user-id wombat-id name url on-success on-error]
+  (PUT (my-wombat-by-id-url user-id wombat-id) {:response-format :json
+                                            :format (edn-request-format)
+                                            :keywords? true
+                                            :headers (add-auth-header {})
+                                            :handler on-success
+                                            :params {:wombat/name name :wombat/url url}
+                                            :error-handler on-error}))
 (defn create-new-wombat
   [name url cb-success cb-error]
   (post-new-wombat
@@ -88,9 +98,22 @@
      (print "error with create-new-wombat")
      (cb-error))))
 
+(defn edit-wombat-by-id
+  [name url wombat-id cb-success cb-error]
+  (edit-wombat
+   (get-current-user-id)
+   wombat-id
+   name
+   url
+   (fn []
+     (get-all-wombats)
+     (cb-success))
+   (fn []
+     (print "error with editing wombat by id")
+     (cb-error))))
+
 (defn delete-wombat
   [id cb-success cb-error]
-  (print "id: " id)
   (delete-wombat-by-id
    (get-current-user-id)
    id
