@@ -1,7 +1,8 @@
 (ns wombats-web-client.events.user
   (:require [re-frame.core :as re-frame]
-            [ajax.core :refer [GET POST]]
+            [ajax.core :refer [json-response-format GET POST ]]
             [ajax.edn :refer [edn-request-format]]
+            [day8.re-frame.http-fx]
             [wombats-web-client.utils.auth :refer [add-auth-header]]
 
             [wombats-web-client.db :as db]
@@ -90,8 +91,8 @@
   "fetches the current user"
   []
   (get-current-user
-   #(re-frame/dispatch [:update-user %]) ; success function, % = payload
-   (print "error")))
+   #(re-frame/dispatch [:bootstrap-user-data %]) ; success function, % = payload
+   #(print "load user error")))
 
 (re-frame/reg-event-db
  :update-user
@@ -108,3 +109,20 @@
  :update-wombats
  (fn [db [_ wombats]]
    (assoc db :my-wombats wombats)))
+
+(re-frame/reg-event-db
+ :user-error
+ (fn [db [_ error]]
+   (print "temporary error")
+   (db)))
+
+(re-frame/reg-event-fx
+  :bootstrap-user-data
+  (fn
+    [{:keys [db]} [_ user]]
+    {:dispatch  [:update-user user]
+     :http-xhrio {:method          :get
+                  :uri             (my-wombats-url (user :id))
+                  :response-format (json-response-format {:keywords? true})
+                  :on-success      [:update-wombats]
+                  :on-failure      [:user-error]}}))

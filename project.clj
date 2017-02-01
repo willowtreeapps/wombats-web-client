@@ -6,7 +6,8 @@
                  [re-frisk "0.3.2"]
                  [secretary "1.2.3"]
                  [com.cemerick/url "0.1.1"]
-                 [cljs-ajax "0.5.4"]]
+                 [cljs-ajax "0.5.4"]
+                 [day8.re-frame/http-fx "0.1.3"]]
 
   :plugins [[lein-cljsbuild "1.1.4"]
             [lein-less "1.7.5"]]
