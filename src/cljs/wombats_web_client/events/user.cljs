@@ -6,7 +6,7 @@
             [wombats-web-client.utils.auth :refer [add-auth-header]]
 
             [wombats-web-client.db :as db]
-            [wombats-web-client.utils.local-storage :refer [remove-item!]]
+            [wombats-web-client.utils.local-storage :refer [get-item remove-item!]]
             [wombats-web-client.constants.local-storage :refer [token]]
             [wombats-web-client.constants.urls :refer [self-url 
                                                        github-signout-url 
@@ -23,19 +23,15 @@
 ;; AUTH SPECIFIC
 (defn sign-out-user
   "signs out user from server and removes their auth token"
-  [on-success on-error]
+  []
   (GET github-signout-url {:response-format :json
                            :keywords? true
-                           :headers (add-auth-header {})
-                           :handler on-success
-                           :error-handler on-error}))
+                           :headers (add-auth-header {})}))
 
 (defn sign-out-event
   []
-  (print "sign-out")
-  (sign-out-user
-   #(re-frame/dispatch [:sign-out %])
-   #(print "error with sign-out")))
+  (re-frame/dispatch [:sign-out])
+  (sign-out-user))
 
 
 
@@ -168,7 +164,8 @@
   :bootstrap-user-data
   (fn
     [{:keys [db]} [_ user]]
-    {:dispatch  [:update-user user]
+    {:db (assoc db :auth-token (get-item token))
+     :dispatch  [:update-user user]
      :http-xhrio {:method          :get
                   :uri             (my-wombats-url (user :id))
                   :response-format (json-response-format {:keywords? true})

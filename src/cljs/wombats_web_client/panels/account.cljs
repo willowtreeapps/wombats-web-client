@@ -1,6 +1,5 @@
 (ns wombats-web-client.panels.account
   (:require [re-frame.core :as re-frame]
-            [wombats-web-client.constants.urls :refer [github-signout-url]]
             [wombats-web-client.components.add-button :as add-wombat-button]
             [wombats-web-client.components.modals.add-wombat-modal :refer [add-wombat-modal]]
             [wombats-web-client.components.cards.wombat :as wombat-card]))
@@ -14,7 +13,7 @@
 (defn header []
   [:div.header 
      [:div.title "MY WOMBATS"]
-     [:div.logout [:a {:href github-signout-url} "LOG OUT"]]])
+     [:div.logout [:a {:href "#/signout"} "LOG OUT"]]])
 
 (defn welcome []
   (let [my-wombats (re-frame/subscribe [:my-wombats])]
