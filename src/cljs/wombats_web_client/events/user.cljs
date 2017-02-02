@@ -8,8 +8,8 @@
             [wombats-web-client.db :as db]
             [wombats-web-client.utils.local-storage :refer [get-item remove-item!]]
             [wombats-web-client.constants.local-storage :refer [token]]
-            [wombats-web-client.constants.urls :refer [self-url 
-                                                       github-signout-url 
+            [wombats-web-client.constants.urls :refer [self-url
+                                                       github-signout-url
                                                        my-wombats-url
                                                        my-wombat-by-id-url]]))
 
@@ -88,10 +88,10 @@
    (get-current-user-id)
    name
    url
-   (fn [] 
+   (fn []
      (get-all-wombats)
      (cb-success))
-   (fn [] 
+   (fn []
      (print "error with create-new-wombat")
      (cb-error))))
 
@@ -114,7 +114,7 @@
   (delete-wombat-by-id
    (get-current-user-id)
    id
-   (fn [] 
+   (fn []
      (get-all-wombats)
      (cb-success))
    (fn []
@@ -144,10 +144,10 @@
    (assoc db :current-user current-user)))
 
 (re-frame/reg-event-db
-  :sign-out
-  (fn [db [_ _]]
-    (remove-item! token)
-    (assoc db :auth-token nil :current-user nil)))
+ :sign-out
+ (fn [db [_ _]]
+   (remove-item! token)
+   (assoc db :auth-token nil :current-user nil)))
 
 (re-frame/reg-event-db
  :update-wombats
