@@ -9,4 +9,6 @@
    :name "WillowTree"
    :current-user nil
    :users []
-   :modal nil})
+   :modal nil
+   :open-games nil
+   :my-games nil})

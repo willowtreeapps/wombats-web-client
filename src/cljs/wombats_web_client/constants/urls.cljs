@@ -15,3 +15,8 @@
 (defn my-wombat-by-id-url
   [user-id id]
   (str base-api-url "/api/v1/users/" user-id "/wombats/" id))
+
+(def games-url (str base-api-url "/api/v1/games"))
+
+(defn games-join-url [game-id] 
+  (str base-api-url "/api/v1/games/" game-id "/join"))
