@@ -19,10 +19,19 @@
                             :value "JOIN"
                             :onClick #(join-open-game game-id (:id (first @wombats)) "white")}]]))
 
-(defn open-games []
+(defn panel []
   (let [open-games (re-frame/subscribe [:open-games])]
+    [:div.open-games-panel
+     [:div (str "This is the Open Games page.")]
+     [temp-poll-button]
+     [:ul.open-games-list (map temp-game-card @open-games)]]))
+
+(defn login-prompt []
+  [:div (str "You must login to see open games.")])
+
+(defn open-games []
+  (let [current-user (re-frame/subscribe [:current-user])]
     (fn []
-      [:div.open-games-panel
-       [:div (str "This is the Open Games page.")]
-       [temp-poll-button]
-       [:ul.open-games-list (map temp-game-card @open-games)]])))
+      (if (nil? @current-user)
+        [login-prompt]
+        [panel]))))
