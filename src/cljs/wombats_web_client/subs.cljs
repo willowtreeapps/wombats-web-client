@@ -26,3 +26,13 @@
  :my-wombats
  (fn [db _]
    (:my-wombats db)))
+
+(re-frame/reg-sub
+ :open-games
+ (fn [db _]
+   (:open-games db)))
+
+(re-frame/reg-sub
+ :my-games
+ (fn [db _]
+   (:my-games db)))

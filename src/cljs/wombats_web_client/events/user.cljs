@@ -29,11 +29,12 @@
                            :handler on-success
                            :error-handler on-error}))
 
-(defn sign-out
+(defn sign-out-event
   []
+  (print "sign-out")
   (sign-out-user
    #(re-frame/dispatch [:sign-out %])
-   (fn [] (print "error with sign-out"))))
+   #(print "error with sign-out")))
 
 
 
