@@ -40,9 +40,9 @@
 (defn select-input-with-label []
   (let [my-wombats (re-frame/subscribe [:my-wombats])]
     [:div.select-wombat
-     [:div.placeholder 
+     [:div.placeholder
       {:onClick #(reset! show-wombat-dropdown (not @show-wombat-dropdown))}
-      [:div.text {:class (when (nil? @wombat-placeholder) "unselected")} 
+      [:div.text {:class (when (nil? @wombat-placeholder) "unselected")}
        (str (if (nil? @wombat-placeholder) "Select Wombat" @wombat-placeholder))]
       [:img.icon-arrow {:class (when @show-wombat-dropdown "open-dropdown")
                         :src "/images/icon-arrow.svg"}]]
@@ -58,7 +58,7 @@
                      :style {:background color-hex
                              :opacity "0.8"}}
       [:img {:src "/images/checkmark.svg"}]]
-     [:img {:src (str "/images/wombat_" color-text "_right.png")
+     [:img {:src (str "/images/wombats/wombat_" color-text "_right.png")
             :onClick #(reset! wombat-color-selection color-text)}]]))
 
 (defn select-wombat-color []
