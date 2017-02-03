@@ -44,13 +44,17 @@
    #(re-frame/dispatch [:my-games %])
    #(print "error with getting my games")))
 
-(defn join-open-game [game-id wombat-id color]
+(defn join-open-game [game-id wombat-id color cb-success cb-error]
   (join-game
    game-id
    wombat-id
    color
-   #(get-all-my-games (get-current-user-id))
-   #(print "error with join-open-game")))
+   (fn []
+     (cb-success)
+     (get-all-my-games (get-current-user-id)))
+   (fn []
+     (cb-error)
+     (print "error with join-open-game"))))
 
 (re-frame/reg-event-db
  :open-games
