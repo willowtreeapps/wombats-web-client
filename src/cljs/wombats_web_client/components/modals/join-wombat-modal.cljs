@@ -51,13 +51,15 @@
         (map wombat-options @my-wombats)])]))
 
 (defn wombat-img [color color-selected]
-  [:div.wombat-img-wrapper {:key color}
-   [:div.selected {:class (when (= color color-selected) "display")
-                   :style {:background color
-                           :opacity "0.8"}}
-    [:img {:src "/images/checkmark.svg"}]]
-   [:img {:src (str "/images/wombat_" color "_right.png")
-          :onClick #(reset! wombat-color-selection color)}]])
+  (let [color-text (:color-text color)
+        color-hex (:color-hex color)]
+    [:div.wombat-img-wrapper {:key color-text}
+     [:div.selected {:class (when (= color-text color-selected) "display")
+                     :style {:background color-hex
+                             :opacity "0.8"}}
+      [:img {:src "/images/checkmark.svg"}]]
+     [:img {:src (str "/images/wombat_" color-text "_right.png")
+            :onClick #(reset! wombat-color-selection color-text)}]]))
 
 (defn select-wombat-color []
   (let [selected-color @wombat-color-selection]
