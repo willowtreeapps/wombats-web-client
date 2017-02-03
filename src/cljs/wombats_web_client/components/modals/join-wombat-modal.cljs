@@ -42,19 +42,32 @@
     [:div.select-wombat
      [:div.placeholder 
       {:onClick #(reset! show-wombat-dropdown (not @show-wombat-dropdown))}
-      (str (if (nil? @wombat-placeholder) "Select Wombat" @wombat-placeholder))]
+      [:div.text {:class (when (nil? @wombat-placeholder) "unselected")} 
+       (str (if (nil? @wombat-placeholder) "Select Wombat" @wombat-placeholder))]
+      [:img.icon-arrow {:class (when @show-wombat-dropdown "open-dropdown")
+                        :src "/images/icon-arrow.svg"}]]
      (when @show-wombat-dropdown
        [:div.dropdown-wrapper
         (map wombat-options @my-wombats)])]))
 
-(defn wombat-img [color]
-  [:div.wombat-img-wrapper {:key color}
-   [:img {:src (str "/images/wombat_" color "_right.png")
-          :onClick #(reset! wombat-color-selection color)}]])
+(defn wombat-img [color color-selected]
+  (let [color-text (:color-text color)
+        color-hex (:color-hex color)]
+    [:div.wombat-img-wrapper {:key color-text}
+     [:div.selected {:class (when (= color-text color-selected) "display")
+                     :style {:background color-hex
+                             :opacity "0.8"}}
+      [:img {:src "/images/checkmark.svg"}]]
+     [:img {:src (str "/images/wombat_" color-text "_right.png")
+            :onClick #(reset! wombat-color-selection color-text)}]]))
 
 (defn select-wombat-color []
-  [:div.select-color
-   (map wombat-img colors-8)])
+  (let [selected-color @wombat-color-selection]
+    [:div.select-color
+     [:label.label "Select Color"]
+     [:div.colors
+      (doall (for [color colors-8]
+               [wombat-img color selected-color]))]]))
 
 (defn join-wombat-modal [game-id]
   (fn []

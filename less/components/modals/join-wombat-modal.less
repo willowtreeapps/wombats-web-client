@@ -1,34 +1,105 @@
 @import "../../colors.less";
 
 .join-wombat-modal {
-  .select-color {
-    display: flex;
-    flex-flow: row wrap;
-    width: 310px;
-    margin: 0 auto;
+  height: 436px;
 
-    .wombat-img-wrapper {
-      cursor: pointer;
-      margin: 3px;
-      width: 70px;
-      height: 70px;
+  .select-wombat {
+   width: 310px;
+   margin: 0 auto;
+   margin-bottom: 40px;
+
+   .placeholder {
+     background-color: @white;
+     color: @black;
+     font-size: 18px;
+     padding: 10px;
+     cursor: pointer;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     
+     .text {
+       color: @black;
+       
+       &.unselected {
+         color: @warm-grey;
+       }
+     }
+
+     img {
+       width: 10px;
+       height: 6px;
+
+       &.open-dropdown {
+         transform: rotate(180deg);
+       }
+     }
+   } 
+
+   .dropdown-wrapper {
+      display: block;
+      position: absolute;
       background-color: @white;
-      display: inline-block;
-
-      img {
-        padding: 5px;
-      }
-
-      &:hover {
-
-      }
-    }
-
-    .dropdown-wrapper {
+      color: @black;
+      font-size: 18px;
+      cursor: pointer;
+      z-index: 1;
+      width: 310px;
+      box-shadow: 0px 8px 16px 0px @black-40;
+      
       li {
          list-style-type: none;
-         display: block;
-         padding: 5px 10px;
+         padding: 10px;
+         color: @black;
+
+         &:hover {
+           background-color: @white-two;
+         }
+      }
+   }
+  }
+
+  .select-color {
+    .label {
+      margin-bottom: 10px;
+    }
+    .colors {
+      display: flex;
+      flex-flow: row wrap;
+      width: 310px;
+      margin: 0 auto;
+      margin-bottom: 40px;
+      justify-content: space-between;
+
+      .wombat-img-wrapper {
+        cursor: pointer;
+        margin-bottom: 7px;
+        width: 70px;
+        height: 70px;
+        background-color: @white;
+        display: inline-block;
+
+        .selected {
+          content: " ";
+          position: absolute;
+          width: 70px;
+          height: 70px;
+          display: none;
+          align-items: center;
+          justify-content: center;
+
+          &.display {
+            display: flex;
+          }
+        }
+
+        img {
+          padding: 5px;
+        }
+
+        &:hover {
+  
+        }
       }
     }
   }
