@@ -47,5 +47,4 @@
     (fn []
       [:div.navbar-component
        [wombat-logo]
-       [nav-links @current-user]
-       ])))
+       [nav-links @current-user]])))
