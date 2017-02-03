@@ -42,7 +42,10 @@
     [:div.select-wombat
      [:div.placeholder 
       {:onClick #(reset! show-wombat-dropdown (not @show-wombat-dropdown))}
-      (str (if (nil? @wombat-placeholder) "Select Wombat" @wombat-placeholder))]
+      [:div.text {:class (when (nil? @wombat-placeholder) "unselected")} 
+       (str (if (nil? @wombat-placeholder) "Select Wombat" @wombat-placeholder))]
+      [:img.icon-arrow {:class (when @show-wombat-dropdown "open-dropdown")
+                        :src "/images/icon-arrow.svg"}]]
      (when @show-wombat-dropdown
        [:div.dropdown-wrapper
         (map wombat-options @my-wombats)])]))
@@ -54,7 +57,9 @@
 
 (defn select-wombat-color []
   [:div.select-color
-   (map wombat-img colors-8)])
+   [:label.label "Select Color"]
+   [:div.colors
+    (map wombat-img colors-8)]])
 
 (defn join-wombat-modal [game-id]
   (fn []
