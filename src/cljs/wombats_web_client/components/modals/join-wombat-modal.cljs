@@ -67,7 +67,7 @@
      [:label.label "Select Color"]
      [:div.colors
       (doall (for [color colors-8]
-               [wombat-img color selected-color]))]]))
+               ^{:key color} [wombat-img color selected-color]))]]))
 
 (defn join-wombat-modal [game-id]
   (fn []
