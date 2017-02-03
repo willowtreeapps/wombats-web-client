@@ -1,5 +1,6 @@
 (ns wombats-web-client.utils.auth
-  (:require [wombats-web-client.utils.local-storage :refer [get-item]]
+  (:require [re-frame.core :as re-frame]
+            [wombats-web-client.utils.local-storage :refer [get-item]]
             [wombats-web-client.constants.local-storage :refer [token]]))
 
 (defn get-auth-header
@@ -11,3 +12,7 @@
   "Add token to header"
   [headers]
   (merge (get-auth-header) headers))
+
+(defn get-current-user-id []
+  (let [current-user (re-frame/subscribe [:current-user])]
+    (@current-user :id)))

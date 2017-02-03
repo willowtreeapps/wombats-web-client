@@ -36,8 +36,7 @@
 
   (defroute "/signout" []
     (sign-out-event)
-    ;(set! (-> js/window .-location .-hash) "#/")
-    )
+    (set! (-> js/window .-location .-hash) "#/"))
 
 
   ;; --------------------

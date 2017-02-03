@@ -7,6 +7,9 @@
 
 (def error (reagent/atom nil))
 
+(defn reset-state []
+  (reset! error nil))
+
 (defn callback-success []
   "closes modal on success"
   (reset! error nil)
@@ -32,7 +35,7 @@
                                 :label "Wombat URL"
                                 :local-state-value wombat-url}]
         [:div.action-buttons
-         [cancel-modal-input]
+         [cancel-modal-input reset-state]
          [:input.modal-button {:type "button"
                                :value "SAVE"
                                :on-click #(edit-wombat-by-id

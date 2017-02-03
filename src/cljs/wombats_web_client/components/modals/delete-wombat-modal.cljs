@@ -6,6 +6,9 @@
 
 (def error (reagent/atom nil))
 
+(defn reset-state []
+  (reset! error nil))
+
 (defn callback-success []
   "closes modal on success"
   (reset! error nil)
@@ -21,7 +24,7 @@
      [:div.title "DELETE WOMBAT"]
      [:div.desc "You are about to delete this wombat. Are you sure you want to do this?"]
      [:div.action-buttons
-      [cancel-modal-input]
+      [cancel-modal-input reset-state]
       [:input.modal-button {:type "button"
                             :value "DELETE"
                             :on-click #(delete-wombat id callback-success callback-error)}]]]))

@@ -1,9 +1,9 @@
 (ns wombats-web-client.events.user
   (:require [re-frame.core :as re-frame]
             [ajax.core :refer [json-response-format GET PUT POST DELETE]]
-            [ajax.edn :refer [edn-request-format]]
+            [ajax.edn :refer [edn-request-format edn-response-format]]
             [day8.re-frame.http-fx]
-            [wombats-web-client.utils.auth :refer [add-auth-header]]
+            [wombats-web-client.utils.auth :refer [add-auth-header get-current-user-id]]
 
             [wombats-web-client.db :as db]
             [wombats-web-client.utils.local-storage :refer [get-item remove-item!]]
@@ -12,14 +12,15 @@
                                                        github-signout-url
                                                        my-wombats-url
                                                        my-wombat-by-id-url]]
+            [wombats-web-client.events.games :refer [get-open-games
+                                                     get-all-my-games]]
             [wombats-web-client.utils.socket :as ws]))
+
 
 ;; HELPERS
 (defn get-current-user-id []
   (let [current-user (re-frame/subscribe [:current-user])]
     (@current-user :id)))
-
-
 
 ;; AUTH SPECIFIC
 (defn sign-out-user
@@ -167,9 +168,11 @@
   (fn
     [{:keys [db]} [_ user]]
     {:db (assoc db :auth-token (get-item token))
-     :dispatch  [:update-user user]
      :http-xhrio {:method          :get
                   :uri             (my-wombats-url (user :id))
                   :response-format (json-response-format {:keywords? true})
                   :on-success      [:update-wombats]
-                  :on-failure      [:user-error]}}))
+                  :on-failure      [:user-error]}
+     :dispatch [:update-user user]
+     :get-open-games nil
+     :get-my-games (user :id)}))

@@ -4,7 +4,7 @@
             [ajax.edn :refer [edn-request-format edn-response-format]]
             [wombats-web-client.constants.urls :refer [games-url
                                                        games-join-url]]
-            [wombats-web-client.utils.auth :refer [add-auth-header]]))
+            [wombats-web-client.utils.auth :refer [add-auth-header get-current-user-id]]))
 
 (defn get-pending-open-games [on-success on-error]
   (GET games-url {:response-format (edn-response-format)
@@ -24,12 +24,12 @@
                           :error-handler on-error
                           :params {:player/wombat-id wombat-id :player/color color}}))
 
-(defn get-my-games [on-success on-error]
+(defn get-my-games [id on-success on-error]
   (GET games-url {:response-format (edn-response-format)
                   :keywords? true
                   :format (edn-request-format)
                   :headers (add-auth-header {})
-                  :params {:status "pending-open"}
+                  :params {:user id}
                   :handler on-success
                   :error-handler on-error}))
 
@@ -38,18 +38,23 @@
    #(re-frame/dispatch [:open-games %])
    #(print "error on get open games")))
 
-(defn get-all-my-games [] 
+(defn get-all-my-games [user-id] 
   (get-my-games
+   user-id
    #(re-frame/dispatch [:my-games %])
    #(print "error with getting my games")))
 
-(defn join-open-game [game-id wombat-id color]
+(defn join-open-game [game-id wombat-id color cb-success cb-error]
   (join-game
    game-id
    wombat-id
    color
-   #(get-all-my-games)
-   #(print "error with join-open-game")))
+   (fn []
+     (cb-success)
+     (get-all-my-games (get-current-user-id)))
+   (fn []
+     (cb-error)
+     (print "error with join-open-game"))))
 
 (re-frame/reg-event-db
  :open-games
@@ -60,3 +65,13 @@
  :my-games
  (fn [db [_ my-games]]
    (assoc db :my-games my-games)))
+
+(re-frame/reg-fx
+ :get-open-games
+ (fn [_]
+   (get-open-games)))
+
+(re-frame/reg-fx
+ :get-my-games
+ (fn [id]
+   (get-all-my-games id)))
