@@ -54,7 +54,8 @@
   [:div.wombat-img-wrapper {:key color}
    [:div.selected {:class (when (= color color-selected) "display")
                    :style {:background color
-                           :opacity "0.8"}}]
+                           :opacity "0.8"}}
+    [:img {:src "/images/checkmark.svg"}]]
    [:img {:src (str "/images/wombat_" color "_right.png")
           :onClick #(reset! wombat-color-selection color)}]])
 
