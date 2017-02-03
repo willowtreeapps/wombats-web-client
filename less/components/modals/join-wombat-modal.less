@@ -79,6 +79,18 @@
         background-color: @white;
         display: inline-block;
 
+        .selected {
+          content: " ";
+          position: absolute;
+          width: 70px;
+          height: 70px;
+          display: none;
+
+          &.display {
+            display: block;
+          }
+        }
+
         img {
           padding: 5px;
         }

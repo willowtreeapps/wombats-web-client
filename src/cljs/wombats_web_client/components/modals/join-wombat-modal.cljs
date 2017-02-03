@@ -50,16 +50,21 @@
        [:div.dropdown-wrapper
         (map wombat-options @my-wombats)])]))
 
-(defn wombat-img [color]
+(defn wombat-img [color color-selected]
   [:div.wombat-img-wrapper {:key color}
+   [:div.selected {:class (when (= color color-selected) "display")
+                   :style {:background color
+                           :opacity "0.8"}}]
    [:img {:src (str "/images/wombat_" color "_right.png")
           :onClick #(reset! wombat-color-selection color)}]])
 
 (defn select-wombat-color []
-  [:div.select-color
-   [:label.label "Select Color"]
-   [:div.colors
-    (map wombat-img colors-8)]])
+  (let [selected-color @wombat-color-selection]
+    [:div.select-color
+     [:label.label "Select Color"]
+     [:div.colors
+      (doall (for [color colors-8]
+               [wombat-img color selected-color]))]]))
 
 (defn join-wombat-modal [game-id]
   (fn []
