@@ -5,7 +5,6 @@
             [wombats-web-client.utils.url :refer [strip-access-token]]
             [wombats-web-client.utils.local-storage :refer [set-item! get-item]]
             [wombats-web-client.constants.local-storage :refer [access-token token]]
-
             [wombats-web-client.events.user :refer [load-user]]))
 
 (re-frame/reg-event-db
@@ -13,7 +12,7 @@
  (fn  [_ _]
    db/default-db))
 
-(re-frame/reg-event-db 
+(re-frame/reg-event-db
  :bootstrap-app
  (fn [db [_]]
    (let [query (:query (url/url (-> js/window .-location .-href)))

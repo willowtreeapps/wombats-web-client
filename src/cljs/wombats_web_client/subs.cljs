@@ -36,3 +36,8 @@
  :my-games
  (fn [db _]
    (:my-games db)))
+
+(re-frame/reg-sub
+ :game/arena
+ (fn [db _]
+   (:game/arena db)))

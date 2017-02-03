@@ -17,11 +17,11 @@
 
 (defn get-arena-frequencies []
   [:div.arena-freq
-   [freq "arena-food"]
-   [freq "arena-poison"]
-   [freq "wall"]
-   [freq "arena-zakano"]
-   [freq "woodwall_1"]])
+   [freq "food/food_cherry"]
+   [freq "poison/poison_vial2"]
+   [freq "steel-barrier/wall"]
+   [freq "zakano/zakano_front"]
+   [freq "wood-barrier/woodwall_1"]])
 
 (defn joinable-game-card [show-join game-id]
   (let [show-join-val @show-join]
@@ -50,7 +50,7 @@
       [:div.game-card {:key game-id
                        :onMouseOver #(reset! show-join true)
                        :onMouseOut #(reset! show-join false)}
-       (if is-joinable 
+       (if is-joinable
          [joinable-game-card show-join game-id]
          [navigate-game-card game-id])
        [:div.game-information
