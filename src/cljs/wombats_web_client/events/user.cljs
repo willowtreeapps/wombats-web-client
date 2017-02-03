@@ -16,12 +16,6 @@
                                                      get-all-my-games]]
             [wombats-web-client.utils.socket :as ws]))
 
-
-;; HELPERS
-(defn get-current-user-id []
-  (let [current-user (re-frame/subscribe [:current-user])]
-    (@current-user :id)))
-
 ;; AUTH SPECIFIC
 (defn sign-out-user
   "signs out user from server and removes their auth token"
