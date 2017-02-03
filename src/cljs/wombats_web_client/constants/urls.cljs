@@ -1,10 +1,10 @@
 (ns wombats-web-client.constants.urls)
 
 ;; Remote Dev
-#_(def base-api-url "//dev.wombats.io")
+(def base-api-url "//dev.wombats.io")
 
 ;; Local Dev
-(def base-api-url "//localhost:8888") 
+#_(def base-api-url "//localhost:8888") 
 
 (def self-url (str base-api-url "/api/v1/self"))
 (def github-signout-url (str base-api-url "/api/v1/auth/github/signout"))
