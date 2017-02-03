@@ -1,9 +1,15 @@
 (ns wombats-web-client.panels.open-games
   (:require [re-frame.core :as re-frame]
             [wombats-web-client.events.games :refer [get-open-games
-                                                     join-open-game]]))
+                                                     join-open-game]]
+            [wombats-web-client.components.modals.join-wombat-modal :refer [join-wombat-modal]]))
 
 ;; Open Games Panel
+;; #(join-open-game game-id (:id (first @wombats)) "white")
+
+(defn temp-open-join-game-modal [game-id]
+  (fn []
+    (re-frame/dispatch [:set-modal #(join-wombat-modal game-id)])))
 
 (defn temp-poll-button []
   [:input {:type "button"
@@ -17,7 +23,7 @@
      [:div {:style {:color "white"}} (str game)]
      [:input.simple-button {:type "button"
                             :value "JOIN"
-                            :onClick #(join-open-game game-id (:id (first @wombats)) "white")}]]))
+                            :onClick (temp-open-join-game-modal game-id)}]]))
 
 (defn panel []
   (let [open-games (re-frame/subscribe [:open-games])]
