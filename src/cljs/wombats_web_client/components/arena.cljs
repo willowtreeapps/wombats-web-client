@@ -1,15 +1,16 @@
 (ns wombats-web-client.components.arena
   (:require [re-frame.core :as re-frame]
-            [wombats-web-client.utils.canvas :as canvas]))
+            ;; [wombats-web-client.utils.canvas :as canvas]
+            ))
 
-(defn- draw-image
+#_(defn- draw-image
   [canvas-element url x y width height]
   (let [img (js/Image.)]
     (set! (.-onload img) (fn [evt]
       (canvas/draw-image canvas-element evt.srcElement x y width height)))
     (set! (.-src img) url)))
 
-(defn- draw-cell
+#_(defn- draw-cell
   "Draw an arena cell on the canvas"
   [cell-type x y width height canvas-element]
   (case cell-type
@@ -40,8 +41,9 @@
 
 (defn arena
   "Renders the arena on a canvas element, and subscribes to arena updates"
-  []
-  (let [current-arena (re-frame/subscribe [:arena])]
+  [arena]
+  [:h2 "TEMP"]
+  #_(let [current-arena (re-frame/subscribe [:game/arena])]
     (fn []
       (let [canvas-element [:canvas]]
         ;; Make sure to clear anything that's on the canvas

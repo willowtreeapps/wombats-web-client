@@ -26,8 +26,9 @@
   (defroute "/my-games" []
     (re-frame/dispatch [:set-active-panel :my-games-panel]))
 
-  (defroute "/my-games/:game-id" {:as params}
-    (js/console.log (str "Game Id: " (:game-id params)))
+  (defroute "/my-games/:game-id" {game-id :game-id}
+    (js/console.log (str "Game Id: " game-id))
+    (re-frame/dispatch [:game/join-game game-id])
     (re-frame/dispatch [:set-active-panel :game-play-panel]))
 
   (defroute "/account" []

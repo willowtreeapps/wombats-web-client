@@ -11,7 +11,8 @@
             [wombats-web-client.constants.urls :refer [self-url
                                                        github-signout-url
                                                        my-wombats-url
-                                                       my-wombat-by-id-url]]))
+                                                       my-wombat-by-id-url]]
+            [wombats-web-client.utils.socket :as ws]))
 
 ;; HELPERS
 (defn get-current-user-id []
@@ -141,6 +142,7 @@
 (re-frame/reg-event-db
  :update-user
  (fn [db [_ current-user]]
+   (ws/add-user-token (:access-token current-user))
    (assoc db :current-user current-user)))
 
 (re-frame/reg-event-db

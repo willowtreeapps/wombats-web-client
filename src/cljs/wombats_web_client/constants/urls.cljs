@@ -4,13 +4,13 @@
 #_(def base-api-url "//dev.wombats.io")
 
 ;; Local Dev
-(def base-api-url "http://localhost:8888")
+(def base-api-url "//localhost:8888")
 
 (def self-url (str base-api-url "/api/v1/self"))
 (def github-signout-url (str base-api-url "/api/v1/auth/github/signout"))
 (def github-signin-url (str base-api-url "/api/v1/auth/github/signin"))
 
-(def game-url (str "ws:" base-api-url "/ws/game"))
+(def ws-url (str "ws:" base-api-url "/ws/game"))
 
 (defn my-wombats-url
   [id]
@@ -22,5 +22,5 @@
 
 (def games-url (str base-api-url "/api/v1/games"))
 
-(defn games-join-url [game-id] 
+(defn games-join-url [game-id]
   (str base-api-url "/api/v1/games/" game-id "/join"))

@@ -6,7 +6,8 @@
               [wombats-web-client.subs]
               [wombats-web-client.routes :as routes]
               [wombats-web-client.views :as views]
-              [wombats-web-client.config :as config]))
+              [wombats-web-client.config :as config]
+              [wombats-web-client.socket-dispatcher :as sd]))
 
 
 (defn dev-setup []
@@ -19,6 +20,10 @@
   (re-frame/clear-subscription-cache!)
   (reagent/render [views/main-panel]
                   (.getElementById js/document "app")))
+
+;; TODO Find a good place for this and
+;; also reconnect on disconnect
+(sd/init-ws-connection)
 
 (defn ^:export init []
   (routes/app-routes)
