@@ -1,4 +1,4 @@
-(ns wombats-web-client.constants.chat-box
+(ns wombats-web-client.components.chat-box
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent :refer [atom]]
             [wombats-web-client.utils.socket :as ws]

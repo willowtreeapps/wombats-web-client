@@ -48,7 +48,6 @@
                     :e "right")]
     (str "images/wombats/wombat_" color "_" direction ".png")))
 
-  
 (defn- draw-cell
   "Draw an arena cell on the canvas"
   [cell x y width height canvas-element]

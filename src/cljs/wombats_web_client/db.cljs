@@ -13,4 +13,5 @@
    :open-games nil
    :my-games nil
    :game/arena nil
-   :game/messages []})
+   :game/messages []
+   :game/stats {}})

@@ -14,6 +14,7 @@
         (condp = msg-type
           :frame-update #(re-frame/dispatch [:game/update-frame payload])
           :chat-message #(re-frame/dispatch [:game/add-chat-message payload])
+          :stats-update #(re-frame/dispatch [:game/stats-update payload])
           :disconnect #()
           :error #()
           #())]

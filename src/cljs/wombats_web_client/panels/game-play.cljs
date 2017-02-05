@@ -1,6 +1,7 @@
 (ns wombats-web-client.panels.game-play
   (:require [wombats-web-client.components.arena :as arena]
-            [wombats-web-client.constants.chat-box :refer [chat-box]]
+            [wombats-web-client.components.chat-box :refer [chat-box]]
+            [wombats-web-client.components.game-ranking :refer [ranking-box]]
             [re-frame.core :as re-frame]))
 
 (defonce canvas-id "arena-canvas")
@@ -17,19 +18,29 @@
   (last
    (.split (-> js/window .-location .-hash) "/")))
 
-(defn update-arena []
-  (let [arena (re-frame/subscribe [:game/arena])]
-    (arena/arena @arena canvas-id)))
+(defn update-arena [arena]
+  (arena/arena @arena canvas-id))
+
+(defn get-arena-dimensions
+  []
+  600)
 
 (defn game-play
   []
-  (update-arena)
   (fn []
     (let [game-id (get-game-id)
-          messages (re-frame/subscribe [:game/messages])]
-      [:div {:style {:color "white"}
-             :id "wombat-arena"}
-       [:canvas {:id canvas-id
-                 :width 500
-                 :height 500}]
-       [chat-box game-id messages]])))
+          messages (re-frame/subscribe [:game/messages])
+          arena (re-frame/subscribe [:game/arena])
+          stats (re-frame/subscribe [:game/stats])
+          dimensions (get-arena-dimensions)]
+      (update-arena arena)
+      [:div {:class-name "game-play-panel"}
+       [:div {:style {:color "white"}
+              :id "wombat-arena"
+              :class-name "left-game-play-panel"}
+        [:canvas {:id canvas-id
+                  :width dimensions
+                  :height dimensions}]]
+       [:div {:class-name "right-game-play-panel"}
+        [ranking-box game-id stats]
+        [chat-box game-id messages]]])))
