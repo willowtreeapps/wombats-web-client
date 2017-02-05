@@ -58,14 +58,15 @@
   [callback]
   (let [onmessage-interceptor (fn [message]
                                 (let [formatted-message (parse message.data)
-                                      message-type (get-in formatted-message [:meta :msg-type])
-                                      payload (:payload formatted-message)
+                                      {metadata :meta
+                                       payload :payload} formatted-message
+                                      message-type (:msg-type metadata)
                                       is-handshake? (= message-type :handshake)]
                                   (if is-handshake?
                                     (do
                                       (swap! socket-state assoc :chan-id (:chan-id payload))
                                       (send-message :handshake {:chan-id (:chan-id payload)}))
-                                    (callback message-type payload))))]
+                                    (callback message-type payload metadata))))]
 
     (set! (.-onmessage (:socket @socket-state)) onmessage-interceptor)))
 
@@ -84,7 +85,8 @@
    (fn [] (event-bus send-message :connect "Connected")))
 
   (onmessage
-   (fn [message-type payload] (event-bus send-message message-type payload)))
+   (fn [message-type payload metadata]
+     (event-bus send-message message-type payload metadata)))
 
   (onerror
    (fn [error] (event-bus send-message :error error))))

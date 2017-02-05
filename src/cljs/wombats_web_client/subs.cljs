@@ -41,3 +41,8 @@
  :game/arena
  (fn [db _]
    (:game/arena db)))
+
+(re-frame/reg-sub
+ :game/messages
+ (fn [db _]
+   (:game/messages db)))
