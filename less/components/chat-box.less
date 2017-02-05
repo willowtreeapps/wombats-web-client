@@ -1,0 +1,50 @@
+@import '../colors.less';
+@import "../objects/button.less";
+
+.chat-box {
+    display: flex;
+    flex-wrap: wrap;
+    height: 30%;
+    width: 100%;
+
+    .chat-box-message-container {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        padding-left: 0;
+
+        .chat-msg {
+            display: flex;
+            margin-bottom: 20px;
+            width: 100%;
+
+            .msg-timestamp {
+                color: @warm-grey;
+                margin-right: 20px;
+            }
+
+            .msg-username {
+                font-weight: bold;
+                margin-right: 20px;
+            }
+        }
+    }
+
+    .chat-box-input-container {
+        display: flex;
+        width: 100%;
+
+        .chat-input {
+            width: 80%;
+            height: 45px;
+            font-size: 1.6em;
+        }
+
+        .chat-send-btn {
+            .emphasized-action-button(#7ed321, #7ed321);
+            color: @white;
+            width: 20%;
+            height: 45px;
+        }
+    }
+}

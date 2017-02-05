@@ -11,4 +11,7 @@
    :users []
    :modal nil
    :open-games nil
-   :my-games nil})
+   :my-games nil
+   :game/arena nil
+   :game/messages []
+   :game/stats {}})

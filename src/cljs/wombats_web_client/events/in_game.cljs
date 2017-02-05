@@ -3,9 +3,20 @@
             [wombats-web-client.utils.socket :as ws]))
 
 (re-frame/reg-event-db
+ :game/add-chat-message
+ (fn [db [_ message]]
+   (update db :game/messages (fn [messages]
+                               (conj messages message)))))
+
+(re-frame/reg-event-db
  :game/update-frame
  (fn [db [_ arena]]
    (assoc db :game/arena arena)))
+
+(re-frame/reg-event-db
+ :game/stats-update
+ (fn [db [_ stats]]
+   (assoc db :game/stats stats)))
 
 (re-frame/reg-event-db
  :game/join-game
