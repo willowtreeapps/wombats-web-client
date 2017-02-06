@@ -57,20 +57,18 @@
 (defn- draw-open
   "Draws whatever belongs on an open cell"
   [canvas-element contents meta x y width height]
-  (doseq meta
-    (fn [meta-item]
-      (js/console.log meta-item)
-      (let [{type :type} meta-item]
-        (js/console.log meta-item)
-        (case type
-          :shot
-          (draw-image canvas-element
-                      "images/fire_shot.png"
-                      x
-                      y
-                      width
-                      height)
-          nil)))))
+  (doseq [meta-item meta] 
+    (let [{type :type
+           orientation :orientation} meta-item]
+      (case type
+        :shot
+        (draw-image canvas-element
+                    "images/fire_shot.png"
+                    x
+                    y
+                    width
+                    height)
+        nil))))
 
 (defn- draw-cell
   "Draw an arena cell on the canvas"
