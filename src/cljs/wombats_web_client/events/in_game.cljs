@@ -9,6 +9,11 @@
                                (conj messages message)))))
 
 (re-frame/reg-event-db
+ :game/clear-chat-messages
+ (fn [db [_ _]]
+   (assoc db :game/messages [])))
+
+(re-frame/reg-event-db
  :game/update-frame
  (fn [db [_ arena]]
    (assoc db :game/arena arena)))
