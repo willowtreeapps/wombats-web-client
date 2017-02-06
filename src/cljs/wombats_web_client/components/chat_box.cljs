@@ -47,12 +47,13 @@
 (defn display-messages
   [messages stats]
   (fn []
-    (let [stats @stats]
+    (let [stats @stats
+          messages @messages]
       [:ul {:class-name "chat-box-message-container"}
-       (if (pos? @messages)
+       (if (pos? (count messages))
          (for [{:keys [username
                        message
-                       timestamp]} @messages]
+                       timestamp]} messages]
            ^{:key (str username "-" timestamp)}
            [:li {:class-name "chat-msg"}
             [:span {:class-name "msg-timestamp"} (format-time timestamp)]
