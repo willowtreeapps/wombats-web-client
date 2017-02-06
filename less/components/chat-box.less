@@ -4,18 +4,22 @@
 .chat-box {
     display: flex;
     flex-wrap: wrap;
-    height: 30%;
-    width: 100%;
+    height: calc(~"100% - 50% - 25px");
+    background-color: @card-grey;
 
     .chat-box-message-container {
         display: flex;
         flex-wrap: wrap;
         width: 100%;
-        padding-left: 0;
+        max-height: calc(~"100% - 60%");
+        overflow: auto;
+        padding: 0;
+        margin: 0;
+        
 
         .chat-msg {
             display: flex;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             width: 100%;
 
             .msg-timestamp {
@@ -27,6 +31,14 @@
                 font-weight: bold;
                 margin-right: 20px;
             }
+            .msg-body {
+              color: @white;
+              font-weight: normal;
+
+              &.default {
+                color: @white-90;
+              }
+            }
         }
     }
 
@@ -36,14 +48,14 @@
 
         .chat-input {
             width: 80%;
-            height: 45px;
-            font-size: 1.6em;
+            height: 38px;
+            font-size: 18px;
+            margin-right: 20px;
         }
 
         .chat-send-btn {
-            .emphasized-action-button(#7ed321, #7ed321);
+            .emphasized-action-button(@wombat-green, @black-30);
             color: @white;
-            width: 20%;
             height: 45px;
         }
     }

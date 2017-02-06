@@ -11,7 +11,7 @@
                     hp
                     color]} @stats]
         ^{:key username} [:li
-                          [:progress {:max 100
+                          [:progress.health-bar {:max 100
                                        :value hp}]
                           [:div.img-wrapper 
                            [:img {:src (str "/images/wombats/wombat_" color "_right.png")}]]
