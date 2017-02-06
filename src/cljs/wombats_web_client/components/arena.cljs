@@ -3,17 +3,25 @@
             [wombats-web-client.utils.canvas :as canvas]))
 
 (defn- draw-image
-  [canvas-element url x y width height]
-  (when (not (nil? url))
-    (let [img (js/Image.)]
-      (set! (.-onload img) (fn [evt]
-                             (canvas/draw-image canvas-element 
-                                                evt.srcElement 
-                                                x
-                                                y
-                                                width
-                                                height)))
-      (set! (.-src img) url))))
+  ([canvas-element url x y width height] (draw-image canvas-element 
+                                                     url 
+                                                     x 
+                                                     y 
+                                                     width 
+                                                     height 
+                                                     0))
+  ([canvas-element url x y width height rotation]
+   (when (not (nil? url))
+     (let [img (js/Image.)]
+       (set! (.-onload img) (fn [evt]
+                              (canvas/draw-image canvas-element 
+                                                 evt.srcElement 
+                                                 x
+                                                 y
+                                                 width
+                                                 height
+                                                 rotation)))
+       (set! (.-src img) url)))))
 
 (defn- get-wood-barrier
   [contents meta]
@@ -67,7 +75,12 @@
                     x
                     y
                     width
-                    height)
+                    height
+                    (case orientation
+                      :s 90
+                      :w 180
+                      :n 270
+                      0))
         nil))))
 
 (defn- draw-cell
