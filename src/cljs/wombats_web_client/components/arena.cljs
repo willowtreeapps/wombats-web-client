@@ -54,14 +54,23 @@
                     :e "right")]
     (str "images/wombats/wombat_" color "_" direction ".png")))
 
-(defn- get-empty
-  [meta]
-  (let [{type :type} meta]
-    (case type
-      :shot
-      "images/fire_shot.png"
-      
-      nil)))
+(defn- draw-open
+  "Draws whatever belongs on an open cell"
+  [canvas-element contents meta x y width height]
+  (doseq meta
+    (fn [meta-item]
+      (js/console.log meta-item)
+      (let [{type :type} meta-item]
+        (js/console.log meta-item)
+        (case type
+          :shot
+          (draw-image canvas-element
+                      "images/fire_shot.png"
+                      x
+                      y
+                      width
+                      height)
+          nil)))))
 
 (defn- draw-cell
   "Draw an arena cell on the canvas"
@@ -122,12 +131,13 @@
                   height)
 
       :open
-      (draw-image canvas-element
-                  (get-empty meta)
-                  x
-                  y
-                  width
-                  height)
+      (draw-open canvas-element
+                 contents
+                 meta
+                 x
+                 y
+                 width
+                 height)
 
       (js/console.log "Unhandled: " cell-type))))
 
