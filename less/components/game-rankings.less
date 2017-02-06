@@ -1,16 +1,16 @@
 @import "../colors.less";
 
 .game-ranking-box {
-    width: 100%;
     height: 70%;
+    margin: 0 20px;
 
     ul {
       list-style-type: none;
+      padding: 0;
 
       li {
         min-width: 300px;
         height: 30px;
-        width: 80%;
         background-color: @white-10;
         color: @white;
         position: relative;
@@ -18,14 +18,14 @@
         display: flex;
         align-items: center;
 
-        progress {
+        .health-bar {
           width: 30px;
 	  height: 4px;  /* Can be anything */
 	  background: #555;
           transform: rotate(-90deg);
         }
 
-        progress[value] {
+        .health-bar[value] {
           /* Reset the default appearance */
            -webkit-appearance: none;
            appearance: none;
@@ -36,9 +36,10 @@
             margin-right: -9px;
         }
 
-        progress[value]::-webkit-progress-value {
+        .health-bar[value]::-webkit-progress-value {
           background-color: @wombat-green;
         }
+        
 
         .img-wrapper {  
           width: 30px;

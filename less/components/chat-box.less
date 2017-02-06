@@ -5,7 +5,7 @@
     display: flex;
     flex-wrap: wrap;
     height: 30%;
-    width: 100%;
+    background-color: @card-grey;
 
     .chat-box-message-container {
         display: flex;
@@ -15,7 +15,7 @@
 
         .chat-msg {
             display: flex;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             width: 100%;
 
             .msg-timestamp {
@@ -27,6 +27,14 @@
                 font-weight: bold;
                 margin-right: 20px;
             }
+            .msg-body {
+              color: @white;
+              font-weight: normal;
+
+              &.default {
+                color: @white-90;
+              }
+            }
         }
     }
 
@@ -36,14 +44,14 @@
 
         .chat-input {
             width: 80%;
-            height: 45px;
-            font-size: 1.6em;
+            height: 38px;
+            font-size: 18px;
+            margin-right: 20px;
         }
 
         .chat-send-btn {
-            .emphasized-action-button(#7ed321, #7ed321);
+            .emphasized-action-button(@wombat-green, @black-30);
             color: @white;
-            width: 20%;
             height: 45px;
         }
     }
