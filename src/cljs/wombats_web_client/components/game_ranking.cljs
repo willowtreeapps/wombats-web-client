@@ -5,13 +5,19 @@
   (fn []
     [:div {:class-name "game-ranking-box"}
      [:ul
-      (for [[player-id {:keys [wombat-name
-                               username
-                               score
-                               hp]}] @stats]
-        ^{:key player-id} [:li
-                           [:div.meter
-                            [:span {:style {:width (str (* (/ hp 100) 100) "%")}}]]
-                           [:span wombat-name]
-                           [:span username]
-                           [:span score]])]]))
+      (for [{:keys [wombat-name
+                    username
+                    score
+                    hp
+                    color]} @stats]
+        ^{:key username} [:li
+                          [:progress {:max 100
+                                       :value hp}]
+                          [:div.img-wrapper 
+                           [:img {:src (str "/images/wombats/wombat_" color "_right.png")}]]
+                          [:div.wombat-name wombat-name]
+                          [:div.username username]
+                          [:div.score score]])]]))
+
+
+
