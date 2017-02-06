@@ -2,7 +2,8 @@
   (:require [wombats-web-client.components.arena :as arena]
             [wombats-web-client.components.chat-box :refer [chat-box]]
             [wombats-web-client.components.game-ranking :refer [ranking-box]]
-            [re-frame.core :as re-frame]))
+            [re-frame.core :as re-frame]
+            [reagent.core :as reagent]))
 
 (defonce canvas-id "arena-canvas")
 
@@ -25,22 +26,30 @@
   []
   600)
 
-(defn game-play
-  []
-  (fn []
-    (let [game-id (get-game-id)
-          messages (re-frame/subscribe [:game/messages])
-          arena (re-frame/subscribe [:game/arena])
-          stats (re-frame/subscribe [:game/stats])
-          dimensions (get-arena-dimensions)]
-      (update-arena arena)
-      [:div {:class-name "game-play-panel"}
-       [:div {:style {:color "white"}
-              :id "wombat-arena"
-              :class-name "left-game-play-panel"}
-        [:canvas {:id canvas-id
-                  :width dimensions
-                  :height dimensions}]]
-       [:div {:class-name "right-game-play-panel"}
-        [ranking-box game-id stats]
-        [chat-box game-id messages]]])))
+(defn clear-game-state []
+   (re-frame/dispatch [:game/update-frame nil])
+   (re-frame/dispatch [:game/clear-chat-messages])
+   (re-frame/dispatch [:game/stats-update {}]))
+
+(defn game-play []
+  (let [game-id (get-game-id)
+        messages (re-frame/subscribe [:game/messages])
+        arena (re-frame/subscribe [:game/arena])
+        stats (re-frame/subscribe [:game/stats])
+        dimensions (get-arena-dimensions)]
+    (reagent/create-class
+     {:component-will-unmount #(clear-game-state)
+      :display-name "game-play-panel"
+      :reagent-render
+      (fn []
+        (update-arena arena)
+        [:div {:class-name "game-play-panel"}
+         [:div {:style {:color "white"}
+                :id "wombat-arena"
+                :class-name "left-game-play-panel"}
+          [:canvas {:id canvas-id
+                    :width dimensions
+                    :height dimensions}]]
+         [:div {:class-name "right-game-play-panel"}
+          [ranking-box game-id stats]
+          [chat-box game-id messages]]])})))
