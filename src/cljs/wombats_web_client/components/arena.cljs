@@ -87,6 +87,14 @@
   "Draw an arena cell on the canvas"
   [cell x y width height canvas-element]
 
+  ;; First draw the background
+  (draw-image canvas-element
+              "images/arena_bg.png"
+              x
+              y
+              width
+              height)
+
   (let [{contents :contents
          meta :meta} cell
         cell-type (:type contents)]
