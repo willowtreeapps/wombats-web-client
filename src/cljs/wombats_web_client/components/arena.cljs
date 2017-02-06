@@ -4,10 +4,16 @@
 
 (defn- draw-image
   [canvas-element url x y width height]
-  (let [img (js/Image.)]
-    (set! (.-onload img) (fn [evt]
-      (canvas/draw-image canvas-element evt.srcElement x y width height)))
-    (set! (.-src img) url)))
+  (when (not (nil? url))
+    (let [img (js/Image.)]
+      (set! (.-onload img) (fn [evt]
+                             (canvas/draw-image canvas-element 
+                                                evt.srcElement 
+                                                x
+                                                y
+                                                width
+                                                height)))
+      (set! (.-src img) url))))
 
 (defn- get-wood-barrier
   [contents meta]
@@ -47,6 +53,15 @@
                     :w "left"
                     :e "right")]
     (str "images/wombats/wombat_" color "_" direction ".png")))
+
+(defn- get-empty
+  [meta]
+  (let [{type :type} meta]
+    (case type
+      :shot
+      "images/fire_shot.png"
+      
+      nil)))
 
 (defn- draw-cell
   "Draw an arena cell on the canvas"
@@ -107,7 +122,12 @@
                   height)
 
       :open
-      nil
+      (draw-image canvas-element
+                  (get-empty meta)
+                  x
+                  y
+                  width
+                  height)
 
       (js/console.log "Unhandled: " cell-type))))
 
