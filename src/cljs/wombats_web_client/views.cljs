@@ -10,7 +10,7 @@
               [wombats-web-client.panels.account :as account-panel]
               [wombats-web-client.panels.game-play :as game-play-panel]))
 
-;; main
+;; mainutil
 
 (defn- panels [panel-name]
   (case panel-name
@@ -36,7 +36,7 @@
         modal (re-frame/subscribe [:modal])]
     (fn []
       (let [current-modal @modal]
-        [:div 
+        [:div.app-container
          [display-overlay current-modal]
          [display-modal current-modal]
          [navbar/root]

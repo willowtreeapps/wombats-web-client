@@ -3,7 +3,8 @@
             [reagent.core :as reagent :refer [atom]]
             [wombats-web-client.utils.socket :as ws]
             [cljs-time.format :as f]
-            [cljs-time.core :as t]))
+            [cljs-time.core :as t]
+            [wombats-web-client.constants.colors :refer [colors-8]]))
 
 (def message (atom ""))
 
@@ -32,19 +33,34 @@
   (f/unparse-local (f/formatter-local "h:mm A")
                    (f/parse-local timestamp)))
 
-(defn display-messages
-  [messages]
-  (fn []
+(defn get-username-color [stats username]
+  (let [stat-filter-fn (fn [stat] (= (:username stat) username))
+        color-text (:color (first (filter stat-filter-fn stats)))
+        colors-8-filter-fn (fn [color] (= (:color-text color) color-text))
+        color-hex (:color-hex (first (filter colors-8-filter-fn colors-8)))]
+    color-hex))
 
-    [:ul {:class-name "chat-box-message-container"}
-     (for [{:keys [username
-                   message
-                   timestamp]} @messages]
-       ^{:key (str username "-" timestamp)}
-       [:li {:class-name "chat-msg"}
-        [:span {:class-name "msg-timestamp"} (format-time timestamp)]
-        [:span {:class-name "msg-username"} username]
-        [:span {:class-name "msg-body"} message]])]))
+(defn default-message [] 
+  [:li {:class-name "chat-msg"}
+   [:span {:class-name "msg-body default"} "Say something already!"]])
+
+(defn display-messages
+  [messages stats]
+  (fn []
+    (let [stats @stats
+          messages @messages]
+      [:ul {:class-name "chat-box-message-container"}
+       (if (pos? (count messages))
+         (for [{:keys [username
+                       message
+                       timestamp]} messages]
+           ^{:key (str username "-" timestamp)}
+           [:li {:class-name "chat-msg"}
+            [:span {:class-name "msg-timestamp"} (format-time timestamp)]
+            [:span {:class-name "msg-username"
+                    :style {:color (get-username-color stats username)}} username]
+            [:span {:class-name "msg-body"} message]])
+         [default-message])])))
 
 (defn chat-box-input
   [game-id]
@@ -60,9 +76,11 @@
      [:button {:class-name "chat-send-btn"
                :on-click send-msg-fn} "Send"]]))
 
+
+
 (defn chat-box
-  [game-id messages]
+  [game-id messages stats]
   (fn []
     [:div {:class-name "chat-box"}
-     [display-messages messages]
+     [display-messages messages stats]
      [chat-box-input game-id]]))

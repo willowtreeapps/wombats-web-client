@@ -1,12 +1,27 @@
+@import "../colors.less";
+
 .game-play-panel {
     display: flex;
     height: 100%;
 
-    .left-game-play-panel {
-        width: 100%;
-    }
-
     .right-game-play-panel {
-        width: 100%;
+      width: 100%;
+      
+          
+      .chat-title {
+        margin-left: 20px;
+        color: @white;
+        font-weight: 600;
+        border-bottom: 4px solid @wombat-green;
+        display: block;
+        letter-spacing: 2px;
+        height: 25px;
+        width: 35px;
+        text-align: center;
+      }
+
+      & > div {
+        padding: 0 40px 0 20px;
+      }
     }
 }
