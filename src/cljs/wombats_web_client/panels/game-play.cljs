@@ -31,6 +31,9 @@
    (re-frame/dispatch [:game/clear-chat-messages])
    (re-frame/dispatch [:game/stats-update {}]))
 
+(defn chat-title []
+  [:div.chat-title "CHAT"])
+
 (defn game-play []
   (let [game-id (get-game-id)
         messages (re-frame/subscribe [:game/messages])
@@ -52,4 +55,5 @@
                     :height dimensions}]]
          [:div {:class-name "right-game-play-panel"}
           [ranking-box game-id stats]
-          [chat-box game-id messages]]])})))
+          [chat-title]
+          [chat-box game-id messages stats]]])})))
