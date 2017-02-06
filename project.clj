@@ -10,7 +10,7 @@
                  [com.andrewmcveigh/cljs-time "0.4.0"]
                  [day8.re-frame/http-fx "0.1.3"]]
 
-  :plugins [[lein-cljsbuild "1.1.4"]
+  :plugins [[lein-cljsbuild "1.1.5"]
             [lein-less "1.7.5"]]
 
   :min-lein-version "2.5.3"
@@ -55,7 +55,7 @@
      :source-paths ["src/cljs"]
      :compiler     {:main            wombats-web-client.core
                     :output-to       "resources/public/js/compiled/app.js"
-                    :optimizations   :advanced
+                    :optimizations   :whitespace
                     :closure-defines {goog.DEBUG false}
                     :pretty-print    false}}
 
