@@ -3,11 +3,25 @@
             [wombats-web-client.utils.canvas :as canvas]))
 
 (defn- draw-image
-  [canvas-element url x y width height]
-  (let [img (js/Image.)]
-    (set! (.-onload img) (fn [evt]
-      (canvas/draw-image canvas-element evt.srcElement x y width height)))
-    (set! (.-src img) url)))
+  ([canvas-element url x y width height] (draw-image canvas-element 
+                                                     url 
+                                                     x 
+                                                     y 
+                                                     width 
+                                                     height 
+                                                     0))
+  ([canvas-element url x y width height rotation]
+   (when-not (nil? url)
+     (let [img (js/Image.)]
+       (set! (.-onload img) (fn [evt]
+                              (canvas/draw-image canvas-element 
+                                                 evt.srcElement 
+                                                 x
+                                                 y
+                                                 width
+                                                 height
+                                                 rotation)))
+       (set! (.-src img) url)))))
 
 (defn- get-wood-barrier
   [contents meta]
@@ -48,9 +62,37 @@
                     :e "right")]
     (str "images/wombats/wombat_" color "_" direction ".png")))
 
+(defn- draw-open
+  "Draws whatever belongs on an open cell"
+  [canvas-element contents meta x y width height]
+  (doseq [{type :type
+           orientation :orientation} meta] 
+    (case type
+      :shot
+      (draw-image canvas-element
+                  "images/fire_shot.png"
+                  x
+                  y
+                  width
+                  height
+                  (case orientation
+                    :s 90
+                    :w 180
+                    :n 270
+                    0))
+      nil)))
+
 (defn- draw-cell
   "Draw an arena cell on the canvas"
   [cell x y width height canvas-element]
+
+  ;; First draw the background
+  (draw-image canvas-element
+              "images/arena_bg.png"
+              x
+              y
+              width
+              height)
 
   (let [{contents :contents
          meta :meta} cell
@@ -107,7 +149,13 @@
                   height)
 
       :open
-      nil
+      (draw-open canvas-element
+                 contents
+                 meta
+                 x
+                 y
+                 width
+                 height)
 
       (js/console.log "Unhandled: " cell-type))))
 
@@ -115,10 +163,7 @@
   "Renders the arena on a canvas element, and subscribes to arena updates"
   [arena canvas-id]
   (let [canvas-element (.getElementById js/document canvas-id)]
-    (when (not (nil? canvas-element))
-      ;; Make sure to clear anything that's on the canvas (not sure if this is needed)
-      (canvas/clear canvas-element)
-
+    (when-not (nil? canvas-element)
       ;; Calculate the width and height of each cell
       (def height (/ (canvas/height canvas-element) (count arena)))
       (def width  (/ (canvas/width  canvas-element) (count (get arena 0))))
