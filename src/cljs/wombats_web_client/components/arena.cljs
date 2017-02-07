@@ -11,7 +11,7 @@
                                                      height 
                                                      0))
   ([canvas-element url x y width height rotation]
-   (when (not (nil? url))
+   (when-not (nil? url)
      (let [img (js/Image.)]
        (set! (.-onload img) (fn [evt]
                               (canvas/draw-image canvas-element 
@@ -65,23 +65,22 @@
 (defn- draw-open
   "Draws whatever belongs on an open cell"
   [canvas-element contents meta x y width height]
-  (doseq [meta-item meta] 
-    (let [{type :type
-           orientation :orientation} meta-item]
-      (case type
-        :shot
-        (draw-image canvas-element
-                    "images/fire_shot.png"
-                    x
-                    y
-                    width
-                    height
-                    (case orientation
-                      :s 90
-                      :w 180
-                      :n 270
-                      0))
-        nil))))
+  (doseq [{type :type
+           orientation :orientation} meta] 
+    (case type
+      :shot
+      (draw-image canvas-element
+                  "images/fire_shot.png"
+                  x
+                  y
+                  width
+                  height
+                  (case orientation
+                    :s 90
+                    :w 180
+                    :n 270
+                    0))
+      nil)))
 
 (defn- draw-cell
   "Draw an arena cell on the canvas"
@@ -164,7 +163,7 @@
   "Renders the arena on a canvas element, and subscribes to arena updates"
   [arena canvas-id]
   (let [canvas-element (.getElementById js/document canvas-id)]
-    (when (not (nil? canvas-element))
+    (when-not (nil? canvas-element)
       ;; Calculate the width and height of each cell
       (def height (/ (canvas/height canvas-element) (count arena)))
       (def width  (/ (canvas/width  canvas-element) (count (get arena 0))))
