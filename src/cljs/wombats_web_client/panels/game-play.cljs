@@ -34,18 +34,25 @@
 (defn chat-title []
   [:div.chat-title "CHAT"])
 
-(defn game-play []
+(defn right-game-play-panel []
   (let [game-id (get-game-id)
         messages (re-frame/subscribe [:game/messages])
         arena (re-frame/subscribe [:game/arena])
-        stats (re-frame/subscribe [:game/stats])
-        dimensions (get-arena-dimensions)]
+        stats (re-frame/subscribe [:game/stats])]
+
+    (update-arena arena)
+    [:div {:class-name "right-game-play-panel"}
+     [ranking-box game-id stats]
+     [chat-title]
+     [chat-box game-id messages stats]]))
+
+(defn game-play []
+  (let [dimensions (get-arena-dimensions)]
     (reagent/create-class
      {:component-will-unmount #(clear-game-state)
       :display-name "game-play-panel"
       :reagent-render
       (fn []
-        (update-arena arena)
         [:div {:class-name "game-play-panel"}
          [:div {:style {:color "white"}
                 :id "wombat-arena"
@@ -53,7 +60,5 @@
           [:canvas {:id canvas-id
                     :width dimensions
                     :height dimensions}]]
-         [:div {:class-name "right-game-play-panel"}
-          [ranking-box game-id stats]
-          [chat-title]
-          [chat-box game-id messages stats]]])})))
+         [right-game-play-panel]])})))
+

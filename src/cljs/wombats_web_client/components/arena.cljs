@@ -165,9 +165,6 @@
   [arena canvas-id]
   (let [canvas-element (.getElementById js/document canvas-id)]
     (when (not (nil? canvas-element))
-      ;; Make sure to clear anything that's on the canvas (not sure if this is needed)
-      (canvas/clear canvas-element)
-
       ;; Calculate the width and height of each cell
       (def height (/ (canvas/height canvas-element) (count arena)))
       (def width  (/ (canvas/width  canvas-element) (count (get arena 0))))
