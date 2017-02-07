@@ -3,25 +3,28 @@
             [wombats-web-client.utils.canvas :as canvas]))
 
 (defn- draw-image
-  ([canvas-element url x y width height] (draw-image canvas-element 
-                                                     url 
-                                                     x 
-                                                     y 
-                                                     width 
-                                                     height 
-                                                     0))
-  ([canvas-element url x y width height rotation]
-   (when-not (nil? url)
-     (let [img (js/Image.)]
-       (set! (.-onload img) (fn [evt]
-                              (canvas/draw-image canvas-element 
-                                                 evt.srcElement 
-                                                 x
-                                                 y
-                                                 width
-                                                 height
-                                                 rotation)))
-       (set! (.-src img) url)))))
+  [canvas-element url x y width height]
+  (when-not (nil? url)
+    (let [img (js/Image.)]
+      (set! (.-onload img) (fn [evt]
+                             (.requestAnimationFrame js/window (fn []
+                               (canvas/draw-image canvas-element
+                                                  img
+                                                  x
+                                                  y
+                                                  width
+                                                  height)))))
+      (set! (.-src img) url))))
+
+(defn- draw-background
+  "This draws the background of a cell (only called for cells that need it)"
+  [canvas-element x y width height]
+  (draw-image canvas-element
+              "images/arena_bg.png"
+              x
+              y
+              width
+              height))
 
 (defn- get-wood-barrier
   [contents meta]
@@ -66,33 +69,27 @@
   "Draws whatever belongs on an open cell"
   [canvas-element contents meta x y width height]
   (doseq [{type :type
-           orientation :orientation} meta] 
+           orientation :orientation} meta]
     (case type
       :shot
       (draw-image canvas-element
-                  "images/fire_shot.png"
+                  (case orientation
+                    :n "images/fire_shot/fire_shot_up.png"
+                    :w "images/fire_shot/fire_shot_left.png"
+                    :e "images/fire_shot/fire_shot_right.png"
+                    :s "images/fire_shot/fire_shot_down.png")
                   x
                   y
                   width
-                  height
-                  (case orientation
-                    :s 90
-                    :w 180
-                    :n 270
-                    0))
+                  height)
       nil)))
 
 (defn- draw-cell
   "Draw an arena cell on the canvas"
   [cell x y width height canvas-element]
 
-  ;; First draw the background
-  (draw-image canvas-element
-              "images/arena_bg.png"
-              x
-              y
-              width
-              height)
+  ;; Draw background first
+  (draw-background canvas-element x y width height)
 
   (let [{contents :contents
          meta :meta} cell
