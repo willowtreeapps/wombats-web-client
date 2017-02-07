@@ -43,18 +43,39 @@
   [contents meta]
   "images/poison/poison_vial.png")
 
-(defn- get-zakano
-  [contents meta]
+(defn- draw-zakano
+  [canvas-element contents meta x y width height]
   (let [{orientation :orientation} contents
         direction (case orientation
                     :s "front"
                     :n "back"
                     :w "left"
                     :e "right")]
-    (str "images/zakano/zakano_" direction ".png")))
 
-(defn- get-wombat
-  [contents meta]
+    ;; Always draw the base zakano
+    (draw-image canvas-element
+                (str "images/zakano/zakano_" direction ".png")
+                x
+                y
+                width
+                height)
+
+    ;; See if we need to add any meta to the zakano
+    (doseq [{type :type} meta]
+      
+      (case type
+        :shot
+        (draw-image canvas-element
+                    (str "images/zakano/zakano_" direction "_fire.png")
+                    x
+                    y
+                    width
+                    height)
+        
+        nil))))
+
+(defn- draw-wombat
+  [canvas-element contents meta x y width height]
   (let [{color :color
          orientation :orientation
          hp :hp} contents
@@ -63,7 +84,28 @@
                     :n "back"
                     :w "left"
                     :e "right")]
-    (str "images/wombats/wombat_" color "_" direction ".png")))
+    
+    ;; Always draw the base wombat
+    (draw-image canvas-element
+                (str "images/wombats/wombat_" color "_" direction ".png")
+                x
+                y
+                width
+                height)
+
+    ;; See if we need to add any meta to the wombat
+    (doseq [{type :type} meta]
+
+      (case type
+        :shot
+        (draw-image canvas-element
+                    (str "images/wombats/wombat_" color "_" direction "_fire.png")
+                    x
+                    y
+                    width
+                    height)
+
+        nil))))
 
 (defn- draw-open
   "Draws whatever belongs on an open cell"
@@ -130,29 +172,13 @@
                   height)
 
       :zakano
-      (draw-image canvas-element
-                  (get-zakano contents meta)
-                  x
-                  y
-                  width
-                  height)
+      (draw-zakano canvas-element contents meta x y width height)
 
       :wombat
-      (draw-image canvas-element
-                  (get-wombat contents meta)
-                  x
-                  y
-                  width
-                  height)
+      (draw-wombat canvas-element contents meta x y width height)
 
       :open
-      (draw-open canvas-element
-                 contents
-                 meta
-                 x
-                 y
-                 width
-                 height)
+      (draw-open canvas-element contents meta x y width height)
 
       (js/console.log "Unhandled: " cell-type))))
 
