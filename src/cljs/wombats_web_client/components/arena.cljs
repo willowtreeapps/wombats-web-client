@@ -7,12 +7,13 @@
   (when-not (nil? url)
     (let [img (js/Image.)]
       (set! (.-onload img) (fn [evt]
-                             (canvas/draw-image canvas-element
-                                                evt.srcElement
-                                                x
-                                                y
-                                                width
-                                                height)))
+                             (.requestAnimationFrame js/window (fn []
+                               (canvas/draw-image canvas-element
+                                                  img
+                                                  x
+                                                  y
+                                                  width
+                                                  height)))))
       (set! (.-src img) url))))
 
 (defn- draw-background
