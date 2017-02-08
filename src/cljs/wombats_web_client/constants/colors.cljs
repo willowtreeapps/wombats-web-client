@@ -1,5 +1,7 @@
 (ns wombats-web-client.constants.colors)
 
+;; If you only want a value to be defined once in your app
+;; http://cljs.github.io/api/cljs.core/defonce can be used
 (def colors-8 [{:color-text "black" :color-hex "#3E3E3E"}
                {:color-text "blue" :color-hex "#28CAE7"}
                {:color-text "green" :color-hex "#419C3F"}

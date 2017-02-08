@@ -6,6 +6,8 @@
                                                     cancel-modal-input]]
             [wombats-web-client.constants.colors :refer [colors-8]]))
 
+;; probably want to defonce these and maybe consider combining
+;; them into a single atom, or better yet get them in global db state
 (def wombat-selection (reagent/atom nil))
 (def wombat-color-selection (reagent/atom nil))
 (def wombat-placeholder (reagent/atom nil))
@@ -35,7 +37,9 @@
 
 (defn wombat-options [wombat]
   [:li {:key (:id wombat)
-        :onClick #(on-wombat-selection (:id wombat) (:name wombat))} (:name wombat)])
+        :onClick #(on-wombat-selection (:id wombat)
+                                       (:name wombat))}
+   (:name wombat)])
 
 (defn select-input-with-label []
   (let [my-wombats (re-frame/subscribe [:my-wombats])]
@@ -73,6 +77,7 @@
   (fn []
     [:div {:class "modal join-wombat-modal"}
      [:div.title "JOIN GAME"]
+     ;; if-not
      (if (not (nil? @error)) [:div @error])
      [select-input-with-label]
      [select-wombat-color]
@@ -80,4 +85,8 @@
       [cancel-modal-input clear-local-state]
       [:input.modal-button {:type "button"
                             :value "JOIN"
-                            :on-click #(join-open-game game-id @wombat-selection @wombat-color-selection callback-success callback-error)}]]]))
+                            :on-click #(join-open-game game-id
+                                                       @wombat-selection
+                                                       @wombat-color-selection
+                                                       callback-success
+                                                       callback-error)}]]]))

@@ -16,3 +16,8 @@
 (defn get-current-user-id []
   (let [current-user (re-frame/subscribe [:current-user])]
     (@current-user :id)))
+
+(comment
+  ;; could be written as follow, but thats more style preference
+  (defn get-current-user-id []
+    (:id @(re-frame/subscribe [:current-user]))))
