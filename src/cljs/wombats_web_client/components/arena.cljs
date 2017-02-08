@@ -26,22 +26,50 @@
               width
               height))
 
-(defn- get-wood-barrier
-  [contents meta]
+(defn- draw-meta
+  "Draws generic meta objects"
+  [canvas-element contents meta x y width height]
+  (doseq [{type :type
+           orientation :orientation} meta]
+    (case type
+      :shot
+      (draw-image canvas-element
+                  (case orientation
+                    :n "images/fire_shot/fire_shot_up.png"
+                    :w "images/fire_shot/fire_shot_left.png"
+                    :e "images/fire_shot/fire_shot_right.png"
+                    :s "images/fire_shot/fire_shot_down.png")
+                  x
+                  y
+                  width
+                  height))))
+
+(defn- draw-wood-barrier
+  [canvas-element contents meta x y width height]
   (let [{hp :hp} contents]
-    "images/wood-barrier/woodwall_1.png"))
+    (draw-image canvas-element
+                "images/wood-barrier/woodwall_1.png"
+                x y width height)))
 
-(defn- get-steel-barrier
-  [contents meta]
-  "images/steel-barrier/wall.png")
+(defn- draw-steel-barrier
+  [canvas-element contents meta x y width height]
+  (draw-image canvas-element
+              "images/steel-barrier/wall.png"
+              x y width height))
 
-(defn- get-food
-  [contents meta]
-  "images/food/food_cherry.png")
+(defn- draw-food
+  [canvas-element contents meta x y width height]
+  (draw-image canvas-element
+              "images/food/food_cherry.png"
+              x y width height)
+  (draw-meta canvas-element contents meta x y width height))
 
-(defn- get-poison
-  [contents meta]
-  "images/poison/poison_vial.png")
+(defn- draw-poison
+  [canvas-element contents meta x y width height]
+  (draw-image canvas-element
+              "images/poison/poison_vial.png"
+              x y width height)
+  (draw-meta canvas-element contents meta x y width height))
 
 (defn- draw-zakano
   [canvas-element contents meta x y width height]
@@ -140,36 +168,16 @@
     (case cell-type
 
       :wood-barrier
-      (draw-image canvas-element
-                  (get-wood-barrier contents meta)
-                  x
-                  y
-                  width
-                  height)
+      (draw-wood-barrier canvas-element contents meta x y width height)
 
       :steel-barrier
-      (draw-image canvas-element
-                  (get-steel-barrier contents meta)
-                  x
-                  y
-                  width
-                  height)
+      (draw-steel-barrier canvas-element contents meta x y width height)
 
       :food
-      (draw-image canvas-element
-                  (get-food contents meta)
-                  x
-                  y
-                  width
-                  height)
+      (draw-food canvas-element contents meta x y width height)
 
       :poison
-      (draw-image canvas-element
-                  (get-poison contents meta)
-                  x
-                  y
-                  width
-                  height)
+      (draw-poison canvas-element contents meta x y width height)
 
       :zakano
       (draw-zakano canvas-element contents meta x y width height)
