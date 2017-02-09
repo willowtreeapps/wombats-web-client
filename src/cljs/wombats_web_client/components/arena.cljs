@@ -46,20 +46,36 @@
                   "images/smoke.png"
                   x y width height)
 
+      :explosion
+      (draw-image canvas-element
+                  "images/explosion.png"
+                  x y width height)
+
       (js/console.log type))))
 
 (defn- draw-wood-barrier
   [canvas-element contents meta x y width height]
-  (let [{hp :hp} contents]
+  (let [{deterioration-level :deterioration-level} contents]
     (draw-image canvas-element
-                "images/wood-barrier/woodwall_1.png"
+                (str "images/wood-barrier/woodwall_" 
+                     (case deterioration-level
+                       :high "3"
+                       :medium "2"
+                       "1")
+                     ".png")
                 x y width height)))
 
 (defn- draw-steel-barrier
   [canvas-element contents meta x y width height]
-  (draw-image canvas-element
-              "images/steel-barrier/wall.png"
-              x y width height))
+  (let [{deterioration-level :deterioration-level} contents]
+    (draw-image canvas-element
+                (str "images/steel-barrier/steelwall_"
+                     (case deterioration-level
+                       :high "3"
+                       :medium "2"
+                       "1")
+                     ".png")
+                x y width height)))
 
 (defn- draw-food
   [canvas-element contents meta x y width height]
@@ -104,10 +120,7 @@
         :shot
         (draw-image canvas-element
                     (str "images/zakano/zakano_" direction "_fire.png")
-                    x
-                    y
-                    width
-                    height)
+                    x y width height)
 
         :explosion
         (draw-image canvas-element
