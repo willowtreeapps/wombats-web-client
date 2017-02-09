@@ -39,10 +39,7 @@
                     :w "images/fire_shot/fire_shot_left.png"
                     :e "images/fire_shot/fire_shot_right.png"
                     :s "images/fire_shot/fire_shot_down.png")
-                  x
-                  y
-                  width
-                  height)
+                  x y width height)
 
       :smoke
       (draw-image canvas-element
