@@ -69,11 +69,11 @@
   [canvas-element contents meta x y width height]
   (let [{deterioration-level :deterioration-level} contents]
     (draw-image canvas-element
-                (str "images/steel-barrier/wall"
+                (str "images/steel-barrier/steelwall_"
                      (case deterioration-level
                        :high "3"
                        :medium "2"
-                       "")
+                       "1")
                      ".png")
                 x y width height)))
 
