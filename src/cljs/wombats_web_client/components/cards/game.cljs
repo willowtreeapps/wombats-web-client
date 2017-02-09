@@ -19,7 +19,7 @@
   [:div.arena-freq
    [freq "food/food_cherry"]
    [freq "poison/poison_vial2"]
-   [freq "steel-barrier/wall"]
+   [freq "steel-barrier/steelwall_1"]
    [freq "zakano/zakano_front"]
    [freq "wood-barrier/woodwall_1"]])
 
