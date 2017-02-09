@@ -10,7 +10,11 @@
 (def github-signout-url (str base-api-url "/api/v1/auth/github/signout"))
 (def github-signin-url (str base-api-url "/api/v1/auth/github/signin"))
 
-(def ws-url (str "ws:" base-api-url "/ws/game"))
+(def ws-url (str (case js/window.location.protocol
+                   "https:" "wss:"
+                   "ws:")
+                 base-api-url
+                 "/ws/game"))
 
 (defn my-wombats-url
   [id]
