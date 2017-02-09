@@ -42,7 +42,14 @@
                   x
                   y
                   width
-                  height))))
+                  height)
+
+      :smoke
+      (draw-image canvas-element
+                  "images/smoke.png"
+                  x y width height)
+
+      (js/console.log type))))
 
 (defn- draw-wood-barrier
   [canvas-element contents meta x y width height]
@@ -99,8 +106,18 @@
                     y
                     width
                     height)
-        
-        nil))))
+
+        :explosion
+        (draw-image canvas-element
+                    "images/explosion.png"
+                    x y width height)
+
+        :smoke
+        (draw-image canvas-element
+                    "images/smoke.png"
+                    x y width height)
+
+        (js/console.log type)))))
 
 (defn- draw-wombat
   [canvas-element contents meta x y width height]
@@ -133,7 +150,17 @@
                     width
                     height)
 
-        nil))))
+        :explosion
+        (draw-image canvas-element
+                    "images/explosion.png"
+                    x y width height)
+
+        :smoke
+        (draw-image canvas-element
+                    "images/smoke.png"
+                    x y width height)
+
+        (js/console.log type)))))
 
 (defn- draw-open
   "Draws whatever belongs on an open cell"
