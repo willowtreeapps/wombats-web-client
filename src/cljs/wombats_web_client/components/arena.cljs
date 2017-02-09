@@ -75,6 +75,11 @@
               x y width height)
   (draw-meta canvas-element contents meta x y width height))
 
+(defn- draw-open
+  "Draws whatever belongs on an open cell"
+  [canvas-element contents meta x y width height]
+  (draw-meta canvas-element contents meta x y width height))
+
 (defn- draw-zakano
   [canvas-element contents meta x y width height]
   (let [{orientation :orientation} contents
@@ -158,25 +163,6 @@
                     x y width height)
 
         (js/console.log type)))))
-
-(defn- draw-open
-  "Draws whatever belongs on an open cell"
-  [canvas-element contents meta x y width height]
-  (doseq [{type :type
-           orientation :orientation} meta]
-    (case type
-      :shot
-      (draw-image canvas-element
-                  (case orientation
-                    :n "images/fire_shot/fire_shot_up.png"
-                    :w "images/fire_shot/fire_shot_left.png"
-                    :e "images/fire_shot/fire_shot_right.png"
-                    :s "images/fire_shot/fire_shot_down.png")
-                  x
-                  y
-                  width
-                  height)
-      nil)))
 
 (defn- draw-cell
   "Draw an arena cell on the canvas"
