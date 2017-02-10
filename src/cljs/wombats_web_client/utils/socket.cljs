@@ -38,6 +38,11 @@
   [callback]
   (set! (.-onerror (:socket @socket-state)) callback))
 
+(defn onclose
+  "Set a callback for when the socket closes"
+  [callback]
+  (set! (.-onclose (:socket @socket-state)) callback))
+
 (defn send-message
   "Send data through the socket"
   [message-type data]
@@ -89,4 +94,11 @@
      (event-bus send-message message-type payload metadata)))
 
   (onerror
-   (fn [error] (event-bus send-message :error error))))
+   (fn [error] (event-bus send-message :error error)))
+
+  (onclose
+   (fn [code]
+     ;; TODO Add logging
+     ))
+
+  (:socket @socket-state))
