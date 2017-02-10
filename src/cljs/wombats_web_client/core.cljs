@@ -29,5 +29,6 @@
   (routes/app-routes)
   (re-frame/dispatch-sync [:initialize-db])
   (re-frame/dispatch [:bootstrap-app])
+  (re-frame/dispatch [:get-spritesheet])
   (dev-setup)
   (mount-root))
