@@ -21,4 +21,19 @@
     (event-fn)))
 
 (defn init-ws-connection []
-  (ws/connect message-bus urls/ws-url))
+  (let [socket (ws/connect message-bus urls/ws-url)]
+    (set! (.-gameSocket js/window) socket)))
+
+(defn- socket-polling
+  "Whenever a socket connection is lost, we want to catch that event and
+  reboot the connection process"
+  []
+  (js/setInterval
+   (fn []
+     (let [socket (-> js/window .-gameSocket)
+           ready-state (.-readyState socket)]
+       (when-not (= ready-state 1)
+         (init-ws-connection)))) 2000))
+
+;; Starts the socket polling process
+(socket-polling)
