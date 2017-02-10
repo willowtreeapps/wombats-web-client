@@ -32,8 +32,13 @@
    (fn []
      (let [socket (-> js/window .-gameSocket)
            ready-state (.-readyState socket)]
-       (when-not (= ready-state 1)
-         (init-ws-connection)))) 2000))
+
+       (if-not (= ready-state 1)
+         (init-ws-connection)
+         (ws/send-message
+          :keep-alive
+          {:msg "Whether you're a brother or whether you're a mother, you're stayin' alive, stayin' alive"}))))
+   5000))
 
 ;; Starts the socket polling process
 (socket-polling)
