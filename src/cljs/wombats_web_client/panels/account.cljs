@@ -19,7 +19,7 @@
   (let [my-wombats (re-frame/subscribe [:my-wombats])]
     [:div.account-panel
      [header]
-     [:div.wombats (doall (map wombat-card/root @my-wombats))]
+     [:div.wombats (map wombat-card/root @my-wombats)]
      [add-wombat-button/root (open-add-wombat-modal)]]))
 
 (defn login-prompt []

@@ -150,7 +150,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename></filename>
+                <filename>public/spritesheet.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -196,9 +196,160 @@
             <false/>
         </struct>
         <key>individualSpriteSettings</key>
-        <map type="IndividualSpriteSettingsMap"/>
+        <map type="IndividualSpriteSettingsMap">
+            <key type="filename">spritesheet/background/arena_bg.png</key>
+            <key type="filename">spritesheet/fire_shot/fire_shot_down.png</key>
+            <key type="filename">spritesheet/fire_shot/fire_shot_left.png</key>
+            <key type="filename">spritesheet/fire_shot/fire_shot_right.png</key>
+            <key type="filename">spritesheet/fire_shot/fire_shot_up.png</key>
+            <key type="filename">spritesheet/steel-barrier/steelwall_1.png</key>
+            <key type="filename">spritesheet/steel-barrier/steelwall_2.png</key>
+            <key type="filename">spritesheet/steel-barrier/steelwall_3.png</key>
+            <key type="filename">spritesheet/wood-barrier/woodwall_1.png</key>
+            <key type="filename">spritesheet/wood-barrier/woodwall_2.png</key>
+            <key type="filename">spritesheet/wood-barrier/woodwall_3.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>5,5,10,10</rect>
+                <key>scale9Paddings</key>
+                <rect>5,5,10,10</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">spritesheet/explosion/explosion.png</key>
+            <key type="filename">spritesheet/food/food_blueberry.png</key>
+            <key type="filename">spritesheet/food/food_cherry.png</key>
+            <key type="filename">spritesheet/food/food_grape.png</key>
+            <key type="filename">spritesheet/poison/poison_vial.png</key>
+            <key type="filename">spritesheet/poison/poison_vial2.png</key>
+            <key type="filename">spritesheet/zakano/zakano_back.png</key>
+            <key type="filename">spritesheet/zakano/zakano_back_fire.png</key>
+            <key type="filename">spritesheet/zakano/zakano_front.png</key>
+            <key type="filename">spritesheet/zakano/zakano_front_fire.png</key>
+            <key type="filename">spritesheet/zakano/zakano_left.png</key>
+            <key type="filename">spritesheet/zakano/zakano_left_fire.png</key>
+            <key type="filename">spritesheet/zakano/zakano_right.png</key>
+            <key type="filename">spritesheet/zakano/zakano_right_fire.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>13,13,25,25</rect>
+                <key>scale9Paddings</key>
+                <rect>13,13,25,25</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">spritesheet/smoke/smoke.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>6,6,13,13</rect>
+                <key>scale9Paddings</key>
+                <rect>6,6,13,13</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">spritesheet/wombats/wombat_black_back.png</key>
+            <key type="filename">spritesheet/wombats/wombat_black_back_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_black_front.png</key>
+            <key type="filename">spritesheet/wombats/wombat_black_front_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_black_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_black_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_black_right.png</key>
+            <key type="filename">spritesheet/wombats/wombat_black_right_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_blue.png</key>
+            <key type="filename">spritesheet/wombats/wombat_blue_back.png</key>
+            <key type="filename">spritesheet/wombats/wombat_blue_back_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_blue_front.png</key>
+            <key type="filename">spritesheet/wombats/wombat_blue_front_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_blue_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_blue_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_blue_right.png</key>
+            <key type="filename">spritesheet/wombats/wombat_blue_right_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_green_back.png</key>
+            <key type="filename">spritesheet/wombats/wombat_green_back_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_green_front.png</key>
+            <key type="filename">spritesheet/wombats/wombat_green_front_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_green_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_green_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_green_right.png</key>
+            <key type="filename">spritesheet/wombats/wombat_green_right_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_orange_back.png</key>
+            <key type="filename">spritesheet/wombats/wombat_orange_back_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_orange_front.png</key>
+            <key type="filename">spritesheet/wombats/wombat_orange_front_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_orange_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_orange_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_orange_right.png</key>
+            <key type="filename">spritesheet/wombats/wombat_orange_right_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_purple_back.png</key>
+            <key type="filename">spritesheet/wombats/wombat_purple_back_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_purple_front.png</key>
+            <key type="filename">spritesheet/wombats/wombat_purple_front_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_purple_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_purple_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_purple_right.png</key>
+            <key type="filename">spritesheet/wombats/wombat_purple_right_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_red_back.png</key>
+            <key type="filename">spritesheet/wombats/wombat_red_back_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_red_front.png</key>
+            <key type="filename">spritesheet/wombats/wombat_red_front_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_red_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_red_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_red_right.png</key>
+            <key type="filename">spritesheet/wombats/wombat_red_right_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_white_back.png</key>
+            <key type="filename">spritesheet/wombats/wombat_white_back_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_white_front.png</key>
+            <key type="filename">spritesheet/wombats/wombat_white_front_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_white_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_white_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_white_right.png</key>
+            <key type="filename">spritesheet/wombats/wombat_white_right_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_yellow_back.png</key>
+            <key type="filename">spritesheet/wombats/wombat_yellow_back_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_yellow_front.png</key>
+            <key type="filename">spritesheet/wombats/wombat_yellow_front_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_yellow_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_yellow_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_yellow_right.png</key>
+            <key type="filename">spritesheet/wombats/wombat_yellow_right_fire.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>15,15,30,30</rect>
+                <key>scale9Paddings</key>
+                <rect>15,15,30,30</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+        </map>
         <key>fileList</key>
-        <array/>
+        <array>
+            <filename>spritesheet/background</filename>
+            <filename>spritesheet/explosion</filename>
+            <filename>spritesheet/fire_shot</filename>
+            <filename>spritesheet/food</filename>
+            <filename>spritesheet/poison</filename>
+            <filename>spritesheet/smoke</filename>
+            <filename>spritesheet/steel-barrier</filename>
+            <filename>spritesheet/wombats</filename>
+            <filename>spritesheet/wood-barrier</filename>
+            <filename>spritesheet/zakano</filename>
+        </array>
         <key>ignoreFileList</key>
         <array/>
         <key>replaceList</key>
