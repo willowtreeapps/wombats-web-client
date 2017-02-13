@@ -43,3 +43,7 @@ To compile clojurescript to javascript:
 lein clean
 lein cljsbuild once min
 ```
+
+## Spritesheet
+
+If you want to recreate the spritesheet, you can do so using the free program [TexturePacker](https://www.codeandweb.com/texturepacker). You can add images to [/resources/spritesheet](/resources/spritesheet), and regenerate the spritesheet using [/resources/spritesheet.tps](/resources/spritesheet.tps).

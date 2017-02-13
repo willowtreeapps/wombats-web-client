@@ -3,6 +3,7 @@
               [re-frame.core :as re-frame]
               [re-frisk.core :refer [enable-re-frisk!]]
               [wombats-web-client.events]
+              [wombats-web-client.events.spritesheet :refer [get-spritesheet]]
               [wombats-web-client.subs]
               [wombats-web-client.routes :as routes]
               [wombats-web-client.views :as views]
@@ -29,5 +30,6 @@
   (routes/app-routes)
   (re-frame/dispatch-sync [:initialize-db])
   (re-frame/dispatch [:bootstrap-app])
+  (get-spritesheet)
   (dev-setup)
   (mount-root))

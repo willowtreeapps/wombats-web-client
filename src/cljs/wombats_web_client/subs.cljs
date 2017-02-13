@@ -38,6 +38,11 @@
    (:my-games db)))
 
 (re-frame/reg-sub
+ :join-game-selections
+ (fn [db _]
+   (:join-game-selections db)))
+
+(re-frame/reg-sub
  :game/arena
  (fn [db _]
    (:game/arena db)))
@@ -51,3 +56,8 @@
  :game/stats
  (fn [db _]
    (:game/stats db)))
+
+(re-frame/reg-sub
+ :spritesheet
+ (fn [db _]
+   (:spritesheet db)))

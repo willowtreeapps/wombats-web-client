@@ -14,4 +14,6 @@
    :my-games nil
    :game/arena nil
    :game/messages []
-   :game/stats {}})
+   :game/stats {}
+   :join-game-selections []
+   :spritesheet nil})

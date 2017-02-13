@@ -8,16 +8,16 @@
   (let [my-games (re-frame/subscribe [:my-games])]
     [:div.my-games
      [:ul.my-games-list 
-      (doall (for [game @my-games]
-               ^{:key (:game/id game)} [game-card game false]))]]))
+      (for [game @my-games]
+          ^{:key (:game/id game)} [game-card game false])]]))
 
 (defn login-prompt []
   (fn []
-    [:div (str "You must login to see your games.")]))
+    [:div "You must login to see your games."]))
 
 (defn my-games []
   (let [current-user (re-frame/subscribe [:current-user])]
     (fn []
-      (if (nil? @current-user)
-        [login-prompt] 
+      (if-not @current-user
+        [login-prompt]
         [welcome]))))

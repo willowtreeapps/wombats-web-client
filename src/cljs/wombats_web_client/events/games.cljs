@@ -66,6 +66,11 @@
  (fn [db [_ my-games]]
    (assoc db :my-games my-games)))
 
+(re-frame/reg-event-db
+ :add-join-selection 
+ (fn [db [_ sel]]
+   (update db :join-game-selections (fn [selections] (conj selections sel)))))
+
 (re-frame/reg-fx
  :get-open-games
  (fn [_]

@@ -5,42 +5,38 @@
             [wombats-web-client.utils.forms :refer [text-input-with-label
                                                     cancel-modal-input]]))
 
-(def wombat-name (reagent/atom nil))
-(def wombat-url (reagent/atom nil))
-(def error (reagent/atom nil))
-
-(defn reset-state []
-  (reset! wombat-name nil)
-  (reset! wombat-url nil)
-  (reset! error nil))
-
-(defn callback-success []
+(defn callback-success [state]
   "closes modal on success"
-  (reset! error nil)
+  (swap! state assoc :error nil)
   (re-frame/dispatch [:set-modal nil]))
 
-(defn callback-error []
+(defn callback-error [state]
   "says error, persists modal"
-  (reset! error "ERROR"))
+  (swap! state assoc :error "ERROR"))
 
 (defn add-wombat-modal []
-  (fn []
-    [:div {:class "modal add-wombat-modal"}
-     [:div.title "ADD WOMBAT"]
-     (if (not (nil? @error)) [:div @error])
-     [:form
-      [text-input-with-label {:name "wombat-name" 
-                              :label "Wombat Name"
-                              :local-state-value wombat-name}]
-      [text-input-with-label {:name "wombat-url"
-                              :label "Wombat URL"
-                              :local-state-value wombat-url}]
-      [:div.action-buttons
-       [cancel-modal-input reset-state]
-       [:input.modal-button {:type "button"
-                             :value "ADD"
-                             :on-click #(create-new-wombat 
-                                         @wombat-name 
-                                         @wombat-url 
-                                         callback-success 
-                                         callback-error)}]]]]))
+  (let [cmpnt-state (reagent/atom {:wombat-name nil
+                                   :wombat-url nil
+                                   :error nil})]
+    (fn []
+      (let [{:keys [error wombat-name wombat-url]} @cmpnt-state]
+        [:div {:class "modal add-wombat-modal"}
+         [:div.title "ADD WOMBAT"]
+         (when error [:div error])
+         [:form
+          [text-input-with-label {:name "wombat-name"
+                                  :label "Wombat Name"
+                                  :state cmpnt-state}]
+          [text-input-with-label {:name "wombat-url"
+                                  :label "Wombat URL"
+                                  :state cmpnt-state}]
+          [:div.action-buttons
+           [cancel-modal-input]
+           [:input.modal-button {:type "button"
+                                 :value "ADD"
+                                 :on-click (fn []
+                                             (create-new-wombat
+                                              wombat-name
+                                              wombat-url
+                                              #(callback-success cmpnt-state)
+                                              #(callback-error cmpnt-state)))}]]]]))))
