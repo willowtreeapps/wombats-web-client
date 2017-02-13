@@ -58,7 +58,7 @@
                      :style {:background color-hex
                              :opacity "0.8"}}
       [:img {:src "/images/checkmark.svg"}]]
-     [:img {:src (str "/images/wombats/wombat_" color-text "_right.png")
+     [:img {:src (str "/images/wombat_" color-text "_right.png")
             :onClick #(reset! wombat-color-selection color-text)}]]))
 
 (defn select-wombat-color []
