@@ -11,7 +11,7 @@
     (re-frame/dispatch [:set-modal add-wombat-modal])))
 
 (defn header []
-  [:div.header 
+  [:div.header
      [:div.title "MY WOMBATS"]
      [:div.logout [:a {:href "#/signout"} "LOG OUT"]]])
 
@@ -23,11 +23,13 @@
      [add-wombat-button/root (open-add-wombat-modal)]]))
 
 (defn login-prompt []
+  ;; not str
   [:div (str "You must login to see your account.")])
 
 (defn account []
   (let [current-user (re-frame/subscribe [:current-user])]
     (fn []
+      ;; if-not
       (if (nil? @current-user)
         [login-prompt]
         [welcome]))))

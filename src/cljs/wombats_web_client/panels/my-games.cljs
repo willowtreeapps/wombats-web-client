@@ -7,7 +7,8 @@
 (defn welcome []
   (let [my-games (re-frame/subscribe [:my-games])]
     [:div.my-games
-     [:ul.my-games-list 
+     [:ul.my-games-list
+      ;; doseq
       (doall (for [game @my-games]
                ^{:key (:game/id game)} [game-card game false]))]]))
 
@@ -18,6 +19,7 @@
 (defn my-games []
   (let [current-user (re-frame/subscribe [:current-user])]
     (fn []
+      ;; if-not
       (if (nil? @current-user)
-        [login-prompt] 
+        [login-prompt]
         [welcome]))))

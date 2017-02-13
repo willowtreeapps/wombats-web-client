@@ -15,16 +15,20 @@
   (let [open-games (re-frame/subscribe [:open-games])]
     [:div.open-games
      [temp-poll-button]
-     [:ul.open-games-list 
+     [:ul.open-games-list
+      ;; probably want to use doseq here
+      ;; http://stackoverflow.com/questions/25327369/what-is-the-difference-among-the-functions-doall-dorun-doseq-and-for#answer-25330241
       (doall (for [game @open-games]
                ^{:key (:game/id game)} [game-card game true]))]]))
 
 (defn login-prompt []
+  ;; Dont think you need str here unless you want to interpolate
   [:div (str "You must login to see open games.")])
 
 (defn open-games []
   (let [current-user (re-frame/subscribe [:current-user])]
     (fn []
+      ;; if-not
       (if (nil? @current-user)
         [login-prompt]
         [panel]))))

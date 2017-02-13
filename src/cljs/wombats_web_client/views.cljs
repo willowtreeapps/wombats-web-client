@@ -1,6 +1,6 @@
 (ns wombats-web-client.views
     (:require [re-frame.core :as re-frame]
-              
+
               ;; Components
               [wombats-web-client.components.navbar :as navbar]
 
@@ -25,11 +25,21 @@
 
 (defn display-overlay
   [modal-form]
+  ;; when-not would be good here
   (if (not (nil? modal-form)) [:div.overlay]))
 
 (defn display-modal
   [modal-form]
+  ;; when-not
   (if (not (nil? modal-form)) [modal-form]))
+
+(comment
+  (defn display-modal
+    [modal]
+    (when modal
+      [:div {:class-name "modal-container"}
+       [:div {:class-name "modal-overlay"}]
+       [modal]])))
 
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])
@@ -37,6 +47,8 @@
     (fn []
       (let [current-modal @modal]
         [:div.app-container
+         ;; Maybe one modal render component?
+         ;; [display-modal current-modal]
          [display-overlay current-modal]
          [display-modal current-modal]
          [navbar/root]
