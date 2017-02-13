@@ -26,7 +26,7 @@
 
      ;; Load user from localstorage
      (when (get-item token)
-          (load-user)))
+       (load-user)))
 
    (assoc db :bootstrapping? true)))
 

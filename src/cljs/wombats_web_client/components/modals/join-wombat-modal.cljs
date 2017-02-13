@@ -16,7 +16,6 @@
 
 (def callback-error (fn [cmpnt-state]
                       "says error, persists modal"
-                      (print "error")
                       (swap! cmpnt-state assoc :error "ERROR")))
 
 (defn on-wombat-selection [cmpnt-state id name]
@@ -37,8 +36,8 @@
     [:div.select-wombat
      [:div.placeholder
       {:onClick #(swap! cmpnt-state assoc :show-dropdown (not show-dropdown))}
-      [:div.text {:class (when (nil? wombat-name) "unselected")}
-       (str (if (nil? wombat-name) "Select Wombat" wombat-name))]
+      [:div.text {:class (when-not wombat-name "unselected")}
+       (str (if-not wombat-name "Select Wombat" wombat-name))]
       [:img.icon-arrow {:class (when show-dropdown "open-dropdown")
                         :src "/images/icon-arrow.svg"}]]
      (when show-dropdown
@@ -86,7 +85,7 @@
             wombat-color (get @cmpnt-state :wombat-color)]
         [:div {:class "modal join-wombat-modal"} ;; starts hiccup
          [:div.title "JOIN GAME"]
-         (if (not (nil? error)) [:div error])
+         (if error [:div error])
          [select-input-with-label cmpnt-state]
          [select-wombat-color cmpnt-state wombat-color]
          [:div.action-buttons

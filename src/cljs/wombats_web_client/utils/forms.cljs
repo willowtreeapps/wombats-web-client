@@ -7,11 +7,11 @@
    [:label.label {:for name} label]
    [:input.input {:type "text"
                   :name name
-                  :value (when (not (nil? @local-state-value)) @local-state-value)
+                  :value (when @local-state-value @local-state-value)
                   :on-change #(reset! local-state-value (-> % .-target .-value))}]])
 
 (defn cancel-modal-input []
   [:input.modal-button {:type "button"
                                :value "CANCEL"
-                        :on-click (fn [] 
+                        :on-click (fn []
                                     (re-frame/dispatch [:set-modal nil]))}])

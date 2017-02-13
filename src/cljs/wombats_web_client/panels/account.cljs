@@ -11,23 +11,23 @@
     (re-frame/dispatch [:set-modal add-wombat-modal])))
 
 (defn header []
-  [:div.header 
+  [:div.header
      [:div.title "MY WOMBATS"]
      [:div.logout [:a {:href "#/signout"} "LOG OUT"]]])
 
 (defn welcome []
-  (let [my-wombats (re-frame/subscribe [:my-wombats])]
+  (let [my-wombats @(re-frame/subscribe [:my-wombats])]
     [:div.account-panel
      [header]
-     [:div.wombats (map wombat-card/root @my-wombats)]
+     [:div.wombats (map wombat-card/root my-wombats)]
      [add-wombat-button/root (open-add-wombat-modal)]]))
 
 (defn login-prompt []
-  [:div (str "You must login to see your account.")])
+  [:div "You must login to see your account."])
 
 (defn account []
-  (let [current-user (re-frame/subscribe [:current-user])]
+  (let [current-user @(re-frame/subscribe [:current-user])]
     (fn []
-      (if (nil? @current-user)
+      (if-not current-user
         [login-prompt]
         [welcome]))))
