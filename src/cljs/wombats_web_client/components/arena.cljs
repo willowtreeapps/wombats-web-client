@@ -27,16 +27,32 @@
   [canvas-element x y width height]
   (draw-image canvas-element
               "arena_bg.png"
-              x
-              y
-              width
-              height))
+              x y width height))
+
+(defn- meta-value
+  "Gets a score for a meta type for sorting draw level"
+  [meta]
+  (case (:type meta)
+    :shot      1
+    :explosion 2
+    :smoke     3
+    0))
+
+(defn- sort-meta
+  "This sorts meta according to draw order"
+  [meta]
+  (sort #(let [val1 (meta-value %1)
+               val2 (meta-value %2)]
+           (cond 
+             (< val1 val2) -1
+             (> val1 val2) 1
+             :else 0)) meta))
 
 (defn- draw-meta
   "Draws generic meta objects"
   [canvas-element contents meta x y width height]
   (doseq [{type :type
-           orientation :orientation} meta]
+           orientation :orientation} (sort-meta meta)]
     (case type
       :shot
       (draw-image canvas-element
@@ -69,7 +85,8 @@
                        :medium "2"
                        "1")
                      ".png")
-                x y width height)))
+                x y width height)
+    (draw-meta canvas-element contents meta x y width height)))
 
 (defn- draw-steel-barrier
   [canvas-element contents meta x y width height]
@@ -81,7 +98,8 @@
                        :medium "2"
                        "1")
                      ".png")
-                x y width height)))
+                x y width height)
+    (draw-meta canvas-element contents meta x y width height)))
 
 (defn- draw-food
   [canvas-element contents meta x y width height]
@@ -114,13 +132,10 @@
     ;; Always draw the base zakano
     (draw-image canvas-element
                 (str "zakano_" direction ".png")
-                x
-                y
-                width
-                height)
+                x y width height)
 
     ;; See if we need to add any meta to the zakano
-    (doseq [{type :type} meta]
+    (doseq [{type :type} (sort-meta meta)]
 
       (case type
         :shot
@@ -160,7 +175,7 @@
                 height)
 
     ;; See if we need to add any meta to the wombat
-    (doseq [{type :type} meta]
+    (doseq [{type :type} (sort-meta meta)]
 
       (case type
         :shot
