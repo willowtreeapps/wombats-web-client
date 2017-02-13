@@ -36,7 +36,7 @@
         <key>dataFormat</key>
         <string>json</string>
         <key>textureFileName</key>
-        <filename></filename>
+        <filename>public/images/spritesheet.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -198,10 +198,7 @@
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
             <key type="filename">spritesheet/background/arena_bg.png</key>
-            <key type="filename">spritesheet/fire_shot/fire_shot_down.png</key>
-            <key type="filename">spritesheet/fire_shot/fire_shot_left.png</key>
             <key type="filename">spritesheet/fire_shot/fire_shot_right.png</key>
-            <key type="filename">spritesheet/fire_shot/fire_shot_up.png</key>
             <key type="filename">spritesheet/steel-barrier/steelwall_1.png</key>
             <key type="filename">spritesheet/steel-barrier/steelwall_2.png</key>
             <key type="filename">spritesheet/steel-barrier/steelwall_3.png</key>
@@ -221,17 +218,12 @@
                 <false/>
             </struct>
             <key type="filename">spritesheet/explosion/explosion.png</key>
-            <key type="filename">spritesheet/food/food_blueberry.png</key>
             <key type="filename">spritesheet/food/food_cherry.png</key>
-            <key type="filename">spritesheet/food/food_grape.png</key>
-            <key type="filename">spritesheet/poison/poison_vial.png</key>
             <key type="filename">spritesheet/poison/poison_vial2.png</key>
             <key type="filename">spritesheet/zakano/zakano_back.png</key>
             <key type="filename">spritesheet/zakano/zakano_back_fire.png</key>
             <key type="filename">spritesheet/zakano/zakano_front.png</key>
             <key type="filename">spritesheet/zakano/zakano_front_fire.png</key>
-            <key type="filename">spritesheet/zakano/zakano_left.png</key>
-            <key type="filename">spritesheet/zakano/zakano_left_fire.png</key>
             <key type="filename">spritesheet/zakano/zakano_right.png</key>
             <key type="filename">spritesheet/zakano/zakano_right_fire.png</key>
             <struct type="IndividualSpriteSettings">
@@ -263,65 +255,48 @@
             <key type="filename">spritesheet/wombats/wombat_black_back_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_black_front.png</key>
             <key type="filename">spritesheet/wombats/wombat_black_front_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_black_left.png</key>
-            <key type="filename">spritesheet/wombats/wombat_black_left_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_black_right.png</key>
             <key type="filename">spritesheet/wombats/wombat_black_right_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_blue.png</key>
             <key type="filename">spritesheet/wombats/wombat_blue_back.png</key>
             <key type="filename">spritesheet/wombats/wombat_blue_back_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_blue_front.png</key>
             <key type="filename">spritesheet/wombats/wombat_blue_front_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_blue_left.png</key>
-            <key type="filename">spritesheet/wombats/wombat_blue_left_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_blue_right.png</key>
             <key type="filename">spritesheet/wombats/wombat_blue_right_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_green_back.png</key>
             <key type="filename">spritesheet/wombats/wombat_green_back_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_green_front.png</key>
             <key type="filename">spritesheet/wombats/wombat_green_front_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_green_left.png</key>
-            <key type="filename">spritesheet/wombats/wombat_green_left_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_green_right.png</key>
             <key type="filename">spritesheet/wombats/wombat_green_right_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_orange_back.png</key>
             <key type="filename">spritesheet/wombats/wombat_orange_back_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_orange_front.png</key>
             <key type="filename">spritesheet/wombats/wombat_orange_front_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_orange_left.png</key>
-            <key type="filename">spritesheet/wombats/wombat_orange_left_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_orange_right.png</key>
             <key type="filename">spritesheet/wombats/wombat_orange_right_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_purple_back.png</key>
             <key type="filename">spritesheet/wombats/wombat_purple_back_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_purple_front.png</key>
             <key type="filename">spritesheet/wombats/wombat_purple_front_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_purple_left.png</key>
-            <key type="filename">spritesheet/wombats/wombat_purple_left_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_purple_right.png</key>
             <key type="filename">spritesheet/wombats/wombat_purple_right_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_red_back.png</key>
             <key type="filename">spritesheet/wombats/wombat_red_back_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_red_front.png</key>
             <key type="filename">spritesheet/wombats/wombat_red_front_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_red_left.png</key>
-            <key type="filename">spritesheet/wombats/wombat_red_left_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_red_right.png</key>
             <key type="filename">spritesheet/wombats/wombat_red_right_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_white_back.png</key>
             <key type="filename">spritesheet/wombats/wombat_white_back_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_white_front.png</key>
             <key type="filename">spritesheet/wombats/wombat_white_front_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_white_left.png</key>
-            <key type="filename">spritesheet/wombats/wombat_white_left_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_white_right.png</key>
             <key type="filename">spritesheet/wombats/wombat_white_right_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_yellow_back.png</key>
             <key type="filename">spritesheet/wombats/wombat_yellow_back_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_yellow_front.png</key>
             <key type="filename">spritesheet/wombats/wombat_yellow_front_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_yellow_left.png</key>
-            <key type="filename">spritesheet/wombats/wombat_yellow_left_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_yellow_right.png</key>
             <key type="filename">spritesheet/wombats/wombat_yellow_right_fire.png</key>
             <struct type="IndividualSpriteSettings">

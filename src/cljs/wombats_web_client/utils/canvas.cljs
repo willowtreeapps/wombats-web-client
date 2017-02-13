@@ -15,12 +15,31 @@
 
 (defn draw-image
   "Draws an image at a certain coordinate
-   w/ source/destination attributes"
-  [canvas image sx sy swidth sheight dx dy dwidth dheight]
-  (.drawImage (context canvas)
-              image
-              sx sy swidth sheight
-              dx dy dwidth dheight))
+  w/ source/destination attributes"
+  ([canvas image sx sy swidth sheight dx dy dwidth dheight]
+    (.drawImage (context canvas)
+                image
+                sx sy swidth sheight
+                dx dy dwidth dheight))
+
+  ([canvas image sx sy swidth sheight dx dy dwidth dheight degreeRotation]
+    (if (= degreeRotation 0)
+      (draw-image canvas image sx sy swidth sheight dx dy dwidth dheight)
+
+      (let [rotationRadians (/ (* js/Math.PI degreeRotation) 180)
+            ctx (context canvas)]
+
+        (.save ctx)
+        (.translate ctx dx dy)
+        (.translate ctx (/ dwidth 2) (/ dheight 2))
+        (.rotate ctx rotationRadians)
+
+        (.drawImage ctx
+                    image
+                    sx sy swidth sheight
+                    (/ dwidth -2) (/ dheight -2) dwidth dheight)
+
+        (.restore ctx)))))
 
 (defn width
   "Gets the width of a canvas element"

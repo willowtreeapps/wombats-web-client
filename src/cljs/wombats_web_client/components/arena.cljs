@@ -3,7 +3,7 @@
             [wombats-web-client.utils.canvas :as canvas]))
 
 (defn- draw-image
-  [canvas-element img-name x y width height]
+  [canvas-element img-name x y width height rotation]
   (let [spritesheet (re-frame/subscribe [:spritesheet])
         sprite-info (get @spritesheet (keyword img-name))
         frame (:frame sprite-info)]
@@ -17,17 +17,18 @@
                                                                (:y frame)
                                                                (:w frame)
                                                                (:h frame)
-                                                               x 
-                                                               y 
-                                                               width 
-                                                               height)))))))
+                                                               x
+                                                               y
+                                                               width
+                                                               height
+                                                               rotation)))))))
 
 (defn- draw-background
   "This draws the background of a cell (only called for cells that need it)"
   [canvas-element x y width height]
   (draw-image canvas-element
               "arena_bg.png"
-              x y width height))
+              x y width height 0))
 
 (defn- meta-value
   "Gets a score for a meta type for sorting draw level"
@@ -43,7 +44,7 @@
   [meta]
   (sort #(let [val1 (meta-value %1)
                val2 (meta-value %2)]
-           (cond 
+           (cond
              (< val1 val2) -1
              (> val1 val2) 1
              :else 0)) meta))
@@ -56,22 +57,22 @@
     (case type
       :shot
       (draw-image canvas-element
-                  (case orientation
-                    :n "fire_shot_up.png"
-                    :w "fire_shot_left.png"
-                    :e "fire_shot_right.png"
-                    :s "fire_shot_down.png")
-                  x y width height)
+                  "fire_shot_right.png"
+                  x y width height (case orientation
+                    :n 270
+                    :w 180
+                    :s 90
+                    0))
 
       :smoke
       (draw-image canvas-element
                   "smoke.png"
-                  x y width height)
+                  x y width height 0)
 
       :explosion
       (draw-image canvas-element
                   "explosion.png"
-                  x y width height)
+                  x y width height 0)
 
       (js/console.log type))))
 
@@ -85,7 +86,7 @@
                        :medium "2"
                        "1")
                      ".png")
-                x y width height)
+                x y width height 0)
     (draw-meta canvas-element contents meta x y width height)))
 
 (defn- draw-steel-barrier
@@ -98,21 +99,21 @@
                        :medium "2"
                        "1")
                      ".png")
-                x y width height)
+                x y width height 0)
     (draw-meta canvas-element contents meta x y width height)))
 
 (defn- draw-food
   [canvas-element contents meta x y width height]
   (draw-image canvas-element
               "food_cherry.png"
-              x y width height)
+              x y width height 0)
   (draw-meta canvas-element contents meta x y width height))
 
 (defn- draw-poison
   [canvas-element contents meta x y width height]
   (draw-image canvas-element
-              "poison_vial.png"
-              x y width height)
+              "poison_vial_2.png"
+              x y width height 0)
   (draw-meta canvas-element contents meta x y width height))
 
 (defn- draw-open
@@ -126,13 +127,14 @@
         direction (case orientation
                     :s "front"
                     :n "back"
-                    :w "left"
-                    :e "right")]
+                    "right")]
 
     ;; Always draw the base zakano
     (draw-image canvas-element
                 (str "zakano_" direction ".png")
-                x y width height)
+                x y width height (case orientation
+                  :w 180
+                  0))
 
     ;; See if we need to add any meta to the zakano
     (doseq [{type :type} (sort-meta meta)]
@@ -141,17 +143,19 @@
         :shot
         (draw-image canvas-element
                     (str "zakano_" direction "_fire.png")
-                    x y width height)
+                    x y width height (case orientation
+                      :w 180
+                      0))
 
         :explosion
         (draw-image canvas-element
                     "explosion.png"
-                    x y width height)
+                    x y width height 0)
 
         :smoke
         (draw-image canvas-element
                     "smoke.png"
-                    x y width height)
+                    x y width height 0)
 
         (js/console.log type)))))
 
@@ -163,8 +167,7 @@
         direction (case orientation
                     :s "front"
                     :n "back"
-                    :w "left"
-                    :e "right")]
+                    "right")]
 
     ;; Always draw the base wombat
     (draw-image canvas-element
@@ -172,7 +175,10 @@
                 x
                 y
                 width
-                height)
+                height
+                (case orientation
+                  :w 180
+                  0))
 
     ;; See if we need to add any meta to the wombat
     (doseq [{type :type} (sort-meta meta)]
@@ -184,17 +190,20 @@
                     x
                     y
                     width
-                    height)
+                    height
+                    (case orientation
+                      :w 180
+                      0))
 
         :explosion
         (draw-image canvas-element
                     "explosion.png"
-                    x y width height)
+                    x y width height 0)
 
         :smoke
         (draw-image canvas-element
                     "smoke.png"
-                    x y width height)
+                    x y width height 0)
 
         (js/console.log type)))))
 
