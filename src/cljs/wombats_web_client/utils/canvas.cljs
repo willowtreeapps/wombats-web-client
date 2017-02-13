@@ -15,50 +15,52 @@
 
 (defn draw-image
   "Draws an image at a certain coordinate
-  w/ source/destination attributes"
-  [canvas image sx sy swidth sheight dx dy dwidth dheight]
-    (.drawImage (context canvas)
-                image
-                sx sy swidth sheight
-                dx dy dwidth dheight))
+  w/ source and destination attributes"
+  ([canvas image sx sy swidth sheight dx dy dwidth dheight]
+   (.drawImage (context canvas)
+               image
+               sx sy swidth sheight
+               dx dy dwidth dheight))
+
+  ([canvas image sx sy swidth sheight dx dy dwidth dheight transforms]
+   (let [ctx (context canvas)]
+     (.save ctx)
+     (transforms ctx)
+     
+     (.drawImage ctx
+                 image
+                 sx sy swidth sheight
+                 dx dy dwidth dheight)
+     
+     (.restore ctx))))
 
 (defn draw-image-flipped-horizontally
   "Same as draw-image but you flip the image before drawing it"
   [canvas image sx sy swidth sheight dx dy dwidth dheight]
-    (let [ctx (context canvas)]
-      (.save ctx)
-
-      (.translate ctx dx dy)
-      (.translate ctx dwidth 0)
-      (.scale ctx -1 1)
-
-      (.drawImage ctx
-                  image
-                  sx sy swidth sheight
-                  0 0 dwidth dheight)
-
-      (.restore ctx)))
+  (draw-image canvas image
+              sx sy swidth sheight
+              0 0 dwidth dheight
+              (fn [ctx]
+                (.translate ctx dx dy)
+                (.translate ctx dwidth 0)
+                (.scale ctx -1 1))))
 
 (defn draw-image-rotated
-  "Same as draw-image but you can rotate the drawn image"
+  "Same as draw-image but you can rotate the image before drawing it"
   [canvas image sx sy swidth sheight dx dy dwidth dheight degreeRotation]
     (if (= degreeRotation 0)
-      (draw-image canvas image sx sy swidth sheight dx dy dwidth dheight)
+      (draw-image canvas image
+                  sx sy swidth sheight 
+                  dx dy dwidth dheight)
 
-      (let [rotationRadians (/ (* js/Math.PI degreeRotation) 180)
-            ctx (context canvas)]
-
-        (.save ctx)
-        (.translate ctx dx dy)
-        (.translate ctx (/ dwidth 2) (/ dheight 2))
-        (.rotate ctx rotationRadians)
-
-        (.drawImage ctx
-                    image
+      (let [radians (/ (* js/Math.PI degreeRotation) 180)]
+        (draw-image canvas image
                     sx sy swidth sheight
-                    (/ dwidth -2) (/ dheight -2) dwidth dheight)
-
-        (.restore ctx))))
+                    (/ dwidth -2) (/ dheight -2) dwidth dheight
+                    (fn [ctx]
+                      (.translate ctx dx dy)
+                      (.translate ctx (/ dwidth 2) (/ dheight 2))
+                      (.rotate ctx radians))))))
 
 (defn width
   "Gets the width of a canvas element"
