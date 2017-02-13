@@ -20,9 +20,3 @@
  :update-spritesheet
  (fn [db [_ spritesheet]]
    (assoc db :spritesheet (:frames spritesheet))))
-
-(re-frame/reg-event-fx
- :get-spritesheet
- (fn [_] 
-   (get-spritesheet)
-   nil))
