@@ -4,67 +4,61 @@
 
 (defonce spritesheet-png "/images/spritesheet.png")
 
-(defn- draw-image
-  [canvas-element img-name x y width height]
+(defn subscribe-to-spritesheet
+  [img-name callback]
   (let [spritesheet (re-frame/subscribe [:spritesheet])
         sprite-info (get @spritesheet (keyword img-name))
         frame (:frame sprite-info)]
-    (when-not (nil? frame)
+    (when frame
       (let [img (js/Image.)]
         (set! (.-src img) spritesheet-png)
-        (.requestAnimationFrame js/window
-                                (fn []
-                                  (canvas/draw-image canvas-element
-                                                     img
-                                                     (:x frame)
-                                                     (:y frame)
-                                                     (:w frame)
-                                                     (:h frame)
-                                                     x
-                                                     y
-                                                     width
-                                                     height)))))))
+        (.requestAnimationFrame js/window 
+                                (fn [] 
+                                  (callback img frame)))))))
+
+(defn- draw-image
+  [canvas-element img-name x y width height]
+  (subscribe-to-spritesheet img-name 
+                            (fn [img frame]
+                              (canvas/draw-image canvas-element
+                                                 img
+                                                 (:x frame)
+                                                 (:y frame)
+                                                 (:w frame)
+                                                 (:h frame)
+                                                 x
+                                                 y
+                                                 width
+                                                 height))))
 
 (defn- draw-image-rotated
   [canvas-element img-name x y width height rotation]
-  (let [spritesheet (re-frame/subscribe [:spritesheet])
-        sprite-info (get @spritesheet (keyword img-name))
-        frame (:frame sprite-info)]
-    (when-not (nil? frame)
-      (let [img (js/Image.)]
-        (set! (.-src img) spritesheet-png)
-        (.requestAnimationFrame js/window
-                                (fn []
-                                  (canvas/draw-image-rotated canvas-element
-                                                             img
-                                                             (:x frame)
-                                                             (:y frame)
-                                                             (:w frame)
-                                                             (:h frame)
-                                                             x y
-                                                             width
-                                                             height
-                                                             rotation)))))))
+  (subscribe-to-spritesheet img-name
+                            (fn [img frame]
+                              (canvas/draw-image-rotated canvas-element
+                                                         img
+                                                         (:x frame)
+                                                         (:y frame)
+                                                         (:w frame)
+                                                         (:h frame)
+                                                         x y
+                                                         width
+                                                         height
+                                                         rotation))))
 
 (defn- draw-image-flipped-horizontally
   [canvas-element img-name x y width height]
-  (let [spritesheet (re-frame/subscribe [:spritesheet])
-        sprite-info (get @spritesheet (keyword img-name))
-        frame (:frame sprite-info)]
-    (when-not (nil? frame)
-      (let [img (js/Image.)]
-        (set! (.-src img) spritesheet-png)
-        (.requestAnimationFrame js/window
-                                (fn []
-                                  (canvas/draw-image-flipped-horizontally canvas-element
-                                                                          img
-                                                                          (:x frame)
-                                                                          (:y frame)
-                                                                          (:w frame)
-                                                                          (:h frame)
-                                                                          x y
-                                                                          width
-                                                                          height)))))))
+  (subscribe-to-spritesheet img-name
+                            (fn [img frame]
+                              (canvas/draw-image-flipped-horizontally canvas-element
+                                                                      img
+                                                                      (:x frame)
+                                                                      (:y frame)
+                                                                      (:w frame)
+                                                                      (:h frame)
+                                                                      x y
+                                                                      width
+                                                                      height))))
 
 (defn- draw-background
   "This draws the background of a cell (only called for cells that need it)"
