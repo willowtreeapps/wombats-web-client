@@ -3,32 +3,43 @@
             [wombats-web-client.utils.canvas :as canvas]))
 
 (defn- draw-image
-  [canvas-element img-name x y width height rotation]
+  [canvas-element img-name x y width height rotation flipped]
   (let [spritesheet (re-frame/subscribe [:spritesheet])
         sprite-info (get @spritesheet (keyword img-name))
         frame (:frame sprite-info)]
     (when-not (nil? frame)
       (let [img (js/Image.)]
         (set! (.-src img) "/images/spritesheet.png")
-        (.requestAnimationFrame js/window (fn []
-                                            (canvas/draw-image canvas-element
+        (.requestAnimationFrame js/window
+                                (fn []
+                                  (if flipped
+                                    (canvas/draw-image-flipped-horizontally canvas-element
+                                                                            img
+                                                                            (:x frame)
+                                                                            (:y frame)
+                                                                            (:w frame)
+                                                                            (:h frame)
+                                                                            x y
+                                                                            width
+                                                                            height)
+
+                                    (canvas/draw-image-rotated canvas-element
                                                                img
                                                                (:x frame)
                                                                (:y frame)
                                                                (:w frame)
                                                                (:h frame)
-                                                               x
-                                                               y
+                                                               x y
                                                                width
                                                                height
-                                                               rotation)))))))
+                                                               rotation))))))))
 
 (defn- draw-background
   "This draws the background of a cell (only called for cells that need it)"
   [canvas-element x y width height]
   (draw-image canvas-element
               "arena_bg.png"
-              x y width height 0))
+              x y width height 0 false))
 
 (defn- meta-value
   "Gets a score for a meta type for sorting draw level"
@@ -58,21 +69,23 @@
       :shot
       (draw-image canvas-element
                   "fire_shot_right.png"
-                  x y width height (case orientation
+                  x y width height
+                  (case orientation
                     :n 270
                     :w 180
                     :s 90
-                    0))
+                    0)
+                  false)
 
       :smoke
       (draw-image canvas-element
                   "smoke.png"
-                  x y width height 0)
+                  x y width height 0 false)
 
       :explosion
       (draw-image canvas-element
                   "explosion.png"
-                  x y width height 0)
+                  x y width height 0 false)
 
       (js/console.log type))))
 
@@ -86,7 +99,7 @@
                        :medium "2"
                        "1")
                      ".png")
-                x y width height 0)
+                x y width height 0 false)
     (draw-meta canvas-element contents meta x y width height)))
 
 (defn- draw-steel-barrier
@@ -99,21 +112,21 @@
                        :medium "2"
                        "1")
                      ".png")
-                x y width height 0)
+                x y width height 0 false)
     (draw-meta canvas-element contents meta x y width height)))
 
 (defn- draw-food
   [canvas-element contents meta x y width height]
   (draw-image canvas-element
               "food_cherry.png"
-              x y width height 0)
+              x y width height 0 false)
   (draw-meta canvas-element contents meta x y width height))
 
 (defn- draw-poison
   [canvas-element contents meta x y width height]
   (draw-image canvas-element
               "poison_vial_2.png"
-              x y width height 0)
+              x y width height 0 false)
   (draw-meta canvas-element contents meta x y width height))
 
 (defn- draw-open
@@ -127,14 +140,14 @@
         direction (case orientation
                     :s "front"
                     :n "back"
-                    "right")]
+                    "right")
+        flipped (= orientation :w)]
 
     ;; Always draw the base zakano
     (draw-image canvas-element
                 (str "zakano_" direction ".png")
-                x y width height (case orientation
-                  :w 180
-                  0))
+                x y width height 0
+                flipped)
 
     ;; See if we need to add any meta to the zakano
     (doseq [{type :type} (sort-meta meta)]
@@ -143,19 +156,18 @@
         :shot
         (draw-image canvas-element
                     (str "zakano_" direction "_fire.png")
-                    x y width height (case orientation
-                      :w 180
-                      0))
+                    x y width height 0
+                    flipped)
 
         :explosion
         (draw-image canvas-element
                     "explosion.png"
-                    x y width height 0)
+                    x y width height 0 false)
 
         :smoke
         (draw-image canvas-element
                     "smoke.png"
-                    x y width height 0)
+                    x y width height 0 false)
 
         (js/console.log type)))))
 
@@ -167,18 +179,14 @@
         direction (case orientation
                     :s "front"
                     :n "back"
-                    "right")]
+                    "right")
+        flipped (= orientation :w)]
 
     ;; Always draw the base wombat
     (draw-image canvas-element
                 (str "wombat_" color "_" direction ".png")
-                x
-                y
-                width
-                height
-                (case orientation
-                  :w 180
-                  0))
+                x y width height 0
+                flipped)
 
     ;; See if we need to add any meta to the wombat
     (doseq [{type :type} (sort-meta meta)]
@@ -187,23 +195,18 @@
         :shot
         (draw-image canvas-element
                     (str "wombat_" color "_" direction "_fire.png")
-                    x
-                    y
-                    width
-                    height
-                    (case orientation
-                      :w 180
-                      0))
+                    x y width height 0
+                    flipped)
 
         :explosion
         (draw-image canvas-element
                     "explosion.png"
-                    x y width height 0)
+                    x y width height 0 false)
 
         :smoke
         (draw-image canvas-element
                     "smoke.png"
-                    x y width height 0)
+                    x y width height 0 false)
 
         (js/console.log type)))))
 

@@ -16,13 +16,32 @@
 (defn draw-image
   "Draws an image at a certain coordinate
   w/ source/destination attributes"
-  ([canvas image sx sy swidth sheight dx dy dwidth dheight]
+  [canvas image sx sy swidth sheight dx dy dwidth dheight]
     (.drawImage (context canvas)
                 image
                 sx sy swidth sheight
                 dx dy dwidth dheight))
 
-  ([canvas image sx sy swidth sheight dx dy dwidth dheight degreeRotation]
+(defn draw-image-flipped-horizontally
+  "Same as draw-image but you flip the image before drawing it"
+  [canvas image sx sy swidth sheight dx dy dwidth dheight]
+    (let [ctx (context canvas)]
+      (.save ctx)
+
+      (.translate ctx dx dy)
+      (.translate ctx dwidth 0)
+      (.scale ctx -1 1)
+
+      (.drawImage ctx
+                  image
+                  sx sy swidth sheight
+                  0 0 dwidth dheight)
+
+      (.restore ctx)))
+
+(defn draw-image-rotated
+  "Same as draw-image but you can rotate the drawn image"
+  [canvas image sx sy swidth sheight dx dy dwidth dheight degreeRotation]
     (if (= degreeRotation 0)
       (draw-image canvas image sx sy swidth sheight dx dy dwidth dheight)
 
@@ -39,7 +58,7 @@
                     sx sy swidth sheight
                     (/ dwidth -2) (/ dheight -2) dwidth dheight)
 
-        (.restore ctx)))))
+        (.restore ctx))))
 
 (defn width
   "Gets the width of a canvas element"
