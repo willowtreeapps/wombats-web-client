@@ -26,8 +26,8 @@
   [:div "You must login to see your account."])
 
 (defn account []
-  (let [current-user @(re-frame/subscribe [:current-user])]
+  (let [current-user (re-frame/subscribe [:current-user])]
     (fn []
-      (if-not current-user
+      (if-not @current-user
         [login-prompt]
         [welcome]))))

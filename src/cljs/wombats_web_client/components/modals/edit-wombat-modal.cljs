@@ -5,42 +5,42 @@
             [wombats-web-client.utils.forms :refer [text-input-with-label
                                                     cancel-modal-input]]))
 
-(def error (reagent/atom nil))
-
-(defn reset-state []
-  (reset! error nil))
-
-(defn callback-success []
+(defn callback-success [cmpnt-state]
   "closes modal on success"
-  (reset! error nil)
+  (swap! cmpnt-state assoc :error nil)
   (re-frame/dispatch [:set-modal nil]))
 
-(defn callback-error []
+(defn callback-error [state]
   "says error, persists modal"
-  (reset! error "ERROR"))
+  (swap! state assoc :error "ERROR"))
 
 
 (defn edit-wombat-modal [wombat-id name url]
-  (fn []
-    (let [wombat-name (reagent/atom name)
-          wombat-url (reagent/atom url)]
-      [:div {:class "modal edit-wombat-modal"}
-       [:div.title "EDIT WOMBAT"]
-       (if (not (nil? @error)) [:div @error])
-       [:form
-        [text-input-with-label {:name "wombat-name"
-                                :label "Wombat Name"
-                                :local-state-value wombat-name}]
-        [text-input-with-label {:name "wombat-url"
-                                :label "Wombat URL"
-                                :local-state-value wombat-url}]
-        [:div.action-buttons
-         [cancel-modal-input reset-state]
-         [:input.modal-button {:type "button"
-                               :value "SAVE"
-                               :on-click #(edit-wombat-by-id
-                                           @wombat-name
-                                           @wombat-url
-                                           wombat-id
-                                           callback-success
-                                           callback-error)}]]]])))
+  (let [cmpnt-state (reagent/atom {:wombat-name name
+                                   :wombat-url url
+                                   :error nil})]
+    (fn []
+      (let [wombat-name (get @cmpnt-state :wombat-name)
+            wombat-url (get @cmpnt-state :wombat-url)
+            error (get @cmpnt-state :error)]
+        [:div {:class "modal edit-wombat-modal"}
+         [:div.title "EDIT WOMBAT"]
+         (if error [:div error])
+         [:form
+          [text-input-with-label {:name "wombat-name"
+                                  :label "Wombat Name"
+                                  :state cmpnt-state}]
+          [text-input-with-label {:name "wombat-url"
+                                  :label "Wombat URL"
+                                  :state cmpnt-state}]
+          [:div.action-buttons
+           [cancel-modal-input]
+           [:input.modal-button {:type "button"
+                                 :value "SAVE"
+                                 :on-click (fn []
+                                             (edit-wombat-by-id
+                                              wombat-name
+                                              wombat-url
+                                              wombat-id
+                                              #(callback-success cmpnt-state)
+                                              #(callback-error cmpnt-state)))}]]]]))))

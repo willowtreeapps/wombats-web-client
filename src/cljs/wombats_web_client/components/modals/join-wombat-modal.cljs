@@ -62,20 +62,9 @@
     (for [color colors-8]
               ^{:key color} [wombat-img color selected-color cmpnt-state])]])
 
-(defn submit-join [cmpnt-state game-id wombat-id wombat-color]
-  (join-open-game
-   game-id
-   wombat-id
-   wombat-color
-   #(callback-success game-id
-                      wombat-id
-                      wombat-color
-                      cmpnt-state)
-   #(callback-error cmpnt-state)))
-
 (defn join-wombat-modal [game-id]
   (let [cmpnt-state (reagent/atom {:show-dropdown false
-                                   :error false
+                                   :error nil
                                    :wombat-name nil
                                    :wombat-id nil
                                    :wombat-color nil})] ;; not included in render fn
@@ -93,5 +82,12 @@
           [:input.modal-button {:type "button"
                                 :value "JOIN"
                                 :on-click (fn []
-                                            (submit-join
-                                             cmpnt-state game-id wombat-id wombat-color))}]]]))))
+                                            (join-open-game
+                                             game-id
+                                             wombat-id
+                                             wombat-color
+                                             #(callback-success game-id
+                                                                wombat-id
+                                                                wombat-color
+                                                                cmpnt-state)
+                                             #(callback-error cmpnt-state)))}]]]))))
