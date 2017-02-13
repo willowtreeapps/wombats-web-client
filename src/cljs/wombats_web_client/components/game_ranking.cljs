@@ -13,8 +13,8 @@
         ^{:key username} [:li
                           [:progress.health-bar {:max 100
                                        :value hp}]
-                          [:div.img-wrapper 
-                           [:img {:src (str "/images/wombats/wombat_" color "_right.png")}]]
+                          [:div.img-wrapper
+                           [:img {:src (str "/images/wombat_" color "_right.png")}]]
                           [:div.wombat-name wombat-name]
                           [:div.username username]
                           [:div.score score]])]]))

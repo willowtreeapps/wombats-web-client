@@ -9,19 +9,58 @@
 (defn clear
   "Clears the contents of a canvas"
   ([canvas]
-    (clear 0 0 canvas.width canvas.height))
+    (clear canvas 0 0 canvas.width canvas.height))
   ([canvas x y width height]
     (.clearRect (context canvas) x y width height)))
 
 (defn draw-image
-  "Draws an image at a certain coordinate"
-  [canvas image x y width height]
-  (.drawImage (context canvas)
-              image
-              x
-              y
-              width
-              height))
+  "Draws an image at a certain coordinate
+  w/ source and destination attributes"
+  ([canvas image sx sy swidth sheight dx dy dwidth dheight]
+   (.drawImage (context canvas)
+               image
+               sx sy swidth sheight
+               dx dy dwidth dheight))
+
+  ([canvas image sx sy swidth sheight dx dy dwidth dheight transforms]
+   (let [ctx (context canvas)]
+     (.save ctx)
+     (transforms ctx)
+     
+     (.drawImage ctx
+                 image
+                 sx sy swidth sheight
+                 dx dy dwidth dheight)
+     
+     (.restore ctx))))
+
+(defn draw-image-flipped-horizontally
+  "Same as draw-image but you flip the image before drawing it"
+  [canvas image sx sy swidth sheight dx dy dwidth dheight]
+  (draw-image canvas image
+              sx sy swidth sheight
+              0 0 dwidth dheight
+              (fn [ctx]
+                (.translate ctx dx dy)
+                (.translate ctx dwidth 0)
+                (.scale ctx -1 1))))
+
+(defn draw-image-rotated
+  "Same as draw-image but you can rotate the image before drawing it"
+  [canvas image sx sy swidth sheight dx dy dwidth dheight degreeRotation]
+    (if (= degreeRotation 0)
+      (draw-image canvas image
+                  sx sy swidth sheight 
+                  dx dy dwidth dheight)
+
+      (let [radians (/ (* js/Math.PI degreeRotation) 180)]
+        (draw-image canvas image
+                    sx sy swidth sheight
+                    (/ dwidth -2) (/ dheight -2) dwidth dheight
+                    (fn [ctx]
+                      (.translate ctx dx dy)
+                      (.translate ctx (/ dwidth 2) (/ dheight 2))
+                      (.rotate ctx radians))))))
 
 (defn width
   "Gets the width of a canvas element"

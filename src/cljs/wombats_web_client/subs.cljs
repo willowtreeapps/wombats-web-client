@@ -56,3 +56,8 @@
  :game/stats
  (fn [db _]
    (:game/stats db)))
+
+(re-frame/reg-sub
+ :spritesheet
+ (fn [db _]
+   (:spritesheet db)))
