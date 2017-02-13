@@ -48,7 +48,6 @@
 
 (defn- draw-image-flipped-horizontally
   [canvas-element img-name x y width height]
-
   (let [spritesheet (re-frame/subscribe [:spritesheet])
         sprite-info (get @spritesheet (keyword img-name))
         frame (:frame sprite-info)]
