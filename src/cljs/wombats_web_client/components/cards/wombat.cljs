@@ -32,5 +32,5 @@
     [:div.wombat-card {:key (:id wombat)
                        :onMouseOver #(reset! isUserHovering? true)
                        :onMouseOut #(reset! isUserHovering? false)}
-     [:img.wombat-image {:src (str "/images/wombats/wombat_purple_right.png")}]
+     [:img.wombat-image {:src (str "/images/wombat_purple_right.png")}]
      [wombat-information isUserHovering? (:name wombat) (:id wombat) (:url wombat)]]))

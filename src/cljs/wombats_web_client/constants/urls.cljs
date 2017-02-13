@@ -10,6 +10,8 @@
 (def github-signout-url (str base-api-url "/api/v1/auth/github/signout"))
 (def github-signin-url (str base-api-url "/api/v1/auth/github/signin"))
 
+(defonce spritesheet-url "/spritesheet.json")
+
 (def ws-url (str (case js/window.location.protocol
                    "https:" "wss:"
                    "ws:")

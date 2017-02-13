@@ -2,53 +2,114 @@
   (:require [re-frame.core :as re-frame]
             [wombats-web-client.utils.canvas :as canvas]))
 
+(defonce spritesheet-png "/images/spritesheet.png")
+
+(defn subscribe-to-spritesheet
+  [img-name callback]
+  (let [spritesheet (re-frame/subscribe [:spritesheet])
+        sprite-info (get @spritesheet (keyword img-name))
+        frame (:frame sprite-info)]
+    (when frame
+      (let [img (js/Image.)]
+        (set! (.-src img) spritesheet-png)
+        (.requestAnimationFrame js/window 
+                                (fn [] 
+                                  (callback img frame)))))))
+
 (defn- draw-image
-  [canvas-element url x y width height]
-  (when-not (nil? url)
-    (let [img (js/Image.)]
-      (set! (.-onload img) (fn [evt]
-                             (.requestAnimationFrame js/window (fn []
-                               (canvas/draw-image canvas-element
-                                                  img
-                                                  x
-                                                  y
-                                                  width
-                                                  height)))))
-      (set! (.-src img) url))))
+  [canvas-element img-name x y width height]
+  (subscribe-to-spritesheet img-name 
+                            (fn [img frame]
+                              (canvas/draw-image canvas-element
+                                                 img
+                                                 (:x frame)
+                                                 (:y frame)
+                                                 (:w frame)
+                                                 (:h frame)
+                                                 x
+                                                 y
+                                                 width
+                                                 height))))
+
+(defn- draw-image-rotated
+  [canvas-element img-name x y width height rotation]
+  (subscribe-to-spritesheet img-name
+                            (fn [img frame]
+                              (canvas/draw-image-rotated canvas-element
+                                                         img
+                                                         (:x frame)
+                                                         (:y frame)
+                                                         (:w frame)
+                                                         (:h frame)
+                                                         x y
+                                                         width
+                                                         height
+                                                         rotation))))
+
+(defn- draw-image-flipped-horizontally
+  [canvas-element img-name x y width height]
+  (subscribe-to-spritesheet img-name
+                            (fn [img frame]
+                              (canvas/draw-image-flipped-horizontally canvas-element
+                                                                      img
+                                                                      (:x frame)
+                                                                      (:y frame)
+                                                                      (:w frame)
+                                                                      (:h frame)
+                                                                      x y
+                                                                      width
+                                                                      height))))
 
 (defn- draw-background
   "This draws the background of a cell (only called for cells that need it)"
   [canvas-element x y width height]
   (draw-image canvas-element
-              "images/arena_bg.png"
-              x
-              y
-              width
-              height))
+              "arena_bg.png"
+              x y width height))
+
+(defn- meta-value
+  "Gets a score for a meta type for sorting draw level"
+  [meta]
+  (case (:type meta)
+    :shot      1
+    :explosion 2
+    :smoke     3
+    0))
+
+(defn- sort-meta
+  "This sorts meta according to draw order"
+  [meta]
+  (sort #(let [val1 (meta-value %1)
+               val2 (meta-value %2)]
+           (cond
+             (< val1 val2) -1
+             (> val1 val2) 1
+             :else 0)) meta))
 
 (defn- draw-meta
   "Draws generic meta objects"
   [canvas-element contents meta x y width height]
   (doseq [{type :type
-           orientation :orientation} meta]
+           orientation :orientation} (sort-meta meta)]
     (case type
       :shot
-      (draw-image canvas-element
-                  (case orientation
-                    :n "images/fire_shot/fire_shot_up.png"
-                    :w "images/fire_shot/fire_shot_left.png"
-                    :e "images/fire_shot/fire_shot_right.png"
-                    :s "images/fire_shot/fire_shot_down.png")
-                  x y width height)
+      (draw-image-rotated canvas-element
+                          "fire_shot_right.png"
+                          x y width height
+                          (case orientation
+                            :n 270
+                            :w 180
+                            :s 90
+                            0))
 
       :smoke
       (draw-image canvas-element
-                  "images/smoke.png"
+                  "smoke.png"
                   x y width height)
 
       :explosion
       (draw-image canvas-element
-                  "images/explosion.png"
+                  "explosion.png"
                   x y width height)
 
       (js/console.log type))))
@@ -57,37 +118,39 @@
   [canvas-element contents meta x y width height]
   (let [{deterioration-level :deterioration-level} contents]
     (draw-image canvas-element
-                (str "images/wood-barrier/woodwall_" 
+                (str "woodwall_"
                      (case deterioration-level
                        :high "3"
                        :medium "2"
                        "1")
                      ".png")
-                x y width height)))
+                x y width height)
+    (draw-meta canvas-element contents meta x y width height)))
 
 (defn- draw-steel-barrier
   [canvas-element contents meta x y width height]
   (let [{deterioration-level :deterioration-level} contents]
     (draw-image canvas-element
-                (str "images/steel-barrier/steelwall_"
+                (str "steelwall_"
                      (case deterioration-level
                        :high "3"
                        :medium "2"
                        "1")
                      ".png")
-                x y width height)))
+                x y width height)
+    (draw-meta canvas-element contents meta x y width height)))
 
 (defn- draw-food
   [canvas-element contents meta x y width height]
   (draw-image canvas-element
-              "images/food/food_cherry.png"
+              "food_cherry.png"
               x y width height)
   (draw-meta canvas-element contents meta x y width height))
 
 (defn- draw-poison
   [canvas-element contents meta x y width height]
   (draw-image canvas-element
-              "images/poison/poison_vial.png"
+              "poison_vial_2.png"
               x y width height)
   (draw-meta canvas-element contents meta x y width height))
 
@@ -102,34 +165,41 @@
         direction (case orientation
                     :s "front"
                     :n "back"
-                    :w "left"
-                    :e "right")]
+                    "right")
+        img-name (str "zakano_" direction ".png")
+        img-name-fire (str "zakano_" direction "_fire.png")
+        flipped (= orientation :w)]
 
     ;; Always draw the base zakano
-    (draw-image canvas-element
-                (str "images/zakano/zakano_" direction ".png")
-                x
-                y
-                width
-                height)
+    (if flipped
+      (draw-image-flipped-horizontally canvas-element
+                                       img-name
+                                       x y width height)
+      (draw-image canvas-element
+                  img-name
+                  x y width height))
 
     ;; See if we need to add any meta to the zakano
-    (doseq [{type :type} meta]
-      
+    (doseq [{type :type} (sort-meta meta)]
+
       (case type
         :shot
-        (draw-image canvas-element
-                    (str "images/zakano/zakano_" direction "_fire.png")
-                    x y width height)
+        (if flipped
+          (draw-image-flipped-horizontally canvas-element
+                                           img-name-fire
+                                           x y width height)
+          (draw-image canvas-element
+                      img-name-fire
+                      x y width height))
 
         :explosion
         (draw-image canvas-element
-                    "images/explosion.png"
+                    "explosion.png"
                     x y width height)
 
         :smoke
         (draw-image canvas-element
-                    "images/smoke.png"
+                    "smoke.png"
                     x y width height)
 
         (js/console.log type)))))
@@ -142,37 +212,41 @@
         direction (case orientation
                     :s "front"
                     :n "back"
-                    :w "left"
-                    :e "right")]
-    
+                    "right")
+        img-name (str "wombat_" color "_" direction ".png")
+        img-name-fire (str "wombat_" color "_" direction "_fire.png")
+        flipped (= orientation :w)]
+
     ;; Always draw the base wombat
-    (draw-image canvas-element
-                (str "images/wombats/wombat_" color "_" direction ".png")
-                x
-                y
-                width
-                height)
+    (if flipped
+      (draw-image-flipped-horizontally canvas-element
+                                       img-name
+                                       x y width height)
+      (draw-image canvas-element
+                  img-name
+                  x y width height))
 
     ;; See if we need to add any meta to the wombat
-    (doseq [{type :type} meta]
+    (doseq [{type :type} (sort-meta meta)]
 
       (case type
         :shot
-        (draw-image canvas-element
-                    (str "images/wombats/wombat_" color "_" direction "_fire.png")
-                    x
-                    y
-                    width
-                    height)
+        (if flipped
+          (draw-image-flipped-horizontally canvas-element
+                                           img-name-fire
+                                           x y width height)
+          (draw-image canvas-element
+                      img-name-fire
+                      x y width height))
 
         :explosion
         (draw-image canvas-element
-                    "images/explosion.png"
+                    "explosion.png"
                     x y width height)
 
         :smoke
         (draw-image canvas-element
-                    "images/smoke.png"
+                    "smoke.png"
                     x y width height)
 
         (js/console.log type)))))
