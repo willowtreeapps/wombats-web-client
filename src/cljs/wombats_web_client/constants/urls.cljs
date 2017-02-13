@@ -1,7 +1,7 @@
 (ns wombats-web-client.constants.urls)
 
 ;; Remote Dev
-(def base-api-url "//dev.api.wombats.io")
+(def base-api-url "//qa.api.wombats.io")
 
 ;; Local Dev
 #_(def base-api-url "//localhost:8888")
