@@ -20,12 +20,10 @@
                                    :wombat-url url
                                    :error nil})]
     (fn []
-      (let [wombat-name (get @cmpnt-state :wombat-name)
-            wombat-url (get @cmpnt-state :wombat-url)
-            error (get @cmpnt-state :error)]
+      (let [{:keys [wombat-name wombat-url error]} @cmpnt-state]
         [:div {:class "modal edit-wombat-modal"}
          [:div.title "EDIT WOMBAT"]
-         (if error [:div error])
+         (when error [:div error])
          [:form
           [text-input-with-label {:name "wombat-name"
                                   :label "Wombat Name"

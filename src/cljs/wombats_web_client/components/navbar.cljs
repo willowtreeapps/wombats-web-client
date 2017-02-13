@@ -19,7 +19,7 @@
 
 (defn nav-links 
   [user state]
-  (let [current-selected (get @state :selected)]
+  (let [current-selected (:selected @state)]
     [:ul.navbar
      [nav-link {:id "open-games"
                 :class "regular-link"

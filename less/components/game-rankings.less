@@ -4,72 +4,72 @@
     height: 50%;
 
     ul {
-      list-style-type: none;
-      padding: 0;
+        list-style-type: none;
+        padding: 0;
 
-      li {
-        min-width: 300px;
-        height: 30px;
-        background-color: @white-10;
-        color: @white;
-        position: relative;
-        margin-bottom: 5px;
-        display: flex;
-        align-items: center;
+        li {
+            min-width: 300px;
+            height: 30px;
+            background-color: @white-10;
+            color: @white;
+            position: relative;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
 
-        .health-bar {
-          width: 30px;
-	  height: 4px;  /* Can be anything */
-	  background: #555;
-          transform: rotate(-90deg);
+            .health-bar {
+                width: 30px;
+	        height: 4px;  /* Can be anything */
+	        background: #555;
+                transform: rotate(-90deg);
+            }
+
+            .health-bar[value] {
+                /* Reset the default appearance */
+                -webkit-appearance: none;
+                appearance: none;
+
+                width: 30px;
+                height: 4px;
+                margin-left: -13px;
+                margin-right: -9px;
+            }
+
+            .health-bar[value]::-webkit-progress-value {
+                background-color: @wombat-green;
+            }
+            
+
+            .img-wrapper {  
+                width: 30px;
+                height: 30px;
+                background-color: @white;
+
+                img {
+                    height: 27px;
+                    width: 27px;
+                }
+            }
+
+            .wombat-name {
+                padding-left: 12px;
+            }
+
+            .username {
+                padding-left: 80px;
+            }
+
+            .score {
+                position: absolute;
+                right: 5px;
+            }
+
+            & > div {
+                display: inline-block;
+                vertical-align: middle;
+                height: 100%;
+                line-height: 30px;
+            }
         }
-
-        .health-bar[value] {
-          /* Reset the default appearance */
-           -webkit-appearance: none;
-           appearance: none;
-
-            width: 30px;
-            height: 4px;
-            margin-left: -13px;
-            margin-right: -9px;
-        }
-
-        .health-bar[value]::-webkit-progress-value {
-          background-color: @wombat-green;
-        }
-        
-
-        .img-wrapper {  
-          width: 30px;
-          height: 30px;
-          background-color: @white;
-
-          img {
-            height: 27px;
-            width: 27px;
-          }
-        }
-
-        .wombat-name {
-          padding-left: 12px;
-        }
-
-        .username {
-          padding-left: 80px;
-        }
-
-        .score {
-          position: absolute;
-          right: 5px;
-        }
-
-        & > div {
-          display: inline-block;
-          vertical-align: middle;
-          height: 100%;
-          line-height: 30px;
-        }
-      }
     }
 }

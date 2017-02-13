@@ -24,15 +24,13 @@
   (swap! cmpnt-state assoc :wombat-name name))
 
 (defn wombat-options [wombat cmpnt-state]
-  (let [name (:name wombat)
-        id (:id wombat)]
+  (let [{:keys [name id]} wombat]
     [:li {:key id
           :onClick #(on-wombat-selection cmpnt-state id name)} name]))
 
 (defn select-input-with-label [cmpnt-state]
-  (let [my-wombats @(re-frame/subscribe [:my-wombats])
-        show-dropdown (get @cmpnt-state :show-dropdown)
-        wombat-name (get @cmpnt-state :wombat-name)]
+  (let [{:keys [show-dropdown wombat-name]} @cmpnt-state
+        my-wombats @(re-frame/subscribe [:my-wombats])]
     [:div.select-wombat
      [:div.placeholder
       {:onClick #(swap! cmpnt-state assoc :show-dropdown (not show-dropdown))}
@@ -45,8 +43,7 @@
         (for [wombat my-wombats] (wombat-options wombat cmpnt-state))])]))
 
 (defn wombat-img [color color-selected cmpnt-state]
-  (let [color-text (:color-text color)
-        color-hex (:color-hex color)]
+  (let [{:keys [color-text color-hex]} color]
     [:div.wombat-img-wrapper {:key color-text}
      [:div.selected {:class (when (= color-text color-selected) "display")
                      :style {:background color-hex
@@ -69,12 +66,10 @@
                                    :wombat-id nil
                                    :wombat-color nil})] ;; not included in render fn
     (fn [] ;; render function
-      (let [error (get @cmpnt-state :error)
-            wombat-id (get @cmpnt-state :wombat-id)
-            wombat-color (get @cmpnt-state :wombat-color)]
+      (let [{:keys [error wombat-id wombat-color]} @cmpnt-state]
         [:div {:class "modal join-wombat-modal"} ;; starts hiccup
          [:div.title "JOIN GAME"]
-         (if error [:div error])
+         (when error [:div error])
          [select-input-with-label cmpnt-state]
          [select-wombat-color cmpnt-state wombat-color]
          [:div.action-buttons
