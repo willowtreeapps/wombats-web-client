@@ -9,22 +9,27 @@
 (defn reset-state []
   (reset! error nil))
 
-(defn callback-success []
+(defn callback-success [cmpnt-state]
   "closes modal on success"
-  (reset! error nil)
+  (swap! cmpnt-state assoc :error nil)
   (re-frame/dispatch [:set-modal nil]))
 
-(defn callback-error []
+(defn callback-error [cmpnt-state]
   "says error, persists modal"
-  (reset! error "ERROR"))
+  (swap! cmpnt-state assoc :error "ERROR"))
 
 (defn delete-wombat-modal [id]
-  (fn []
-    [:div {:class "modal delete-wombat-modal"}
-     [:div.title "DELETE WOMBAT"]
-     [:div.desc "You are about to delete this wombat. Are you sure you want to do this?"]
-     [:div.action-buttons
-      [cancel-modal-input reset-state]
-      [:input.modal-button {:type "button"
-                            :value "DELETE"
-                            :on-click #(delete-wombat id callback-success callback-error)}]]]))
+  (let [cmpnt-state (reagent/atom {:error nil})]
+    (fn []
+      [:div {:class "modal delete-wombat-modal"}
+       [:div.title "DELETE WOMBAT"]
+       [:div.desc "You are about to delete this wombat. Are you sure you want to do this?"]
+       [:div.action-buttons
+        [cancel-modal-input reset-state]
+        [:input.modal-button {:type "button"
+                              :value "DELETE"
+                              :on-click (fn []
+                                          (delete-wombat
+                                           id
+                                           #(callback-success cmpnt-state)
+                                           #(callback-error cmpnt-state)))}]]])))

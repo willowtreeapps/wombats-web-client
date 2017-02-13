@@ -16,15 +16,15 @@
     [:div.open-games
      [temp-poll-button]
      [:ul.open-games-list 
-      (doall (for [game @open-games]
-               ^{:key (:game/id game)} [game-card game true]))]]))
+      (for [game @open-games]
+        ^{:key (:game/id game)} [game-card game true])]]))
 
 (defn login-prompt []
-  [:div (str "You must login to see open games.")])
+  [:div "You must login to see open games."])
 
 (defn open-games []
   (let [current-user (re-frame/subscribe [:current-user])]
     (fn []
-      (if (nil? @current-user)
+      (if-not @current-user
         [login-prompt]
         [panel]))))

@@ -2,30 +2,30 @@
 @import "../objects/button.less";
 
 .account-panel {
-  padding: 60px;
+    padding: 60px;
 
-  .header {
-    margin-bottom: 30px;
+    .header {
+        margin-bottom: 30px;
 
-    .title {
-      font-size: 30px;
-      font-weight: 600;
-      color: @white;
-      display: inline-block;
+        .title {
+            font-size: 30px;
+            font-weight: 600;
+            color: @white;
+            display: inline-block;
+        }
+        
+        .logout {
+            .emphasized-link-button(@white, @black-20);
+            float: right;
+        }
     }
-  
-    .logout {
-      .emphasized-link-button(@white, @black-20);
-      float: right;
-    }
-  }
 
-  .wombats {
-    display: flex;
-    flex-flow: row wrap;
+    .wombats {
+        display: flex;
+        flex-flow: row wrap;
 
-    .wombat-card {
-      margin: 20px 40px 65px 0;
+        .wombat-card {
+            margin: 20px 40px 65px 0;
+        }
     }
-  }
 }

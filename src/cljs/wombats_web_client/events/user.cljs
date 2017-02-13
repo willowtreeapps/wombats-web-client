@@ -72,12 +72,12 @@
   "edits wombat by id in db"
   [user-id wombat-id name url on-success on-error]
   (PUT (my-wombat-by-id-url user-id wombat-id) {:response-format :json
-                                            :format (edn-request-format)
-                                            :keywords? true
-                                            :headers (add-auth-header {})
-                                            :handler on-success
-                                            :params {:wombat/name name :wombat/url url}
-                                            :error-handler on-error}))
+                                                :format (edn-request-format)
+                                                :keywords? true
+                                                :headers (add-auth-header {})
+                                                :handler on-success
+                                                :params {:wombat/name name :wombat/url url}
+                                                :error-handler on-error}))
 (defn create-new-wombat
   [name url cb-success cb-error]
   (post-new-wombat
@@ -159,8 +159,7 @@
 
 (re-frame/reg-event-fx
   :bootstrap-user-data
-  (fn
-    [{:keys [db]} [_ user]]
+  (fn [{:keys [db]} [_ user]]
     {:db (assoc db :auth-token (get-item token))
      :http-xhrio {:method          :get
                   :uri             (my-wombats-url (user :id))

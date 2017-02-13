@@ -1,6 +1,6 @@
 (ns wombats-web-client.constants.colors)
 
-(def colors-8 [{:color-text "black" :color-hex "#3E3E3E"}
+(defonce colors-8 [{:color-text "black" :color-hex "#3E3E3E"}
                {:color-text "blue" :color-hex "#28CAE7"}
                {:color-text "green" :color-hex "#419C3F"}
                {:color-text "orange" :color-hex "#E79300"}
