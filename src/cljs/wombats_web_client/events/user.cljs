@@ -77,7 +77,7 @@
                                                 :params {:wombat/name name :wombat/url url}
                                                 :error-handler on-error}))
 (defn create-new-wombat
-  [name url cb-success cb-error]
+  [name url cb-success]
   (post-new-wombat
    (get-current-user-id)
    name
@@ -85,12 +85,10 @@
    (fn []
      (get-all-wombats)
      (cb-success))
-   (fn []
-     (print "error with create-new-wombat")
-     (cb-error))))
+   #(re-frame/dispatch [:update-modal-error (str %)])))
 
 (defn edit-wombat-by-id
-  [name url wombat-id cb-success cb-error]
+  [name url wombat-id cb-success]
   (edit-wombat
    (get-current-user-id)
    wombat-id
@@ -99,21 +97,17 @@
    (fn []
      (get-all-wombats)
      (cb-success))
-   (fn []
-     (print "error with editing wombat by id")
-     (cb-error))))
+   #(re-frame/dispatch [:update-modal-error (str %)])))
 
 (defn delete-wombat
-  [id cb-success cb-error]
+  [id cb-success]
   (delete-wombat-by-id
    (get-current-user-id)
    id
    (fn []
      (get-all-wombats)
      (cb-success))
-   (fn []
-     (print "error with deleting wombat by id")
-     (cb-error))))
+   #(re-frame/dispatch [:update-modal-error (str %)])))
 
 ;; USER SPECIFIC
 (defn get-current-user
