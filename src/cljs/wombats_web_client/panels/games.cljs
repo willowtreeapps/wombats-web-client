@@ -6,6 +6,9 @@
 
 ;; Games Panel
 
+(defonce empty-open-page "Sorry, there are no games to join at the moment.")
+(defonce empty-joined-page "Join an available game to get started!")
+
 (defn temp-poll-button []
   [:input {:type "button"
            :value "GET GAMES"
@@ -19,6 +22,10 @@
      [:div.game-tab {:class (when-not show-open "active")
                      :onClick #(swap! cmpnt-state assoc :show-open false)} "JOINED"]]))
 
+(defn empty-state [show-open]
+  (let [empty-text (if show-open empty-open-page empty-joined-page)]
+    [:div.empty-text empty-text]))
+
 (defn main-panel [cmpnt-state]
   (let [open-games (re-frame/subscribe [:open-games])
         joined-games (re-frame/subscribe [:joined-games])]
@@ -31,9 +38,11 @@
          [tab-view-toggle cmpnt-state]
          [temp-poll-button]
          [:div.games
-          [:ul.games-list 
-           (for [game games]
-             ^{:key (:game/id game)} [game-card game true])]]]))))
+          (if games
+            [:ul.games-list 
+             (for [game games]
+               ^{:key (:game/id game)} [game-card game true])]
+            [empty-state show-open])]]))))
 
 (defn login-prompt []
   [:div "You must login to see open games."])
