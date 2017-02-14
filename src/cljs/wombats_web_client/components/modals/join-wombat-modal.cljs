@@ -50,7 +50,7 @@
                              :opacity "0.8"}}
       [:img {:src "/images/checkmark.svg"}]]
      [:img {:src (str "/images/wombat_" color-text "_right.png")
-            :onClick #(reset! wombat-color-selection color-text)}]]))
+            :onClick #(swap! cmpnt-state assoc :wombat-color color-text)}]]))
 
 (defn select-wombat-color [cmpnt-state selected-color]
   [:div.select-color
