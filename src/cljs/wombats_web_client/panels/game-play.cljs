@@ -42,7 +42,10 @@
 (defn right-game-play-panel []
   (let [messages (re-frame/subscribe [:game/messages])
         arena (re-frame/subscribe [:game/arena])
-        stats (re-frame/subscribe [:game/stats])]
+        stats (re-frame/subscribe [:game/stats])
+        info (re-frame/subscribe [:game/info])]
+
+    (js/console.log info)
 
     (update-arena arena)
     [:div {:class-name "right-game-play-panel"}
