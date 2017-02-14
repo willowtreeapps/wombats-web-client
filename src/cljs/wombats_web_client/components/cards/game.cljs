@@ -34,7 +34,7 @@
 
 (defn navigate-game-card [game-id]
   [:div.arena-preview
-   [:a {:href (str "#/my-games/" game-id)} [:img {:src "/images/mini-arena.png"}]]])
+   [:a {:href (str "#/games/" game-id)} [:img {:src "/images/mini-arena.png"}]]])
 
 (defn game-card [game is-joinable]
   (let [show-join (reagent/atom false)

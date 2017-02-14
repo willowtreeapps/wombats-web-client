@@ -21,18 +21,13 @@
   [user state]
   (let [current-selected (:selected @state)]
     [:ul.navbar
-     [nav-link {:id "open-games"
+     [nav-link {:id "games"
                 :class "regular-link"
-                :on-click #(swap! state assoc :selected "open-games")
+                :on-click #(swap! state assoc :selected "games")
                 :link "#/"
-                :title "OPEN GAMES"
+                :title "GAMES"
                 :current current-selected}]
-     [nav-link {:id "my-games"
-                :class "regular-link"
-                :on-click #(swap! state assoc :selected "my-games")
-                :link "#/my-games"
-                :title "MY GAMES"
-                :current current-selected}]
+
      (if-not user
        [:li {:class "regular-link account"}
         [:a {:href github-signin-url} "LOGIN"]]
@@ -46,7 +41,7 @@
 (defn root
   []
   (let [current-user (re-frame/subscribe [:current-user])
-        state (reagent/atom {:selected "open-games"})]
+        state (reagent/atom {:selected "games"})]
     (fn []
       [:div.navbar-component
        [wombat-logo]
