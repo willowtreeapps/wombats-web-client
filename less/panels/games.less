@@ -1,0 +1,42 @@
+@import "../colors.less";
+
+.games-panel {
+    .tab-game-toggle {
+        margin-top: 35px;
+        display: flex;
+        justify-content: center;
+
+        .game-tab {
+            width: 80px;
+            height: 40px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            line-height: 40px;
+            margin-left: 20px;
+            cursor: pointer;
+
+            &.active,
+            &:hover {
+                border-bottom: 3px solid @wombat-green;
+            }
+        }
+    }
+    .games {
+        padding: 60px;
+
+        .games-list {
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: space-between;
+
+            .game-card {
+                margin: 0 40px 40px 0;
+            }
+        }
+    }
+}

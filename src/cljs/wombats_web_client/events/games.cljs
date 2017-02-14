@@ -24,7 +24,7 @@
                           :error-handler on-error
                           :params {:player/wombat-id wombat-id :player/color color}}))
 
-(defn get-my-games [id on-success on-error]
+(defn get-joined-games [id on-success on-error]
   (GET games-url {:response-format (edn-response-format)
                   :keywords? true
                   :format (edn-request-format)
@@ -38,10 +38,10 @@
    #(re-frame/dispatch [:open-games %])
    #(print "error on get open games")))
 
-(defn get-all-my-games [user-id] 
-  (get-my-games
+(defn get-all-joined-games [user-id] 
+  (get-joined-games
    user-id
-   #(re-frame/dispatch [:my-games %])
+   #(re-frame/dispatch [:joined-games %])
    #(print "error with getting my games")))
 
 (defn join-open-game [game-id wombat-id color cb-success cb-error]
@@ -51,7 +51,7 @@
    color
    (fn []
      (cb-success)
-     (get-all-my-games (get-current-user-id)))
+     (get-all-joined-games (get-current-user-id)))
    (fn []
      (cb-error)
      (print "error with join-open-game"))))
@@ -62,9 +62,9 @@
    (assoc db :open-games open-games)))
 
 (re-frame/reg-event-db
- :my-games
- (fn [db [_ my-games]]
-   (assoc db :my-games my-games)))
+ :joined-games
+ (fn [db [_ joined-games]]
+   (assoc db :joined-games joined-games)))
 
 (re-frame/reg-event-db
  :add-join-selection 
@@ -77,6 +77,6 @@
    (get-open-games)))
 
 (re-frame/reg-fx
- :get-my-games
+ :get-joined-games
  (fn [id]
-   (get-all-my-games id)))
+   (get-all-joined-games id)))
