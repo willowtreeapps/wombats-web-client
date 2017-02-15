@@ -36,8 +36,37 @@
   (ws/send-message :leave-game {:game-id @game-id})
   (reset! game-id nil))
 
+(defn- game-play-title [info]
+  (let [{:keys [status
+                start-time]} @info]
+    [:h1.game-play-title 
+     (case status
+       :closed
+       "GAME OVER"
+           
+       (:pending-open
+        :pending-closed)
+       "ROUND 1 STARTS IN: 2:06"
+
+       :active
+       "ROUND 1"
+
+       nil)]))
+
+(defn- game-play-subtitle [info]
+  (let [{:keys [name]} @info]
+    [:h2.game-play-subtitle 
+     (when name
+       (str name " - High Score"))]))
+
+(defn- max-players [info]
+  (let [{:keys [max-players]} @info]
+    [:p.wombat-counter (when max-players
+          (str "Wombats: 1/" max-players))]))
+
 (defn chat-title []
-  [:div.chat-title "CHAT"])
+  [:div.chat-title 
+   [:span "CHAT"]])
 
 (defn right-game-play-panel []
   (let [messages (re-frame/subscribe [:game/messages])
@@ -45,13 +74,20 @@
         stats (re-frame/subscribe [:game/stats])
         info (re-frame/subscribe [:game/info])]
 
-    (js/console.log info)
+    (js/console.log @info)
 
     (update-arena arena)
-    [:div {:class-name "right-game-play-panel"}
-     [ranking-box @game-id stats]
-     [chat-title]
-     [chat-box @game-id messages stats]]))
+    [:div.right-game-play-panel
+
+     [:div.top-panel
+      [game-play-title info]
+      [game-play-subtitle info]
+      [max-players info]
+      [ranking-box @game-id stats]]
+
+     [:div.chat-panel
+      [chat-title]
+      [chat-box @game-id messages stats]]]))
 
 (defn game-play []
   (let [dimensions (get-arena-dimensions)]
