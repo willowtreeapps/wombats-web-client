@@ -74,8 +74,6 @@
         stats (re-frame/subscribe [:game/stats])
         info (re-frame/subscribe [:game/info])]
 
-    (js/console.log @info)
-
     (update-arena arena)
     [:div.right-game-play-panel
 

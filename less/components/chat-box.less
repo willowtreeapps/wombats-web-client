@@ -3,24 +3,27 @@
 
 .chat-box {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
-    height: calc(~"100% - 50% - 25px");
+    justify-content: flex-end;
     background-color: @card-grey;
 
     .chat-box-message-container {
         display: flex;
-        flex-wrap: wrap;
         width: 100%;
-        max-height: calc(~"100% - 60%");
-        overflow: auto;
+        height: calc(~"100% - 45px");
+        overflow: scroll;
         padding: 0;
         margin: 0;
-        
+        flex-direction: column;
 
         .chat-msg {
-            display: flex;
             margin-bottom: 10px;
             width: 100%;
+
+            &:first-of-type {
+                margin-top: auto;
+            }
 
             .msg-timestamp {
                 color: @warm-grey;
