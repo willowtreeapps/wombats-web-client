@@ -79,6 +79,18 @@
                     margin-bottom: 5px;
                     display: inline-block;
 
+                    .disabled {
+                        display: none;
+                        position: absolute;
+                        width: 70px;
+                        height: 70px;
+                        background-color: @white-90;
+
+                        &.display {
+                            display: flex;
+                        }
+                    }
+
                     .selected {
                         content: " ";
                         position: absolute;

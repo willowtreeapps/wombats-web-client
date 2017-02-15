@@ -39,24 +39,30 @@
        [:div.dropdown-wrapper
         (for [wombat my-wombats] (wombat-options wombat cmpnt-state))])]))
 
-(defn wombat-img [color color-selected cmpnt-state]
-  (let [{:keys [color-text color-hex]} color]
+(defn in? [coll element]
+  (some #(= element %) coll))
+
+(defn wombat-img [color color-selected cmpnt-state occupied-colors]
+  (let [{:keys [color-text color-hex]} color
+        disabled (in? occupied-colors color-text)
+        on-click-fn (if disabled (fn []) #(swap! cmpnt-state assoc :wombat-color color-text))]
     [:div.wombat-img-wrapper {:key color-text}
+     [:div.disabled {:class (when (in? occupied-colors color-text) "display")}] 
      [:div.selected {:class (when (= color-text color-selected) "display")
                      :style {:background color-hex
                              :opacity "0.8"}}
       [:img {:src "/images/checkmark.svg"}]]
      [:img.wombat {:src (str "/images/wombat_" color-text "_right.png")
-            :onClick #(swap! cmpnt-state assoc :wombat-color color-text)}]]))
+            :onClick on-click-fn}]]))
 
-(defn select-wombat-color [cmpnt-state selected-color]
+(defn select-wombat-color [cmpnt-state selected-color occupied-colors]
   [:div.select-color
    [:label.label "Select Color"]
    [:div.colors
     (for [color colors-8]
-              ^{:key color} [wombat-img color selected-color cmpnt-state])]])
+              ^{:key color} [wombat-img color selected-color cmpnt-state occupied-colors])]])
 
-(defn join-wombat-modal [game-id]
+(defn join-wombat-modal [game-id occupied-colors]
   (let [modal-error (re-frame/subscribe [:modal-error])
         cmpnt-state (reagent/atom {:show-dropdown false
                                    :error nil
@@ -75,7 +81,7 @@
            [:div.title "JOIN GAME"]
            (when error [:div.modal-error error])
            [select-input-with-label cmpnt-state]
-           [select-wombat-color cmpnt-state wombat-color]
+           [select-wombat-color cmpnt-state wombat-color occupied-colors]
            [:div.action-buttons
             [cancel-modal-input]
             [:input.modal-button {:type "button"
