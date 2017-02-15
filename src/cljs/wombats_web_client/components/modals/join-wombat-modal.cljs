@@ -29,7 +29,8 @@
         my-wombats @(re-frame/subscribe [:my-wombats])]
     [:div.select-wombat
      [:div.placeholder
-      {:onClick #(swap! cmpnt-state assoc :show-dropdown (not show-dropdown))}
+      {:class (when-not wombat-name "unselected")
+       :onClick #(swap! cmpnt-state assoc :show-dropdown (not show-dropdown))}
       [:div.text {:class (when-not wombat-name "unselected")}
        (str (if-not wombat-name "Select Wombat" wombat-name))]
       [:img.icon-arrow {:class (when show-dropdown "open-dropdown")
@@ -45,7 +46,7 @@
                      :style {:background color-hex
                              :opacity "0.8"}}
       [:img {:src "/images/checkmark.svg"}]]
-     [:img {:src (str "/images/wombat_" color-text "_right.png")
+     [:img.wombat {:src (str "/images/wombat_" color-text "_right.png")
             :onClick #(swap! cmpnt-state assoc :wombat-color color-text)}]]))
 
 (defn select-wombat-color [cmpnt-state selected-color]

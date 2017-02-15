@@ -2,19 +2,12 @@
 
 .modal-container {
     .join-wombat-modal {
-        .modal-error {
-            color: @error-red;
-            font-size: 12px;
-            margin: 0 30px 10px;
-            text-align: center;
-        }
         .select-wombat {
             width: 310px;
             margin: 0 auto;
             margin-bottom: 40px;
 
             .placeholder {
-                background-color: @white;
                 color: @black;
                 font-size: 18px;
                 padding: 10px;
@@ -22,6 +15,11 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                background-color: @white-90;
+
+                &.unselected {
+                    background-color: @white;
+                }
                 
                 .text {
                     color: @black;
@@ -78,10 +76,7 @@
 
                 .wombat-img-wrapper {
                     cursor: pointer;
-                    margin-bottom: 7px;
-                    width: 69px;
-                    height: 70px;
-                    background-color: @white;
+                    margin-bottom: 5px;
                     display: inline-block;
 
                     .selected {
@@ -98,12 +93,13 @@
                         }
                     }
 
-                    img {
+                    .wombat {
                         padding: 5px;
-                    }
+                        background-color: @white;
 
-                    &:hover {
-                        
+                        &:hover {
+                            border: 1px solid @wombat-green;
+                        }
                     }
                 }
             }
