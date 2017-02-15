@@ -33,9 +33,9 @@
    (:open-games db)))
 
 (re-frame/reg-sub
- :my-games
+ :joined-games
  (fn [db _]
-   (:my-games db)))
+   (:joined-games db)))
 
 (re-frame/reg-sub
  :join-game-selections
