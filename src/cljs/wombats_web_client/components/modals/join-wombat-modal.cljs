@@ -4,7 +4,8 @@
             [wombats-web-client.events.games :refer [join-open-game]]
             [wombats-web-client.utils.forms :refer [text-input-with-label
                                                     cancel-modal-input]]
-            [wombats-web-client.constants.colors :refer [colors-8]]))
+            [wombats-web-client.constants.colors :refer [colors-8]]
+            [wombats-web-client.utils.functions :refer [in?]]))
 
 (def callback-success (fn [game-id wombat-id wombat-color cmpnt-state]
                         "closes modal on success"
@@ -38,9 +39,6 @@
      (when show-dropdown
        [:div.dropdown-wrapper
         (for [wombat my-wombats] (wombat-options wombat cmpnt-state))])]))
-
-(defn in? [coll element]
-  (some #(= element %) coll))
 
 (defn wombat-img [color color-selected cmpnt-state occupied-colors]
   (let [{:keys [color-text color-hex]} color
