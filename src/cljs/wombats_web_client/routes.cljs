@@ -24,9 +24,11 @@
     (re-frame/dispatch [:set-active-panel :view-games-panel]))
 
   (defroute "/games/:game-id" {game-id :game-id}
-    (js/console.log (str "Game Id: " game-id))
     (re-frame/dispatch [:game/join-game game-id])
     (re-frame/dispatch [:set-active-panel :game-play-panel]))
+
+  (defroute "/config" []
+    (re-frame/dispatch [:set-active-panel :config-panel]))
 
   (defroute "/account" []
     (re-frame/dispatch [:set-active-panel :account-panel]))
