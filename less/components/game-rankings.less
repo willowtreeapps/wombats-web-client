@@ -30,6 +30,20 @@
                     height: 100%;
                     position: relative;
                     overflow: hidden;
+
+                    &.none {
+                        background-color: @transparent;
+                    }
+
+                    &.healthy {
+                        background-color: @wombat-green;
+                    }
+                    &.okay-health {
+                        background-color: @orange-yellow;
+                    }
+                    &.dying {
+                        background-color: @red-dying;
+                    }
                 }
             }
 
