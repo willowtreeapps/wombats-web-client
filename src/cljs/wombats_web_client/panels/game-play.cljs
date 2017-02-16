@@ -44,10 +44,12 @@
        :closed
        "GAME OVER"
            
+       ;; TODO: #21 Pull down round number from API and display it
        (:pending-open
         :pending-closed)
        "ROUND 1 STARTS IN: 2:06"
 
+       ;; TODO: Pull down round number from API and display it
        :active
        "ROUND 1"
 
