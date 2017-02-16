@@ -64,7 +64,8 @@
 (defn- max-players [info]
   (let [{:keys [max-players]} @info]
     [:p.wombat-counter (when max-players
-          (str "Wombats: 1/" max-players))]))
+                         ;; TODO: Use player count here
+                         (str "Wombats: 1/" max-players))]))
 
 (defn chat-title []
   [:div.chat-title 
