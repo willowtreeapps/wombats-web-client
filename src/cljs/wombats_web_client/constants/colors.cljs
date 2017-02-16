@@ -8,3 +8,8 @@
                {:color-text "red" :color-hex "#D40000"}
                {:color-text "white" :color-hex "#C9C9C9"}
                {:color-text "yellow" :color-hex "#E1E700"}])
+
+(defonce wombat-green "#7ed321")
+(defonce orange-yellow "#ffa300")
+(defonce red-dying "#ff0000")
+(defonce transparent "transparent")
