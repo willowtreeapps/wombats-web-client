@@ -3,11 +3,11 @@
 .game-ranking-box {
     height: 50%;
 
-    ul {
+    .list-wombat-status {
         list-style-type: none;
         padding: 0;
 
-        li {
+        .wombat-status {
             min-width: 300px;
             height: 30px;
             background-color: @white-10;
@@ -18,27 +18,34 @@
             align-items: center;
 
             .health-bar {
-                width: 30px;
-	        height: 4px;  /* Can be anything */
-	        background: #555;
-                transform: rotate(-90deg);
-            }
-
-            .health-bar[value] {
-                /* Reset the default appearance */
-                -webkit-appearance: none;
-                appearance: none;
-
-                width: 30px;
-                height: 4px;
+                position: relative;
                 margin-left: -13px;
                 margin-right: -9px;
-            }
+                width: 30px;
+	        height: 4px;
+                transform: rotate(-90deg);
 
-            .health-bar[value]::-webkit-progress-value {
-                background-color: @wombat-green;
+                .filling {
+                    display: block;
+                    height: 100%;
+                    position: relative;
+                    overflow: hidden;
+
+                    &.none {
+                        background-color: @transparent;
+                    }
+
+                    &.healthy {
+                        background-color: @wombat-green;
+                    }
+                    &.okay-health {
+                        background-color: @orange-yellow;
+                    }
+                    &.dying {
+                        background-color: @red-dying;
+                    }
+                }
             }
-            
 
             .img-wrapper {  
                 width: 30px;
@@ -56,12 +63,13 @@
             }
 
             .username {
-                padding-left: 80px;
+                position: absolute;
+                padding-left: 200px;
             }
 
             .score {
                 position: absolute;
-                right: 5px;
+                right: 10px;
             }
 
             & > div {
@@ -69,6 +77,10 @@
                 vertical-align: middle;
                 height: 100%;
                 line-height: 30px;
+            }
+
+            &.disabled {
+                opacity: 0.5;
             }
         }
     }
