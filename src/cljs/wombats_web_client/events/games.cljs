@@ -44,7 +44,7 @@
    #(re-frame/dispatch [:joined-games %])
    #(print "error with getting my games")))
 
-(defn join-open-game [game-id wombat-id color cb-success cb-error]
+(defn join-open-game [game-id wombat-id color cb-success]
   (join-game
    game-id
    wombat-id
@@ -52,9 +52,8 @@
    (fn []
      (cb-success)
      (get-all-joined-games (get-current-user-id)))
-   (fn []
-     (cb-error)
-     (print "error with join-open-game"))))
+   (fn [error]
+     (re-frame/dispatch [:update-modal-error (:message (:response error))]))))
 
 (re-frame/reg-event-db
  :open-games
