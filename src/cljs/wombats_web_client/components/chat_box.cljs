@@ -48,19 +48,29 @@
   [messages stats]
   (fn []
     (let [stats @stats
-          messages @messages]
-      [:ul {:class-name "chat-box-message-container"}
-       (if (pos? (count messages))
-         (for [{:keys [username
-                       message
-                       timestamp]} messages]
-           ^{:key (str username "-" timestamp)}
-           [:li {:class-name "chat-msg"}
-            [:span {:class-name "msg-timestamp"} (format-time timestamp)]
-            [:span {:class-name "msg-username"
-                    :style {:color (get-username-color stats username)}} username]
-            [:span {:class-name "msg-body"} message]])
-         [default-message])])))
+          messages @messages
+          element (first (array-seq (.getElementsByClassName js/document 
+                                                             "chat-box-message-container")))]
+      
+      ;; Check if you should auto scroll to the bottom
+      (when (and element (= (+ element.scrollTop element.clientHeight) element.scrollHeight))
+        ;; On the next tick, scroll the rendered element down
+        (js/setTimeout #(set! (.-scrollTop element) 
+                              element.scrollHeight) 
+                       0))
+
+       [:ul {:class-name "chat-box-message-container"}
+        (if (pos? (count messages))
+          (for [{:keys [username
+                        message
+                        timestamp]} messages]
+            ^{:key (str username "-" timestamp)}
+            [:li {:class-name "chat-msg"}
+             [:span {:class-name "msg-timestamp"} (format-time timestamp)]
+             [:span {:class-name "msg-username"
+                     :style {:color (get-username-color stats username)}} username]
+             [:span {:class-name "msg-body"} message]])
+          [default-message])])))
 
 (defn chat-box-input
   [game-id]
