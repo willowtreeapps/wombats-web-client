@@ -113,7 +113,7 @@
 (defn get-current-user
   "fetches the current user object"
   [on-success on-error]
-  (GET self-url {:response-format :json
+  (GET self-url {:response-format (edn-response-format)
                  :keywords? true
                  :headers (add-auth-header {})
                  :handler on-success
@@ -129,6 +129,7 @@
 (re-frame/reg-event-db
  :update-user
  (fn [db [_ current-user]]
+   (print current-user)
    (ws/add-user-token (:access-token current-user))
    (assoc db :current-user current-user)))
 
@@ -146,17 +147,17 @@
 (re-frame/reg-event-db
  :user-error
  (fn [db [_ error]]
-   (print "temporary error")
-   (db)))
+   (print "temporary error")))
 
 (re-frame/reg-event-fx
  :bootstrap-user-data
  (fn [{:keys [db]} [_ user]]
    {:db (assoc db :auth-token (get-item token))
     :http-xhrio {:method          :get
-                 :uri             (my-wombats-url (user :id))
-                 :response-format (json-response-format {:keywords? true})
+                 :uri             (my-wombats-url (user :user/id))
+                 :headers         (add-auth-header {})
+                 :response-format (edn-response-format)
                  :on-success      [:update-wombats]
                  :on-failure      [:user-error]}
     :dispatch [:update-user user]
-    :get-joined-games (user :id)}))
+    :get-joined-games (user :user/id)}))

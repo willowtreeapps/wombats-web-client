@@ -10,18 +10,19 @@
 (defn get-arena-text-info [{:keys [joined capacity rounds width height]}]
   (str joined "/" capacity " Players | " rounds " Rounds | " width "x" height))
 
-(defn freq [freq-name type]
+(defn freq [freq-name amt]
   [:div.freq-object
    [:img {:src (str "/images/" freq-name ".png")}]
-   [:div.freq-amt "Medium"]])
+   [:div.freq-amt amt]])
 
-(defn get-arena-frequencies []
-  [:div.arena-freq
-   [freq "food_cherry"]
-   [freq "poison_vial2"]
-   [freq "steelwall_1"]
-   [freq "zakano_front"]
-   [freq "woodwall_1"]])
+(defn get-arena-frequencies [arena]
+  (let [{food :arena/food
+         poison :arena/poison
+         zakano :arena/zakano} arena]
+    [:div.arena-freq
+     [freq "food_cherry" food]
+     [freq "poison_vial2" poison]
+     [freq "zakano_front" zakano]]))
 
 (defn joinable-game-card [show-join game-id occupied-colors]
   (let [show-join-val @show-join]
@@ -44,14 +45,15 @@
 
 (defn game-card [game is-joinable]
   (let [show-join (reagent/atom false)
-        game-id (:game/id game)
-        game-name (:game/name game)
-        game-joined-players (count (:game/players game))
-        game-capacity (:game/max-players game)
-        game-rounds (:game/num-rounds game)
-        arena-width (:arena/width (:game/arena game))
-        arena-height (:arena/height (:game/arena game))
-        wombats (re-frame/subscribe [:my-wombats])
+        {arena :game/arena
+         game-id :game/id
+         game-name :game/name
+         game-players :game/players
+         game-capacity :game/max-players
+         game-rounds :game/num-rounds} game
+        game-joined-players (count game-players)
+        {arena-width :arena/width
+         arena-height :arena/height} arena
         occupied-colors (get-occupied-colors game)]
     (fn []
       [:div.game-card {:key game-id
@@ -68,4 +70,4 @@
                                      :rounds game-rounds
                                      :width arena-width
                                      :height arena-height})]]
-        [get-arena-frequencies]]])))
+        [get-arena-frequencies arena]]])))
