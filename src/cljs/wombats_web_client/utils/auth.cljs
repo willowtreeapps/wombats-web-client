@@ -14,4 +14,4 @@
   (merge (get-auth-header) headers))
 
 (defn get-current-user-id []
-  (:id @(re-frame/subscribe [:current-user])))
+  (:user/id @(re-frame/subscribe [:current-user])))
