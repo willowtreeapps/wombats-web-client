@@ -33,6 +33,7 @@
                   :handler on-success
                   :error-handler on-error}))
 
+;; TODO Scaling Issue with Lots of games - only update with games that are new?
 (defn get-open-games []
   (get-pending-open-games
    #(re-frame/dispatch [:open-games %])

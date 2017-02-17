@@ -5,6 +5,7 @@
               [goog.events :as events]
               [goog.history.EventType :as EventType]
               [re-frame.core :as re-frame]
+              [wombats-web-client.events.games :refer [get-open-games]]
               [wombats-web-client.events.user :refer [sign-out-event]]))
 
 (defn hook-browser-navigation! []
@@ -21,6 +22,7 @@
   ;; define routes here
 
   (defroute "/" []
+    (get-open-games)
     (re-frame/dispatch [:set-active-panel :view-games-panel]))
 
   (defroute "/games/:game-id" {game-id :game-id}
