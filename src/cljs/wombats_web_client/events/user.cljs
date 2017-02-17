@@ -130,7 +130,7 @@
  :update-user
  (fn [db [_ current-user]]
    (print current-user)
-   (ws/add-user-token (:access-token current-user))
+   (ws/add-user-token (:user/access-token current-user))
    (assoc db :current-user current-user)))
 
 (re-frame/reg-event-db
