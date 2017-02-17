@@ -13,7 +13,6 @@
 
     .modal {
         width: 370px;
-        height: 354px;
         position: fixed;
         top: 50%;
         left: 50%;
@@ -31,6 +30,13 @@
             text-align: center;
         }
 
+        .modal-error {
+            color: @error-red;
+            font-size: 12px;
+            margin: 0 30px 10px;
+            text-align: center;
+        }
+
         .desc {
             padding: 0 30px 30px;
         }
@@ -39,6 +45,15 @@
             text-align: right;
             margin-right: 25px;
             margin-bottom: 15px;
+
+            input {
+                outline: none;
+
+                &:hover {
+                    color: @wombat-green;
+                    opacity: 0.3;
+                }
+            }
         }
     }
 }

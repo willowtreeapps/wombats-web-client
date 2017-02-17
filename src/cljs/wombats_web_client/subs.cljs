@@ -23,6 +23,11 @@
    (:modal db)))
 
 (re-frame/reg-sub
+ :modal-error
+ (fn [db _]
+   (:modal-error db)))
+
+(re-frame/reg-sub
  :my-wombats
  (fn [db _]
    (:my-wombats db)))

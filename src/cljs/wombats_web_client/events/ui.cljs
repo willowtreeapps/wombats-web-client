@@ -40,3 +40,8 @@
  :set-modal
  (fn [db [_ modal-form]]
    (assoc db :modal modal-form)))
+
+(re-frame/reg-event-db
+ :update-modal-error
+ (fn [db [_ modal-error]]
+   (assoc db :modal-error modal-error)))

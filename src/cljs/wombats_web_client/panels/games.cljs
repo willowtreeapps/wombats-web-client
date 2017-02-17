@@ -7,7 +7,7 @@
 ;; Games Panel
 
 (defonce empty-open-page "Sorry, there are no games to join at the moment.")
-(defonce empty-joined-page "Join an available game to get started!")
+(defonce empty-joined-page "You haven’t joined any games yet. Start playing now!")
 
 (defn temp-poll-button []
   [:input {:type "button"
