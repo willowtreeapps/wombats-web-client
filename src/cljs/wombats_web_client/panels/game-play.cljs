@@ -61,11 +61,11 @@
      (when name
        (str name " - High Score"))]))
 
-(defn- max-players [info]
-  (let [{:keys [max-players]} @info]
-    [:p.wombat-counter (when max-players
-                         ;; TODO: Use player count here
-                         (str "Wombats: 1/" max-players))]))
+(defn- max-players [info stats]
+  (let [{:keys [max-players]} @info
+        player-count (count @stats)]
+    [:p.wombat-counter (when (and max-players player-count)
+                         (str "Wombats: " player-count "/" max-players))]))
 
 (defn chat-title []
   [:div.chat-title 
@@ -83,7 +83,7 @@
      [:div.top-panel
       [game-play-title info]
       [game-play-subtitle info]
-      [max-players info]
+      [max-players info stats]
       [ranking-box @game-id stats]]
 
      [:div.chat-panel
