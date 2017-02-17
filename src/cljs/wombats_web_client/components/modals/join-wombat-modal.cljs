@@ -21,7 +21,7 @@
   (swap! cmpnt-state assoc :wombat-name name))
 
 (defn wombat-options [wombat cmpnt-state]
-  (let [{:keys [name id]} wombat]
+  (let [{:keys [wombat/name wombat/id]} wombat]
     [:li {:key id
           :onClick #(on-wombat-selection cmpnt-state id name)} name]))
 
