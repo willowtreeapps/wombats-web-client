@@ -15,7 +15,7 @@
   (when config/debug?
     (enable-console-print!)
     (enable-re-frisk!)
-    (print "dev mode")))
+    (println "dev mode")))
 
 (defn mount-root []
   (re-frame/clear-subscription-cache!)

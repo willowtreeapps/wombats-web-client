@@ -12,7 +12,7 @@
 (defn- open-game-polling
   "Poll for newly created games every minute when viewing games panel and repopulate app state"
   []
- (js/setInterval #(get-open-games) 1000))
+ (js/setInterval #(get-open-games) 60000))
 
 (defn tab-view-toggle [cmpnt-state]
   (let [show-open (:show-open @cmpnt-state)]
@@ -36,6 +36,7 @@
             joined @joined-games
             show-open (:show-open @cmpnt-state)
             games (if show-open open joined)]
+        (print show-open)
         [:div.games-panel
          [tab-view-toggle cmpnt-state]
          [:div.games

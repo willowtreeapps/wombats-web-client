@@ -55,7 +55,7 @@
         {arena-width :arena/width
          arena-height :arena/height} arena
         occupied-colors (get-occupied-colors game)]
-    (fn []
+    (fn [game is-joinable]
       [:div.game-card {:key game-id
                        :onMouseOver #(reset! show-join true)
                        :onMouseOut #(reset! show-join false)}

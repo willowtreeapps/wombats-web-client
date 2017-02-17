@@ -28,9 +28,12 @@
 
 (defn root [wombat]
   (let [isUserHovering? (reagent/atom false)
-        color (reagent/atom nil)]
-    [:div.wombat-card {:key (:wombat/id wombat)
+        color (reagent/atom nil)
+        {id :wombat/id
+         name :wombat/name
+         url :wombat/url} wombat]
+    [:div.wombat-card {:key id
                        :onMouseOver #(reset! isUserHovering? true)
                        :onMouseOut #(reset! isUserHovering? false)}
      [:img.wombat-image {:src (str "/images/wombat_purple_right.png")}]
-     [wombat-information isUserHovering? (:wombat/name wombat) (:wombat/id wombat) (:wombat/url wombat)]]))
+     [wombat-information isUserHovering? name id url]]))
