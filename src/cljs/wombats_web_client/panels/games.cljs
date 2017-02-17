@@ -9,10 +9,10 @@
 (defonce empty-open-page "Sorry, there are no games to join at the moment.")
 (defonce empty-joined-page "You haven’t joined any games yet. Start playing now!")
 
-(defn temp-poll-button []
-  [:input {:type "button"
-           :value "GET GAMES"
-           :onClick #(get-open-games)}])
+(defn- open-game-polling
+  "Poll for newly created games every minute when viewing games panel and repopulate app state"
+  []
+  (js/setInterval #(get-open-games) 60000))
 
 (defn tab-view-toggle [cmpnt-state]
   (let [show-open (:show-open @cmpnt-state)]
@@ -36,7 +36,6 @@
             games (if show-open open joined)]
         [:div.games-panel
          [tab-view-toggle cmpnt-state]
-         [temp-poll-button]
          [:div.games
           (if games
             [:ul.games-list 
@@ -49,9 +48,13 @@
 
 (defn games []
   (let [current-user (re-frame/subscribe [:current-user])
-        cmpnt-state (reagent/atom {:show-open true})]
-    (fn []
-      (let [current-user @current-user]
-        (if-not current-user
-          [login-prompt]
-          [main-panel cmpnt-state])))))
+        cmpnt-state (reagent/atom {:show-open true})
+        polling (open-game-polling)]
+    (reagent/create-class
+     {:component-will-unmount #(js/clearInterval polling)
+      :reagent-render
+      (fn []
+        (let [current-user @current-user]
+          (if-not current-user
+            [login-prompt]
+            [main-panel cmpnt-state])))})))
