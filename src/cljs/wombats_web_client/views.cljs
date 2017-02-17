@@ -5,8 +5,7 @@
               [wombats-web-client.components.navbar :as navbar]
 
               ;; Panels
-              [wombats-web-client.panels.open-games :as open-games-panel]
-              [wombats-web-client.panels.my-games :as my-games-panel]
+              [wombats-web-client.panels.games :as view-games-panel]
               [wombats-web-client.panels.account :as account-panel]
               [wombats-web-client.panels.game-play :as game-play-panel]))
 
@@ -14,8 +13,7 @@
 
 (defn- panels [panel-name]
   (case panel-name
-    :open-games-panel [open-games-panel/open-games]
-    :my-games-panel [my-games-panel/my-games]
+    :view-games-panel [view-games-panel/games]
     :account-panel [account-panel/account]
     :game-play-panel [game-play-panel/game-play]
     [:div]))

@@ -21,15 +21,14 @@
   ;; define routes here
 
   (defroute "/" []
-    (re-frame/dispatch [:set-active-panel :open-games-panel]))
+    (re-frame/dispatch [:set-active-panel :view-games-panel]))
 
-  (defroute "/my-games" []
-    (re-frame/dispatch [:set-active-panel :my-games-panel]))
-
-  (defroute "/my-games/:game-id" {game-id :game-id}
-    (js/console.log (str "Game Id: " game-id))
+  (defroute "/games/:game-id" {game-id :game-id}
     (re-frame/dispatch [:game/join-game game-id])
     (re-frame/dispatch [:set-active-panel :game-play-panel]))
+
+  (defroute "/config" []
+    (re-frame/dispatch [:set-active-panel :config-panel]))
 
   (defroute "/account" []
     (re-frame/dispatch [:set-active-panel :account-panel]))

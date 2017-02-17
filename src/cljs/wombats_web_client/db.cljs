@@ -11,9 +11,11 @@
    :users []
    :modal nil
    :open-games nil
-   :my-games nil
+   :joined-games nil
    :game/arena nil
+   :game/info nil
    :game/messages []
    :game/stats {}
    :join-game-selections []
-   :spritesheet nil})
+   :spritesheet nil
+   :modal-error nil})

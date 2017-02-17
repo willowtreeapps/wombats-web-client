@@ -3,9 +3,9 @@
             [reagent.core :as reagent]
             [wombats-web-client.components.modals.join-wombat-modal :refer [join-wombat-modal]]))
 
-(defn open-join-game-modal [game-id]
+(defn open-join-game-modal [game-id occupied-colors]
   (fn []
-    (re-frame/dispatch [:set-modal #(join-wombat-modal game-id)])))
+    (re-frame/dispatch [:set-modal #(join-wombat-modal game-id occupied-colors)])))
 
 (defn get-arena-text-info [{:keys [joined capacity rounds width height]}]
   (str joined "/" capacity " Players | " rounds " Rounds | " width "x" height))
@@ -23,18 +23,24 @@
    [freq "zakano_front"]
    [freq "woodwall_1"]])
 
-(defn joinable-game-card [show-join game-id]
+(defn joinable-game-card [show-join game-id occupied-colors]
   (let [show-join-val @show-join]
     [:div.arena-preview
      [:img {:src "/images/mini-arena.png"}]
      [:input.join-button {:class (when show-join-val "display")
                           :type "button"
                           :value "JOIN"
-                          :onClick (open-join-game-modal game-id)}]]))
+                          :onClick (open-join-game-modal game-id occupied-colors)}]]))
 
 (defn navigate-game-card [game-id]
   [:div.arena-preview
-   [:a {:href (str "#/my-games/" game-id)} [:img {:src "/images/mini-arena.png"}]]])
+   [:a {:href (str "#/games/" game-id)} [:img {:src "/images/mini-arena.png"}]]])
+
+(defn get-occupied-colors [game]
+  (let [players (:game/players game)]
+    (reduce (fn [coll player] 
+              (conj coll (:player/color player))) 
+            [] players)))
 
 (defn game-card [game is-joinable]
   (let [show-join (reagent/atom false)
@@ -45,13 +51,14 @@
         game-rounds (:game/num-rounds game)
         arena-width (:arena/width (:game/arena game))
         arena-height (:arena/height (:game/arena game))
-        wombats (re-frame/subscribe [:my-wombats])]
+        wombats (re-frame/subscribe [:my-wombats])
+        occupied-colors (get-occupied-colors game)]
     (fn []
       [:div.game-card {:key game-id
                        :onMouseOver #(reset! show-join true)
                        :onMouseOut #(reset! show-join false)}
        (if is-joinable
-         [joinable-game-card show-join game-id]
+         [joinable-game-card show-join game-id occupied-colors]
          [navigate-game-card game-id])
        [:div.game-information
         [:div.text-info

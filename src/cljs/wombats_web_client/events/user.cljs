@@ -12,8 +12,6 @@
                                                        github-signout-url
                                                        my-wombats-url
                                                        my-wombat-by-id-url]]
-            [wombats-web-client.events.games :refer [get-open-games
-                                                     get-all-my-games]]
             [wombats-web-client.utils.socket :as ws]))
 
 ;; AUTH SPECIFIC
@@ -36,10 +34,10 @@
   "loads all wombats associated with user id"
   [id on-success on-error]
   (GET (my-wombats-url id) {:response-format :json
-                              :keywords? true
-                              :headers (add-auth-header {})
-                              :handler on-success
-                              :error-handler on-error}))
+                            :keywords? true
+                            :headers (add-auth-header {})
+                            :handler on-success
+                            :error-handler on-error}))
 
 (defn get-all-wombats []
   (load-wombats
@@ -51,12 +49,12 @@
   "creates and returns a wombat"
   [id name url on-success on-error]
   (POST (my-wombats-url id) {:response-format :json
-                                :format (edn-request-format)
-                                :keywords? true
-                                :headers (add-auth-header {})
-                                :handler on-success
-                                :params {:wombat/name name :wombat/url url}
-                                :error-handler on-error}))
+                             :format (edn-request-format)
+                             :keywords? true
+                             :headers (add-auth-header {})
+                             :handler on-success
+                             :params {:wombat/name name :wombat/url url}
+                             :error-handler on-error}))
 
 (defn delete-wombat-by-id
   "deletes wombat from db by id"
@@ -79,7 +77,7 @@
                                                 :params {:wombat/name name :wombat/url url}
                                                 :error-handler on-error}))
 (defn create-new-wombat
-  [name url cb-success cb-error]
+  [name url cb-success]
   (post-new-wombat
    (get-current-user-id)
    name
@@ -87,12 +85,10 @@
    (fn []
      (get-all-wombats)
      (cb-success))
-   (fn []
-     (print "error with create-new-wombat")
-     (cb-error))))
+   #(re-frame/dispatch [:update-modal-error (str %)])))
 
 (defn edit-wombat-by-id
-  [name url wombat-id cb-success cb-error]
+  [name url wombat-id cb-success]
   (edit-wombat
    (get-current-user-id)
    wombat-id
@@ -101,21 +97,17 @@
    (fn []
      (get-all-wombats)
      (cb-success))
-   (fn []
-     (print "error with editing wombat by id")
-     (cb-error))))
+   #(re-frame/dispatch [:update-modal-error (str %)])))
 
 (defn delete-wombat
-  [id cb-success cb-error]
+  [id cb-success]
   (delete-wombat-by-id
    (get-current-user-id)
    id
    (fn []
      (get-all-wombats)
      (cb-success))
-   (fn []
-     (print "error with deleting wombat by id")
-     (cb-error))))
+   #(re-frame/dispatch [:update-modal-error (str %)])))
 
 ;; USER SPECIFIC
 (defn get-current-user
@@ -158,14 +150,14 @@
    (db)))
 
 (re-frame/reg-event-fx
-  :bootstrap-user-data
-  (fn [{:keys [db]} [_ user]]
-    {:db (assoc db :auth-token (get-item token))
-     :http-xhrio {:method          :get
-                  :uri             (my-wombats-url (user :id))
-                  :response-format (json-response-format {:keywords? true})
-                  :on-success      [:update-wombats]
-                  :on-failure      [:user-error]}
-     :dispatch [:update-user user]
-     :get-open-games nil
-     :get-my-games (user :id)}))
+ :bootstrap-user-data
+ (fn [{:keys [db]} [_ user]]
+   {:db (assoc db :auth-token (get-item token))
+    :http-xhrio {:method          :get
+                 :uri             (my-wombats-url (user :id))
+                 :response-format (json-response-format {:keywords? true})
+                 :on-success      [:update-wombats]
+                 :on-failure      [:user-error]}
+    :dispatch [:update-user user]
+    :get-open-games nil
+    :get-joined-games (user :id)}))

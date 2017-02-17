@@ -23,6 +23,11 @@
    (:modal db)))
 
 (re-frame/reg-sub
+ :modal-error
+ (fn [db _]
+   (:modal-error db)))
+
+(re-frame/reg-sub
  :my-wombats
  (fn [db _]
    (:my-wombats db)))
@@ -33,9 +38,9 @@
    (:open-games db)))
 
 (re-frame/reg-sub
- :my-games
+ :joined-games
  (fn [db _]
-   (:my-games db)))
+   (:joined-games db)))
 
 (re-frame/reg-sub
  :join-game-selections
@@ -46,6 +51,11 @@
  :game/arena
  (fn [db _]
    (:game/arena db)))
+
+(re-frame/reg-sub
+ :game/info
+ (fn [db _]
+   (:game/info db)))
 
 (re-frame/reg-sub
  :game/messages

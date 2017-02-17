@@ -24,6 +24,11 @@
    (assoc db :game/stats stats)))
 
 (re-frame/reg-event-db
+ :game/info
+ (fn [db [_ info]]
+   (assoc db :game/info info)))
+
+(re-frame/reg-event-db
  :game/join-game
  (fn [db [_ game-id]]
    ;; TODO Add socket connection to bootstrap
