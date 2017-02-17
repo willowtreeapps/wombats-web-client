@@ -154,7 +154,7 @@
  (fn [{:keys [db]} [_ user]]
    {:db (assoc db :auth-token (get-item token))
     :http-xhrio {:method          :get
-                 :uri             (my-wombats-url (user :user/id))
+                 :uri             (my-wombats-url (:user/id user))
                  :headers         (add-auth-header {})
                  :response-format (edn-response-format)
                  :on-success      [:update-wombats]
