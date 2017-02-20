@@ -30,12 +30,13 @@
   []
   600)
 
-(defn clear-game-state []
+(defn clear-game-panel-state []
   (re-frame/dispatch [:game/update-frame nil])
   (re-frame/dispatch [:game/clear-chat-messages])
   (re-frame/dispatch [:game/stats-update {}])
   (ws/send-message :leave-game {:game-id @game-id})
-  (reset! game-id nil))
+  (reset! game-id nil)
+  (re-frame/dispatch [:set-modal nil true]))
 
 (defn- game-play-title [info]
   (let [{:keys [status
@@ -95,9 +96,9 @@
   (let [dimensions (get-arena-dimensions)]
     ;; TODO This should come from the router
     (reset! game-id (get-game-id))
-    ; (re-frame/dispatch [:set-modal #(winner-modal "green" "Wilma" "emilyseibert")])
+    (re-frame/dispatch [:set-modal #(winner-modal "green" "Wilma" "emilyseibert") true])
     (reagent/create-class
-     {:component-will-unmount #(clear-game-state)
+     {:component-will-unmount #(clear-game-panel-state)
       :display-name "game-play-panel"
       :reagent-render
       (fn []

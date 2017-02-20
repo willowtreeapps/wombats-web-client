@@ -21,19 +21,25 @@
 (defn show-panel [panel-name]
   [panels panel-name])
 
+(defn display-special-modal [special-modal]
+  [:div {:class "modal-container"}
+   [special-modal]])
+
 (defn display-modal
   [modal]
-  (when modal
-    [:div {:class-name "modal-container"}
-     [:div {:class-name "modal-overlay"}]
-     [modal]]))
+  [:div {:class-name "modal-container"}
+   [:div {:class-name "modal-overlay"}]
+   [modal]])
 
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])
-        modal (re-frame/subscribe [:modal])]
+        modal (re-frame/subscribe [:modal])
+        special-modal (re-frame/subscribe [:special-modal])]
     (fn []
-      (let [current-modal @modal]
+      (let [modal @modal
+            special-modal @special-modal]
         [:div.app-container
-         [display-modal current-modal]
+         (when modal [display-modal modal])
+         (when special-modal [display-special-modal special-modal])
          [navbar/root]
          [show-panel @active-panel]]))))
