@@ -68,6 +68,12 @@
    (:game/stats db)))
 
 (re-frame/reg-sub
+ :game/details
+ (fn [db [_ game-id]]
+   (first (filter #(= (:game/id %) game-id)
+                  (:open-games db)))))
+
+(re-frame/reg-sub
  :spritesheet
  (fn [db _]
    (:spritesheet db)))

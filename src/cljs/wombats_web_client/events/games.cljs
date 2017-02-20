@@ -15,14 +15,16 @@
                   :handler on-success
                   :error-handler on-error}))
 
-(defn join-game [game-id wombat-id color on-success on-error]
+(defn join-game [game-id wombat-id color password on-success on-error]
   (PUT (games-join-url game-id) {:response-format (edn-response-format)
                           :keywords? true
                           :format (edn-request-format)
                           :headers (add-auth-header {})
                           :handler on-success
                           :error-handler on-error
-                          :params {:player/wombat-id wombat-id :player/color color}}))
+                          :params {:player/wombat-id wombat-id
+                                   :player/color color
+                                   :game/password password}}))
 
 (defn get-joined-games [id on-success on-error]
   (GET games-url {:response-format (edn-response-format)
@@ -39,17 +41,18 @@
    #(re-frame/dispatch [:open-games %])
    #(print "error on get open games")))
 
-(defn get-all-joined-games [user-id] 
+(defn get-all-joined-games [user-id]
   (get-joined-games
    user-id
    #(re-frame/dispatch [:joined-games %])
    #(print "error with getting my games")))
 
-(defn join-open-game [game-id wombat-id color cb-success]
+(defn join-open-game [game-id wombat-id color password cb-success]
   (join-game
    game-id
    wombat-id
    color
+   password
    (fn []
      (cb-success)
      (get-all-joined-games (get-current-user-id)))
@@ -67,7 +70,7 @@
    (assoc db :joined-games joined-games)))
 
 (re-frame/reg-event-db
- :add-join-selection 
+ :add-join-selection
  (fn [db [_ sel]]
    (update db :join-game-selections (fn [selections] (conj selections sel)))))
 
