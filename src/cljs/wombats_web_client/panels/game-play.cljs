@@ -2,6 +2,7 @@
   (:require [wombats-web-client.components.arena :as arena]
             [wombats-web-client.components.chat-box :refer [chat-box]]
             [wombats-web-client.components.game-ranking :refer [ranking-box]]
+            [wombats-web-client.components.modals.wombat-modal :refer [winner-modal]]
             [wombats-web-client.utils.socket :as ws]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
@@ -94,7 +95,7 @@
   (let [dimensions (get-arena-dimensions)]
     ;; TODO This should come from the router
     (reset! game-id (get-game-id))
-
+    ; (re-frame/dispatch [:set-modal #(winner-modal "green" "Wilma" "emilyseibert")])
     (reagent/create-class
      {:component-will-unmount #(clear-game-state)
       :display-name "game-play-panel"
