@@ -2,10 +2,20 @@
 
 .modal-container {
     .join-wombat-modal {
+        .private-game-msg {
+            width: 310px;
+            margin: 0 auto;
+            margin-bottom: 40px;
+        }
+
         .select-wombat {
             width: 310px;
             margin: 0 auto;
             margin-bottom: 40px;
+
+            .select-wombat-label {
+                padding-left: 0;
+            }
 
             .placeholder {
                 color: @black;
@@ -20,10 +30,10 @@
                 &.unselected {
                     background-color: @white;
                 }
-                
+
                 .text {
                     color: @black;
-                    
+
                     &.unselected {
                         color: @warm-grey;
                     }
@@ -37,7 +47,7 @@
                         transform: rotate(180deg);
                     }
                 }
-            } 
+            }
 
             .dropdown-wrapper {
                 display: block;
@@ -49,7 +59,7 @@
                 z-index: 1;
                 width: 310px;
                 box-shadow: 0px 8px 16px 0px @black-40;
-                
+
                 li {
                     list-style-type: none;
                     padding: 10px;
