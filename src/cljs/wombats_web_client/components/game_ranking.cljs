@@ -7,14 +7,14 @@
    (<= 1 hp 29) "dying"
    :else "none"))
 
-(defn get-adjusted-hp [isStarting?]
-  (if isStarting? 100 0))
+(defn get-adjusted-hp [is-starting?]
+  (if is-starting? 100 0))
 
 (defn ranking-box
   [game-id stats info]
   (fn []
     (let [game-status (:status @info)
-          isStarting? (or (= game-status :pending-open) (= game-status :pending-closed))]
+          is-starting? (or (= game-status :pending-open) (= game-status :pending-closed))]
       [:div {:class-name "game-ranking-box"}
        [:ul.list-wombat-status
         (for [{:keys [wombat-name
@@ -22,8 +22,8 @@
                       score
                       hp
                       color]} @stats]
-          (let [hpNil? (nil? hp)
-                adjusted-hp-value (if hpNil? (get-adjusted-hp isStarting?) hp)]
+          (let [hp-nil? (nil? hp)
+                adjusted-hp-value (if hp-nil? (get-adjusted-hp is-starting?) hp)]
             ^{:key username} [:li.wombat-status {:class (when (= adjusted-hp-value 0) "disabled")}
                               [:div.health-bar
                                [:span.filling {:class (get-health-color adjusted-hp-value)
