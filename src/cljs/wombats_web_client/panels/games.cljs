@@ -14,6 +14,7 @@
   []
  (js/setInterval #(get-open-games) 60000))
 
+
 (defn tab-view-toggle [cmpnt-state]
   (let [show-open (:show-open @cmpnt-state)]
     [:div.tab-game-toggle
@@ -30,6 +31,7 @@
   (let [open-games (re-frame/subscribe [:open-games])
         joined-games (re-frame/subscribe [:joined-games])
         polling (open-game-polling)]
+    (get-open-games)
     (fn []
       (swap! cmpnt-state assoc :polling polling)
       (let [open @open-games

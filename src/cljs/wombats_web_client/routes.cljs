@@ -22,7 +22,6 @@
   ;; define routes here
 
   (defroute "/" []
-    (get-open-games)
     (re-frame/dispatch [:set-active-panel :view-games-panel]))
 
   (defroute "/games/:game-id" {game-id :game-id}
