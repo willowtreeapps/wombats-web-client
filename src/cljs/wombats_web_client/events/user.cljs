@@ -18,7 +18,7 @@
 (defn sign-out-user
   "signs out user from server and removes their auth token"
   []
-  (GET github-signout-url {:response-format :json
+  (GET github-signout-url {:response-format (edn-response-format)
                            :keywords? true
                            :headers (add-auth-header {})}))
 
@@ -33,7 +33,7 @@
 (defn load-wombats
   "loads all wombats associated with user id"
   [id on-success on-error]
-  (GET (my-wombats-url id) {:response-format :json
+  (GET (my-wombats-url id) {:response-format (edn-response-format)
                             :keywords? true
                             :headers (add-auth-header {})
                             :handler on-success
@@ -48,7 +48,7 @@
 (defn post-new-wombat
   "creates and returns a wombat"
   [id name url on-success on-error]
-  (POST (my-wombats-url id) {:response-format :json
+  (POST (my-wombats-url id) {:response-format (edn-response-format)
                              :format (edn-request-format)
                              :keywords? true
                              :headers (add-auth-header {})
@@ -59,7 +59,7 @@
 (defn delete-wombat-by-id
   "deletes wombat from db by id"
   [user-id wombat-id on-success on-error]
-  (DELETE (my-wombat-by-id-url user-id wombat-id) {:response-format :json
+  (DELETE (my-wombat-by-id-url user-id wombat-id) {:response-format (edn-response-format)
                                                    :format (edn-request-format)
                                                    :keywoards? true
                                                    :headers (add-auth-header {})
@@ -69,7 +69,7 @@
 (defn edit-wombat
   "edits wombat by id in db"
   [user-id wombat-id name url on-success on-error]
-  (PUT (my-wombat-by-id-url user-id wombat-id) {:response-format :json
+  (PUT (my-wombat-by-id-url user-id wombat-id) {:response-format (edn-response-format)
                                                 :format (edn-request-format)
                                                 :keywords? true
                                                 :headers (add-auth-header {})
@@ -129,7 +129,6 @@
 (re-frame/reg-event-db
  :update-user
  (fn [db [_ current-user]]
-   (print current-user)
    (ws/add-user-token (:user/access-token current-user))
    (assoc db :current-user current-user)))
 
