@@ -7,32 +7,33 @@
    (<= 1 hp 29) "dying"
    :else "none"))
 
-(defn get-adjusted-hp [is-starting?]
-  (if is-starting? 100 0))
+(defn get-adjusted-hp [info]
+  (let [game-status (:status @info)
+        is-starting? (or (= game-status :pending-open) (= game-status :pending-closed))]
+    (if is-starting? 100 0)))
 
+(defn render-wombat-status [info stat]
+  (let [{:keys [wombat-name
+                username
+                score
+                hp
+                color]} stat
+        adjusted-hp-value (if (nil? hp) (get-adjusted-hp info) hp)]
+    ^{:key username} [:li.wombat-status {:class (when (= adjusted-hp-value 0) "disabled")}
+                            [:div.health-bar
+                             [:span.filling {:class (get-health-color adjusted-hp-value)
+                                             :style {:width (str adjusted-hp-value "%")}}]]
+                            [:div.img-wrapper
+                             [:img {:src (str "/images/wombat_" color "_right.png")}]]
+                            [:div.wombat-name wombat-name]
+                            [:div.username username]
+                            [:div.score score]]))
 (defn ranking-box
-  [game-id stats info]
+  [stats info]
   (fn []
-    (let [game-status (:status @info)
-          is-starting? (or (= game-status :pending-open) (= game-status :pending-closed))]
-      [:div {:class-name "game-ranking-box"}
-       [:ul.list-wombat-status
-        (for [{:keys [wombat-name
-                      username
-                      score
-                      hp
-                      color]} @stats]
-          (let [hp-nil? (nil? hp)
-                adjusted-hp-value (if hp-nil? (get-adjusted-hp is-starting?) hp)]
-            ^{:key username} [:li.wombat-status {:class (when (= adjusted-hp-value 0) "disabled")}
-                              [:div.health-bar
-                               [:span.filling {:class (get-health-color adjusted-hp-value)
-                                               :style {:width (str adjusted-hp-value "%")}}]]
-                              [:div.img-wrapper
-                               [:img {:src (str "/images/wombat_" color "_right.png")}]]
-                              [:div.wombat-name wombat-name]
-                              [:div.username username]
-                              [:div.score score]]))]])))
+    [:div {:class-name "game-ranking-box"}
+     [:ul.list-wombat-status
+      (doall (map #(render-wombat-status info %) @stats))]]))
 
 
 
