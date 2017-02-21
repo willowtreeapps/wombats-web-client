@@ -12,8 +12,10 @@
   (let [total-seconds (seconds-until time) 
         seconds (mod total-seconds 60)
         minutes (/ (- total-seconds seconds) 60)
-        seconds-display (if (< seconds 10) (str "0" seconds) seconds)]
-    (str minutes ":" seconds-display)))
+        seconds-formatted (if (< seconds 10) (str "0" seconds) seconds)]
+    (if (< seconds 0)
+      "0:00"
+      (str minutes ":" seconds-formatted))))
 
 (defn countdown-timer
   [start-time]
