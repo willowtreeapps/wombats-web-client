@@ -37,7 +37,7 @@
 
 (defn navigate-game-card [game-id]
   [:div.arena-preview
-   [:a {:href (str "#/games/" game-id)} [:img {:src "/images/mini-arena.png"}]]])
+    [:img {:src "/images/mini-arena.png"}]])
 
 (defn get-occupied-colors [game]
   (let [players (:game/players game)]
@@ -54,7 +54,7 @@
 
 (defn render-my-wombat-icon [player]
   (let [color (:player/color player)]
-    [:div.wombat-preview-icon 
+    [:div.wombat-preview-icon
      [:img {:src (str "images/wombat_" color "_right.png")}]]))
 
 (defn game-card [game is-joinable]
@@ -73,18 +73,19 @@
          arena-height :arena/height} arena
         occupied-colors (get-occupied-colors game)]
     (fn [game is-joinable]
-      [:div.game-card {:key game-id
-                       :onMouseOver #(swap! cmpnt-state assoc :show-join true)
-                       :onMouseOut #(swap! cmpnt-state assoc :show-join false)}
-       (if is-joinable
-         [joinable-game-card cmpnt-state game-id occupied-colors]
-         [navigate-game-card game-id])
-       [:div.game-information
-        (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
-        [:div.text-info
-         [:div.game-name game-name]
-         [:div (get-arena-text-info {:type game-type
-                                     :rounds game-rounds
-                                     :width arena-width
-                                     :height arena-height})]]
-        [get-arena-frequencies arena game-joined-players game-capacity]]])))
+      [:a {:href (str "#/games/" game-id)}
+       [:div.game-card {:key game-id
+                        :onMouseOver #(swap! cmpnt-state assoc :show-join true)
+                        :onMouseOut #(swap! cmpnt-state assoc :show-join false)}
+        (if is-joinable
+          [joinable-game-card cmpnt-state game-id occupied-colors]
+          [navigate-game-card game-id])
+        [:div.game-information
+         (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
+         [:div.text-info
+          [:div.game-name game-name]
+          [:div (get-arena-text-info {:type game-type
+                                      :rounds game-rounds
+                                      :width arena-width
+                                      :height arena-height})]]
+         [get-arena-frequencies arena game-joined-players game-capacity]]]])))
