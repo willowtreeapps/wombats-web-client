@@ -84,7 +84,7 @@
       [game-play-title info]
       [game-play-subtitle info]
       [max-players info stats]
-      [ranking-box @game-id stats]]
+      [ranking-box stats info]]
 
      [:div.chat-panel
       [chat-title]
