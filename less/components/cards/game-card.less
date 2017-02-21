@@ -1,99 +1,91 @@
 @import "../../colors.less";
 @import "../../objects/button.less";
 
-.game-card {
-    display: inline-flex;
-    flex-flow: row wrap;
-    width: 560px;
+.game-card-link-wrapper {
+    text-decoration: none;
 
-    .arena-preview {
-        width: 165px;
-        height: 165px;
-        position: relative;
-        
-        img {
+    .game-card {
+        display: inline-flex;
+        flex-flow: row wrap;
+        width: 560px;
+
+        .arena-preview {
             width: 165px;
-            height:165px;
-            position: absolute;
-        }
-        
-        .join-button {
-            display: none;
-            position: absolute;
-            bottom: 10px;
-            left: 34px;
-            .emphasized-action-button(@wombat-green, @black-30);
-
-            &.display {
-                display: initial;
-            }
-        }
-
-        .view-button {
-            display: none;
-            position: absolute;
-            bottom: 10px;
-            left: 34px;
-
-            .emphasized-action-button(@wombat-green, @black-30);
-            &.display {
-                display: initial;
-            }
-        }
-    }
-
-    .game-information {
-        background-color: @card-grey;
-        color: @white;
-        padding: 20px;
-        width: 355px;
-        height: 125px;
-        position: relative;
-
-        .wombat-preview-icon {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-
+            height: 165px;
+            position: relative;
+ 
             img {
-                width: 22px;
-                height: 22px;
-                padding: 3px;
-                background-color: @white;
+                width: 165px;
+                height:165px;
+                position: absolute;
             }
-        }
 
-        .text-info {
-            margin-bottom: 25px;
+            .join-button {
+                display: none;
+                position: absolute;
+                bottom: 60px;
+                left: 34px;
+                .emphasized-action-button(@wombat-green, @black-30);
 
-            .game-name {
-                font-size: 18px;
-                weight: 600;
-                margin-bottom: 10px;
-            }
-        }
-
-        .arena-freq {
-            display: flex;
-            flex-flow: row wrap;
-
-            .freq-object {
-                display: flex;
-                width: 30px;
-                flex-direction: column;
-                align-items: center;
-                margin-right: 45px;
-
-                img {
-                    width: 28px;
-                    height: 28px;
-                    padding-bottom: 5px;
+                &.display {
+                    display: initial;
                 }
             }
         }
-    }
 
-    &:hover {
-        border: 1px solid @wombat-green;
+        .game-information {
+            background-color: @card-grey;
+            color: @white;
+            padding: 20px;
+            width: 355px;
+            height: 125px;
+            position: relative;
+
+            .wombat-preview-icon {
+                position: absolute;
+                right: 10px;
+                top: 10px;
+
+                img {
+                    width: 22px;
+                    height: 22px;
+                    padding: 3px;
+                    background-color: @white;
+                }
+            }
+
+            .text-info {
+                margin-bottom: 25px;
+
+                .game-name {
+                    font-size: 18px;
+                    weight: 600;
+                    margin-bottom: 10px;
+                }
+            }
+
+            .arena-freq {
+                display: flex;
+                flex-flow: row wrap;
+
+                .freq-object {
+                    display: flex;
+                    width: 30px;
+                    flex-direction: column;
+                    align-items: center;
+                    margin-right: 45px;
+
+                    img {
+                        width: 28px;
+                        height: 28px;
+                        padding-bottom: 5px;
+                    }
+                }
+            }
+        }
+
+        &:hover {
+            border: 1px solid @wombat-green;
+        }
     }
 }

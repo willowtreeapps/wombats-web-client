@@ -46,7 +46,7 @@
           (if (pos? (count games))
             [:ul.games-list 
              (for [game games]
-               ^{:key (:game/id game)} [game-card game show-open])]
+               ^{:key (:game/id game)} [game-card game])]
             [empty-state show-open])]]))))
 
 (defn login-prompt []
