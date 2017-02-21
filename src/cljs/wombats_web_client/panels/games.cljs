@@ -1,7 +1,8 @@
 (ns wombats-web-client.panels.games
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
-            [wombats-web-client.events.games :refer [get-open-games]]
+            [wombats-web-client.events.games :refer [get-pending-open-games
+                                                     get-closed-games]]
             [wombat-web-client.components.cards.game :refer [game-card]]))
 
 ;; Games Panel
@@ -12,7 +13,7 @@
 (defn- open-game-polling
   "Poll for newly created games every minute when viewing games panel and repopulate app state"
   []
- (js/setInterval #(get-open-games) 60000))
+ (js/setInterval #(get-pending-open-games) 60000))
 
 
 (defn tab-view-toggle [cmpnt-state]
@@ -21,23 +22,24 @@
      [:div.game-tab {:class (when show-open "active")
                      :onClick #(swap! cmpnt-state assoc :show-open true)} "OPEN"]
      [:div.game-tab {:class (when-not show-open "active")
-                     :onClick #(swap! cmpnt-state assoc :show-open false)} "JOINED"]]))
+                     :onClick #(swap! cmpnt-state assoc :show-open false)} "FINISHED"]]))
 
 (defn empty-state [show-open]
   (let [empty-text (if show-open empty-open-page empty-joined-page)]
     [:div.empty-text empty-text]))
 
 (defn main-panel [cmpnt-state]
-  (let [open-games (re-frame/subscribe [:open-games])
-        joined-games (re-frame/subscribe [:joined-games])
+  (let [open-games (re-frame/subscribe [:pending-open-games])
+        closed-games (re-frame/subscribe [:closed-games])
         polling (open-game-polling)]
-    (get-open-games)
+    (get-pending-open-games)
+    (get-closed-games)
     (fn []
       (swap! cmpnt-state assoc :polling polling)
       (let [open @open-games
-            joined @joined-games
+            closed @closed-games
             show-open (:show-open @cmpnt-state)
-            games (if show-open open joined)]
+            games (if show-open open closed)]
         [:div.games-panel
          [tab-view-toggle cmpnt-state]
          [:div.games

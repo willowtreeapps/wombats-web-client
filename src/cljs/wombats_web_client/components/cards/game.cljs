@@ -26,8 +26,8 @@
      [freq "food_cherry" food]
      [freq "poison_vial2" poison]]))
 
-(defn joinable-game-card [show-join game-id occupied-colors]
-  (let [show-join-val @show-join]
+(defn joinable-game-card [cmpnt-state game-id occupied-colors]
+  (let [show-join-val (:show-join @cmpnt-state)]
     [:div.arena-preview
      [:img {:src "/images/mini-arena.png"}]
      [:input.join-button {:class (when show-join-val "display")
@@ -45,8 +45,21 @@
               (conj coll (:player/color player))) 
             [] players)))
 
+(defn get-user-in-game [players current-user]
+  (let [current-username (:user/github-username current-user)]
+    (filter (fn [player]
+                 (let [user (:player/user player)
+                       github-username (:user/github-username user)]
+                   (= github-username current-username))) players)))
+
+(defn render-my-wombat-icon [player]
+  (let [color (:player/color player)]
+    [:div.wombat-preview-icon 
+     [:img {:src (str "images/wombat_" color "_right.png")}]]))
+
 (defn game-card [game is-joinable]
-  (let [show-join (reagent/atom false)
+  (let [cmpnt-state (reagent/atom {:show-join false})
+        current-user (re-frame/subscribe [:current-user])
         {arena :game/arena
          game-id :game/id
          game-name :game/name
@@ -54,18 +67,20 @@
          game-capacity :game/max-players
          game-rounds :game/num-rounds
          game-type :game/type} game
+        user-in-game (first (get-user-in-game game-players @current-user))
         game-joined-players (count game-players)
         {arena-width :arena/width
          arena-height :arena/height} arena
         occupied-colors (get-occupied-colors game)]
     (fn [game is-joinable]
       [:div.game-card {:key game-id
-                       :onMouseOver #(reset! show-join true)
-                       :onMouseOut #(reset! show-join false)}
+                       :onMouseOver #(swap! cmpnt-state assoc :show-join true)
+                       :onMouseOut #(swap! cmpnt-state assoc :show-join false)}
        (if is-joinable
-         [joinable-game-card show-join game-id occupied-colors]
+         [joinable-game-card cmpnt-state game-id occupied-colors]
          [navigate-game-card game-id])
        [:div.game-information
+        (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
         [:div.text-info
          [:div.game-name game-name]
          [:div (get-arena-text-info {:type game-type

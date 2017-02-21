@@ -33,9 +33,14 @@
    (:my-wombats db)))
 
 (re-frame/reg-sub
- :open-games
+ :pending-open-games
  (fn [db _]
-   (:open-games db)))
+   (:pending-open-games db)))
+
+(re-frame/reg-sub
+ :closed-games
+ (fn [db _]
+   (:closed-games db)))
 
 (re-frame/reg-sub
  :joined-games

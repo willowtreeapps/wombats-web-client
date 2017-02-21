@@ -6,12 +6,12 @@
                                                        games-join-url]]
             [wombats-web-client.utils.auth :refer [add-auth-header get-current-user-id]]))
 
-(defn get-pending-open-games [on-success on-error]
+(defn get-games [status on-success on-error]
   (GET games-url {:response-format (edn-response-format)
                   :keywords? true
                   :format (edn-request-format)
                   :headers (add-auth-header {})
-                  :params {:status "pending-open"}
+                  :params {:status status}
                   :handler on-success
                   :error-handler on-error}))
 
@@ -36,10 +36,17 @@
                   :error-handler on-error}))
 
 ;; TODO Scaling Issue with Lots of games - only update with games that are new?
-(defn get-open-games []
-  (get-pending-open-games
-   #(re-frame/dispatch [:open-games %])
+(defn get-pending-open-games []
+  (get-games
+   "pending-open"
+   #(re-frame/dispatch [:pending-open-games %])
    #(print "error on get open games")))
+
+(defn get-closed-games []
+  (get-games
+   "closed"
+   #(re-frame/dispatch [:closed-games %])
+   #(print "error on get all closed games")))
 
 (defn get-all-joined-games [user-id]
   (get-joined-games
@@ -60,9 +67,14 @@
      (re-frame/dispatch [:update-modal-error (:message (:response error))]))))
 
 (re-frame/reg-event-db
- :open-games
- (fn [db [_ open-games]]
-   (assoc db :open-games open-games)))
+ :pending-open-games
+ (fn [db [_ pending-open-games]]
+   (assoc db :pending-open-games pending-open-games)))
+
+(re-frame/reg-event-db
+ :closed-games
+ (fn [db [_ closed-games]]
+   (assoc db :closed-games closed-games)))
 
 (re-frame/reg-event-db
  :joined-games
@@ -75,11 +87,16 @@
    (update db :join-game-selections (fn [selections] (conj selections sel)))))
 
 (re-frame/reg-fx
- :get-open-games
+ :get-pending-open-games
  (fn [_]
-   (get-open-games)))
+   (get-pending-open-games)))
 
 (re-frame/reg-fx
  :get-joined-games
  (fn [id]
    (get-all-joined-games id)))
+
+(re-frame/reg-fx
+ :get-closed-games
+ (fn [_]
+   (get-closed-games)))
