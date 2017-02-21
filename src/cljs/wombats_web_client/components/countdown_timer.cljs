@@ -1,21 +1,31 @@
 (ns wombats-web-client.components.countdown-timer
   (:require [cljs-time.core :as t]
-            [cljs-time.format :as f]
             [reagent.core :as reagent]))
 
 (defn- seconds-until
   [time]
-  (t/in-seconds (t/interval (t/now) time)))
+  (if (t/after? (t/now) time)
+    0
+    (t/in-seconds (t/interval (t/now) time))))
+
+(defn- millis-until
+  [time]
+  (if (t/after? (t/now) time)
+    0
+    (mod (t/in-millis (t/interval (t/now) time))
+         1000)))
 
 (defn- format-time
   [time]
-  (let [total-seconds (seconds-until time) 
-        seconds (mod total-seconds 60)
-        minutes (/ (- total-seconds seconds) 60)
-        seconds-formatted (if (< seconds 10) (str "0" seconds) seconds)]
-    (if (< seconds 0)
+  (let [seconds-left (seconds-until time)]
+    (if (< seconds-left 0)
       "0:00"
-      (str minutes ":" seconds-formatted))))
+      (let [seconds (mod seconds-left 60)
+            seconds-formatted (if (< seconds 10) 
+                                (str "0" seconds) 
+                                seconds)
+            minutes (/ (- seconds-left seconds) 60)]
+        (str minutes ":" seconds-formatted)))))
 
 (defn countdown-timer
   [start-time]
@@ -24,13 +34,15 @@
     (reagent/create-class
      {:component-will-mount
       (fn []
-        ;; Force timer to redraw every second
+        ;; Force timer to redraw every second, start interval when the countdown timer should switch
         (swap! cmpnt-state 
                assoc 
                :interval-fn
                (.setInterval js/window
                              #(reagent/force-update-all)
-                             1000)))
+                             1000))
+
+        #_(millis-until start-time))
 
       :component-will-unmount
       (fn []
