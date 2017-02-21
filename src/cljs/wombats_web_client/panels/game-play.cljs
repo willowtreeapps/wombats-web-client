@@ -1,6 +1,7 @@
 (ns wombats-web-client.panels.game-play
   (:require [wombats-web-client.components.arena :as arena]
             [wombats-web-client.components.chat-box :refer [chat-box]]
+            [wombats-web-client.components.countdown-timer :refer [countdown-timer]]
             [wombats-web-client.components.game-ranking :refer [ranking-box]]
             [wombats-web-client.components.modals.wombat-modal :refer [winner-modal]]
             [wombats-web-client.utils.socket :as ws]
@@ -50,7 +51,8 @@
        (:pending-open
         :pending-closed
         :active-intermission)
-       (str "ROUND " round-number " STARTS IN: 2:06")
+       [:span (str "ROUND " round-number " STARTS IN: ")
+        [countdown-timer round-start-time]]
 
        :active
        (str "ROUND " round-number)
