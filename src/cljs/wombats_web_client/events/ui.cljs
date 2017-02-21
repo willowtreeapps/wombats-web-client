@@ -38,8 +38,8 @@
 
 (re-frame/reg-event-db
  :set-modal
- (fn [db [_ modal-form]]
-   (assoc db :modal modal-form)))
+ (fn [db [_ modal]]
+   (assoc db :modal modal)))
 
 (re-frame/reg-event-db
  :update-modal-error

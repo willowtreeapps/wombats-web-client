@@ -23,17 +23,18 @@
 
 (defn display-modal
   [modal]
-  (when modal
+  (let [render-fn (:fn modal)
+        show-overlay? (:show-overlay? modal)]
     [:div {:class-name "modal-container"}
-     [:div {:class-name "modal-overlay"}]
-     [modal]]))
+     (when show-overlay? [:div {:class-name "modal-overlay"}])
+     [render-fn]]))
 
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])
         modal (re-frame/subscribe [:modal])]
     (fn []
-      (let [current-modal @modal]
+      (let [modal @modal]
         [:div.app-container
-         [display-modal current-modal]
+         (when modal [display-modal modal])
          [navbar/root]
          [show-panel @active-panel]]))))
