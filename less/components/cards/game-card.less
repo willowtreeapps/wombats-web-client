@@ -4,12 +4,16 @@
 .game-card {
     display: inline-flex;
     flex-flow: row wrap;
-    
+    width: 560px;
+
     .arena-preview {
         width: 165px;
         height: 165px;
         position: relative;
+        
         img {
+            width: 165px;
+            height:165px;
             position: absolute;
         }
         
@@ -42,6 +46,8 @@
         background-color: @card-grey;
         color: @white;
         padding: 20px;
+        width: 355px;
+        height: 125px;
 
         .text-info {
             margin-bottom: 25px;
@@ -59,15 +65,14 @@
 
             .freq-object {
                 display: flex;
-                width: 55px;
+                width: 30px;
                 flex-direction: column;
                 align-items: center;
-                padding: 0 10px;
-
+                margin-right: 45px;
 
                 img {
-                    width: 20px;
-                    height: 20px;
+                    width: 28px;
+                    height: 28px;
                     padding-bottom: 5px;
                 }
             }

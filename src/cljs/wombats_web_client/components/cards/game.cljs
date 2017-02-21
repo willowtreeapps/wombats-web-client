@@ -7,22 +7,24 @@
   (fn []
     (re-frame/dispatch [:set-modal #(join-wombat-modal game-id occupied-colors)])))
 
-(defn get-arena-text-info [{:keys [joined capacity rounds width height]}]
-  (str joined "/" capacity " Players | " rounds " Rounds | " width "x" height))
+(defn get-arena-text-info [{:keys [type rounds width height]}]
+  (str type " - " rounds " Rounds | " width "x" height))
 
 (defn freq [freq-name amt]
   [:div.freq-object
    [:img {:src (str "/images/" freq-name ".png")}]
    [:div.freq-amt amt]])
 
-(defn get-arena-frequencies [arena]
+(defn get-arena-frequencies [arena joined capacity]
   (let [{food :arena/food
          poison :arena/poison
-         zakano :arena/zakano} arena]
+         zakano :arena/zakano} arena
+         ratio-joined (str joined "/" capacity)]
     [:div.arena-freq
+     [freq "wombat_orange_right" ratio-joined]
+     [freq "zakano_front" zakano]
      [freq "food_cherry" food]
-     [freq "poison_vial2" poison]
-     [freq "zakano_front" zakano]]))
+     [freq "poison_vial2" poison]]))
 
 (defn joinable-game-card [show-join game-id occupied-colors]
   (let [show-join-val @show-join]
@@ -50,7 +52,8 @@
          game-name :game/name
          game-players :game/players
          game-capacity :game/max-players
-         game-rounds :game/num-rounds} game
+         game-rounds :game/num-rounds
+         game-type :game/type} game
         game-joined-players (count game-players)
         {arena-width :arena/width
          arena-height :arena/height} arena
@@ -65,9 +68,8 @@
        [:div.game-information
         [:div.text-info
          [:div.game-name game-name]
-         [:div (get-arena-text-info {:joined  game-joined-players
-                                     :capacity game-capacity
+         [:div (get-arena-text-info {:type game-type
                                      :rounds game-rounds
                                      :width arena-width
                                      :height arena-height})]]
-        [get-arena-frequencies arena]]])))
+        [get-arena-frequencies arena game-joined-players game-capacity]]])))
