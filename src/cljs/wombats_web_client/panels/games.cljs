@@ -1,7 +1,7 @@
 (ns wombats-web-client.panels.games
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
-            [wombats-web-client.events.games :refer [get-pending-open-games
+            [wombats-web-client.events.games :refer [get-open-games
                                                      get-closed-games]]
             [wombat-web-client.components.cards.game :refer [game-card]]))
 
@@ -13,7 +13,7 @@
 (defn- open-game-polling
   "Poll for newly created games every minute when viewing games panel and repopulate app state"
   []
- (js/setInterval #(get-pending-open-games) 60000))
+ (js/setInterval #(get-open-games) 60000))
 
 
 (defn tab-view-toggle [cmpnt-state]
@@ -29,10 +29,10 @@
     [:div.empty-text empty-text]))
 
 (defn main-panel [cmpnt-state]
-  (let [open-games (re-frame/subscribe [:pending-open-games])
+  (let [open-games (re-frame/subscribe [:open-games])
         closed-games (re-frame/subscribe [:closed-games])
         polling (open-game-polling)]
-    (get-pending-open-games)
+    (get-open-games)
     (get-closed-games)
     (fn []
       (swap! cmpnt-state assoc :polling polling)

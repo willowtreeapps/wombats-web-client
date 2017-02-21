@@ -36,10 +36,10 @@
                   :error-handler on-error}))
 
 ;; TODO Scaling Issue with Lots of games - only update with games that are new?
-(defn get-pending-open-games []
+(defn get-open-games []
   (get-games
-   "pending-open"
-   #(re-frame/dispatch [:pending-open-games %])
+   "pending-open&status=pending-closed&status=active"
+   #(re-frame/dispatch [:open-games %])
    #(print "error on get open games")))
 
 (defn get-closed-games []
@@ -67,9 +67,9 @@
      (re-frame/dispatch [:update-modal-error (:message (:response error))]))))
 
 (re-frame/reg-event-db
- :pending-open-games
- (fn [db [_ pending-open-games]]
-   (assoc db :pending-open-games pending-open-games)))
+ :open-games
+ (fn [db [_ open-games]]
+   (assoc db :open-games open-games)))
 
 (re-frame/reg-event-db
  :closed-games
@@ -87,9 +87,9 @@
    (update db :join-game-selections (fn [selections] (conj selections sel)))))
 
 (re-frame/reg-fx
- :get-pending-open-games
+ :get-open-games
  (fn [_]
-   (get-pending-open-games)))
+   (get-open-games)))
 
 (re-frame/reg-fx
  :get-joined-games

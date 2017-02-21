@@ -26,15 +26,35 @@
      [freq "food_cherry" food]
      [freq "poison_vial2" poison]]))
 
-(defn arena-card [is-joinable cmpnt-state game-id occupied-colors]
-  (let [show-join-val (:show-join @cmpnt-state)]
+(defn get-game-state-str [is-full is-playing]
+  (cond 
+   is-full "FULL"
+   is-playing "ACTIVE"
+   :else nil))
+
+(defn arena-card [{:keys [is-private
+                          is-joinable 
+                          is-full 
+                          is-playing 
+                          cmpnt-state 
+                          game-id 
+                          occupied-colors]}]
+  (let [show-join-val (:show-join @cmpnt-state)
+        game-state (get-game-state-str is-full is-playing)]
+
     [:div.arena-preview
+     (when game-state
+       [:div.game-state-wrapper
+        [:div.state-overlay]
+        [:div.game-state game-state]])
      [:img {:src "/images/mini-arena.png"}]
      (when is-joinable
-       [:input.join-button {:class (when show-join-val "display")
-                            :type "button"
-                            :value "JOIN"
-                            :onClick (open-join-game-modal game-id occupied-colors)}])]))
+       [:button {:class (str "join-button" 
+                             (when show-join-val " display")
+                             (when is-private " private"))
+                 :type "button"
+                 :onClick (open-join-game-modal game-id occupied-colors)}
+        "JOIN"])]))
 
 (defn get-occupied-colors [game]
   (let [players (:game/players game)]
@@ -57,7 +77,7 @@
 
 ;; CARD STATES
 ;; is-joinable - OPEN & JOINABLE - :pending-open & not in-game
-;; is-full - OPEN & FULL - :pending-closed 
+;; is-full - OPEN & FULL - :pending-closed
 ;; is-playing - OPEN & ACTIVE - :active
 ;; is-finished - FINISHED - :closed 
 ;; States effect hoverstate and overlay design.
@@ -71,19 +91,29 @@
          game-capacity :game/max-players
          game-rounds :game/num-rounds
          game-type :game/type
-         game-status :game/status} game
+         game-status :game/status
+         game-private :game/is-private} game
         user-in-game (first (get-user-in-game game-players @current-user))
         game-joined-players (count game-players)
         {arena-width :arena/width
          arena-height :arena/height} arena
         occupied-colors (get-occupied-colors game)
-        is-joinable (and (not= :closed game-status) (not= :pending-closed game-status) (nil? user-in-game))]
+        is-joinable (and (= :pending-open game-status) (nil? user-in-game))
+        is-full (= :pending-closed game-status)
+        is-playing (= :active game-status)]
+
     (fn [game]
       [:a.game-card-link-wrapper {:href (str "#/games/" game-id)}
        [:div.game-card {:key game-id
                         :onMouseOver #(swap! cmpnt-state assoc :show-join true)
                         :onMouseOut #(swap! cmpnt-state assoc :show-join false)}
-        [arena-card is-joinable cmpnt-state game-id occupied-colors]
+        [arena-card {:is-private game-private
+                     :is-joinable is-joinable
+                     :is-full is-full
+                     :is-playing is-playing
+                     :cmpnt-state cmpnt-state
+                     :game-id game-id
+                     :occupied-colors occupied-colors}]
         [:div.game-information
          (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
          [:div.text-info
