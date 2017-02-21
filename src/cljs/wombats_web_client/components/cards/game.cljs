@@ -5,7 +5,8 @@
 
 (defn open-join-game-modal [game-id occupied-colors]
   (fn []
-    (re-frame/dispatch [:set-modal #(join-wombat-modal game-id occupied-colors)])))
+    (re-frame/dispatch [:set-modal {:fn #(join-wombat-modal game-id occupied-colors)
+                                    :show-overlay? true}])))
 
 (defn get-arena-text-info [{:keys [joined capacity rounds width height]}]
   (str joined "/" capacity " Players | " rounds " Rounds | " width "x" height))

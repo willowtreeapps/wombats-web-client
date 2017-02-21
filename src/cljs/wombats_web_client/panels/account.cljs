@@ -8,7 +8,8 @@
 
 (defn open-add-wombat-modal []
   (fn []
-    (re-frame/dispatch [:set-modal add-wombat-modal])))
+    (re-frame/dispatch [:set-modal {:fn add-wombat-modal
+                                    :show-overlay? true}])))
 
 (defn header []
   [:div.header

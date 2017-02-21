@@ -23,11 +23,6 @@
    (:modal db)))
 
 (re-frame/reg-sub
- :special-modal
- (fn [db _]
-   (:special-modal db)))
-
-(re-frame/reg-sub
  :modal-error
  (fn [db _]
    (:modal-error db)))

@@ -10,7 +10,6 @@
    :current-user nil
    :users []
    :modal nil
-   :special-modal nil
    :open-games nil
    :joined-games nil
    :game/arena nil
