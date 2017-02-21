@@ -219,7 +219,43 @@
             </struct>
             <key type="filename">spritesheet/explosion/explosion.png</key>
             <key type="filename">spritesheet/food/food_cherry.png</key>
-            <key type="filename">spritesheet/poison/poison_vial2.png</key>
+            <key type="filename">spritesheet/poison/poison_vial_2.png</key>
+            <key type="filename">spritesheet/wombats/wombat_blue_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_blue_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_gray_back.png</key>
+            <key type="filename">spritesheet/wombats/wombat_gray_back_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_gray_front.png</key>
+            <key type="filename">spritesheet/wombats/wombat_gray_front_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_gray_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_gray_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_gray_right.png</key>
+            <key type="filename">spritesheet/wombats/wombat_gray_right_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_green_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_green_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_orange_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_orange_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_pink_back.png</key>
+            <key type="filename">spritesheet/wombats/wombat_pink_back_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_pink_front.png</key>
+            <key type="filename">spritesheet/wombats/wombat_pink_front_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_pink_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_pink_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_pink_right.png</key>
+            <key type="filename">spritesheet/wombats/wombat_pink_right_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_purple_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_purple_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_red_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_red_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_teal_back.png</key>
+            <key type="filename">spritesheet/wombats/wombat_teal_back_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_teal_front.png</key>
+            <key type="filename">spritesheet/wombats/wombat_teal_front_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_teal_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_teal_left_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_teal_right.png</key>
+            <key type="filename">spritesheet/wombats/wombat_teal_right_fire.png</key>
+            <key type="filename">spritesheet/wombats/wombat_yellow_left.png</key>
+            <key type="filename">spritesheet/wombats/wombat_yellow_left_fire.png</key>
             <key type="filename">spritesheet/zakano/zakano_back.png</key>
             <key type="filename">spritesheet/zakano/zakano_back_fire.png</key>
             <key type="filename">spritesheet/zakano/zakano_front.png</key>
@@ -251,12 +287,6 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">spritesheet/wombats/wombat_black_back.png</key>
-            <key type="filename">spritesheet/wombats/wombat_black_back_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_black_front.png</key>
-            <key type="filename">spritesheet/wombats/wombat_black_front_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_black_right.png</key>
-            <key type="filename">spritesheet/wombats/wombat_black_right_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_blue_back.png</key>
             <key type="filename">spritesheet/wombats/wombat_blue_back_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_blue_front.png</key>
@@ -287,12 +317,6 @@
             <key type="filename">spritesheet/wombats/wombat_red_front_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_red_right.png</key>
             <key type="filename">spritesheet/wombats/wombat_red_right_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_white_back.png</key>
-            <key type="filename">spritesheet/wombats/wombat_white_back_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_white_front.png</key>
-            <key type="filename">spritesheet/wombats/wombat_white_front_fire.png</key>
-            <key type="filename">spritesheet/wombats/wombat_white_right.png</key>
-            <key type="filename">spritesheet/wombats/wombat_white_right_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_yellow_back.png</key>
             <key type="filename">spritesheet/wombats/wombat_yellow_back_fire.png</key>
             <key type="filename">spritesheet/wombats/wombat_yellow_front.png</key>

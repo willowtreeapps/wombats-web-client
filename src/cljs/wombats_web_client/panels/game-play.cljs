@@ -2,6 +2,7 @@
   (:require [wombats-web-client.components.arena :as arena]
             [wombats-web-client.components.chat-box :refer [chat-box]]
             [wombats-web-client.components.game-ranking :refer [ranking-box]]
+            [wombats-web-client.components.modals.wombat-modal :refer [winner-modal]]
             [wombats-web-client.utils.socket :as ws]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
@@ -29,12 +30,13 @@
   []
   600)
 
-(defn clear-game-state []
+(defn clear-game-panel-state []
   (re-frame/dispatch [:game/update-frame nil])
   (re-frame/dispatch [:game/clear-chat-messages])
   (re-frame/dispatch [:game/stats-update {}])
   (ws/send-message :leave-game {:game-id @game-id})
-  (reset! game-id nil))
+  (reset! game-id nil)
+  (re-frame/dispatch [:set-modal nil]))
 
 (defn- game-play-title [info]
   (let [{:keys [status
@@ -94,9 +96,10 @@
   (let [dimensions (get-arena-dimensions)]
     ;; TODO This should come from the router
     (reset! game-id (get-game-id))
-
+    (re-frame/dispatch [:set-modal {:fn #(winner-modal "green" "Wilma" "emilyseibert")
+                                    :show-overlay? false}])
     (reagent/create-class
-     {:component-will-unmount #(clear-game-state)
+     {:component-will-unmount #(clear-game-panel-state)
       :display-name "game-play-panel"
       :reagent-render
       (fn []
