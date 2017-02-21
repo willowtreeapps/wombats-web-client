@@ -30,24 +30,31 @@
 (defn countdown-timer
   [start-time]
 
-  (let [cmpnt-state (reagent/atom {:interval-fn nil})]
+  (let [cmpnt-state (reagent/atom {:interval-fn nil
+                                   :timeout-fn nil})]
     (reagent/create-class
      {:component-will-mount
       (fn []
         ;; Force timer to redraw every second, start interval when the countdown timer should switch
-        (swap! cmpnt-state 
-               assoc 
-               :interval-fn
-               (.setInterval js/window
-                             #(reagent/force-update-all)
-                             1000))
-
-        #_(millis-until start-time))
+        (swap! cmpnt-state
+               assoc
+               :timeout-fn
+               (.setTimeout js/window
+                            (fn [] 
+                              (swap! cmpnt-state 
+                                     assoc 
+                                     :interval-fn
+                                     (.setInterval js/window
+                                                   #(reagent/force-update-all)
+                                                   1000)))
+                            ;; Give the browser some extra time to render the next second
+                            (- (millis-until start-time) 100))))
 
       :component-will-unmount
       (fn []
-        (.clearInterval js/window 
-                        (:interval-fn @cmpnt-state)))
+        (let [{:keys [interval-fn timeout-fn]} @cmpnt-state]
+          (.clearTimeout js/window timeout-fn)
+          (.clearInterval js/window interval-fn)))
 
       :reagent-render
       (fn []
