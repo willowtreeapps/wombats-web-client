@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>4.3.3</string>
         <key>fileName</key>
-        <string>/Users/mattoconnell/Projects/wombats-game/wombats-web-client/resources/spritesheet.tps</string>
+        <string>spritesheet.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
