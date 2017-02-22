@@ -2,9 +2,7 @@
   (:require [re-frame.core :as re-frame]
             [ajax.core :refer [GET PUT]]
             [ajax.edn :refer [edn-request-format edn-response-format]]
-            [wombats-web-client.constants.games :refer [pending-open
-                                                        pending-closed
-                                                        active
+            [wombats-web-client.constants.games :refer [open-games-query
                                                         closed]]
             [wombats-web-client.constants.urls :refer [games-url
                                                        games-join-url]]
@@ -44,13 +42,13 @@
 
 (defn get-open-games []
   (get-games
-   (str pending-open "&status=" pending-closed "&status=" active)
+   open-games-query
    #(re-frame/dispatch [:open-games %])
    #(print "error on get open games")))
 
 (defn get-my-open-games []
   (get-my-games
-   (str pending-open "&status=" pending-closed "&status=" active)
+   open-games-query
     #(re-frame/dispatch [:my-open-games %])
     #(print "error on get my open games")))
 
