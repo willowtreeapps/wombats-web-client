@@ -159,4 +159,5 @@
                  :on-success      [:update-wombats]
                  :on-failure      [:user-error]}
     :dispatch [:update-user user]
-    :get-joined-games (user :user/id)}))
+    :get-joined-games (user :user/id)
+    :get-closed-games ()}))
