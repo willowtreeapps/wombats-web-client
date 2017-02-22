@@ -41,7 +41,6 @@
 
 (defn countdown-timer
   [start-time]
-
   (let [cmpnt-state (reagent/atom {:interval-fn nil
                                    :timeout-fn nil})
         swap-interval-fn! (fn []
