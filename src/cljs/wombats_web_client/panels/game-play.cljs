@@ -82,18 +82,13 @@
     (re-frame/dispatch [:set-modal {:fn #(winner-modal wombat-color wombat-name username)
                                     :show-overlay? false}])))
 
-(defn right-game-play-panel []
-  (let [messages (re-frame/subscribe [:game/messages])
-        arena (re-frame/subscribe [:game/arena])
-        stats (re-frame/subscribe [:game/stats])
-        info (re-frame/subscribe [:game/info])
-        winner (:game-winner @info)]
-
+(defn right-game-play-panel
+  [info messages stats]
+  (let [winner (:game-winner @info)]
     ;; Dispatch winner modal if there's a winner
-    (when winner
+    #_(when winner
       (show-winner-modal winner))
-    
-    (update-arena arena)
+
     [:div.right-game-play-panel
 
      [:div.top-panel
@@ -107,19 +102,25 @@
       [chat-box @game-id messages stats]]]))
 
 (defn game-play []
-  (let [dimensions (get-arena-dimensions)]
+  (let [dimensions (get-arena-dimensions)
+        arena (re-frame/subscribe [:game/arena])
+        info (re-frame/subscribe [:game/info])
+        messages (re-frame/subscribe [:game/messages])
+        stats (re-frame/subscribe [:game/stats])]
+
     ;; TODO This should come from the router
     (reset! game-id (get-game-id))
+
     (reagent/create-class
      {:component-will-unmount #(clear-game-panel-state)
       :display-name "game-play-panel"
       :reagent-render
       (fn []
+        (update-arena arena)
         [:div {:class-name "game-play-panel"}
-         [:div {:style {:color "white"}
-                :id "wombat-arena"
+         [:div {:id "wombat-arena"
                 :class-name "left-game-play-panel"}
           [:canvas {:id canvas-id
                     :width dimensions
                     :height dimensions}]]
-         [right-game-play-panel]])})))
+         [right-game-play-panel info messages stats]])})))
