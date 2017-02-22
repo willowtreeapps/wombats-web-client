@@ -29,9 +29,10 @@
 
 (defn my-game-toggle [cmpnt-state]
   (let [current-state (:show-my-games @cmpnt-state)]
-    (print current-state)
-    [:div {:on-click #(swap! cmpnt-state assoc :show-my-games (not current-state))} 
-     "SHOW MY GAMES"]))
+    [:div.my-game-toggle-wrapper
+     [:div.checkbox {:class (when current-state "selected")
+                     :on-click #(swap! cmpnt-state assoc :show-my-games (not current-state))}] 
+     [:div.desc "SHOW MY GAMES"]]))
 
 (defn get-games [{:keys [show-open show-my-games open closed my-open my-closed]}]
   (cond
@@ -62,8 +63,9 @@
                               :my-open @my-open
                               :my-closed @my-closed})]
         [:div.games-panel
-         [my-game-toggle cmpnt-state]
-         [tab-view-toggle cmpnt-state]
+         [:div.toggles
+          [tab-view-toggle cmpnt-state]
+          [my-game-toggle cmpnt-state]]
          [:div.games
           (if (pos? (count games))
             [:ul.games-list 
