@@ -1,17 +1,19 @@
 (ns wombats-web-client.components.modals.join-wombat-modal
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
-            [wombats-web-client.events.games :refer [join-open-game]]
+            [wombats-web-client.events.games :refer [join-open-game
+                                                     get-all-games]]
             [wombats-web-client.utils.forms :refer [text-input-with-label
                                                     cancel-modal-input]]
             [wombats-web-client.constants.colors :refer [colors-8]]
             [wombats-web-client.utils.functions :refer [in?]]))
 
-(def callback-success (fn [game-id wombat-id wombat-color cmpnt-state]
+(def callback-success (fn [game-id wombat-id wombat-color password]
                         "closes modal on success"
                         (re-frame/dispatch [:add-join-selection {:game-id game-id
                                                                  :wombat-id wombat-id
                                                                  :wombat-color wombat-color}])
+                        (get-all-games)
                         (re-frame/dispatch [:update-modal-error nil])
                         (re-frame/dispatch [:set-modal nil])))
 
@@ -29,6 +31,7 @@
   (let [{:keys [show-dropdown wombat-name]} @cmpnt-state
         my-wombats @(re-frame/subscribe [:my-wombats])]
     [:div.select-wombat
+     [:label.label.select-wombat-label "Select Wombat"]
      [:div.placeholder
       {:class (when-not wombat-name "unselected")
        :onClick #(swap! cmpnt-state assoc :show-dropdown (not show-dropdown))}
@@ -45,11 +48,11 @@
         disabled (in? occupied-colors color-text)
         on-click-fn (if disabled (fn []) #(swap! cmpnt-state assoc :wombat-color color-text))]
     [:div.wombat-img-wrapper {:key color-text}
-     [:div.disabled {:class (when (in? occupied-colors color-text) "display")}] 
+     [:div.disabled {:class (when (in? occupied-colors color-text) "display")}]
      [:div.selected {:class (when (= color-text color-selected) "display")
                      :style {:background color-hex
                              :opacity "0.8"}}
-      [:img {:src "/images/checkmark.svg"}]]
+      [:img {:src "/images/play.svg"}]]
      [:img.wombat {:src (str "/images/wombat_" color-text "_right.png")
             :onClick on-click-fn}]]))
 
@@ -60,24 +63,38 @@
     (for [color colors-8]
               ^{:key color} [wombat-img color selected-color cmpnt-state occupied-colors])]])
 
+(defn private-game-password
+  [game cmpnt-state]
+  [:div.private-game-container
+   [:p.private-game-msg "This is a private game. Please enter the password to join."]
+   [:label.label "Password"]
+   [:div.text-input-wrapper
+    [:input.input {:type "password"
+                   :value (:password @cmpnt-state)
+                   :on-change #(swap! cmpnt-state assoc :password (-> % .-target .-value))}]]])
+
 (defn join-wombat-modal [game-id occupied-colors]
   (let [modal-error (re-frame/subscribe [:modal-error])
         cmpnt-state (reagent/atom {:show-dropdown false
                                    :error nil
                                    :wombat-name nil
                                    :wombat-id nil
-                                   :wombat-color nil})] ;; not included in render fn
+                                   :wombat-color nil
+                                   :password ""})
+        game (re-frame/subscribe [:game/details game-id])] ;; not included in render fn
     (reagent/create-class
      {:component-will-unmount #(re-frame/dispatch [:update-modal-error nil])
       :display-name "join-game-modal"
       :reagent-render
 
       (fn [] ;; render function
-        (let [{:keys [error wombat-id wombat-color]} @cmpnt-state
+        (let [{:keys [error wombat-id wombat-color password]} @cmpnt-state
               error @modal-error]
           [:div {:class "modal join-wombat-modal"} ;; starts hiccup
            [:div.title "JOIN GAME"]
            (when error [:div.modal-error error])
+           (when (get @game :game/is-private)
+             [private-game-password @game cmpnt-state])
            [select-input-with-label cmpnt-state]
            [select-wombat-color cmpnt-state wombat-color occupied-colors]
            [:div.action-buttons
@@ -89,7 +106,8 @@
                                                game-id
                                                wombat-id
                                                wombat-color
+                                               password
                                                #(callback-success game-id
                                                                   wombat-id
                                                                   wombat-color
-                                                                  cmpnt-state)))}]]]))})))
+                                                                  password)))}]]]))})))

@@ -2,10 +2,21 @@
 
 .modal-container {
     .join-wombat-modal {
+        .private-game-msg {
+            width: 310px;
+            margin: 0 auto;
+            margin-bottom: 40px;
+        }
+
         .select-wombat {
             width: 310px;
             margin: 0 auto;
             margin-bottom: 40px;
+
+            .select-wombat-label {
+                padding-left: 0;
+                margin-bottom: 10px;
+            }
 
             .placeholder {
                 color: @black;
@@ -20,10 +31,10 @@
                 &.unselected {
                     background-color: @white;
                 }
-                
+
                 .text {
                     color: @black;
-                    
+
                     &.unselected {
                         color: @warm-grey;
                     }
@@ -37,7 +48,7 @@
                         transform: rotate(180deg);
                     }
                 }
-            } 
+            }
 
             .dropdown-wrapper {
                 display: block;
@@ -49,7 +60,7 @@
                 z-index: 1;
                 width: 310px;
                 box-shadow: 0px 8px 16px 0px @black-40;
-                
+
                 li {
                     list-style-type: none;
                     padding: 10px;
@@ -78,12 +89,13 @@
                     cursor: pointer;
                     margin-bottom: 5px;
                     display: inline-block;
+                    width: 25%;
 
                     .disabled {
                         display: none;
                         position: absolute;
-                        width: 70px;
-                        height: 70px;
+                        width: 61px;
+                        height: 61px;
                         background-color: @white-80;
 
                         &.display {
@@ -94,8 +106,8 @@
                     .selected {
                         content: " ";
                         position: absolute;
-                        width: 70px;
-                        height: 70px;
+                        width: 61px;
+                        height: 61px;
                         display: none;
                         align-items: center;
                         justify-content: center;
@@ -110,7 +122,7 @@
                         background-color: @white;
 
                         &:hover {
-                            border: 1px solid @wombat-green;
+                            box-shadow: inset 0px 0px 0px 2px @wombat-green;
                         }
                     }
                 }

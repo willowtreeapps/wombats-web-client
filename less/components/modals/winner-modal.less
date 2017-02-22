@@ -1,0 +1,37 @@
+@import '../../colors.less';
+@import '../../objects/button.less';
+
+.modal-container {
+    .modal.winner-modal {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        left: 25%;
+
+        .wombat-img {
+            width: 60px;
+            height: 60px;
+            padding: 5px;
+            background-color: white;
+            margin-bottom: 10px;
+        }
+
+        .wombat-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .player-username {
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .return-to-lobby {
+            .emphasized-link-button(@wombat-green, @black-30, @white);
+            width: 180px;
+            padding-left: 20px;
+            padding-right: 20px;
+            margin-bottom: 30px;
+        }
+    }
+}

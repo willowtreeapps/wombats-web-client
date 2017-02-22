@@ -1,6 +1,6 @@
 (ns wombats-web-client.views
     (:require [re-frame.core :as re-frame]
-              
+
               ;; Components
               [wombats-web-client.components.navbar :as navbar]
 
@@ -23,17 +23,20 @@
 
 (defn display-modal
   [modal]
-  (when modal
-    [:div {:class-name "modal-container"}
-     [:div {:class-name "modal-overlay"}]
-     [modal]]))
+  (let [render-fn (:fn modal)
+        show-overlay? (:show-overlay? modal)
+        visibility (if modal "visible" "hidden")]
+    [:div {:class-name "modal-container"
+           :style {:visibility visibility}}
+     (when show-overlay? [:div {:class-name "modal-overlay"}])
+     (when render-fn [render-fn])]))
 
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])
         modal (re-frame/subscribe [:modal])]
     (fn []
-      (let [current-modal @modal]
+      (let [modal @modal]
         [:div.app-container
-         [display-modal current-modal]
+         [display-modal modal]
          [navbar/root]
          [show-panel @active-panel]]))))

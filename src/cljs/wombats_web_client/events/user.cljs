@@ -158,5 +158,4 @@
                  :response-format (edn-response-format)
                  :on-success      [:update-wombats]
                  :on-failure      [:user-error]}
-    :dispatch [:update-user user]
-    :get-joined-games (user :user/id)}))
+    :dispatch [:update-user user]}))

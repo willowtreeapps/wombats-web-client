@@ -1,80 +1,130 @@
 @import "../../colors.less";
 @import "../../objects/button.less";
 
-.game-card {
-    display: inline-flex;
-    flex-flow: row wrap;
-    
-    .arena-preview {
-        width: 165px;
-        height: 165px;
-        position: relative;
-        img {
-            position: absolute;
-        }
-        
-        .join-button {
-            display: none;
-            position: absolute;
-            bottom: 10px;
-            left: 34px;
-            .emphasized-action-button(@wombat-green, @black-30);
+@arena-preview-width: 165px;
+@arena-preview-height: 165px;
 
-            &.display {
-                display: initial;
-            }
-        }
+.game-card-link-wrapper {
+    text-decoration: none;
 
-        .view-button {
-            display: none;
-            position: absolute;
-            bottom: 10px;
-            left: 34px;
+    .game-card {
+        display: inline-flex;
+        flex-flow: row wrap;
+        width: 560px;
 
-            .emphasized-action-button(@wombat-green, @black-30);
-            &.display {
-                display: initial;
-            }
-        }
-    }
-
-    .game-information {
-        background-color: @card-grey;
-        color: @white;
-        padding: 20px;
-
-        .text-info {
-            margin-bottom: 25px;
-
-            .game-name {
-                font-size: 18px;
-                weight: 600;
-                margin-bottom: 10px;
-            }
-        }
-
-        .arena-freq {
-            display: flex;
-            flex-flow: row wrap;
-
-            .freq-object {
-                display: flex;
-                width: 55px;
-                flex-direction: column;
+        .arena-preview {
+            width: @arena-preview-width;
+            height: @arena-preview-height;
+            position: relative;
+ 
+            .state-overlay {
+                content: " ";
+                position: absolute;
+                width: 100%;
+                height: 100%;
                 align-items: center;
-                padding: 0 10px;
+                justify-content: center;
+                background-color: @card-grey;
+                opacity: 0.7;
+                z-index: 1;
+            }
 
+            .game-state {
+                z-index: 2;
+                color: @white;
+                opacity: 1;
+                position: absolute;
+                font-size: 30px;
+                font-weight: 600;
+                top: 60px;
+                width: 100%;
+                text-align: center;
+            }
 
-                img {
-                    width: 20px;
-                    height: 20px;
-                    padding-bottom: 5px;
+            img {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+            }
+
+            .join-button {
+                width: 100px;
+                text-align: center;
+                display: none;
+                position: absolute;
+                bottom: 60px;
+                left: 34px;
+
+                .emphasized-action-button(@wombat-green, @black-30);
+
+                &.private {
+                    padding: 0;
+                    margin: 0;
+                    padding-right: 12px;
+                    background-image: url(/images/lock.png);
+                    background-repeat: no-repeat;
+                    background-position: 70px 10px;
+                }
+
+                &.display {
+                    display: initial;
                 }
             }
         }
-    }
 
-    &:hover {
-        border: 1px solid @wombat-green;
+        .game-information {
+            background-color: @card-grey;
+            color: @white;
+            padding: 20px;
+            width: 355px;
+            height: 125px;
+            position: relative;
+
+            .wombat-preview-icon {
+                position: absolute;
+                right: 10px;
+                top: 10px;
+
+                img {
+                    width: 22px;
+                    height: 22px;
+                    padding: 3px;
+                    background-color: @white;
+                }
+            }
+
+            .text-info {
+                margin-bottom: 25px;
+
+                .game-name {
+                    font-size: 18px;
+                    weight: 600;
+                    margin-bottom: 10px;
+                }
+            }
+
+            .arena-freq {
+                display: flex;
+                flex-flow: row wrap;
+
+                .freq-object {
+                    display: flex;
+                    width: 30px;
+                    flex-direction: column;
+                    align-items: center;
+                    margin-right: 45px;
+
+                    img {
+                        width: 28px;
+                        height: 28px;
+                        padding-bottom: 5px;
+                    }
+                }
+            }
+        }
+
+        &:hover {
+            box-shadow: 0px 0px 0px 1px @wombat-green;
+        }
     }
 }
