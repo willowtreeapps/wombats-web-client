@@ -75,12 +75,24 @@
   [:div.chat-title
    [:span "CHAT"]])
 
+(defn- show-winner-modal
+  [winner]
+  ;; TODO: Support ties for winner modal
+  (let [{:keys [score username wombat-color wombat-name]} (first winner)]
+    (re-frame/dispatch [:set-modal {:fn #(winner-modal wombat-color wombat-name username)
+                                    :show-overlay? false}])))
+
 (defn right-game-play-panel []
   (let [messages (re-frame/subscribe [:game/messages])
         arena (re-frame/subscribe [:game/arena])
         stats (re-frame/subscribe [:game/stats])
-        info (re-frame/subscribe [:game/info])]
+        info (re-frame/subscribe [:game/info])
+        winner (:game-winner @info)]
 
+    ;; Dispatch winner modal if there's a winner
+    (when winner
+      (show-winner-modal winner))
+    
     (update-arena arena)
     [:div.right-game-play-panel
 
@@ -98,8 +110,6 @@
   (let [dimensions (get-arena-dimensions)]
     ;; TODO This should come from the router
     (reset! game-id (get-game-id))
-    (re-frame/dispatch [:set-modal {:fn #(winner-modal "green" "Wilma" "emilyseibert")
-                                    :show-overlay? false}])
     (reagent/create-class
      {:component-will-unmount #(clear-game-panel-state)
       :display-name "game-play-panel"
