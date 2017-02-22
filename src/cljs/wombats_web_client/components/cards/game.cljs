@@ -54,7 +54,6 @@
        [:button {:class (str "join-button"
                              (when show-join-val " display")
                              (when is-private " private"))
-                 :type "button"
                  :onClick (open-join-game-modal-fn game-id occupied-colors)}
         "JOIN"])]))
 

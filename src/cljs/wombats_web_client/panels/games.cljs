@@ -94,7 +94,6 @@
                      is-full (= :pending-closed status)
                      is-playing (= :active status)
                      num-joined (count players)]
-                 (print num-joined)
 
                  ^{:key (:game/id game)} [game-card game
                                           user-in-game

@@ -1,6 +1,7 @@
 (ns wombats-web-client.components.modals.join-wombat-modal
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
+            [wombats-web-client.components.modals.game-full-modal :refer [game-full-modal]]
             [wombats-web-client.events.games :refer [join-open-game
                                                      get-all-games]]
             [wombats-web-client.utils.forms :refer [text-input-with-label
@@ -16,6 +17,15 @@
                         (get-all-games)
                         (re-frame/dispatch [:update-modal-error nil])
                         (re-frame/dispatch [:set-modal nil])))
+
+
+(def callback-error (fn [error]
+                      (let [error-code (:code (:response error))
+                            is-game-full? (= error-code 101001)]
+                        (if is-game-full?
+                          (re-frame/dispatch [:set-modal {:fn #(game-full-modal)
+                                                          :show-overlay? true}])
+                          (re-frame/dispatch [:update-modal-error (:message (:response error))])))))
 
 (defn on-wombat-selection [cmpnt-state id name]
   (swap! cmpnt-state assoc :wombat-id id)
@@ -110,4 +120,5 @@
                                                #(callback-success game-id
                                                                   wombat-id
                                                                   wombat-color
-                                                                  password)))}]]]))})))
+                                                                  password)
+                                               #(callback-error %)))}]]]))})))
