@@ -17,7 +17,6 @@
    :game/arena nil
    :game/info nil
    :game/messages []
-   :game/stats {}
    :join-game-selections []
    :spritesheet nil
    :modal-error nil})

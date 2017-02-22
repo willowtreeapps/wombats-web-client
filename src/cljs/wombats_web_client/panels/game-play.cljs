@@ -34,7 +34,6 @@
 (defn clear-game-panel-state []
   (re-frame/dispatch [:game/update-frame nil])
   (re-frame/dispatch [:game/clear-chat-messages])
-  (re-frame/dispatch [:game/stats-update {}])
   (re-frame/dispatch [:game/info nil])
   (ws/send-message :leave-game {:game-id @game-id})
   (reset! game-id nil)
