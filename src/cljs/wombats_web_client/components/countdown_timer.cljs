@@ -40,7 +40,7 @@
                assoc
                :timeout-fn
                (.setTimeout js/window
-                            (fn [] 
+                            (fn []
                               (swap! cmpnt-state 
                                      assoc 
                                      :interval-fn
