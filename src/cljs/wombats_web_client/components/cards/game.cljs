@@ -4,7 +4,8 @@
             [wombats-web-client.components.modals.join-wombat-modal :refer [join-wombat-modal]]))
 
 (defn open-join-game-modal-fn [game-id occupied-colors]
-  (fn []
+  (fn [e]
+    (.preventDefault e)
     (re-frame/dispatch [:set-modal {:fn #(join-wombat-modal game-id occupied-colors)
                                     :show-overlay? true}])))
 
