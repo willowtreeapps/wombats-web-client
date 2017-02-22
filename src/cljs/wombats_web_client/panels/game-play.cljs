@@ -86,7 +86,7 @@
   [info messages stats]
   (let [winner (:game-winner @info)]
     ;; Dispatch winner modal if there's a winner
-    #_(when winner
+    (when winner
       (show-winner-modal winner))
 
     [:div.right-game-play-panel
