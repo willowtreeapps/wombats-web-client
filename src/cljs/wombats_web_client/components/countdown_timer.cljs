@@ -2,17 +2,29 @@
   (:require [cljs-time.core :as t]
             [reagent.core :as reagent]))
 
+(defn- before-now?
+  "Returns a boolean whether time is in the past"
+  [time]
+  (or (nil? time) 
+      (t/after? (t/now) 
+                time)))
+
+(defn- interval-from-now
+  [time]
+  (t/interval (t/now)
+              time))
+
 (defn- seconds-until
   [time]
-  (if (or (nil? time) (t/after? (t/now) time))
+  (if (before-now? time)
     0
-    (t/in-seconds (t/interval (t/now) time))))
+    (t/in-seconds (interval-from-now time))))
 
 (defn- millis-until
   [time]
-  (if (or (nil? time) (t/after? (t/now) time))
+  (if (before-now? time)
     0
-    (mod (t/in-millis (t/interval (t/now) time))
+    (mod (t/in-millis (interval-from-now time))
          1000)))
 
 (defn- format-time
