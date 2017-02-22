@@ -15,6 +15,16 @@
                   :handler on-success
                   :error-handler on-error}))
 
+(defn get-my-games [status on-success on-error]
+  (GET games-url {:response-format (edn-response-format)
+                  :keywords? true
+                  :format (edn-request-format)
+                  :headers (add-auth-header {})
+                  :params {:status status
+                           :user (get-current-user-id)}
+                  :handler on-success
+                  :error-handler on-error}))
+
 (defn join-game [game-id wombat-id color password on-success on-error]
   (PUT (games-join-url game-id) {:response-format (edn-response-format)
                           :keywords? true
@@ -26,15 +36,6 @@
                                    :player/color color
                                    :game/password password}}))
 
-(defn get-joined-games [id on-success on-error]
-  (GET games-url {:response-format (edn-response-format)
-                  :keywords? true
-                  :format (edn-request-format)
-                  :headers (add-auth-header {})
-                  :params {:user id}
-                  :handler on-success
-                  :error-handler on-error}))
-
 ;; TODO Scaling Issue with Lots of games - only update with games that are new?
 (defn get-open-games []
   (get-games
@@ -42,17 +43,29 @@
    #(re-frame/dispatch [:open-games %])
    #(print "error on get open games")))
 
+(defn get-my-open-games []
+  (get-my-games
+    "pending-open&status=pending-closed&status=active"
+    #(re-frame/dispatch [:my-open-games %])
+    #(print "error on get my open games")))
+
 (defn get-closed-games []
   (get-games
    "closed"
    #(re-frame/dispatch [:closed-games %])
    #(print "error on get all closed games")))
 
-(defn get-all-joined-games [user-id]
-  (get-joined-games
-   user-id
-   #(re-frame/dispatch [:joined-games %])
-   #(print "error with getting my games")))
+(defn get-my-closed-games []
+  (get-my-games
+   "closed"
+   #(re-frame/dispatch [:my-closed-games %])
+   #(print "error on get all closed games")))
+
+(defn get-all-games []
+  (get-open-games)
+  (get-my-open-games)
+  (get-closed-games)
+  (get-my-closed-games))
 
 (defn join-open-game [game-id wombat-id color password cb-success]
   (join-game
@@ -62,7 +75,7 @@
    password
    (fn []
      (cb-success)
-     (get-all-joined-games (get-current-user-id)))
+     (get-all-games))
    (fn [error]
      (re-frame/dispatch [:update-modal-error (:message (:response error))]))))
 
@@ -72,14 +85,19 @@
    (assoc db :open-games open-games)))
 
 (re-frame/reg-event-db
+ :my-open-games
+ (fn [db [_ my-open-games]]
+   (assoc db :my-open-games my-open-games)))
+
+(re-frame/reg-event-db
  :closed-games
  (fn [db [_ closed-games]]
    (assoc db :closed-games closed-games)))
 
 (re-frame/reg-event-db
- :joined-games
- (fn [db [_ joined-games]]
-   (assoc db :joined-games joined-games)))
+ :my-closed-games
+ (fn [db [_ my-closed-games]]
+   (assoc db :my-closed-games my-closed-games)))
 
 (re-frame/reg-event-db
  :add-join-selection
@@ -90,11 +108,6 @@
  :get-open-games
  (fn [_]
    (get-open-games)))
-
-(re-frame/reg-fx
- :get-joined-games
- (fn [id]
-   (get-all-joined-games id)))
 
 (re-frame/reg-fx
  :get-closed-games

@@ -1,8 +1,7 @@
 (ns wombats-web-client.panels.games
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
-            [wombats-web-client.events.games :refer [get-open-games
-                                                     get-closed-games]]
+            [wombats-web-client.events.games :refer [get-all-games]]
             [wombat-web-client.components.cards.game :refer [game-card]]))
 
 ;; Games Panel
@@ -13,7 +12,7 @@
 (defn- open-game-polling
   "Poll for newly created games every minute when viewing games panel and repopulate app state"
   []
- (js/setInterval #(get-open-games) 60000))
+ (js/setInterval #(get-all-games) 60000))
 
 
 (defn tab-view-toggle [cmpnt-state]
@@ -28,19 +27,42 @@
   (let [empty-text (if show-open empty-open-page empty-joined-page)]
     [:div.empty-text empty-text]))
 
+(defn my-game-toggle [cmpnt-state]
+  (let [current-state (:show-my-games @cmpnt-state)]
+    (print current-state)
+    [:div {:on-click #(swap! cmpnt-state assoc :show-my-games (not current-state))} 
+     "SHOW MY GAMES"]))
+
+(defn get-games [{:keys [show-open show-my-games open closed my-open my-closed]}]
+  (cond
+   (and show-open show-my-games) my-open
+   (and (not show-open) show-my-games) my-closed
+   (and show-open (not show-my-games)) open
+   (and (not show-open) (not show-my-games)) closed))
+
 (defn main-panel [cmpnt-state]
   (let [open-games (re-frame/subscribe [:open-games])
         closed-games (re-frame/subscribe [:closed-games])
+        my-open (re-frame/subscribe [:my-open-games])
+        my-closed (re-frame/subscribe [:my-closed-games])
         polling (open-game-polling)]
-    (get-open-games)
-    (get-closed-games)
+
+    (get-all-games)
+
     (fn []
       (swap! cmpnt-state assoc :polling polling)
       (let [open @open-games
             closed @closed-games
+            show-my-games (:show-my-games @cmpnt-state)
             show-open (:show-open @cmpnt-state)
-            games (if show-open open closed)]
+            games (get-games {:show-open show-open
+                              :show-my-games show-my-games
+                              :open open
+                              :closed closed
+                              :my-open @my-open
+                              :my-closed @my-closed})]
         [:div.games-panel
+         [my-game-toggle cmpnt-state]
          [tab-view-toggle cmpnt-state]
          [:div.games
           (if (pos? (count games))
@@ -55,6 +77,7 @@
 (defn games []
   (let [current-user (re-frame/subscribe [:current-user])
         cmpnt-state (reagent/atom {:show-open true
+                                   :show-my-games false
                                    :polling nil})]
     (reagent/create-class
      {:component-will-unmount #(js/clearInterval (:polling @cmpnt-state))
