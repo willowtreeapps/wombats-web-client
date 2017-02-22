@@ -14,7 +14,7 @@
 (defn- open-game-polling
   "Poll for newly created games every minute when viewing games panel and repopulate app state"
   []
- (js/setInterval #(get-all-games) 60000))
+  (js/setInterval #(get-all-games) 60000))
 
 
 (defn tab-view-toggle [cmpnt-state]
@@ -35,9 +35,9 @@
 (defn get-games [{:keys [show-open show-my-games open closed my-open my-closed]}]
   (cond
    (and show-open show-my-games) (sort-by :game/start-time my-open)
-   (and (not show-open) show-my-games) (reverse (sort-by :game/end-time my-closed))
+   (and (not show-open) show-my-games) (sort-by :game/end-time > my-closed)
    (and show-open (not show-my-games)) (sort-by :game/start-time open)
-   (and (not show-open) (not show-my-games)) (reverse (sort-by :game/end-time closed))))
+   (and (not show-open) (not show-my-games)) (sort-by :game/end-time > closed)))
 
 (defn get-empty-state [show-open show-my-games]
   (cond
@@ -66,15 +66,17 @@
     (fn []
       (let  [current-user @current-user
              open @open-games
-                closed @closed-games
-                show-my-games (:show-my-games @cmpnt-state)
-                show-open (:show-open @cmpnt-state)
-                games (get-games {:show-open show-open
-                                  :show-my-games show-my-games
-                                  :open open
-                                  :closed closed
-                                  :my-open @my-open
-                                  :my-closed @my-closed})]
+             closed @closed-games
+             show-my-games (:show-my-games @cmpnt-state)
+             show-open (:show-open @cmpnt-state)
+             games (get-games {:show-open show-open
+                               :show-my-games show-my-games
+                               :open open
+                               :closed closed
+                               :my-open @my-open
+                               :my-closed @my-closed})]
+
+
         (swap! cmpnt-state assoc :polling polling)
 
         [:div.games-panel
