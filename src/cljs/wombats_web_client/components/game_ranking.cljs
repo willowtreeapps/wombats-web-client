@@ -9,7 +9,7 @@
 
 (defn get-adjusted-hp [info]
   (let [game-status (:status info)
-        is-starting? (or (= game-status :pending-open) (= game-status :pending-closed))]
+        is-starting? (or (= game-status :pending-open) (= game-status :pending-closed) (= game-status :active-intermission))]
     (if is-starting? 100 0)))
 
 (defn render-wombat-status [info stat]
