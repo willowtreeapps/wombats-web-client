@@ -40,23 +40,23 @@
         color-hex (:color-hex (first (filter colors-8-filter-fn colors-8)))]
     color-hex))
 
-(defn default-message [] 
+(defn default-message []
   [:li {:class-name "chat-msg"}
    [:span {:class-name "msg-body default"} "Say something already!"]])
 
 (defn display-messages
-  [messages stats]
+  [messages info]
   (fn []
-    (let [stats @stats
+    (let [stats (:stats @info)
           messages @messages
-          element (first (array-seq (.getElementsByClassName js/document 
+          element (first (array-seq (.getElementsByClassName js/document
                                                              "chat-box-message-container")))]
-      
+
       ;; Check if you should auto scroll to the bottom
       (when (and element (= (+ element.scrollTop element.clientHeight) element.scrollHeight))
         ;; On the next tick, scroll the rendered element down
-        (js/setTimeout #(set! (.-scrollTop element) 
-                              element.scrollHeight) 
+        (js/setTimeout #(set! (.-scrollTop element)
+                              element.scrollHeight)
                        0))
 
        [:ul {:class-name "chat-box-message-container"}

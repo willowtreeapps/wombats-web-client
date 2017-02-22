@@ -78,11 +78,6 @@
    (:game/messages db)))
 
 (re-frame/reg-sub
- :game/stats
- (fn [db _]
-   (:game/stats db)))
-
-(re-frame/reg-sub
  :game/details
  (fn [db [_ game-id]]
    (first (filter #(= (:game/id %) game-id)

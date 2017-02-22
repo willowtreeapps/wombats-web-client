@@ -8,8 +8,8 @@
    :else "none"))
 
 (defn get-adjusted-hp [info]
-  (let [game-status (:status @info)
-        is-starting? (or (= game-status :pending-open) (= game-status :pending-closed))]
+  (let [game-status (:status info)
+        is-starting? (or (= game-status :pending-open) (= game-status :pending-closed) (= game-status :active-intermission))]
     (if is-starting? 100 0)))
 
 (defn render-wombat-status [info stat]
@@ -29,11 +29,13 @@
                             [:div.username username]
                             [:div.score score]]))
 (defn ranking-box
-  [stats info]
+  [info]
   (fn []
-    [:div {:class-name "game-ranking-box"}
-     [:ul.list-wombat-status
-      (doall (map #(render-wombat-status info %) @stats))]]))
+    (let [info @info
+          stats (:stats info)]
+      [:div {:class-name "game-ranking-box"}
+       [:ul.list-wombat-status
+        (doall (map #(render-wombat-status info %) stats))]])))
 
 
 

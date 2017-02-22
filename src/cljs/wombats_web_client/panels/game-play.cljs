@@ -34,7 +34,6 @@
 (defn clear-game-panel-state []
   (re-frame/dispatch [:game/update-frame nil])
   (re-frame/dispatch [:game/clear-chat-messages])
-  (re-frame/dispatch [:game/stats-update {}])
   (re-frame/dispatch [:game/info nil])
   (ws/send-message :leave-game {:game-id @game-id})
   (reset! game-id nil)
@@ -66,10 +65,10 @@
      (when name
        (str name " - High Score"))]))
 
-(defn- max-players [info stats]
-  (let [{:keys [max-players]} @info
-        player-count (count @stats)]
-    [:p.wombat-counter (when (and max-players player-count)
+(defn- max-players [info]
+  (let [{:keys [max-players stats]} @info
+        player-count (count stats)]
+    [:p.wombat-counter (when (and max-players stats)
                          (str "Wombats: " player-count "/" max-players))]))
 
 (defn chat-title []
@@ -84,7 +83,7 @@
                                     :show-overlay? false}])))
 
 (defn right-game-play-panel
-  [info messages stats]
+  [info messages]
   (let [winner (:game-winner @info)]
     ;; Dispatch winner modal if there's a winner
     (when winner
@@ -95,19 +94,18 @@
      [:div.top-panel
       [game-play-title info]
       [game-play-subtitle info]
-      [max-players info stats]
-      [ranking-box stats info]]
+      [max-players info]
+      [ranking-box info]]
 
      [:div.chat-panel
       [chat-title]
-      [chat-box @game-id messages stats]]]))
+      [chat-box @game-id messages info]]]))
 
 (defn game-play []
   (let [dimensions (get-arena-dimensions)
         arena (re-frame/subscribe [:game/arena])
         info (re-frame/subscribe [:game/info])
-        messages (re-frame/subscribe [:game/messages])
-        stats (re-frame/subscribe [:game/stats])]
+        messages (re-frame/subscribe [:game/messages])]
 
     ;; TODO This should come from the router
     (reset! game-id (get-game-id))
@@ -124,4 +122,4 @@
           [:canvas {:id canvas-id
                     :width dimensions
                     :height dimensions}]]
-         [right-game-play-panel info messages stats]])})))
+         [right-game-play-panel info messages]])})))
