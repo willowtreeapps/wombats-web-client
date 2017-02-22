@@ -3,7 +3,7 @@
             [reagent.core :as reagent]
             [wombats-web-client.components.modals.join-wombat-modal :refer [join-wombat-modal]]))
 
-(defn open-join-game-modal [game-id occupied-colors]
+(defn open-join-game-modal-fn [game-id occupied-colors]
   (fn []
     (re-frame/dispatch [:set-modal {:fn #(join-wombat-modal game-id occupied-colors)
                                     :show-overlay? true}])))
@@ -28,17 +28,17 @@
      [freq "poison_vial2" poison]]))
 
 (defn get-game-state-str [is-full is-playing]
-  (cond 
+  (cond
    is-full "FULL"
    is-playing "ACTIVE"
    :else nil))
 
 (defn arena-card [{:keys [is-private
-                          is-joinable 
-                          is-full 
-                          is-playing 
-                          cmpnt-state 
-                          game-id 
+                          is-joinable
+                          is-full
+                          is-playing
+                          cmpnt-state
+                          game-id
                           occupied-colors]}]
   (let [show-join-val (:show-join @cmpnt-state)
         game-state (get-game-state-str is-full is-playing)]
@@ -50,11 +50,11 @@
         [:div.game-state game-state]])
      [:img {:src "/images/mini-arena.png"}]
      (when is-joinable
-       [:button {:class (str "join-button" 
+       [:button {:class (str "join-button"
                              (when show-join-val " display")
                              (when is-private " private"))
                  :type "button"
-                 :onClick (open-join-game-modal game-id occupied-colors)}
+                 :onClick (open-join-game-modal-fn game-id occupied-colors)}
         "JOIN"])]))
 
 (defn get-occupied-colors [game]
