@@ -36,10 +36,10 @@
 
 (defn get-games [{:keys [show-open show-my-games open closed my-open my-closed]}]
   (cond
-   (and show-open show-my-games) my-open
-   (and (not show-open) show-my-games) my-closed
-   (and show-open (not show-my-games)) open
-   (and (not show-open) (not show-my-games)) closed))
+   (and show-open show-my-games) (sort-by :game/start-time my-open)
+   (and (not show-open) show-my-games) (reverse (sort-by :game/end-time my-closed))
+   (and show-open (not show-my-games)) (sort-by :game/start-time open)
+   (and (not show-open) (not show-my-games)) (reverse (sort-by :game/end-time closed))))
 
 (defn main-panel [cmpnt-state]
   (let [open-games (re-frame/subscribe [:open-games])
@@ -62,6 +62,7 @@
                               :closed closed
                               :my-open @my-open
                               :my-closed @my-closed})]
+
         [:div.games-panel
          [:div.toggles
           [tab-view-toggle cmpnt-state]
