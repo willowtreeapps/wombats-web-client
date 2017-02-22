@@ -1,6 +1,7 @@
 (ns wombats-web-client.panels.games
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
+            [wombats-web-client.components.modals.game-full-modal :refer [game-full-modal]]
             [wombats-web-client.events.games :refer [get-all-games]]
             [wombat-web-client.components.cards.game :refer [game-card]]))
 
@@ -84,6 +85,8 @@
           [tab-view-toggle cmpnt-state]
           [my-game-toggle cmpnt-state]]
          [:div.games
+          [:div {:on-click (fn [] (re-frame/dispatch [:set-modal {:fn #(game-full-modal)
+                                                                  :show-overlay? true}]))} "test"]
           (if (pos? (count games))
             [:ul.games-list 
              (for [game games]
@@ -94,7 +97,6 @@
                      is-full (= :pending-closed status)
                      is-playing (= :active status)
                      num-joined (count players)]
-                 (print num-joined)
 
                  ^{:key (:game/id game)} [game-card game
                                           user-in-game
