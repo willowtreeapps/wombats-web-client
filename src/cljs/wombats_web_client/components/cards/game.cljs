@@ -50,7 +50,7 @@
         [:div.state-overlay]
         [:div.game-state game-state]])
      [:img {:src "/images/mini-arena.png"}]
-     (when true
+     (when is-joinable
        [:button {:class (str "join-button"
                              (when show-join-val " display")
                              (when is-private " private"))

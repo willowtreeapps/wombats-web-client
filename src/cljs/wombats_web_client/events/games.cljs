@@ -72,7 +72,7 @@
   (get-closed-games)
   (get-my-closed-games))
 
-(defn join-open-game [game-id wombat-id color password cb-success]
+(defn join-open-game [game-id wombat-id color password cb-success cb-error]
   (join-game
    game-id
    wombat-id
@@ -82,7 +82,7 @@
      (cb-success)
      (get-all-games))
    (fn [error]
-     (re-frame/dispatch [:update-modal-error (:message (:response error))]))))
+     (cb-error error))))
 
 (re-frame/reg-event-db
  :open-games
