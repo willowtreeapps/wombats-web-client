@@ -1,6 +1,7 @@
 (ns wombats-web-client.panels.game-play
   (:require [wombats-web-client.components.arena :as arena]
             [wombats-web-client.components.chat-box :refer [chat-box]]
+            [wombats-web-client.components.countdown-timer :refer [countdown-timer]]
             [wombats-web-client.components.game-ranking :refer [ranking-box]]
             [wombats-web-client.components.modals.wombat-modal :refer [winner-modal]]
             [wombats-web-client.utils.socket :as ws]
@@ -39,27 +40,28 @@
   (re-frame/dispatch [:set-modal nil]))
 
 (defn- game-play-title [info]
-  (let [{:keys [status
-                start-time]} @info]
-    [:h1.game-play-title 
+  (let [{:keys [round-number
+                round-start-time
+                status]} @info]
+    [:h1.game-play-title
      (case status
        :closed
        "GAME OVER"
-           
-       ;; TODO: #21 Pull down round number from API and display it
-       (:pending-open
-        :pending-closed)
-       "ROUND 1 STARTS IN: 2:06"
 
-       ;; TODO: Pull down round number from API and display it
+       (:pending-open
+        :pending-closed
+        :active-intermission)
+       [:span (str "ROUND " round-number " STARTS IN: ")
+        [countdown-timer round-start-time]]
+
        :active
-       "ROUND 1"
+       (str "ROUND " round-number)
 
        nil)]))
 
 (defn- game-play-subtitle [info]
   (let [{:keys [name]} @info]
-    [:h2.game-play-subtitle 
+    [:h2.game-play-subtitle
      (when name
        (str name " - High Score"))]))
 
@@ -70,7 +72,7 @@
                          (str "Wombats: " player-count "/" max-players))]))
 
 (defn chat-title []
-  [:div.chat-title 
+  [:div.chat-title
    [:span "CHAT"]])
 
 (defn right-game-play-panel []
