@@ -7,7 +7,9 @@
 ;; Games Panel
 
 (defonce empty-open-page "Sorry, there are no games to join at the moment.")
-(defonce empty-joined-page "You haven’t joined any games yet. Start playing now!")
+(defonce empty-my-open-page "You haven’t joined any games yet.")
+(defonce empty-my-finished-page "None of your games have ended yet! Check back later.")
+(defonce empty-finished-page "No games have ended yet! Check back later.")
 
 (defn- open-game-polling
   "Poll for newly created games every minute when viewing games panel and repopulate app state"
@@ -23,10 +25,6 @@
      [:div.game-tab {:class (when-not show-open "active")
                      :onClick #(swap! cmpnt-state assoc :show-open false)} "FINISHED"]]))
 
-(defn empty-state [show-open]
-  (let [empty-text (if show-open empty-open-page empty-joined-page)]
-    [:div.empty-text empty-text]))
-
 (defn my-game-toggle [cmpnt-state]
   (let [current-state (:show-my-games @cmpnt-state)]
     [:div.my-game-toggle-wrapper
@@ -41,27 +39,43 @@
    (and show-open (not show-my-games)) (sort-by :game/start-time open)
    (and (not show-open) (not show-my-games)) (reverse (sort-by :game/end-time closed))))
 
+(defn get-empty-state [show-open show-my-games]
+  (cond
+   (and show-open show-my-games) [:div.empty-text empty-my-open-page]
+   (and show-open (not show-my-games)) [:div.empty-text empty-open-page]
+   (and (not show-open) show-my-games) [:div.empty-text empty-my-finished-page]
+   (and (not show-open) (not show-my-games)) [:div.empty-text empty-finished-page]))
+
+(defn get-user-in-game [players current-user]
+  (let [current-username (:user/github-username current-user)]
+    (filter (fn [player]
+              (let [user (:player/user player)
+                    github-username (:user/github-username user)]
+                (= github-username current-username))) players)))
+
 (defn main-panel [cmpnt-state]
   (let [open-games (re-frame/subscribe [:open-games])
         closed-games (re-frame/subscribe [:closed-games])
         my-open (re-frame/subscribe [:my-open-games])
         my-closed (re-frame/subscribe [:my-closed-games])
-        polling (open-game-polling)]
+        polling (open-game-polling)
+        current-user (re-frame/subscribe [:current-user])]
 
     (get-all-games)
 
     (fn []
-      (swap! cmpnt-state assoc :polling polling)
-      (let [open @open-games
-            closed @closed-games
-            show-my-games (:show-my-games @cmpnt-state)
-            show-open (:show-open @cmpnt-state)
-            games (get-games {:show-open show-open
-                              :show-my-games show-my-games
-                              :open open
-                              :closed closed
-                              :my-open @my-open
-                              :my-closed @my-closed})]
+      (let  [current-user @current-user
+             open @open-games
+                closed @closed-games
+                show-my-games (:show-my-games @cmpnt-state)
+                show-open (:show-open @cmpnt-state)
+                games (get-games {:show-open show-open
+                                  :show-my-games show-my-games
+                                  :open open
+                                  :closed closed
+                                  :my-open @my-open
+                                  :my-closed @my-closed})]
+        (swap! cmpnt-state assoc :polling polling)
 
         [:div.games-panel
          [:div.toggles
@@ -71,8 +85,23 @@
           (if (pos? (count games))
             [:ul.games-list 
              (for [game games]
-               ^{:key (:game/id game)} [game-card game])]
-            [empty-state show-open])]]))))
+               (let [status (:game/status game)
+                     players (:game/players game)
+                     user-in-game (first (get-user-in-game players current-user))
+                     is-joinable (and (= :pending-open status) (nil? user-in-game))
+                     is-full (= :pending-closed status)
+                     is-playing (= :active status)
+                     num-joined (count players)]
+                 (print num-joined)
+
+                 ^{:key (:game/id game)} [game-card game
+                                          user-in-game
+                                          is-joinable
+                                          is-full
+                                          is-playing
+                                          num-joined]))]
+
+            [get-empty-state show-open show-my-games])]]))))
 
 (defn login-prompt []
   [:div "You must login to see open games."])

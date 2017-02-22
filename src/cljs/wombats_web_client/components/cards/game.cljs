@@ -83,9 +83,8 @@
 ;; is-playing - OPEN & ACTIVE - :active
 ;; is-finished - FINISHED - :closed 
 ;; States effect hoverstate and overlay design.
-(defn game-card [game is-joinable]
+(defn game-card [game user-in-game is-joinable is-full is-playing num-joined]
   (let [cmpnt-state (reagent/atom {:show-join false})
-        current-user (re-frame/subscribe [:current-user])
         {arena :game/arena
          game-id :game/id
          game-name :game/name
@@ -95,16 +94,11 @@
          game-type :game/type
          game-status :game/status
          game-private :game/is-private} game
-        user-in-game (first (get-user-in-game game-players @current-user))
-        game-joined-players (count game-players)
         {arena-width :arena/width
          arena-height :arena/height} arena
-        occupied-colors (get-occupied-colors game)
-        is-joinable (and (= :pending-open game-status) (nil? user-in-game))
-        is-full (= :pending-closed game-status)
-        is-playing (= :active game-status)]
+        occupied-colors (get-occupied-colors game)]
 
-    (fn [game]
+    (fn [game user-in-game is-joinable is-full is-playing num-joined]
       [:a.game-card-link-wrapper {:href (str "#/games/" game-id)}
        [:div.game-card {:key game-id
                         :onMouseOver #(swap! cmpnt-state assoc :show-join true)
@@ -124,4 +118,4 @@
                                       :rounds game-rounds
                                       :width arena-width
                                       :height arena-height})]]
-         [get-arena-frequencies arena game-joined-players game-capacity]]]])))
+         [get-arena-frequencies arena num-joined game-capacity]]]])))
