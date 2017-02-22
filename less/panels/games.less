@@ -1,32 +1,73 @@
 @import "../colors.less";
 
 .games-panel {
-    .tab-game-toggle {
-        margin-top: 35px;
+    padding: 45px 60px;
+    
+    .toggles {
         display: flex;
         justify-content: center;
+        align-items: center;
 
-        .game-tab {
-            width: 80px;
-            height: 40px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            color: @white;
-            font-size: 14px;
-            text-align: center;
-            line-height: 40px;
-            margin-left: 20px;
-            cursor: pointer;
+        .my-game-toggle-wrapper {
+            display: inline-flex;
+            justify-content: flex-end;
+            align-items: center;
+            position: absolute;
+            right: 60px;
 
-            &.active,
-            &:hover {
-                border-bottom: 3px solid @wombat-green;
+            .checkbox {
+                width: 14px;
+                height: 14px;
+                border: 2px solid gray;
+                border-radius: 3px;
+                display: inline-block;
+                cursor: pointer;
+
+                &.selected {
+                    background-color: @wombat-green;
+                    background-image: url(/images/icon-checkmark.png);
+                    background-repeat: no-repeat;
+                    background-position: 2px 4px;
+                    border: none;
+                    padding: 2px;
+                }
+            }
+            
+            .desc {
+                display: inline-block;
+                font-weight: 600;
+                letter-spacing: 2px;
+                color: @white;
+                margin-left: 10px;
+            }
+        }
+        .tab-game-toggle {
+            display: inline-flex;
+            justify-content: center;
+
+            .game-tab {
+                width: 80px;
+                height: 40px;
+                font-weight: 600;
+                letter-spacing: 2px;
+                color: @white;
+                font-size: 14px;
+                text-align: center;
+                line-height: 40px;
+                margin-left: 20px;
+                cursor: pointer;
+
+                &.active,
+                &:hover {
+                    border-bottom: 3px solid @wombat-green;
+                }
             }
         }
     }
-    .games {
-        padding: 60px;
 
+    .games {
+        padding-top: 60px;
+        
         .games-list {
             padding: 0;
             margin: 0;
@@ -35,7 +76,7 @@
             justify-content: space-between;
 
             .game-card {
-                margin: 0 40px 40px 0;
+                margin-bottom: 40px;
             }
         }
 

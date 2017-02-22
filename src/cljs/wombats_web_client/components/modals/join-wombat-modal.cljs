@@ -1,7 +1,8 @@
 (ns wombats-web-client.components.modals.join-wombat-modal
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
-            [wombats-web-client.events.games :refer [join-open-game]]
+            [wombats-web-client.events.games :refer [join-open-game
+                                                     get-all-games]]
             [wombats-web-client.utils.forms :refer [text-input-with-label
                                                     cancel-modal-input]]
             [wombats-web-client.constants.colors :refer [colors-8]]
@@ -12,6 +13,7 @@
                         (re-frame/dispatch [:add-join-selection {:game-id game-id
                                                                  :wombat-id wombat-id
                                                                  :wombat-color wombat-color}])
+                        (get-all-games)
                         (re-frame/dispatch [:update-modal-error nil])
                         (re-frame/dispatch [:set-modal nil])))
 
@@ -50,7 +52,7 @@
      [:div.selected {:class (when (= color-text color-selected) "display")
                      :style {:background color-hex
                              :opacity "0.8"}}
-      [:img {:src "/images/checkmark.svg"}]]
+      [:img {:src "/images/play.svg"}]]
      [:img.wombat {:src (str "/images/wombat_" color-text "_right.png")
             :onClick on-click-fn}]]))
 

@@ -38,9 +38,19 @@
    (:open-games db)))
 
 (re-frame/reg-sub
+ :my-open-games
+ (fn [db _]
+   (:my-open-games db)))
+
+(re-frame/reg-sub
  :closed-games
  (fn [db _]
    (:closed-games db)))
+
+(re-frame/reg-sub
+ :my-closed-games
+ (fn [db _]
+   (:my-closed-games db)))
 
 (re-frame/reg-sub
  :joined-games
