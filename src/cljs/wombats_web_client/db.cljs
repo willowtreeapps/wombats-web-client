@@ -11,6 +11,7 @@
    :users []
    :modal nil
    :open-games nil
+   :closed-games nil
    :joined-games nil
    :game/arena nil
    :game/info nil
