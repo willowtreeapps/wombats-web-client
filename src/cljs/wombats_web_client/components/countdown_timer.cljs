@@ -4,13 +4,13 @@
 
 (defn- seconds-until
   [time]
-  (if (t/after? (t/now) time)
+  (if (or (nil? time) (t/after? (t/now) time))
     0
     (t/in-seconds (t/interval (t/now) time))))
 
 (defn- millis-until
   [time]
-  (if (t/after? (t/now) time)
+  (if (or (nil? time) (t/after? (t/now) time))
     0
     (mod (t/in-millis (t/interval (t/now) time))
          1000)))
@@ -21,8 +21,8 @@
     (if (< seconds-left 0)
       "0:00"
       (let [seconds (mod seconds-left 60)
-            seconds-formatted (if (< seconds 10) 
-                                (str "0" seconds) 
+            seconds-formatted (if (< seconds 10)
+                                (str "0" seconds)
                                 seconds)
             minutes (/ (- seconds-left seconds) 60)]
         (str minutes ":" seconds-formatted)))))
@@ -31,24 +31,26 @@
   [start-time]
 
   (let [cmpnt-state (reagent/atom {:interval-fn nil
-                                   :timeout-fn nil})]
+                                   :timeout-fn nil})
+        swap-interval-fn! (fn []
+                      (swap! cmpnt-state
+                             assoc
+                             :interval-fn
+                             (.setInterval js/window
+                                           #(reagent/force-update-all)
+                                           1000)))
+        swap-timeout-fn! (fn []
+                      (swap! cmpnt-state
+                             assoc
+                             :timeout-fn
+                             (.setTimeout js/window
+                                          swap-interval-fn!
+                                          ;; Give the browser some extra time to render the next second
+                                          (- (millis-until start-time) 100))))]
     (reagent/create-class
      {:component-will-mount
-      (fn []
-        ;; Force timer to redraw every second, start interval when the countdown timer should switch
-        (swap! cmpnt-state
-               assoc
-               :timeout-fn
-               (.setTimeout js/window
-                            (fn []
-                              (swap! cmpnt-state 
-                                     assoc 
-                                     :interval-fn
-                                     (.setInterval js/window
-                                                   #(reagent/force-update-all)
-                                                   1000)))
-                            ;; Give the browser some extra time to render the next second
-                            (- (millis-until start-time) 100))))
+      ;; Force timer to redraw every second, start interval when the countdown timer should switch
+      (swap-timeout-fn!)
 
       :component-will-unmount
       (fn []
