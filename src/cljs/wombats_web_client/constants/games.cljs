@@ -6,6 +6,5 @@
 (defonce active "active")
 (defonce closed "closed")
 
-(defonce open-games-query 
-  (str pending-open "&status=" pending-closed "&status=" active "&status=" active-intermission))
-
+(defn build-status-query [statuses]
+  (clojure.string/join "&status=" statuses))
