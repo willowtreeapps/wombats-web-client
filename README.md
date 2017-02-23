@@ -4,6 +4,14 @@ This repo is a part of the Wombats Suite, documented at [Wombat Documentation](h
 ## Contributing? Issues? Features? Curiousity?
 [Learn how to contribute here.](https://github.com/willowtreeapps/wombats-documentation/blob/master/CONTRIBUTING.md)
 
+## Our Stack
+Our web client is written with the following tools:
+* [ClojureScript (cljs)](https://clojurescript.org/)
+* [Reagent](https://github.com/reagent-project/reagent)
+* [Re-frame](https://github.com/Day8/re-frame) 
+* [LESS](http://lesscss.org/#)
+* [HTML5 Canvas](https://www.w3schools.com/html/html5_canvas.asp)
+
 ## Development Mode
 ### Run application:
 
