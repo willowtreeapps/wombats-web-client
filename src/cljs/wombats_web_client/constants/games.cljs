@@ -5,6 +5,3 @@
 (defonce active-intermission "active-intermission")
 (defonce active "active")
 (defonce closed "closed")
-
-(defn build-status-query [statuses]
-  (clojure.string/join "&status=" statuses))
