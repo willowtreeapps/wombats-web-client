@@ -115,11 +115,12 @@
       :display-name "game-play-panel"
       :reagent-render
       (fn []
-        (update-arena arena)
-        [:div {:class-name "game-play-panel"}
-         [:div {:id "wombat-arena"
-                :class-name "left-game-play-panel"}
-          [:canvas {:id canvas-id
-                    :width dimensions
-                    :height dimensions}]]
-         [right-game-play-panel info messages]])})))
+        (let [winner (:game-winner @info)]
+          (update-arena arena)
+          [:div {:class-name "game-play-panel"}
+           [:div.left-game-play-panel {:id "wombat-arena"
+                  :class (when winner "game-over")}
+            [:canvas {:id canvas-id
+                      :width dimensions
+                      :height dimensions}]]
+           [right-game-play-panel info messages]]))})))

@@ -83,7 +83,7 @@
                    :value (:password @cmpnt-state)
                    :on-change #(swap! cmpnt-state assoc :password (-> % .-target .-value))}]]])
 
-(defn join-wombat-modal [game-id occupied-colors]
+(defn join-wombat-modal [game-id occupied-colors is-private]
   (let [modal-error (re-frame/subscribe [:modal-error])
         cmpnt-state (reagent/atom {:show-dropdown false
                                    :error nil
@@ -99,9 +99,10 @@
 
       (fn [] ;; render function
         (let [{:keys [error wombat-id wombat-color password]} @cmpnt-state
-              error @modal-error]
+              error @modal-error
+              title (if is-private "JOIN PRIVATE GAME" "JOIN GAME")]
           [:div {:class "modal join-wombat-modal"} ;; starts hiccup
-           [:div.title "JOIN GAME"]
+           [:div.title title]
            (when error [:div.modal-error error])
            (when (get @game :game/is-private)
              [private-game-password @game cmpnt-state])
