@@ -4,6 +4,7 @@
     (:require [secretary.core :as secretary]
               [goog.events :as events]
               [goog.history.EventType :as EventType]
+              [pushy.core :as pushy]
               [re-frame.core :as re-frame]
               [wombats-web-client.events.user :refer [sign-out-event]]))
 
@@ -16,7 +17,6 @@
     (.setEnabled true)))
 
 (defn app-routes []
-  (secretary/set-config! :prefix "#")
   ;; --------------------
   ;; define routes here
 
@@ -34,9 +34,11 @@
     (re-frame/dispatch [:set-active-panel :account-panel]))
 
   (defroute "/signout" []
-    (sign-out-event)
-    (set! (-> js/window .-location .-hash) "#/"))
+    (sign-out-event))
 
+  (def history (pushy/pushy secretary/dispatch!
+                            (fn [x] (when (secretary/locate-route x) x))))
 
   ;; --------------------
+  (pushy/start! history)
   (hook-browser-navigation!))

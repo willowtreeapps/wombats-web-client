@@ -13,6 +13,8 @@
      [:div.wombat-name name]
      [:div.player-username username]
      [:div.redirect-buttons
-      [:div.return-to-lobby [:a {:href "#/"
-                                 :on-click #(re-frame/dispatch [:set-modal nil])} 
+      [:div.return-to-lobby [:a {:href "/"
+                                 :on-click (fn [evt]
+                                             ((link-click-fn "/") evt)
+                                             (re-frame/dispatch [:set-modal nil]))} 
                              "RETURN TO LOBBY"]]]]))

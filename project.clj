@@ -8,7 +8,8 @@
                  [com.cemerick/url "0.1.1"]
                  [cljs-ajax "0.5.4"]
                  [com.andrewmcveigh/cljs-time "0.4.0"]
-                 [day8.re-frame/http-fx "0.1.3"]]
+                 [day8.re-frame/http-fx "0.1.3"]
+                 [kibu/pushy "0.3.6"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]
             [lein-less "1.7.5"]]
@@ -23,7 +24,8 @@
   :less {:source-paths ["less"]
          :target-path "resources/public/css"}
 
-  :figwheel {:css-dirs ["resources/public/css"]}
+  :figwheel {:css-dirs ["resources/public/css"]
+             :ring-handler figwheel-server.core/handler}
 
   :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
 
@@ -31,7 +33,8 @@
   {:dev
    {:dependencies [[binaryage/devtools "0.8.2"]
                    [figwheel-sidecar "0.5.7"]
-                   [com.cemerick/piggieback "0.2.1"]]
+                   [com.cemerick/piggieback "0.2.1"]
+                   [figwheel-pushstate-server "0.1.0"]]
 
     :plugins      [[lein-figwheel "0.5.7"]
                    [lein-doo "0.1.7"]]
@@ -65,6 +68,4 @@
                     :output-to     "resources/public/js/compiled/test.js"
                     :output-dir    "resources/public/js/compiled/test/out"
                     :optimizations :none}}
-    ]}
-
-  )
+    ]})

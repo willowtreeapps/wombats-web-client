@@ -1,33 +1,41 @@
 (ns wombats-web-client.components.navbar
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
+            [secretary.core :as secretary]
             [wombats-web-client.constants.urls :refer [github-signin-url
                                                        panel-router-map]]))
+
+(defn link-click-fn
+  [link]
+  (fn [evt]
+    (.preventDefault evt)
+    (secretary/dispatch! link)))
 
 (defn login []
   [:a {:href github-signin-url} "Login"])
 
 (defn wombat-logo []
-  [:a {:href "#/"} [:img.wombat-logo {:src "/images/img-logo-horizontal.svg"}]])
+  [:a {:href "/"} [:img.wombat-logo {:src "/images/img-logo-horizontal.svg"}]])
 
 (defn nav-link
   [{:keys [id class on-click link title current]}]
   [:li {:id id 
         :class class} 
-   [:a {:class (if (= current id) "active") 
-        :href link} title]])
+   [:a {:class (if (= current id) "active")
+        :href link
+        :onClick (link-click-fn link)} title]])
 
 (defn nav-links 
   [user selected]
   [:ul.navbar
    [nav-link {:id "games"
               :class "regular-link"
-              :link "#/"
+              :link "/"
               :title "GAMES"
               :current selected}]
    [nav-link {:id "config"
               :class "regular-link"
-              :link "#/config"
+              :link "/config"
               :title "CONFIG"
               :current selected}]
 
@@ -36,7 +44,7 @@
       [:a {:href github-signin-url} "LOGIN"]]
      [nav-link {:id "account"
                 :class "regular-link account"
-                :link "#/account"
+                :link "/account"
                 :title "MY WOMBATS"
                 :current selected}])])
 

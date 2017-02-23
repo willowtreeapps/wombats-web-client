@@ -1,7 +1,8 @@
 (ns wombat-web-client.components.cards.game
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
-            [wombats-web-client.components.modals.join-wombat-modal :refer [join-wombat-modal]]))
+            [wombats-web-client.components.modals.join-wombat-modal :refer [join-wombat-modal]]
+            [wombats-web-client.components.navbar :refer [link-click-fn]]))
 
 (defn open-join-game-modal-fn [game-id occupied-colors]
   (fn [e]
@@ -98,23 +99,25 @@
         occupied-colors (get-occupied-colors game)]
 
     (fn [game user-in-game is-joinable is-full is-playing num-joined]
-      [:a.game-card-link-wrapper {:href (str "#/games/" game-id)}
-       [:div.game-card {:key game-id
-                        :onMouseOver #(swap! cmpnt-state assoc :show-join true)
-                        :onMouseOut #(swap! cmpnt-state assoc :show-join false)}
-        [arena-card {:is-private game-private
-                     :is-joinable is-joinable
-                     :is-full is-full
-                     :is-playing is-playing
-                     :cmpnt-state cmpnt-state
-                     :game-id game-id
-                     :occupied-colors occupied-colors}]
-        [:div.game-information
-         (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
-         [:div.text-info
-          [:div.game-name game-name]
-          [:div (get-arena-text-info {:type game-type
-                                      :rounds game-rounds
-                                      :width arena-width
-                                      :height arena-height})]]
-         [get-arena-frequencies arena num-joined game-capacity]]]])))
+      (let [href (str "/games/" game-id)]
+        [:a.game-card-link-wrapper {:href href
+                                    :onClick (link-click-fn href)}
+         [:div.game-card {:key game-id
+                          :onMouseOver #(swap! cmpnt-state assoc :show-join true)
+                          :onMouseOut #(swap! cmpnt-state assoc :show-join false)}
+          [arena-card {:is-private game-private
+                       :is-joinable is-joinable
+                       :is-full is-full
+                       :is-playing is-playing
+                       :cmpnt-state cmpnt-state
+                       :game-id game-id
+                       :occupied-colors occupied-colors}]
+          [:div.game-information
+           (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
+           [:div.text-info
+            [:div.game-name game-name]
+            [:div (get-arena-text-info {:type game-type
+                                        :rounds game-rounds
+                                        :width arena-width
+                                        :height arena-height})]]
+           [get-arena-frequencies arena num-joined game-capacity]]]]))))
