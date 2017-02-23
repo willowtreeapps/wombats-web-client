@@ -12,7 +12,7 @@
 
 (defn add-wombat-modal []
   (let [cmpnt-state (reagent/atom {:wombat-name nil
-                                   :wombat-url nil
+                                   :wombat-url "MyGithubHandle/MyRepoName/contents/MyWombatFileName.clj"
                                    :error nil})
         modal-error (re-frame/subscribe [:modal-error])]
     (reagent/create-class
