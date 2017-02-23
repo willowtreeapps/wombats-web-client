@@ -3,7 +3,8 @@
 ;; Routing
 (defonce panel-router-map {:view-games-panel "games"
                            :account-panel "account"
-                           :config-panel "config"})
+                           :config-panel "config"
+                           :simulator-panel "simulator"})
 
 ;; Remote Dev
 (def base-api-url "//dev.api.wombats.io")

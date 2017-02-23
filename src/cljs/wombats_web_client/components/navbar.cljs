@@ -12,9 +12,9 @@
 
 (defn nav-link
   [{:keys [id class on-click link title current]}]
-  [:li {:id id 
-        :class class} 
-   [:a {:class (if (= current id) "active") 
+  [:li {:id id
+        :class class}
+   [:a {:class (if (= current id) "active")
         :href link} title]])
 
 (defn nav-links 
@@ -29,6 +29,11 @@
               :class "regular-link"
               :link "#/config"
               :title "CONFIG"
+              :current selected}]
+   [nav-link {:id "simulator"
+              :class "regular-link"
+              :link "#/simulator"
+              :title "SIMULATOR"
               :current selected}]
 
    (if-not user
