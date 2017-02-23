@@ -36,6 +36,10 @@ To compile once:
  lein less once
  ```
  
+## URLs
+* `dev.api.wombats.io` points to the Development database 
+* `qa.api.wombats.io` points to the QA database - this is the base API URL for our `master` branch
+
 ## Production Build
 
 To compile clojurescript to javascript:
