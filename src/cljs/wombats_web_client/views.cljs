@@ -7,7 +7,8 @@
               ;; Panels
               [wombats-web-client.panels.games :as view-games-panel]
               [wombats-web-client.panels.account :as account-panel]
-              [wombats-web-client.panels.game-play :as game-play-panel]))
+              [wombats-web-client.panels.game-play :as game-play-panel]
+              [wombats-web-client.panels.welcome :as welcome-panel]))
 
 ;; mainutil
 
@@ -16,6 +17,7 @@
     :view-games-panel [view-games-panel/games]
     :account-panel [account-panel/account]
     :game-play-panel [game-play-panel/game-play]
+    :welcome-panel [welcome-panel/welcome]
     [:div]))
 
 (defn show-panel [panel-name]
