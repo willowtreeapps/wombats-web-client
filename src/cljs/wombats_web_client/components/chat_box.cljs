@@ -30,8 +30,8 @@
 
 (defn format-time
   [timestamp]
-  (f/unparse-local (f/formatter-local "h:mm A")
-                   (f/parse-local timestamp)))
+  (f/unparse (f/formatter "h:mm A")
+             (t/to-default-time-zone timestamp)))
 
 (defn get-username-color [stats username]
   (let [stat-filter-fn (fn [stat] (= (:username stat) username))
