@@ -36,5 +36,5 @@
     [:div.wombat-card {:key id
                        :onMouseOver #(swap! cmpnt-state assoc :user-hovering true)
                        :onMouseOut #(swap! cmpnt-state assoc :user-hovering false)}
-     [:img.wombat-image {:src (str "/images/wombat_purple_right.png")}]
+     [:img.wombat-image {:src (str "/images/naked_wombat.png")}]
      [wombat-information cmpnt-state name id url]]))
