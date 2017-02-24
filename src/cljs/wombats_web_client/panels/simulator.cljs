@@ -1,7 +1,8 @@
 (ns wombats-web-client.panels.simulator
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
-            [wombats-web-client.components.arena :as arena]))
+            [wombats-web-client.components.arena :as arena]
+            [wombats-web-client.utils.socket :as ws]))
 
 (defonce canvas-id "simulator-canvas")
 (defonce dimensions 600)
@@ -16,11 +17,19 @@
                                              :wombat-id "11d28d6e-e0cc-422f-9f9e-c7ab84c7ebe5"}]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Accessors
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- get-player-code [state]
+  (let [player (last (first (:players state)))]
+    (get-in player [:state :code :code])))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Callback Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- on-step-click [evt]
-  (js/console.log "STEP"))
+(defn- on-step-click [evt state]
+  (ws/send-message :process-simulation-frame {:game-state state}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Render Methods
@@ -36,7 +45,8 @@
 
 (defn- render-right-pane [state]
   [:div {:class-name "right-pane"}
-   [:button {:onClick #(on-step-click %)} 
+   [:textarea {:value (or  (get-player-code state) "")}]
+   [:button {:onClick #(on-step-click % state)} 
     "Step"]])
 
 (defn- render [state]
