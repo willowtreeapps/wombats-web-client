@@ -20,16 +20,20 @@
                 display: inline-block;
                 color: @warm-grey;
                 text-align: center;
-                padding: 14px 16px;
+                padding: 14px 13px;
                 text-decoration: none;
                 font-weight: 600;
                 letter-spacing: 2px;
+                margin-right: 3px;
 
-                &.active {
+                &.active, &:hover {
                     color: white;
                     border-bottom: 3px solid @wombat-green;
                     padding-bottom: 9px;
+                    
                 }
+                
+                
             }
 
             &.account {
