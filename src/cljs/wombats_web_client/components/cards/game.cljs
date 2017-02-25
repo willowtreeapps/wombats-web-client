@@ -10,7 +10,8 @@
                                     :show-overlay? true}])))
 
 (defn get-arena-text-info [{:keys [type rounds width height]}]
-  (str type " - " rounds " Rounds | " width "x" height))
+  (let [round-txt (if (= 1 rounds) "Round" "Rounds")]
+    (str type " - " rounds " " round-txt " | " width "x" height)))
 
 (defn freq [freq-name amt]
   [:div.freq-object
