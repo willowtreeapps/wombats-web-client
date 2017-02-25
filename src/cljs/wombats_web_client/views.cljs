@@ -8,7 +8,7 @@
               [wombats-web-client.panels.games :as view-games-panel]
               [wombats-web-client.panels.account :as account-panel]
               [wombats-web-client.panels.game-play :as game-play-panel]
-              [wombats-web-client.panels.welcome :as welcome-panel]))
+              [wombats-web-client.panels.welcome :as welcome-panel]
               [wombats-web-client.panels.page-not-found :as page-not-found-panel]))
 
 ;; mainutil
