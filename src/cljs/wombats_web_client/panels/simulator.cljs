@@ -13,8 +13,8 @@
 
 (defn- component-will-mount []
   ;; Pull these out properly
-  (re-frame/dispatch [:simulator/initialize {:simulator-template-id "c0818a41-f177-446e-9f26-02936032eba8"
-                                             :wombat-id "11d28d6e-e0cc-422f-9f9e-c7ab84c7ebe5"}]))
+  (re-frame/dispatch [:simulator/initialize {:simulator-template-id "795ed192-ed68-44a4-8799-9e9f8bdc1736"
+                                             :wombat-id "3e7c3b2b-76ec-4660-853a-53f35baee760"}]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Accessors
@@ -45,8 +45,11 @@
 
 (defn- render-right-pane [state]
   [:div {:class-name "right-pane"}
-   [:textarea {:value (or  (get-player-code state) "")}]
-   [:button {:onClick #(on-step-click % state)} 
+   [:textarea 
+    {:id "editor"
+     :onChange #(prn %)
+     :value (or (get-player-code state) "")}]
+   [:button {:onClick #(on-step-click % state)}
     "Step"]])
 
 (defn- render [state]
