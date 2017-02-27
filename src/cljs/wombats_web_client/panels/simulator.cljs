@@ -14,11 +14,7 @@
 
 (defn- component-will-mount []
   (re-frame/dispatch [:simulator/initialized false])
-  (get-simulator-templates)
-  
-  ;; TODO: Pull these out properly
-  #_(re-frame/dispatch [:simulator/initialize {:simulator-template-id "795ed192-ed68-44a4-8799-9e9f8bdc1736"
-                                             :wombat-id "3e7c3b2b-76ec-4660-853a-53f35baee760"}]))
+  (get-simulator-templates))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Accessors
@@ -38,6 +34,15 @@
 
 (defn- on-step-click [evt state]
   (ws/send-message :process-simulation-frame {:game-state state}))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helper methods
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- initialize-simulator
+  [templates wombats]
+  (re-frame/dispatch [:simulator/initialize {:simulator-template-id (:simulator-template/id (first templates))
+                                             :wombat-id (:wombat/id (first wombats))}]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Render Methods
@@ -60,7 +65,10 @@
    [:button {:onClick #(on-step-click % state)}
     "Step"]])
 
-(defn- render [initialized state templates wombats]
+(defn- render! [initialized? state templates wombats]
+  (when (and (not initialized?) templates wombats)
+    (initialize-simulator templates wombats))
+
   [:div {:class-name "simulator-panel"}
    [render-left-pane state]
    [render-right-pane state]])
@@ -70,11 +78,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn simulator []
-  (let [sim-initialized (re-frame/subscribe [:simulator/initialized])
+  (let [sim-initialized? (re-frame/subscribe [:simulator/initialized])
         sim-state (re-frame/subscribe [:simulator/state])
         sim-templates (re-frame/subscribe [:simulator/templates])
         wombats (re-frame/subscribe [:my-wombats])]
     (reagent/create-class
      {:component-will-mount #(component-will-mount)
       :props-name "simulator-panel"
-      :reagent-render #(render @sim-initialized @sim-state @sim-templates @wombats)})))
+      :reagent-render #(render! @sim-initialized? @sim-state @sim-templates @wombats)})))

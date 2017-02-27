@@ -27,6 +27,7 @@
 (re-frame/reg-event-db
   :simulator/initialize
   (fn [db [_ payload]]
+    (re-frame/dispatch [:simulator/initialized true])
     ;; TODO: Remove this
     (js/setTimeout #(ws/send-message :connect-to-simulator payload)
                    2000)
