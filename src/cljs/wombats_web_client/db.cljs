@@ -19,6 +19,7 @@
    :game/info nil
    :game/messages []
    
+   :simulator/initialized nil
    :simulator/state nil
    :simulator/templates nil
 

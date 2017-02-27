@@ -20,6 +20,11 @@
    #(print "error on get-simulator-templates")))
 
 (re-frame/reg-event-db
+ :simulator/initialized
+ (fn [db [_ initialized]]
+   (assoc-in db [:simulator/initialized] initialized)))
+
+(re-frame/reg-event-db
   :simulator/initialize
   (fn [db [_ payload]]
     ;; TODO: Remove this
