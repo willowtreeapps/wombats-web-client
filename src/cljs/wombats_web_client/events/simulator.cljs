@@ -41,7 +41,8 @@
 (re-frame/reg-event-db
  :simulator/update-code
  (fn [db [_ code]]
-   (assoc-in db [:simulator/state] code)))
+   (let [player-id (first (keys (get-in db [:simulator/state :players])))]
+     (assoc-in db [:simulator/state :players player-id :state :code :code] code))))
 
 (re-frame/reg-event-db
  :simulator/update-state

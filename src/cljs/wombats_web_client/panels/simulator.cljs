@@ -8,6 +8,9 @@
 (defonce canvas-id "simulator-canvas")
 (defonce dimensions 600)
 
+;; TODO: Currently this page always uses the first template and first wombat.
+;;       We should hook up UI that allows you to switch between them.
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -56,7 +59,7 @@
                :width dimensions
                :height dimensions}]]))
 
-(defn- render-right-pane [state]
+(defn- render-right-pane [state wombats]
   [:div {:class-name "right-pane"}
    [:textarea 
     {:id "editor"
