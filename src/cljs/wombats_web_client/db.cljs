@@ -20,6 +20,7 @@
    :game/messages []
    
    :simulator/state nil
+   :simulator/templates nil
 
    :join-game-selections []
    :spritesheet nil
