@@ -16,7 +16,8 @@
                                                                  :wombat-color wombat-color}])
                         (get-all-games)
                         (re-frame/dispatch [:update-modal-error nil])
-                        (re-frame/dispatch [:set-modal nil])))
+                        (re-frame/dispatch [:set-modal nil])
+                        (set! (-> js/window .-location .-hash) (str "#/games/" game-id))))
 
 
 (def callback-error (fn [error]
