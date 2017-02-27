@@ -69,7 +69,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn simulator []
-  (let [sim-state (re-frame/subscribe [:simulator/state])
+  (let [sim-templates (re-frame/subscribe [:simulator/templates])
+        sim-state (re-frame/subscribe [:simulator/state])
         my-wombats (re-frame/subscribe [:my-wombats])]
     (reagent/create-class
      {:component-will-mount #(component-will-mount)

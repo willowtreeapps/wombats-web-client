@@ -6,7 +6,7 @@
             [wombats-web-client.utils.auth :refer [add-auth-header]]
             [wombats-web-client.utils.socket :as ws]))
 
-(defn get-simulator-templates-request [on-success on-error]
+(defn- get-simulator-templates-request [on-success on-error]
   (GET simulator-templates-url {:response-format (edn-response-format)
                                :keywords? true
                                :format (edn-request-format)
