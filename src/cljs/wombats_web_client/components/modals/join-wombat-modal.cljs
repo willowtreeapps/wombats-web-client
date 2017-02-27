@@ -56,13 +56,14 @@
 (defn wombat-img [color color-selected cmpnt-state occupied-colors]
   (let [{:keys [color-text color-hex]} color
         disabled (in? occupied-colors color-text)
+        selected (= color-text color-selected)
         on-click-fn (if disabled (fn []) #(swap! cmpnt-state assoc :wombat-color color-text))]
     [:div.wombat-img-wrapper {:key color-text}
      [:div.disabled {:class (when (in? occupied-colors color-text) "display")}]
-     [:div.selected {:class (when (= color-text color-selected) "display")
+     [:div.selected {:class (when selected "display")
                      :style {:background color-hex
-                             :opacity "0.8"}}
-      [:img {:src "/images/play.svg"}]]
+                             :opacity "0.8"}}]
+     [:img.selected-icon {:class (when selected "display") :src "/images/play.svg"}]
      [:img.wombat {:src (str "/images/wombat_" color-text "_right.png")
             :onClick on-click-fn}]]))
 
