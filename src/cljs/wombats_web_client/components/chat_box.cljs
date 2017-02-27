@@ -84,7 +84,7 @@
               :on-key-press (check-for-enter send-msg-fn)
               :on-change #(reset! message (-> % .-target .-value))}]
      [:button {:class-name "chat-send-btn"
-               :on-click send-msg-fn} "Send"]]))
+               :on-click send-msg-fn} "SEND"]]))
 
 
 

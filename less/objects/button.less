@@ -16,7 +16,7 @@
 
 
 // this button is larger, has a box shadow and is used when always shown on the page
-.emphasized-link-button(@bg-color, @shadow-color, @text-color: @dark) {
+.emphasized-link-button(@bg-color, @shadow-color, @hover-color, @text-color: @dark) {
     display: inline-block;
     width: 100px;
     height: 40px;
@@ -32,9 +32,13 @@
         color: @text-color;
         padding: 10px;
     }
+    
+    &:hover {
+        background-color: @hover-color;
+    }
 }
 
-.emphasized-action-button(@bg-color, @shadow-color) {
+.emphasized-action-button(@bg-color, @shadow-color, @hover-color) {
     width: 100px;
     height: 40px;
     background-color: @bg-color;
@@ -44,4 +48,8 @@
     letter-spacing: 2px;
     border-style: none;
     cursor: pointer;
+
+    &:hover {
+        background-color: @hover-color;
+    }
 }
