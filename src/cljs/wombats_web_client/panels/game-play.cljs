@@ -77,10 +77,8 @@
 
 (defn- show-winner-modal
   [winner]
-  ;; TODO: Support ties for winner modal
-  (let [{:keys [score username wombat-color wombat-name]} (first winner)]
-    (re-frame/dispatch [:set-modal {:fn #(winner-modal wombat-color wombat-name username)
-                                    :show-overlay? false}])))
+  (re-frame/dispatch [:set-modal {:fn #(winner-modal winner)
+                                  :show-overlay? false}]))
 
 (defn right-game-play-panel
   [info messages]
@@ -106,6 +104,7 @@
         arena (re-frame/subscribe [:game/arena])
         info (re-frame/subscribe [:game/info])
         messages (re-frame/subscribe [:game/messages])]
+
 
     ;; TODO This should come from the router
     (reset! game-id (get-game-id))
