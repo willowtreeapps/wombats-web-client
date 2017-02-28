@@ -28,7 +28,7 @@
   :simulator/initialize
   (fn [db [_ payload]]
     (re-frame/dispatch [:simulator/initialized true])
-    ;; TODO: Remove this
+    ;; TODO: Remove setTimeout when socket hooked into bootstrap
     (js/setTimeout #(ws/send-message :connect-to-simulator payload)
                    2000)
     db))
