@@ -15,7 +15,7 @@
 ;; Lifecycle Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- component-will-mount []
+(defn- component-will-mount! []
   (re-frame/dispatch [:simulator/initialized false])
   (get-simulator-templates))
 
@@ -31,18 +31,18 @@
 ;; Callback Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- on-code-change [evt]
+(defn- on-code-change! [evt]
   ;; Propogate the updated code into db
   (re-frame/dispatch [:simulator/update-code evt.target.value]))
 
-(defn- on-step-click [evt state]
+(defn- on-step-click! [evt state]
   (ws/send-message :process-simulation-frame {:game-state state}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- initialize-simulator
+(defn- initialize-simulator!
   [templates wombats]
   (re-frame/dispatch [:simulator/initialize {:simulator-template-id (:simulator-template/id (first templates))
                                              :wombat-id (:wombat/id (first wombats))}]))
@@ -51,7 +51,7 @@
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- render-left-pane [state]
+(defn- render-left-pane! [state]
   (let [arena-frame (get-in state [:frame :frame/arena])]
     (arena/arena arena-frame canvas-id)
     [:div {:class-name "left-pane"}
@@ -63,17 +63,17 @@
   [:div {:class-name "right-pane"}
    [:textarea 
     {:id "editor"
-     :onChange #(on-code-change %)
+     :onChange #(on-code-change! %)
      :value (or (get-player-code state) "")}]
-   [:button {:onClick #(on-step-click % state)}
+   [:button {:onClick #(on-step-click! % state)}
     "Step"]])
 
 (defn- render! [initialized? state templates wombats]
   (when (and (not initialized?) templates wombats)
-    (initialize-simulator templates wombats))
+    (initialize-simulator! templates wombats))
 
   [:div {:class-name "simulator-panel"}
-   [render-left-pane state]
+   [render-left-pane! state]
    [render-right-pane state]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -86,6 +86,6 @@
         sim-templates (re-frame/subscribe [:simulator/templates])
         wombats (re-frame/subscribe [:my-wombats])]
     (reagent/create-class
-     {:component-will-mount #(component-will-mount)
+     {:component-will-mount #(component-will-mount!)
       :props-name "simulator-panel"
       :reagent-render #(render! @sim-initialized? @sim-state @sim-templates @wombats)})))
