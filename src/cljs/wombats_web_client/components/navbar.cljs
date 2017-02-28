@@ -41,9 +41,9 @@
               :link "/"
               :title "GAMES"
               :current selected}]
-   
+
    (when (user-is-coordinator?) [coordinator-links selected])
-   
+
    [nav-link {:id "simulator"
               :class "regular-link"
               :link "/simulator"

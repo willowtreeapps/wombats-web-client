@@ -62,8 +62,8 @@
 
 (defn get-occupied-colors [game]
   (let [players (:game/players game)]
-    (reduce (fn [coll player] 
-              (conj coll (:player/color player))) 
+    (reduce (fn [coll player]
+              (conj coll (:player/color player)))
             [] players)))
 
 (defn get-user-in-game [players current-user]
@@ -83,7 +83,7 @@
 ;; is-joinable - OPEN & JOINABLE - :pending-open & not in-game
 ;; is-full - OPEN & FULL - :pending-closed
 ;; is-playing - OPEN & ACTIVE - :active
-;; is-finished - FINISHED - :closed 
+;; is-finished - FINISHED - :closed
 ;; States effect hoverstate and overlay design.
 (defn game-card [game user-in-game is-joinable is-full is-playing num-joined]
   (let [cmpnt-state (reagent/atom {:show-join false})

@@ -1,6 +1,7 @@
 (ns wombats-web-client.components.modals.join-wombat-modal
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
+            [secretary.core :as secretary]
             [wombats-web-client.components.modals.game-full-modal :refer [game-full-modal]]
             [wombats-web-client.events.games :refer [join-open-game
                                                      get-all-games]]
@@ -17,7 +18,7 @@
                         (get-all-games)
                         (re-frame/dispatch [:update-modal-error nil])
                         (re-frame/dispatch [:set-modal nil])
-                        (set! (-> js/window .-location .-hash) (str "#/games/" game-id))))
+                        (secretary/dispatch! (str "/games/" game-id))))
 
 
 (def callback-error (fn [error]
