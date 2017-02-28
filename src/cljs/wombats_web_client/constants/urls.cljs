@@ -7,7 +7,7 @@
                            :simulator-panel "simulator"})
 
 ;; Remote Dev
-(def base-api-url "//qa.api.wombats.io")
+(def base-api-url "//dev.api.wombats.io")
 
 ;; Local Dev
 #_(defonce base-api-url "//localhost:8888")
