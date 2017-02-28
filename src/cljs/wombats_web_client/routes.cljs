@@ -1,16 +1,12 @@
 (ns wombats-web-client.routes
     (:require-macros [secretary.core :refer [defroute]])
-    (:import goog.History)
     (:require [secretary.core :as secretary]
-              [goog.events :as events]
-              [goog.history.EventType :as EventType]
               [pushy.core :as pushy]
               [re-frame.core :as re-frame]
-              [wombats-web-client.events.user :refer [sign-out-event]]
               [wombats-web-client.utils.auth :refer [user-is-coordinator?]]))
 
 (defonce history (pushy/pushy secretary/dispatch!
-                              (fn [x] 
+                              (fn [x]
                                 (when (secretary/locate-route x) x))))
 
 (defn app-routes []
