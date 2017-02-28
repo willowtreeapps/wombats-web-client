@@ -5,6 +5,9 @@
 @arena-preview-height: 165px;
 
 .game-card {
+    @link-z-index: 1;
+    @join-button-z-index: @link-z-index + 1;
+
     display: inline-flex;
     flex-flow: row wrap;
     width: 560px;
@@ -15,7 +18,7 @@
         position: absolute;
         width: 100%;
         height: 100%;
-        z-index: 1;
+        z-index: @link-z-index;
     }
     
     &:hover {
@@ -68,7 +71,7 @@
             position: absolute;
             bottom: 60px;
             left: 34px;
-            z-index: 2;
+            z-index: @join-button-z-index;
 
             .emphasized-action-button(@wombat-green, @black-30, @wombat-dark-green);
 
