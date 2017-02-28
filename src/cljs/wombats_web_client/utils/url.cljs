@@ -10,6 +10,6 @@
                 .-href
                 url/url)
         query (:query url)
-        location (str (merge url {:query (dissoc query access-token)}) "#/")
+        location (merge url {:query (dissoc query access-token)})
         state (or (.-state js/history) #js {})]
     (.replaceState js/history state "" location)))

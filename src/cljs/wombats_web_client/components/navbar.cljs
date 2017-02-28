@@ -29,7 +29,7 @@
 (defn coordinator-links [selected]
   [nav-link {:id "config"
              :class "regular-link"
-             :link "#/config"
+             :link "/config"
              :title "CONFIG"
              :current selected}])
 
@@ -46,7 +46,7 @@
    
    [nav-link {:id "simulator"
               :class "regular-link"
-              :link "#/simulator"
+              :link "/simulator"
               :title "SIMULATOR"
               :current selected}]
 
