@@ -25,6 +25,5 @@
      (if tied? [tied-info wombats] [winner-info (first wombats)])
      [:div.redirect-buttons
       [:div.return-to-lobby [:a {:href "/"
-                                 :on-click (fn [evt]
-                                             (re-frame/dispatch [:set-modal nil]))}
+                                 :on-click #(re-frame/dispatch [:set-modal nil])}
                              "RETURN TO LOBBY"]]]]))
