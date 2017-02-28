@@ -11,6 +11,14 @@
         display: inline-flex;
         flex-flow: row wrap;
         width: 560px;
+        
+        &:hover {
+            .arena-preview {
+                .join-button {
+                    display: initial;
+                }
+            }
+        }
 
         .arena-preview {
             width: @arena-preview-width;
@@ -62,10 +70,6 @@
                     background-image: url(/images/lock.png);
                     background-repeat: no-repeat;
                     background-position: 65px 10px;
-                }
-
-                &.display {
-                    display: initial;
                 }
             }
         }

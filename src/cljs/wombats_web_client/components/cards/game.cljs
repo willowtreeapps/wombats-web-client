@@ -41,11 +41,9 @@
                           is-joinable
                           is-full
                           is-playing
-                          cmpnt-state
                           game-id
                           occupied-colors]}]
-  (let [show-join-val (:show-join @cmpnt-state)
-        game-state (get-game-state-str is-full is-playing)]
+  (let [game-state (get-game-state-str is-full is-playing)]
 
     [:div.arena-preview
      (when game-state
@@ -55,7 +53,6 @@
      [:img {:src "/images/mini-arena.png"}]
      (when is-joinable
        [:button {:class (str "join-button"
-                             (when show-join-val " display")
                              (when is-private " private"))
                  :onClick (open-join-game-modal-fn game-id occupied-colors is-private)}
         "JOIN"])]))
@@ -86,8 +83,7 @@
 ;; is-finished - FINISHED - :closed
 ;; States effect hoverstate and overlay design.
 (defn game-card [game user-in-game is-joinable is-full is-playing num-joined]
-  (let [cmpnt-state (reagent/atom {:show-join false})
-        {arena :game/arena
+  (let [{arena :game/arena
          game-id :game/id
          game-name :game/name
          game-players :game/players
@@ -104,14 +100,11 @@
       (let [href (str "/games/" game-id)]
         [:a.game-card-link-wrapper {:href href
                                     :onClick (link-click-fn href)}
-         [:div.game-card {:key game-id
-                          :onMouseOver #(swap! cmpnt-state assoc :show-join true)
-                          :onMouseOut #(swap! cmpnt-state assoc :show-join false)}
+         [:div.game-card {:key game-id}
           [arena-card {:is-private game-private
                        :is-joinable is-joinable
                        :is-full is-full
                        :is-playing is-playing
-                       :cmpnt-state cmpnt-state
                        :game-id game-id
                        :occupied-colors occupied-colors}]
           [:div.game-information
