@@ -33,6 +33,9 @@
       (re-frame/dispatch [:set-active-panel :config-panel])
       (re-frame/dispatch [:set-active-panel :page-not-found-panel])))
 
+  (defroute "/simulator" []
+    (re-frame/dispatch [:set-active-panel :simulator-panel]))
+
   (defroute "/account" []
     (re-frame/dispatch [:set-active-panel :account-panel]))
 
