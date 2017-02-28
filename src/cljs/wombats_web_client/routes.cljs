@@ -9,16 +9,11 @@
               [wombats-web-client.events.user :refer [sign-out-event]]
               [wombats-web-client.utils.auth :refer [user-is-coordinator?]]))
 
-(defn hook-browser-navigation! []
-  (doto (History.)
-    (events/listen
-     EventType/NAVIGATE
-     (fn [event]
-       (secretary/dispatch! (.-token event))))
-    (.setEnabled true)))
+(defonce history (pushy/pushy secretary/dispatch!
+                              (fn [x] 
+                                (when (secretary/locate-route x) x))))
 
 (defn app-routes []
-  ;; --------------------
   ;; define routes here
 
   (defroute "/" []
@@ -39,9 +34,4 @@
   (defroute "/account" []
     (re-frame/dispatch [:set-active-panel :account-panel]))
 
-  (def history (pushy/pushy secretary/dispatch!
-                            (fn [x] (when (secretary/locate-route x) x))))
-
-  ;; --------------------
-  (pushy/start! history)
-  (hook-browser-navigation!))
+  (pushy/start! history))
