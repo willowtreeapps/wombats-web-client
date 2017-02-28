@@ -5,3 +5,5 @@
 (defonce active-intermission "active-intermission")
 (defonce active "active")
 (defonce closed "closed")
+
+(defonce game-type-str-map {:high-score "High Score"})
