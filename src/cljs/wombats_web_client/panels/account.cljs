@@ -3,7 +3,7 @@
             [wombats-web-client.components.add-button :as add-wombat-button]
             [wombats-web-client.components.modals.add-wombat-modal :refer [add-wombat-modal]]
             [wombats-web-client.components.cards.wombat :as wombat-card]
-            [wombats-web-client.components.navbar :refer [link-click-fn]]))
+            [wombats-web-client.events.user :refer [sign-out-event]]))
 
 ;; User Account Panel
 
@@ -13,11 +13,9 @@
                                     :show-overlay? true}])))
 
 (defn header []
-  (let [href "/signout"]
-    [:div.header
-     [:div.title "MY WOMBATS"]
-     [:div.logout [:a {:href href
-                       :onClick (link-click-fn href)} "LOG OUT"]]]))
+  [:div.header
+   [:div.title "MY WOMBATS"]
+   [:button.logout {:onClick #(sign-out-event)} "LOG OUT"]])
 
 (defn welcome []
   (let [my-wombats @(re-frame/subscribe [:my-wombats])]

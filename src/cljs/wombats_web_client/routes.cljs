@@ -39,9 +39,6 @@
   (defroute "/account" []
     (re-frame/dispatch [:set-active-panel :account-panel]))
 
-  (defroute "/signout" []
-    (sign-out-event))
-
   (def history (pushy/pushy secretary/dispatch!
                             (fn [x] (when (secretary/locate-route x) x))))
 
