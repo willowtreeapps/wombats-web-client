@@ -2,7 +2,8 @@
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [wombats-web-client.constants.urls :refer [github-signin-url
-                                                       panel-router-map]]))
+                                                       panel-router-map]]
+            [wombats-web-client.utils.auth :refer [user-is-coordinator?]]))
 
 (defn login []
   [:a {:href github-signin-url} "Login"])
@@ -17,7 +18,14 @@
    [:a {:class (if (= current id) "active")
         :href link} title]])
 
-(defn nav-links 
+(defn coordinator-links [selected]
+  [nav-link {:id "config"
+             :class "regular-link"
+             :link "#/config"
+             :title "CONFIG"
+             :current selected}])
+
+(defn nav-links
   [user selected]
   [:ul.navbar
    [nav-link {:id "games"
@@ -25,11 +33,9 @@
               :link "#/"
               :title "GAMES"
               :current selected}]
-   [nav-link {:id "config"
-              :class "regular-link"
-              :link "#/config"
-              :title "CONFIG"
-              :current selected}]
+   
+   (when (user-is-coordinator?) [coordinator-links selected])
+   
    [nav-link {:id "simulator"
               :class "regular-link"
               :link "#/simulator"

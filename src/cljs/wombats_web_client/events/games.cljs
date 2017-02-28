@@ -2,8 +2,12 @@
   (:require [re-frame.core :as re-frame]
             [ajax.core :refer [GET PUT]]
             [ajax.edn :refer [edn-request-format edn-response-format]]
-            [wombats-web-client.constants.games :refer [open-games-query
+            [wombats-web-client.constants.games :refer [pending-open
+                                                        pending-closed
+                                                        active
+                                                        active-intermission
                                                         closed]]
+            [wombats-web-client.utils.games :refer [build-status-query]]
             [wombats-web-client.constants.urls :refer [games-url
                                                        games-join-url]]
             [wombats-web-client.utils.auth :refer [add-auth-header get-current-user-id]]))
@@ -42,25 +46,25 @@
 
 (defn get-open-games []
   (get-games
-   open-games-query
+   (build-status-query [pending-open pending-closed active active-intermission])
    #(re-frame/dispatch [:open-games %])
    #(print "error on get open games")))
 
 (defn get-my-open-games []
   (get-my-games
-   open-games-query
+   (build-status-query [pending-open pending-closed active active-intermission])
     #(re-frame/dispatch [:my-open-games %])
     #(print "error on get my open games")))
 
 (defn get-closed-games []
   (get-games
-   closed
+   (build-status-query [closed])
    #(re-frame/dispatch [:closed-games %])
    #(print "error on get all closed games")))
 
 (defn get-my-closed-games []
   (get-my-games
-   closed
+   (build-status-query [closed])
    #(re-frame/dispatch [:my-closed-games %])
    #(print "error on get all closed games")))
 

@@ -3,10 +3,23 @@
 
 .modal-container {
     .modal.winner-modal {
+        width: 405px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        left: 25%;
+        left: 300px; // HALF OF HARDCODED ARENA WIDTH
+
+        .winner-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .wombat-desc {
+               display: flex;
+               flex-direction: column;
+               align-items: center;
+            }
+        }
 
         .wombat-img {
             width: 60px;
@@ -27,7 +40,7 @@
         }
 
         .return-to-lobby {
-            .emphasized-link-button(@wombat-green, @black-30, @white);
+            .emphasized-link-button(@wombat-green, @black-30, @wombat-dark-green, @white);
             width: 180px;
             padding-left: 20px;
             padding-right: 20px;

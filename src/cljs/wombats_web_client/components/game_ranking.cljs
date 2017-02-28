@@ -23,8 +23,7 @@
                             [:div.health-bar
                              [:span.filling {:class (get-health-color adjusted-hp-value)
                                              :style {:width (str adjusted-hp-value "%")}}]]
-                            [:div.img-wrapper
-                             [:img {:src (str "/images/wombat_" color "_right.png")}]]
+                            [:img.wombat-img {:src (str "/images/wombat_" color "_right.png")}]
                             [:div.wombat-name wombat-name]
                             [:div.username username]
                             [:div.score score]]))
