@@ -16,7 +16,8 @@
                                                                  :wombat-color wombat-color}])
                         (get-all-games)
                         (re-frame/dispatch [:update-modal-error nil])
-                        (re-frame/dispatch [:set-modal nil])))
+                        (re-frame/dispatch [:set-modal nil])
+                        (set! (-> js/window .-location .-hash) (str "#/games/" game-id))))
 
 
 (def callback-error (fn [error]
@@ -56,13 +57,14 @@
 (defn wombat-img [color color-selected cmpnt-state occupied-colors]
   (let [{:keys [color-text color-hex]} color
         disabled (in? occupied-colors color-text)
+        selected (= color-text color-selected)
         on-click-fn (if disabled (fn []) #(swap! cmpnt-state assoc :wombat-color color-text))]
     [:div.wombat-img-wrapper {:key color-text}
      [:div.disabled {:class (when (in? occupied-colors color-text) "display")}]
-     [:div.selected {:class (when (= color-text color-selected) "display")
+     [:div.selected {:class (when selected "display")
                      :style {:background color-hex
-                             :opacity "0.8"}}
-      [:img {:src "/images/play.svg"}]]
+                             :opacity "0.8"}}]
+     [:img.selected-icon {:class (when selected "display") :src "/images/play.svg"}]
      [:img.wombat {:src (str "/images/wombat_" color-text "_right.png")
             :onClick on-click-fn}]]))
 
@@ -83,7 +85,7 @@
                    :value (:password @cmpnt-state)
                    :on-change #(swap! cmpnt-state assoc :password (-> % .-target .-value))}]]])
 
-(defn join-wombat-modal [game-id occupied-colors]
+(defn join-wombat-modal [game-id occupied-colors is-private]
   (let [modal-error (re-frame/subscribe [:modal-error])
         cmpnt-state (reagent/atom {:show-dropdown false
                                    :error nil
@@ -99,9 +101,10 @@
 
       (fn [] ;; render function
         (let [{:keys [error wombat-id wombat-color password]} @cmpnt-state
-              error @modal-error]
+              error @modal-error
+              title (if is-private "JOIN PRIVATE GAME" "JOIN GAME")]
           [:div {:class "modal join-wombat-modal"} ;; starts hiccup
-           [:div.title "JOIN GAME"]
+           [:div.title title]
            (when error [:div.modal-error error])
            (when (get @game :game/is-private)
              [private-game-password @game cmpnt-state])

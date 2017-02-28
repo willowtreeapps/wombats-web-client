@@ -77,10 +77,8 @@
 
 (defn- show-winner-modal
   [winner]
-  ;; TODO: Support ties for winner modal
-  (let [{:keys [score username wombat-color wombat-name]} (first winner)]
-    (re-frame/dispatch [:set-modal {:fn #(winner-modal wombat-color wombat-name username)
-                                    :show-overlay? false}])))
+  (re-frame/dispatch [:set-modal {:fn #(winner-modal winner)
+                                  :show-overlay? false}]))
 
 (defn right-game-play-panel
   [info messages]
@@ -107,6 +105,7 @@
         info (re-frame/subscribe [:game/info])
         messages (re-frame/subscribe [:game/messages])]
 
+
     ;; TODO This should come from the router
     (reset! game-id (get-game-id))
 
@@ -115,11 +114,12 @@
       :display-name "game-play-panel"
       :reagent-render
       (fn []
-        (update-arena arena)
-        [:div {:class-name "game-play-panel"}
-         [:div {:id "wombat-arena"
-                :class-name "left-game-play-panel"}
-          [:canvas {:id canvas-id
-                    :width dimensions
-                    :height dimensions}]]
-         [right-game-play-panel info messages]])})))
+        (let [winner (:game-winner @info)]
+          (update-arena arena)
+          [:div {:class-name "game-play-panel"}
+           [:div.left-game-play-panel {:id "wombat-arena"
+                  :class (when winner "game-over")}
+            [:canvas {:id canvas-id
+                      :width dimensions
+                      :height dimensions}]]
+           [right-game-play-panel info messages]]))})))

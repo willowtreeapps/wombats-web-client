@@ -12,16 +12,19 @@
 
 (defn add-wombat-modal []
   (let [cmpnt-state (reagent/atom {:wombat-name nil
-                                   :wombat-url nil
+                                   :wombat-repo-name nil
+                                   :wombat-file-path nil
                                    :error nil})
-        modal-error (re-frame/subscribe [:modal-error])]
+        modal-error (re-frame/subscribe [:modal-error])
+        current-user (re-frame/subscribe [:current-user])]
     (reagent/create-class
      {:component-will-unmount #(re-frame/dispatch [:update-modal-error nil])
       :display-name "add-wombat-modal"
       :reagent-render
       (fn []
-        (let [{:keys [error wombat-name wombat-url]} @cmpnt-state
-              error @modal-error]
+        (let [{:keys [wombat-name wombat-repo-name wombat-file-path]} @cmpnt-state
+              error @modal-error
+              username (:user/github-username @current-user)]
           [:div {:class "modal add-wombat-modal"}
            [:div.title "ADD WOMBAT"]
            (when error [:div.modal-error error])
@@ -29,15 +32,21 @@
             [text-input-with-label {:name "wombat-name"
                                     :label "Wombat Name"
                                     :state cmpnt-state}]
-            [text-input-with-label {:name "wombat-url"
-                                    :label "Wombat URL"
+            [text-input-with-label {:name "wombat-repo-name"
+                                    :label "Wombat Repository Name"
+                                    :state cmpnt-state}]
+            [text-input-with-label {:name "wombat-file-path"
+                                    :label "Wombat File Path"
                                     :state cmpnt-state}]
             [:div.action-buttons
              [cancel-modal-input]
              [:input.modal-button {:type "button"
                                    :value "ADD"
                                    :on-click (fn []
-                                               (create-new-wombat
-                                                wombat-name
-                                                wombat-url
-                                                #(callback-success cmpnt-state)))}]]]]))})))
+                                               (let [url (str username "/" 
+                                                              wombat-repo-name "/contents/" 
+                                                              wombat-file-path)]
+                                                 (create-new-wombat
+                                                  wombat-name
+                                                  url
+                                                  #(callback-success cmpnt-state))))}]]]]))})))
