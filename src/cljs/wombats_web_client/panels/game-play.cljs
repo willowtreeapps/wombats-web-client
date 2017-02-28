@@ -34,7 +34,6 @@
 (defn clear-game-panel-state []
   (re-frame/dispatch [:game/update-frame nil])
   (re-frame/dispatch [:game/clear-chat-messages])
-  (re-frame/dispatch [:game/stats-update {}])
   (re-frame/dispatch [:game/info nil])
   (ws/send-message :leave-game {:game-id @game-id})
   (reset! game-id nil)
@@ -66,10 +65,10 @@
      (when name
        (str name " - High Score"))]))
 
-(defn- max-players [info stats]
-  (let [{:keys [max-players]} @info
-        player-count (count @stats)]
-    [:p.wombat-counter (when (and max-players player-count)
+(defn- max-players [info]
+  (let [{:keys [max-players stats]} @info
+        player-count (count stats)]
+    [:p.wombat-counter (when (and max-players stats)
                          (str "Wombats: " player-count "/" max-players))]))
 
 (defn chat-title []
@@ -78,13 +77,11 @@
 
 (defn- show-winner-modal
   [winner]
-  ;; TODO: Support ties for winner modal
-  (let [{:keys [score username wombat-color wombat-name]} (first winner)]
-    (re-frame/dispatch [:set-modal {:fn #(winner-modal wombat-color wombat-name username)
-                                    :show-overlay? false}])))
+  (re-frame/dispatch [:set-modal {:fn #(winner-modal winner)
+                                  :show-overlay? false}]))
 
 (defn right-game-play-panel
-  [info messages stats]
+  [info messages]
   (let [winner (:game-winner @info)]
     ;; Dispatch winner modal if there's a winner
     (when winner
@@ -95,19 +92,19 @@
      [:div.top-panel
       [game-play-title info]
       [game-play-subtitle info]
-      [max-players info stats]
-      [ranking-box stats info]]
+      [max-players info]
+      [ranking-box info]]
 
      [:div.chat-panel
       [chat-title]
-      [chat-box @game-id messages stats]]]))
+      [chat-box @game-id messages info]]]))
 
 (defn game-play []
   (let [dimensions (get-arena-dimensions)
         arena (re-frame/subscribe [:game/arena])
         info (re-frame/subscribe [:game/info])
-        messages (re-frame/subscribe [:game/messages])
-        stats (re-frame/subscribe [:game/stats])]
+        messages (re-frame/subscribe [:game/messages])]
+
 
     ;; TODO This should come from the router
     (reset! game-id (get-game-id))
@@ -117,11 +114,12 @@
       :display-name "game-play-panel"
       :reagent-render
       (fn []
-        (update-arena arena)
-        [:div {:class-name "game-play-panel"}
-         [:div {:id "wombat-arena"
-                :class-name "left-game-play-panel"}
-          [:canvas {:id canvas-id
-                    :width dimensions
-                    :height dimensions}]]
-         [right-game-play-panel info messages stats]])})))
+        (let [winner (:game-winner @info)]
+          (update-arena arena)
+          [:div {:class-name "game-play-panel"}
+           [:div.left-game-play-panel {:id "wombat-arena"
+                  :class (when winner "game-over")}
+            [:canvas {:id canvas-id
+                      :width dimensions
+                      :height dimensions}]]
+           [right-game-play-panel info messages]]))})))

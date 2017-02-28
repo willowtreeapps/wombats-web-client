@@ -1,19 +1,18 @@
-# wombats-web-client
+# Wombats Web Client
+This repo is a part of the Wombats Suite, documented at [Wombat Documentation](https://github.com/willowtreeapps/wombats-documentation). 
 
-A [re-frame](https://github.com/Day8/re-frame) application designed to ... well, that part is up to you.
+## Contributing? Issues? Features? Curiousity?
+[Learn how to contribute here.](https://github.com/willowtreeapps/wombats-documentation/blob/master/CONTRIBUTING.md)
+
+## Our Stack
+Our web client is written with the following tools:
+* [ClojureScript (cljs)](https://clojurescript.org/)
+* [Reagent](https://github.com/reagent-project/reagent)
+* [Re-frame](https://github.com/Day8/re-frame) 
+* [LESS](http://lesscss.org/#)
+* [HTML5 Canvas](https://www.w3schools.com/html/html5_canvas.asp)
 
 ## Development Mode
-
-### Start Cider from Emacs:
-
-Put this in your Emacs config file:
-
-```
-(setq cider-cljs-lein-repl "(do (use 'figwheel-sidecar.repl-api) (start-figwheel!) (cljs-repl))")
-```
-
-Navigate to a clojurescript file and start a figwheel REPL with `cider-jack-in-clojurescript` or (`C-c M-J`)
-
 ### Run application:
 
 ```
@@ -25,17 +24,23 @@ Figwheel will automatically push cljs changes to the browser.
 
 Wait a bit, then browse to [http://localhost:3449](http://localhost:3449).
 
-### Run tests:
+## Run LESS styles:
 
+For hot dev:
 ```
-lein clean
-lein doo phantom test once
+lein less auto
 ```
 
-The above command assumes that you have [phantomjs](https://www.npmjs.com/package/phantomjs) installed. However, please note that [doo](https://github.com/bensu/doo) can be configured to run cljs.test in many other JS environments (chrome, ie, safari, opera, slimer, node, rhino, or nashorn).
+To compile once:
+ ```
+ lein less once
+ ```
+ 
+## URLs
+* `dev.api.wombats.io` points to the Development database 
+* `qa.api.wombats.io` points to the QA database - this is the base API URL for our `master` branch
 
 ## Production Build
-
 
 To compile clojurescript to javascript:
 

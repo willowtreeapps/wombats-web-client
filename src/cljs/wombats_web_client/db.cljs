@@ -14,10 +14,15 @@
    :my-open-games nil
    :closed-games nil
    :my-closed-games nil
+   
    :game/arena nil
    :game/info nil
    :game/messages []
-   :game/stats {}
+   
+   :simulator/initialized nil
+   :simulator/state nil
+   :simulator/templates nil
+
    :join-game-selections []
    :spritesheet nil
    :modal-error nil})

@@ -5,7 +5,8 @@
               [goog.events :as events]
               [goog.history.EventType :as EventType]
               [re-frame.core :as re-frame]
-              [wombats-web-client.events.user :refer [sign-out-event]]))
+              [wombats-web-client.events.user :refer [sign-out-event]]
+              [wombats-web-client.utils.auth :refer [user-is-coordinator?]]))
 
 (defn hook-browser-navigation! []
   (doto (History.)
@@ -28,7 +29,12 @@
     (re-frame/dispatch [:set-active-panel :game-play-panel]))
 
   (defroute "/config" []
-    (re-frame/dispatch [:set-active-panel :config-panel]))
+    (if (user-is-coordinator?)
+      (re-frame/dispatch [:set-active-panel :config-panel])
+      (re-frame/dispatch [:set-active-panel :page-not-found-panel])))
+
+  (defroute "/simulator" []
+    (re-frame/dispatch [:set-active-panel :simulator-panel]))
 
   (defroute "/account" []
     (re-frame/dispatch [:set-active-panel :account-panel]))

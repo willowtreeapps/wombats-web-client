@@ -5,7 +5,9 @@
             [wombats-web-client.constants.games :refer [pending-open
                                                         pending-closed
                                                         active
+                                                        active-intermission
                                                         closed]]
+            [wombats-web-client.utils.games :refer [build-status-query]]
             [wombats-web-client.constants.urls :refer [games-url
                                                        games-join-url]]
             [wombats-web-client.utils.auth :refer [add-auth-header get-current-user-id]]))
@@ -44,25 +46,25 @@
 
 (defn get-open-games []
   (get-games
-   (str pending-open "&status=" pending-closed "&status=" active)
+   (build-status-query [pending-open pending-closed active active-intermission])
    #(re-frame/dispatch [:open-games %])
    #(print "error on get open games")))
 
 (defn get-my-open-games []
   (get-my-games
-   (str pending-open "&status=" pending-closed "&status=" active)
+   (build-status-query [pending-open pending-closed active active-intermission])
     #(re-frame/dispatch [:my-open-games %])
     #(print "error on get my open games")))
 
 (defn get-closed-games []
   (get-games
-   closed
+   (build-status-query [closed])
    #(re-frame/dispatch [:closed-games %])
    #(print "error on get all closed games")))
 
 (defn get-my-closed-games []
   (get-my-games
-   closed
+   (build-status-query [closed])
    #(re-frame/dispatch [:my-closed-games %])
    #(print "error on get all closed games")))
 
@@ -72,7 +74,7 @@
   (get-closed-games)
   (get-my-closed-games))
 
-(defn join-open-game [game-id wombat-id color password cb-success]
+(defn join-open-game [game-id wombat-id color password cb-success cb-error]
   (join-game
    game-id
    wombat-id
@@ -82,7 +84,7 @@
      (cb-success)
      (get-all-games))
    (fn [error]
-     (re-frame/dispatch [:update-modal-error (:message (:response error))]))))
+     (cb-error error))))
 
 (re-frame/reg-event-db
  :open-games

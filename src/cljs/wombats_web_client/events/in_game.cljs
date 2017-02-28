@@ -19,11 +19,6 @@
    (assoc db :game/arena arena)))
 
 (re-frame/reg-event-db
- :game/stats-update
- (fn [db [_ stats]]
-   (assoc db :game/stats stats)))
-
-(re-frame/reg-event-db
  :game/info
  (fn [db [_ info]]
    (assoc db :game/info info)))

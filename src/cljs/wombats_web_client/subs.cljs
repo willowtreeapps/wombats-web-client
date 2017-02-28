@@ -78,11 +78,6 @@
    (:game/messages db)))
 
 (re-frame/reg-sub
- :game/stats
- (fn [db _]
-   (:game/stats db)))
-
-(re-frame/reg-sub
  :game/details
  (fn [db [_ game-id]]
    (first (filter #(= (:game/id %) game-id)
@@ -92,3 +87,22 @@
  :spritesheet
  (fn [db _]
    (:spritesheet db)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Simulator subs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(re-frame/reg-sub
+ :simulator/initialized
+ (fn [db _]
+   (:simulator/initialized db)))
+
+(re-frame/reg-sub
+ :simulator/templates
+ (fn [db _]
+   (:simulator/templates db)))
+
+(re-frame/reg-sub
+ :simulator/state
+ (fn [db _]
+   (:simulator/state db)))
