@@ -48,7 +48,7 @@
      :compiler     {:main                 wombats-web-client.core
                     :output-to            "resources/public/js/compiled/app.js"
                     :output-dir           "resources/public/js/compiled/out"
-                    :asset-path           "js/compiled/out"
+                    :asset-path           "/js/compiled/out"
                     :source-map-timestamp true
                     :preloads             [devtools.preload]
                     :external-config      {:devtools/config {:features-to-install :all}}
