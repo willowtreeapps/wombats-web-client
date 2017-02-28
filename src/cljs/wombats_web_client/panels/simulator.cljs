@@ -24,8 +24,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn- get-player-code [state]
-  (let [player (last (first (:players state)))]
-    (get-in player [:state :code :code])))
+  (let [players (:players state)
+        player-key (first (keys players))]
+    (get-in players [player-key :state :code :code])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Callback Methods
