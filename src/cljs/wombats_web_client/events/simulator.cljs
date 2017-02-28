@@ -25,15 +25,6 @@
    (assoc-in db [:simulator/initialized] initialized)))
 
 (re-frame/reg-event-db
-  :simulator/initialize
-  (fn [db [_ payload]]
-    (re-frame/dispatch [:simulator/initialized true])
-    ;; TODO: Remove setTimeout when socket hooked into bootstrap
-    (js/setTimeout #(ws/send-message :connect-to-simulator payload)
-                   2000)
-    db))
-
-(re-frame/reg-event-db
  :simulator/update-simulator-templates
  (fn [db [_ templates]]
    (assoc-in db [:simulator/templates] templates)))

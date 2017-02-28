@@ -44,8 +44,10 @@
 
 (defn- initialize-simulator!
   [templates wombats]
-  (re-frame/dispatch [:simulator/initialize {:simulator-template-id (:simulator-template/id (first templates))
-                                             :wombat-id (:wombat/id (first wombats))}]))
+  (re-frame/dispatch [:simulator/initialized true])
+  (ws/send-message :connect-to-simulator 
+                   {:simulator-template-id (:simulator-template/id (first templates))
+                    :wombat-id (:wombat/id (first wombats))}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Render Methods

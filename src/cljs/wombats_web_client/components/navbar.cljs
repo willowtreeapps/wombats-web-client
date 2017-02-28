@@ -15,7 +15,7 @@
   [{:keys [id class on-click link title current]}]
   [:li {:id id
         :class class}
-   [:a {:class (if (= current id) "active")
+   [:a {:class (when (= current id) "active")
         :href link} title]])
 
 (defn coordinator-links [selected]
