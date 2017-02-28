@@ -1,6 +1,7 @@
 (ns wombat-web-client.components.cards.game
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
+            [wombats-web-client.constants.games :refer [game-type-str-map]]
             [wombats-web-client.utils.games :refer [get-user-in-game
                                                     get-game-state-str]]
             [wombats-web-client.components.modals.join-wombat-modal :refer [join-wombat-modal]]))
@@ -11,9 +12,10 @@
     (re-frame/dispatch [:set-modal {:fn #(join-wombat-modal game-id)
                                     :show-overlay? true}])))
 
-(defn get-arena-text-info [{:keys [type rounds width height]}]
-  (let [round-txt (if (= 1 rounds) "Round" "Rounds")]
-    (str type " - " rounds " " round-txt " | " width "x" height)))
+(defn get-arena-text-info [{:keys [game-type rounds width height]}]
+  (let [round-txt (if (= 1 rounds) "Round" "Rounds")
+        game-type-str (game-type game-type-str-map)]
+    (str game-type-str " - " rounds " " round-txt " | " width "x" height)))
 
 (defn freq [freq-name amt]
   [:div.freq-object
@@ -95,7 +97,7 @@
          (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
          [:div.text-info
           [:div.game-name game-name]
-          [:div (get-arena-text-info {:type game-type
+          [:div (get-arena-text-info {:game-type game-type
                                       :rounds game-rounds
                                       :width arena-width
                                       :height arena-height})]]
