@@ -10,11 +10,13 @@
                                     :show-overlay? true}])))
 
 (defn get-arena-text-info [{:keys [type rounds width height]}]
-  (str type " - " rounds " Rounds | " width "x" height))
+  (let [round-txt (if (= 1 rounds) "Round" "Rounds")]
+    (str type " - " rounds " " round-txt " | " width "x" height)))
 
 (defn freq [freq-name amt]
   [:div.freq-object
-   [:img {:src (str "/images/" freq-name ".png")}]
+   [:img {:class (when (= freq-name "food_cherry") "cherry")
+          :src (str "/images/" freq-name ".png")}]
    [:div.freq-amt amt]])
 
 (defn get-arena-frequencies [arena joined capacity]
