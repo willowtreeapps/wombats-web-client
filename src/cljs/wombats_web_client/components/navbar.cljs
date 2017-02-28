@@ -1,16 +1,9 @@
 (ns wombats-web-client.components.navbar
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
-            [secretary.core :as secretary]
             [wombats-web-client.constants.urls :refer [github-signin-url
                                                        panel-router-map]]
             [wombats-web-client.utils.auth :refer [user-is-coordinator?]]))
-
-(defn link-click-fn
-  [link]
-  (fn [evt]
-    (.preventDefault evt)
-    (secretary/dispatch! link)))
 
 (defn login []
   [:a {:href github-signin-url} "Login"])
@@ -23,8 +16,7 @@
   [:li {:id id
         :class class}
    [:a {:class (when (= current id) "active")
-        :href link
-        :onClick (link-click-fn link)} title]])
+        :href link} title]])
 
 (defn coordinator-links [selected]
   [nav-link {:id "config"

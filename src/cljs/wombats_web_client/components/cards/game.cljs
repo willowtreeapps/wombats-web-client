@@ -4,8 +4,7 @@
             [wombats-web-client.constants.games :refer [game-type-str-map]]
             [wombats-web-client.utils.games :refer [get-user-in-game
                                                     get-game-state-str]]
-            [wombats-web-client.components.modals.join-wombat-modal :refer [join-wombat-modal]]
-            [wombats-web-client.components.navbar :refer [link-click-fn]]))
+            [wombats-web-client.components.modals.join-wombat-modal :refer [join-wombat-modal]]))
 
 (defn open-join-game-modal-fn [game-id]
   (fn [e]
@@ -80,23 +79,20 @@
          arena-height :arena/height} arena]
 
     (fn [game user-in-game is-joinable is-full is-playing num-joined]
-      (let [href (str "/games/" game-id)]
+      [:div.game-card {:key game-id}
+       [:a.link {:href (str "/games/" game-id)}]
 
-        [:div.game-card {:key game-id}
-         [:a.link {:href href
-                   :onClick (link-click-fn href)}]
-
-         [arena-card {:is-private game-private
-                      :is-joinable is-joinable
-                      :is-full is-full
-                      :is-playing is-playing
-                      :game-id game-id}]
-         [:div.game-information
-          (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
-          [:div.text-info
-           [:div.game-name game-name]
-           [:div (get-arena-text-info {:game-type game-type
-                                       :rounds game-rounds
-                                       :width arena-width
-                                       :height arena-height})]]
-          [get-arena-frequencies arena num-joined game-capacity]]]))))
+       [arena-card {:is-private game-private
+                    :is-joinable is-joinable
+                    :is-full is-full
+                    :is-playing is-playing
+                    :game-id game-id}]
+       [:div.game-information
+        (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
+        [:div.text-info
+         [:div.game-name game-name]
+         [:div (get-arena-text-info {:game-type game-type
+                                     :rounds game-rounds
+                                     :width arena-width
+                                     :height arena-height})]]
+        [get-arena-frequencies arena num-joined game-capacity]]])))
