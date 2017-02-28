@@ -25,7 +25,7 @@
 
 (defn sign-out-event
   []
-  (pushy/replace-token! history "/")
+  (pushy/set-token! history "/")
   (re-frame/dispatch [:sign-out])
   (sign-out-user))
 
