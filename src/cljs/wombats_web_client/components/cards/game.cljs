@@ -80,20 +80,21 @@
     (fn [game user-in-game is-joinable is-full is-playing num-joined]
       (let [href (str "/games/" game-id)]
 
-        [:a.game-card-link-wrapper {:href href
-                                    :onClick (link-click-fn href)}
-         [:div.game-card {:key game-id}
-          [arena-card {:is-private game-private
-                       :is-joinable is-joinable
-                       :is-full is-full
-                       :is-playing is-playing
-                       :game-id game-id}]
-          [:div.game-information
-           (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
-           [:div.text-info
-            [:div.game-name game-name]
-            [:div (get-arena-text-info {:type game-type
-                                        :rounds game-rounds
-                                        :width arena-width
-                                        :height arena-height})]]
-           [get-arena-frequencies arena num-joined game-capacity]]]]))))
+        [:div.game-card {:key game-id}
+         [:a.link {:href href
+                   :onClick (link-click-fn href)}]
+
+         [arena-card {:is-private game-private
+                      :is-joinable is-joinable
+                      :is-full is-full
+                      :is-playing is-playing
+                      :game-id game-id}]
+         [:div.game-information
+          (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
+          [:div.text-info
+           [:div.game-name game-name]
+           [:div (get-arena-text-info {:type game-type
+                                       :rounds game-rounds
+                                       :width arena-width
+                                       :height arena-height})]]
+          [get-arena-frequencies arena num-joined game-capacity]]]))))
