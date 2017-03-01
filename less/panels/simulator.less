@@ -8,13 +8,18 @@
         width: calc(~"100% - " @canvas-dimensions);
         position: relative;
 
-        #editor {
-            @editor-padding: 2px;
-            // TODO: Pull the editor into its own component (probably will switch to Ace)
-            font-family: monospace;
-            border: none;
-            width: calc(~"100% - " 2 * @editor-padding);
+        .tabbed-container {
             height: @canvas-dimensions;
+
+            #editor {
+                @editor-padding: 2px;
+                // TODO: Pull the editor into its own component (probably will switch to Ace)
+                position: absolute;
+                font-family: monospace;
+                border: none;
+                width: calc(~"100% - " 2 * @editor-padding);
+                height: calc(~"100% - " 2 * @editor-padding);
+            }
         }
     }
 }

@@ -64,46 +64,51 @@
                :height dimensions}]]))
 
 (defn- render-code-tab [state]
-  (fn []
-    [:textarea {:id "editor"
-                :onChange #(on-code-change! %)
-                :value (or (get-player-code state) "")}]))
+  [:textarea {:id "editor"
+              :onChange #(on-code-change! %)
+              :value (or (get-player-code state) "")}])
 
 (defn- render-output-tab [state]
   [:div "OUTPUT"])
 
-(defn- render-tabbed-container [state]
+(defn- render-tabbed-container [cmpnt-state sim-state]
   [tabbed-container {:tabs [{:label "CODE"
-                             :markup (render-code-tab state)}
+                             :render #(render-code-tab sim-state)}
                             {:label "OUTPUT"
-                             :markup (render-output-tab state)}]
-                     :index 0
-                     :on-index-change nil}])
+                             :render #(render-output-tab sim-state)}]
+                     :index (:tab-index @cmpnt-state)
+                     :on-index-change #(swap! cmpnt-state assoc :tab-index %)}])
 
-(defn- render-right-pane [state]
+(defn- render-right-pane [cmpnt-state sim-state]
   [:div {:class-name "right-pane"}
-   (render-tabbed-container state)
-   [:button {:onClick #(on-step-click! % state)}
+   (render-tabbed-container cmpnt-state sim-state)
+   [:button {:onClick #(on-step-click! % sim-state)}
     "Step"]])
 
-(defn- render! [initialized? state templates wombats]
+(defn- render! [cmpnt-state initialized? sim-state templates wombats]
   (when (and (not @initialized?) @templates @wombats)
     (initialize-simulator! templates wombats))
 
   [:div {:class-name "simulator-panel"}
-   [render-left-pane! state]
-   [render-right-pane state]])
+   [render-left-pane! sim-state]
+   [render-right-pane cmpnt-state sim-state]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main Method
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn simulator []
-  (let [sim-initialized? (re-frame/subscribe [:simulator/initialized])
+  (let [cmpnt-state (reagent/atom {:tab-index 0
+                                   :initialized false})
+        sim-initialized? (re-frame/subscribe [:simulator/initialized])
         sim-state (re-frame/subscribe [:simulator/state])
         sim-templates (re-frame/subscribe [:simulator/templates])
         wombats (re-frame/subscribe [:my-wombats])]
     (reagent/create-class
      {:component-will-mount #(component-will-mount!)
       :props-name "simulator-panel"
-      :reagent-render #(render! sim-initialized? sim-state sim-templates wombats)})))
+      :reagent-render #(render! cmpnt-state
+                                sim-initialized? 
+                                sim-state 
+                                sim-templates
+                                wombats)})))
