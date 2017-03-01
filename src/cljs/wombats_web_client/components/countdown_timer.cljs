@@ -36,8 +36,11 @@
             seconds-formatted (if (< seconds 10)
                                 (str "0" seconds)
                                 seconds)
-            minutes (/ (- seconds-left seconds) 60)]
-        (str minutes ":" seconds-formatted)))))
+            minutes (/ (- seconds-left seconds) 60)
+            hours (int (/ minutes 60))
+            minutes-adjusted (- minutes (* hours 60))
+            minutes-formatted (str (when (< minutes-adjusted 10) "0") minutes-adjusted)]
+        (str (when (> hours 0) (str hours ":")) minutes-formatted ":" seconds-formatted)))))
 
 (defn countdown-timer
   [start-time]

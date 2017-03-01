@@ -2,6 +2,7 @@
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [wombats-web-client.constants.games :refer [game-type-str-map]]
+            [wombats-web-client.components.countdown-timer :refer [countdown-timer]]
             [wombats-web-client.utils.games :refer [get-user-in-game
                                                     get-game-state-str]]
             [wombats-web-client.components.modals.join-wombat-modal :refer [join-wombat-modal]]))
@@ -34,11 +35,13 @@
      [freq "food_cherry" food]
      [freq "poison_vial2" poison]]))
 
-(defn arena-card [{:keys [is-private
+(defn arena-card [{:keys [is-open
+                          is-private
                           is-joinable
                           is-full
                           is-playing
                           cmpnt-state
+                          start-time
                           game-id]}]
   (let [show-join-val (:show-join @cmpnt-state)
         game-state (get-game-state-str is-full is-playing)]
@@ -49,6 +52,9 @@
         [:div.state-overlay]
         [:div.game-state game-state]])
      [:img {:src "/images/mini-arena.png"}]
+     (when is-open
+       [:div.countdown "Starts in "
+        [countdown-timer start-time]])
      (when is-joinable
        [:button {:class (str "join-button"
                              (when show-join-val " display")
@@ -78,6 +84,7 @@
          game-rounds :game/num-rounds
          game-type :game/type
          game-status :game/status
+         game-start :game/start-time
          game-private :game/is-private} game
         {arena-width :arena/width
          arena-height :arena/height} arena]
@@ -87,11 +94,13 @@
        [:div.game-card {:key game-id
                         :onMouseOver #(swap! cmpnt-state assoc :show-join true)
                         :onMouseOut #(swap! cmpnt-state assoc :show-join false)}
-        [arena-card {:is-private game-private
+        [arena-card {:is-open (or (= :pending-open game-status) (= :pending-closed game-status))
+                     :is-private game-private
                      :is-joinable is-joinable
                      :is-full is-full
                      :is-playing is-playing
                      :cmpnt-state cmpnt-state
+                     :start-time game-start
                      :game-id game-id}]
         [:div.game-information
          (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
