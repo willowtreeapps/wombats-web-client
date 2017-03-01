@@ -38,7 +38,7 @@
   (re-frame/dispatch [:simulator/update-code evt.target.value]))
 
 (defn- on-step-click! [evt state]
-  (ws/send-message :process-simulation-frame {:game-state state}))
+  (ws/send-message :process-simulation-frame {:game-state @state}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper methods
@@ -48,8 +48,8 @@
   [templates wombats]
   (re-frame/dispatch [:simulator/initialized true])
   (ws/send-message :connect-to-simulator 
-                   {:simulator-template-id (:simulator-template/id (first templates))
-                    :wombat-id (:wombat/id (first wombats))}))
+                   {:simulator-template-id (:simulator-template/id (first @templates))
+                    :wombat-id (:wombat/id (first @wombats))}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Render Methods
@@ -73,8 +73,6 @@
   [:div "OUTPUT"])
 
 (defn- render-tabbed-container [state]
-  #_(prn state)
-  #_(js/console.log (or (get-player-code state) ""))
   [tabbed-container {:tabs [{:label "CODE"
                              :markup (render-code-tab state)}
                             {:label "OUTPUT"
@@ -90,7 +88,7 @@
 
 (defn- render! [initialized? state templates wombats]
   (when (and (not @initialized?) @templates @wombats)
-    (initialize-simulator! @templates @wombats))
+    (initialize-simulator! templates wombats))
 
   [:div {:class-name "simulator-panel"}
    [render-left-pane! state]
