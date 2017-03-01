@@ -2,6 +2,7 @@
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [wombats-web-client.components.arena :as arena]
+            [wombats-web-client.components.tabbed-container :refer [tabbed-container]]
             [wombats-web-client.events.simulator :refer [get-simulator-templates]]
             [wombats-web-client.utils.socket :as ws]))
 
@@ -24,7 +25,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn- get-player-code [state]
-  (let [players (:players state)
+  (let [players (:players @state)
         player-key (first (keys players))]
     (get-in players [player-key :state :code :code])))
 
@@ -55,25 +56,41 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn- render-left-pane! [state]
-  (let [arena-frame (get-in state [:frame :frame/arena])]
+  (let [arena-frame (get-in @state [:frame :frame/arena])]
     (arena/arena arena-frame canvas-id)
     [:div {:class-name "left-pane"}
      [:canvas {:id canvas-id
                :width dimensions
                :height dimensions}]]))
 
-(defn- render-right-pane [state wombats]
+(defn- render-code-tab [state]
+  (fn []
+    [:textarea {:id "editor"
+                :onChange #(on-code-change! %)
+                :value (or (get-player-code state) "")}]))
+
+(defn- render-output-tab [state]
+  [:div "OUTPUT"])
+
+(defn- render-tabbed-container [state]
+  #_(prn state)
+  #_(js/console.log (or (get-player-code state) ""))
+  [tabbed-container {:tabs [{:label "CODE"
+                             :markup (render-code-tab state)}
+                            {:label "OUTPUT"
+                             :markup (render-output-tab state)}]
+                     :index 0
+                     :on-index-change nil}])
+
+(defn- render-right-pane [state]
   [:div {:class-name "right-pane"}
-   [:textarea 
-    {:id "editor"
-     :onChange #(on-code-change! %)
-     :value (or (get-player-code state) "")}]
+   (render-tabbed-container state)
    [:button {:onClick #(on-step-click! % state)}
     "Step"]])
 
 (defn- render! [initialized? state templates wombats]
-  (when (and (not initialized?) templates wombats)
-    (initialize-simulator! templates wombats))
+  (when (and (not @initialized?) @templates @wombats)
+    (initialize-simulator! @templates @wombats))
 
   [:div {:class-name "simulator-panel"}
    [render-left-pane! state]
@@ -91,4 +108,4 @@
     (reagent/create-class
      {:component-will-mount #(component-will-mount!)
       :props-name "simulator-panel"
-      :reagent-render #(render! @sim-initialized? @sim-state @sim-templates @wombats)})))
+      :reagent-render #(render! sim-initialized? sim-state sim-templates wombats)})))
