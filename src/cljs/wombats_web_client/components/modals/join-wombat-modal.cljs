@@ -1,6 +1,7 @@
 (ns wombats-web-client.components.modals.join-wombat-modal
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
+            [pushy.core :as pushy]
             [wombats-web-client.components.modals.game-full-modal :refer [game-full-modal]]
             [wombats-web-client.events.games :refer [join-open-game
                                                      get-open-games
@@ -9,7 +10,8 @@
                                                     cancel-modal-input]]
             [wombats-web-client.utils.games :refer [get-occupied-colors]]
             [wombats-web-client.constants.colors :refer [colors-8]]
-            [wombats-web-client.utils.functions :refer [in?]]))
+            [wombats-web-client.utils.functions :refer [in?]]
+            [wombats-web-client.routes :refer [history]]))
 
 
 (defonce initial-cmpnt-state {:show-dropdown false
@@ -27,7 +29,7 @@
                         (get-all-games)
                         (re-frame/dispatch [:update-modal-error nil])
                         (re-frame/dispatch [:set-modal nil])
-                        (set! (-> js/window .-location .-hash) (str "#/games/" game-id))))
+                        (pushy/set-token! history (str "/games/" game-id))))
 
 
 (def callback-error (fn [error cmpnt-state]
@@ -36,7 +38,7 @@
                         (when is-game-full?
                           (re-frame/dispatch [:set-modal {:fn #(game-full-modal)
                                                           :show-overlay? true}]))
-                        
+
                         (re-frame/dispatch [:update-modal-error (:message (:response error))])
                         (get-open-games)
                         (reset! cmpnt-state initial-cmpnt-state))))
