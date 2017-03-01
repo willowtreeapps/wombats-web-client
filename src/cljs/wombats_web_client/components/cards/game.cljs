@@ -38,10 +38,8 @@
                           is-joinable
                           is-full
                           is-playing
-                          cmpnt-state
                           game-id]}]
-  (let [show-join-val (:show-join @cmpnt-state)
-        game-state (get-game-state-str is-full is-playing)]
+  (let [game-state (get-game-state-str is-full is-playing)]
 
     [:div.arena-preview
      (when game-state
@@ -51,7 +49,6 @@
      [:img {:src "/images/mini-arena.png"}]
      (when is-joinable
        [:button {:class (str "join-button"
-                             (when show-join-val " display")
                              (when is-private " private"))
                  :onClick (open-join-game-modal-fn game-id)}
         "JOIN"])]))
@@ -66,11 +63,10 @@
 ;; is-joinable - OPEN & JOINABLE - :pending-open & not in-game
 ;; is-full - OPEN & FULL - :pending-closed
 ;; is-playing - OPEN & ACTIVE - :active
-;; is-finished - FINISHED - :closed 
+;; is-finished - FINISHED - :closed
 ;; States effect hoverstate and overlay design.
 (defn game-card [game user-in-game is-joinable is-full is-playing num-joined]
-  (let [cmpnt-state (reagent/atom {:show-join false})
-        {arena :game/arena
+  (let [{arena :game/arena
          game-id :game/id
          game-name :game/name
          game-players :game/players
@@ -83,22 +79,20 @@
          arena-height :arena/height} arena]
 
     (fn [game user-in-game is-joinable is-full is-playing num-joined]
-      [:a.game-card-link-wrapper {:href (str "#/games/" game-id)}
-       [:div.game-card {:key game-id
-                        :onMouseOver #(swap! cmpnt-state assoc :show-join true)
-                        :onMouseOut #(swap! cmpnt-state assoc :show-join false)}
-        [arena-card {:is-private game-private
-                     :is-joinable is-joinable
-                     :is-full is-full
-                     :is-playing is-playing
-                     :cmpnt-state cmpnt-state
-                     :game-id game-id}]
-        [:div.game-information
-         (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
-         [:div.text-info
-          [:div.game-name game-name]
-          [:div (get-arena-text-info {:game-type game-type
-                                      :rounds game-rounds
-                                      :width arena-width
-                                      :height arena-height})]]
-         [get-arena-frequencies arena num-joined game-capacity]]]])))
+      [:div.game-card {:key game-id}
+       [:a.link {:href (str "/games/" game-id)}]
+
+       [arena-card {:is-private game-private
+                    :is-joinable is-joinable
+                    :is-full is-full
+                    :is-playing is-playing
+                    :game-id game-id}]
+       [:div.game-information
+        (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
+        [:div.text-info
+         [:div.game-name game-name]
+         [:div (get-arena-text-info {:game-type game-type
+                                     :rounds game-rounds
+                                     :width arena-width
+                                     :height arena-height})]]
+        [get-arena-frequencies arena num-joined game-capacity]]])))
