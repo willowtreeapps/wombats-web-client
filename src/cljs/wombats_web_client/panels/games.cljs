@@ -91,7 +91,7 @@
                      user-in-game (first (get-user-in-game players current-user))
                      is-joinable (and (= :pending-open status) (nil? user-in-game))
                      is-full (= :pending-closed status)
-                     is-playing (= :active status)
+                     is-playing (or (= :active status) (= :active-intermission status))
                      num-joined (count players)]
 
                  ^{:key (:game/id game)} [game-card game
