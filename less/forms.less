@@ -1,25 +1,40 @@
 @import "colors.less";
 @import "objects/button.less";
+@import "objects/label.less";
 
-.label {
-    text-align: left;
-    font-size: 12px;
-    color: @warm-grey;
-    display: block;
-    padding-left: 30px;
-}
+@form-input-padding-left: 30px;
+@form-input-height: 45px;
+@form-input-margin-bottom: 30px;
 
 .text-input-wrapper {
     text-align: center;
+    position: relative;
+
+    .label(@form-input-padding-left);
 
     .input {
         border-style: none;
         width: 305px;
-        height: 45px;
+        height: @form-input-height;
         font-size: 20px;
         padding-left: 5px;
-        margin-bottom: 30px;
+        margin-bottom: @form-input-margin-bottom;
+
+        
+        &.field-error {
+            border: 1px solid @error-red;
+        }
     }
+
+   /* 
+   .inline-error {
+        padding-left: @form-input-padding-left;
+        text-align: left;
+        font-size: 12px;
+        color: @error-red;
+        position: absolute;
+        top: calc(@form-input-height ~"+" @form-input-margin-bottom ~"-" 5px);
+    }*/
 }
 
 .modal-button {
