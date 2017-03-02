@@ -1,0 +1,28 @@
+@import "../colors.less";
+@import "../objects/label.less";
+@import "../components/inline-error";
+
+@text-input-padding-left: 30px;
+@text-input-height: 45px;
+@text-input-margin-bottom: 30px;
+
+.text-input-wrapper {
+    text-align: center;
+    margin-bottom: @text-input-margin-bottom;
+
+    .label(@padding-left: @text-input-padding-left);
+
+    .input {
+        border-style: none;
+        width: 305px;
+        height: @text-input-height;
+        font-size: 20px;
+        padding-left: 5px;
+        
+        &.field-error {
+            border: 1px solid @error-red;
+        }
+    }
+
+    .inline-error;
+}

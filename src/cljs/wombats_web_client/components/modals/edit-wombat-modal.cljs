@@ -1,14 +1,27 @@
 (ns wombats-web-client.components.modals.edit-wombat-modal
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
+            [wombats-web-client.components.text-input :refer [text-input-with-label]]
             [wombats-web-client.events.user :refer [edit-wombat-by-id]]
-            [wombats-web-client.utils.forms :refer [text-input-with-label
-                                                    cancel-modal-input]]))
+            [wombats-web-client.utils.forms :refer [submit-modal-input
+                                                    cancel-modal-input]]
+            [wombats-web-client.utils.errors :refer [required-field-error]]))
 
 (defn callback-success [cmpnt-state]
   "closes modal on success"
   (re-frame/dispatch [:update-modal-error nil])
   (re-frame/dispatch [:set-modal nil]))
+
+(defn on-submit-form-valid? [cmpnt-state wombat-id]
+  (let [{:keys [wombat-name
+                wombat-url]} @cmpnt-state]
+    (when (clojure.string/blank? wombat-name)
+      (swap! cmpnt-state assoc :wombat-name-error required-field-error))
+    (when (clojure.string/blank? wombat-url)
+      (swap! cmpnt-state assoc :wombat-url-error required-field-error))
+
+    (when (and wombat-name wombat-url)
+      (edit-wombat-by-id wombat-name wombat-url wombat-id #(callback-success cmpnt-state)))))
 
 (defn edit-wombat-modal [wombat-id name url]
   (let [modal-error (re-frame/subscribe [:modal-error])
@@ -32,11 +45,4 @@
                                     :state cmpnt-state}]
             [:div.action-buttons
              [cancel-modal-input]
-             [:input.modal-button {:type "button"
-                                   :value "SAVE"
-                                   :on-click (fn []
-                                               (edit-wombat-by-id
-                                                wombat-name
-                                                wombat-url
-                                                wombat-id
-                                                #(callback-success cmpnt-state)))}]]]]))})))
+             [submit-modal-input "SAVE" #(on-submit-form-valid? cmpnt-state wombat-id)]]]]))})))
