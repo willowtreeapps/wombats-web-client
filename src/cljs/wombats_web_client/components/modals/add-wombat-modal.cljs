@@ -3,6 +3,7 @@
             [reagent.core :as reagent]
             [wombats-web-client.components.text-input :refer [text-input-with-label]]
             [wombats-web-client.events.user :refer [create-new-wombat]]
+            [wombats-web-client.utils.errors :refer [required-field-error]]
             [wombats-web-client.utils.forms :refer [cancel-modal-input
                                                     submit-modal-input]]))
 
@@ -18,12 +19,12 @@
         url (str username "/" 
                  wombat-repo-name "/contents/" 
                  wombat-file-path)]
-    (when (nil? wombat-name)
-      (swap! cmpnt-state assoc :wombat-name-error "This field is required."))
-    (when (nil? wombat-repo-name)
-      (swap! cmpnt-state assoc :wombat-repo-name-error "This field is required."))
-    (when (nil? wombat-file-path)
-      (swap! cmpnt-state assoc :wombat-file-path-error "This field is required."))
+    (when (clojure.string/blank? wombat-name)
+      (swap! cmpnt-state assoc :wombat-name-error required-field-error))
+    (when (clojure.string/blank? wombat-repo-name)
+      (swap! cmpnt-state assoc :wombat-repo-name-error required-field-error))
+    (when (clojure.string/blank? wombat-file-path)
+      (swap! cmpnt-state assoc :wombat-file-path-error required-field-error))
 
     (when (and wombat-name wombat-repo-name wombat-file-path)
       (create-new-wombat wombat-name url #(callback-success cmpnt-state)))))

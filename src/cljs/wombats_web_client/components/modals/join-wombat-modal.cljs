@@ -10,6 +10,8 @@
             [wombats-web-client.utils.forms :refer [submit-modal-input
                                                     cancel-modal-input]]
             [wombats-web-client.utils.games :refer [get-occupied-colors]]
+            [wombats-web-client.utils.errors :refer [required-field-error
+                                                     wombat-color-missing]]
             [wombats-web-client.constants.colors :refer [colors-8]]
             [wombats-web-client.utils.functions :refer [in?]]
             [wombats-web-client.routes :refer [history]]))
@@ -55,7 +57,7 @@
 (defn on-select-click [cmpnt-state]
   (let [wombat-name-missing (nil? (:wombat-name @cmpnt-state))
         show-dropdown (:show-dropdown @cmpnt-state)
-        error-state (if wombat-name-missing "This field is required" nil)]
+        error-state (when wombat-name-missing required-field-error)]
     (when show-dropdown
        (swap! cmpnt-state assoc :wombat-name-error error-state))
 
@@ -140,11 +142,14 @@
                 password
                 password-error]} @cmpnt-state]
 
-    (when  (nil? wombat-color) (swap! cmpnt-state assoc :wombat-color-error "Please select a color for your wombat."))
+    (when  (nil? wombat-color) 
+      (swap! cmpnt-state assoc :wombat-color-error wombat-color-missing))
 
-    (when (nil? wombat-name) (swap! cmpnt-state assoc :wombat-name-error "This field is required."))
+    (when (nil? wombat-name)
+      (swap! cmpnt-state assoc :wombat-name-error required-field-error))
      
-    (when (and is-private (clojure.string/blank? password)) (swap! cmpnt-state assoc :password-error "This field is required."))
+    (when (and is-private (clojure.string/blank? password)) 
+      (swap! cmpnt-state assoc :password-error required-field-error))
 
     (when (and wombat-name wombat-color (correct-privacy-settings is-private password-error))
       (join-open-game game-id
@@ -152,9 +157,9 @@
                       wombat-color
                       password
                       #(callback-success game-id
-                                   wombat-id
-                                   wombat-color
-                                   password)
+                                         wombat-id
+                                         wombat-color
+                                         password)
                       #(callback-error % cmpnt-state)))))
 
 (defn join-wombat-modal [game-id]
