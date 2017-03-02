@@ -73,19 +73,18 @@
                :height dimensions}]]))
 
 (defn- render-code-tab [state]
-  [:textarea {:id "editor"
-              :onChange #(on-code-change! %)
-              :value (or (get-player-code state) "")}])
+  [:textarea#editor {:on-change #(on-code-change! %)
+                     :value (or (get-player-code state) "")}])
 
 (defn- render-output-tab [sim-state]
-  [:div {:class-name "output"}
+  [:div.output
    
-   [:div 
-    [:h3 "Command"]
+   [:div.output-section
+    [:h3.output-section-title "Command"]
     (prn-str (get-player-command sim-state))]
    
-   [:div 
-    [:h3 "State"]
+   [:div.output-section
+    [:h3.output-section-title "State"]
     (prn-str (get-player-state sim-state))]])
 
 (defn- render-tabbed-container [cmpnt-state sim-state]
@@ -99,7 +98,7 @@
 (defn- render-right-pane [cmpnt-state sim-state]
   [:div {:class-name "right-pane"}
    (render-tabbed-container cmpnt-state sim-state)
-   [:button {:onClick #(on-step-click! % sim-state)}
+   [:button {:on-click #(on-step-click! % sim-state)}
     "Step"]])
 
 (defn- render! [cmpnt-state sim-state templates wombats]

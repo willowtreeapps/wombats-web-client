@@ -7,21 +7,21 @@
 
 (defn- render-tabs [{:keys [tabs index on-index-change]}]
   (map-indexed (fn [tab-index {:keys [label]}] 
-                 [:button {:key label
-                           :class-name (when (= index tab-index)
-                                         "active-line-top")
-                           :onClick #(on-index-change tab-index)} 
+                 [:button.tab-btn {:key label
+                                   :class (when (= index tab-index)
+                                            "active-line-top")
+                                   :on-click #(on-index-change tab-index)} 
                   label])
                tabs))
 
 (defn- render [{:keys [tabs index on-index-change] :as props}]
   (let [render (:render (tabs index))]
-    [:div {:class-name "tabbed-container"}
+    [:div.tabbed-container
      
-     [:div {:class-name "content"} 
+     [:div.content
       [render]]
      
-     [:div {:class-name "tabs"}
+     [:div.tabs
       (render-tabs props)]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
