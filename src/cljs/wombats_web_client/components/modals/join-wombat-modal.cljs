@@ -35,11 +35,9 @@
 
 
 (def callback-error (fn [error cmpnt-state]
-                      (print error)
                       (let [error-code (:code (:response error))
                             is-game-full? (= error-code 101001)]
 
-                        (print error-code)
                         (when is-game-full?
                           (re-frame/dispatch [:set-modal {:fn #(game-full-modal)
                                                           :show-overlay? true}]))
@@ -49,9 +47,9 @@
                         (reset! cmpnt-state initial-cmpnt-state))))
 
 (defn on-wombat-selection [cmpnt-state id name]
-  (swap! cmpnt-state assoc :wombat-id id)
-  (swap! cmpnt-state assoc :show-dropdown false)
-  (swap! cmpnt-state assoc :wombat-name name))
+  (swap! cmpnt-state assoc :wombat-id id
+                           :show-dropdown false
+                           :wombat-name name))
 
 (defn on-select-click [cmpnt-state]
   (let [wombat-name-missing (nil? (:wombat-name @cmpnt-state))
@@ -91,11 +89,14 @@
        [:div.dropdown-wrapper
         (for [wombat my-wombats] (wombat-options wombat cmpnt-state))])]))
 
+(defn on-wombat-image-select [cmpnt-state color-text]
+  (swap! cmpnt-state assoc :wombat-color color-text :wombat-color-error nil))
+
 (defn wombat-img [color color-selected cmpnt-state occupied-colors]
   (let [{:keys [color-text color-hex]} color
         disabled (in? occupied-colors color-text)
         selected (= color-text color-selected)
-        on-click-fn (if disabled (fn []) #(swap! cmpnt-state assoc :wombat-color color-text))]
+        on-click-fn (if disabled (fn []) #(on-wombat-image-select cmpnt-state color-text))]
     [:div.wombat-img-wrapper {:key color-text}
      [:div.disabled {:class (when (in? occupied-colors color-text) "display")}]
      [:div.selected {:class (when selected "display")
@@ -106,11 +107,14 @@
             :onClick on-click-fn}]]))
 
 (defn select-wombat-color [cmpnt-state selected-color occupied-colors]
-  [:div.select-color
-   [:label.label "Select Color"]
-   [:div.colors
-    (for [color colors-8]
-              ^{:key color} [wombat-img color selected-color cmpnt-state occupied-colors])]])
+  (let [wombat-color-error (:wombat-color-error @cmpnt-state)]
+    [:div.select-color
+     [:label.label "Select Color"]
+     [:div.colors
+      (for [color colors-8]
+        ^{:key color} [wombat-img color selected-color cmpnt-state occupied-colors])]
+     (when wombat-color-error 
+       [:div.inline-error wombat-color-error])]))
 
 (defn private-game-password
   [game cmpnt-state]
@@ -120,6 +124,38 @@
                            :label "Password"
                            :state cmpnt-state
                            :is-password true}]])
+
+(defn correct-privacy-settings [is-private password-error]
+  (print (true? password-error))
+  (cond 
+   is-private (not (true? password-error)) ;; if it's private and there's no error, can submit
+   (not is-private) true)) ;; if the game isn't private, password state is irrelevant
+
+(defn on-submit-form-valid? [{:keys [game-id is-private cmpnt-state]}]
+  (let [{:keys [wombat-name
+                wombat-name-error
+                wombat-color
+                wombat-color-error
+                wombat-id
+                password
+                password-error]} @cmpnt-state]
+
+    (when  (nil? wombat-color) (swap! cmpnt-state assoc :wombat-color-error "Please select a color for your wombat."))
+
+    (when (nil? wombat-name) (swap! cmpnt-state assoc :wombat-name-error "This field is required."))
+     
+    (when (and is-private (clojure.string/blank? password)) (swap! cmpnt-state assoc :password-error "This field is required."))
+
+    (when (and wombat-name wombat-color (correct-privacy-settings is-private password-error))
+      (join-open-game game-id
+                      wombat-id
+                      wombat-color
+                      password
+                      #(callback-success game-id
+                                   wombat-id
+                                   wombat-color
+                                   password)
+                      #(callback-error % cmpnt-state)))))
 
 (defn join-wombat-modal [game-id]
   (let [modal-error (re-frame/subscribe [:modal-error])
@@ -139,7 +175,7 @@
           [:div {:class "modal join-wombat-modal"} ;; starts hiccup
            [:div.title title]
            (when error [:div.modal-error error])
-           (when (get @game :game/is-private)
+           (when is-private
              [private-game-password @game cmpnt-state])
            [select-input-with-label cmpnt-state]
            [select-wombat-color cmpnt-state wombat-color occupied-colors]
@@ -147,14 +183,6 @@
             [cancel-modal-input]
             [:input.modal-button {:type "button"
                                   :value "JOIN"
-                                  :on-click (fn []
-                                              (join-open-game
-                                               game-id
-                                               wombat-id
-                                               wombat-color
-                                               password
-                                               #(callback-success game-id
-                                                                  wombat-id
-                                                                  wombat-color
-                                                                  password)
-                                               #(callback-error % cmpnt-state)))}]]]))})))
+                                  :on-click #(on-submit-form-valid? {:game-id game-id
+                                                                    :is-private is-private
+                                                                    :cmpnt-state cmpnt-state})}]]]))})))

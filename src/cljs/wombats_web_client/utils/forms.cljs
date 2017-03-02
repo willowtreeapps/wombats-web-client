@@ -7,8 +7,11 @@
 
 (defn check-for-valid-content [state error-key value]
   (if (clojure.string/blank? value)
-    (swap! state assoc error-key "Field is required")
+    (swap! state assoc error-key "This field is required")
     (swap! state assoc error-key nil)))
+
+(defn on-text-change [state key error-key value]
+  (swap! state assoc error-key nil key value))
 
 ;; name must match local component state key
 (defn text-input-with-label
@@ -24,7 +27,7 @@
                     :name name
                     :value (when val val)
                     :on-blur #(check-for-valid-content state error-key (get-value %))
-                    :on-change #(swap! state assoc key (get-value %))}]
+                    :on-change #(on-text-change state key error-key (get-value %))}]
      (when error-val
        [:div.inline-error error-val])]))
 

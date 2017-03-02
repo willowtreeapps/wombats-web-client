@@ -3,14 +3,15 @@
 
 .modal-container {
     .join-wombat-modal {
-        .private-game-msg {
-            width: 310px;
-            margin: 0 auto;
-            margin-bottom: 20px;
-        }
-
         .private-game-container {
             .label(@padding-left: 30px);
+
+            .private-game-msg {
+                width: 310px;
+                margin: 0 auto;
+                margin-bottom: 20px;
+                font-size: 14px;
+            }
         }
 
         .select-wombat {
@@ -65,6 +66,7 @@
                 position: absolute;
                 top: calc(@form-input-height ~"+" @form-input-margin-bottom);
             }
+
             .dropdown-wrapper {
                 display: block;
                 position: absolute;
@@ -92,8 +94,16 @@
             width: 310px;
             margin: 0 auto;
             margin-bottom: 30px;
-
+            
             .label;
+
+            
+            .inline-error {
+                text-align: left;
+                font-size: 12px;
+                color: @error-red;
+                top: calc(@form-input-height ~"+" @form-input-margin-bottom);
+            }
 
             .colors {
                 display: flex;

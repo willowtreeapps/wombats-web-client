@@ -10,6 +10,23 @@
   (re-frame/dispatch [:update-modal-error nil])
   (re-frame/dispatch [:set-modal nil]))
 
+(defn on-submit-form-valid? [cmpnt-state username]
+  (let [{:keys [wombat-name
+                wombat-repo-name
+                wombat-file-path]} @cmpnt-state
+        url (str username "/" 
+                 wombat-repo-name "/contents/" 
+                 wombat-file-path)]
+    (when (nil? wombat-name)
+      (swap! cmpnt-state assoc :wombat-name-error "This field is required."))
+    (when (nil? wombat-repo-name)
+      (swap! cmpnt-state assoc :wombat-repo-name-error "This field is required."))
+    (when (nil? wombat-file-path)
+      (swap! cmpnt-state assoc :wombat-file-path-error "This field is required."))
+
+    (when (and wombat-name wombat-repo-name wombat-file-path)
+      (create-new-wombat wombat-name url #(callback-success cmpnt-state)))))
+
 (defn add-wombat-modal []
   (let [cmpnt-state (reagent/atom {:wombat-name nil
                                    :wombat-repo-name nil
@@ -45,11 +62,4 @@
              [cancel-modal-input]
              [:input.modal-button {:type "button"
                                    :value "ADD"
-                                   :on-click (fn []
-                                               (let [url (str username "/" 
-                                                              wombat-repo-name "/contents/" 
-                                                              wombat-file-path)]
-                                                 (create-new-wombat
-                                                  wombat-name
-                                                  url
-                                                  #(callback-success cmpnt-state))))}]]]]))})))
+                                   :on-click #(on-submit-form-valid? cmpnt-state username)}]]]]))})))
