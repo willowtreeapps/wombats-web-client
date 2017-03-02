@@ -1,5 +1,6 @@
 @import "../colors.less";
 @import "../objects/active-line";
+@import "../objects/button";
 
 .tabbed-container {
     display: flex;
@@ -14,19 +15,9 @@
         display: flex;
         
         button {
-            // TODO: Pull out these styles into a generic button that we then use with games tab (so they're not divs)
+            .simple-button(@transparent, @white, @white-30);
             position: relative;
-            cursor: pointer;
             padding: 15px;
-            background-color: @transparent;
-            color: @white;
-            border: none;
-            font-size: 14px;
-            margin: 0 10px;
-
-            &:focus {
-                outline: none;
-            }
 
             &:hover {
                 .active-line-top;
