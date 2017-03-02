@@ -99,7 +99,7 @@
 
 (defn simulator []
   (let [cmpnt-state (reagent/atom {:tab-index 0
-                                   :initialized false})
+                                   :initialized? false})
         sim-initialized? (re-frame/subscribe [:simulator/initialized])
         sim-state (re-frame/subscribe [:simulator/state])
         sim-templates (re-frame/subscribe [:simulator/templates])

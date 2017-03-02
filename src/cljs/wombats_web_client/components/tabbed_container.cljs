@@ -7,12 +7,12 @@
 
 (defn- render-tabs [{:keys [tabs index on-index-change]}]
   (map-indexed (fn [tab-index {:keys [label]}] 
-         [:button {:key label
-                   :class-name (when (= index tab-index)
-                                 "active")
-                   :onClick #(on-index-change tab-index)} 
-          label])
-       tabs))
+                 [:button {:key label
+                           :class-name (when (= index tab-index)
+                                         "active")
+                           :onClick #(on-index-change tab-index)} 
+                  label])
+               tabs))
 
 (defn- render [{:keys [tabs index on-index-change] :as props}]
   (let [render (:render (tabs index))]
@@ -28,7 +28,5 @@
 ;; Main Method
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn tabbed-container [{:keys [tabs index on-index-change] :as props}]
-  (reagent/create-class
-   {:props-name "tabbed-container"
-    :reagent-render #(render props)}))
+(defn tabbed-container [props]
+  (render props))
