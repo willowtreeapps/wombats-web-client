@@ -17,11 +17,11 @@
 
 **- More details?**
 
-## FEATURE REQUEST?
+## FEATURE REQUEST
 **- Describe the feature you would like to see**
 
 **- Why you need it**
 
-**- How it should work.**
+**- How it should work**
 
 Include any relevant documentation that will help prompt a discussion!
