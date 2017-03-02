@@ -9,7 +9,7 @@
   [:a {:href github-signin-url} "Login"])
 
 (defn wombat-logo []
-  [:a {:href "#/"} [:img.wombat-logo {:src "/images/img-logo-horizontal.svg"}]])
+  [:a {:href "/"} [:img.wombat-logo {:src "/images/img-logo-horizontal.svg"}]])
 
 (defn nav-link
   [{:keys [id class on-click link title current]}]
@@ -21,7 +21,7 @@
 (defn coordinator-links [selected]
   [nav-link {:id "config"
              :class "regular-link"
-             :link "#/config"
+             :link "/config"
              :title "CONFIG"
              :current selected}])
 
@@ -30,15 +30,15 @@
   [:ul.navbar
    [nav-link {:id "games"
               :class "regular-link"
-              :link "#/"
+              :link "/"
               :title "GAMES"
               :current selected}]
-   
+
    (when (user-is-coordinator?) [coordinator-links selected])
-   
+
    [nav-link {:id "simulator"
               :class "regular-link"
-              :link "#/simulator"
+              :link "/simulator"
               :title "SIMULATOR"
               :current selected}]
 
@@ -47,7 +47,7 @@
       [:a {:href github-signin-url} "LOGIN"]]
      [nav-link {:id "account"
                 :class "regular-link account"
-                :link "#/account"
+                :link "/account"
                 :title "MY WOMBATS"
                 :current selected}])])
 

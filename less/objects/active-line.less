@@ -1,0 +1,24 @@
+@import "../colors.less";
+
+.active-line {    
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: @wombat-green;
+}
+
+.active-line-bottom {
+    &::after {
+        .active-line;
+        bottom: 0;
+    }
+}
+
+.active-line-top {
+    &::after {
+        .active-line;
+        top: 0;
+    }
+}

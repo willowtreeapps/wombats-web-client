@@ -8,13 +8,60 @@
         width: calc(~"100% - " @canvas-dimensions);
         position: relative;
 
-        #editor {
-            @editor-padding: 2px;
-            // TODO: Pull the editor into its own component (probably will switch to Ace)
-            font-family: monospace;
-            border: none;
-            width: calc(~"100% - " 2 * @editor-padding);
+        .tabbed-container {
             height: @canvas-dimensions;
+
+            #editor {
+                @editor-padding: 2px;
+                // TODO: #188 - Switch editor to Ace (or something similar)
+                //              and make it its own component
+                position: absolute;
+                font-family: monospace;
+                border: none;
+                width: calc(~"100% - " 2 * @editor-padding);
+                height: calc(~"100% - " 2 * @editor-padding);
+            }
+
+            .output {
+                color: @white;
+                padding: 10px;
+
+                .output-section {
+                    margin-bottom: 10px;
+
+                    .output-section-title {
+                        margin: 0;
+                    }
+                }
+            }
+
+            .no-stack-trace-message {
+                font-family: monospace;
+                color: @white;
+                text-align: center;
+                font-size: 20px;
+            }
+
+            .stack-trace {
+                font-family: monospace;
+                color: @white;
+                max-height: 560px;
+                overflow-y: scroll;
+
+                .stack-trace-message {
+                    padding: 10px;
+                    font-size: 20px;
+                }
+
+                .stack-trace-details {
+                    list-style: none;
+                    padding: 10px;
+
+                    .line-item {
+                        margin-bottom: 5px;
+                    }
+                }
+            }
         }
     }
 }

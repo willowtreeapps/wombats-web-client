@@ -93,11 +93,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (re-frame/reg-sub
- :simulator/initialized
- (fn [db _]
-   (:simulator/initialized db)))
-
-(re-frame/reg-sub
  :simulator/templates
  (fn [db _]
    (:simulator/templates db)))

@@ -1,15 +1,8 @@
 (ns wombats-web-client.utils.url
-  (:require [cemerick.url :as url]
-            [wombats-web-client.constants.local-storage :refer [access-token]]))
+  (:require [pushy.core :as pushy]
+            [wombats-web-client.routes :refer [history]]))
 
 (defn strip-access-token
   "removes access token from query"
   []
-  (let [url (-> js/window
-                .-location
-                .-href
-                url/url)
-        query (:query url)
-        location (str (merge url {:query (dissoc query access-token)}) "#/")
-        state (or (.-state js/history) #js {})]
-    (.replaceState js/history state "" location)))
+  (pushy/replace-token! history "/"))

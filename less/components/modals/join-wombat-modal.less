@@ -1,22 +1,27 @@
 @import "../../colors.less";
+@import "../../objects/label.less";
+@import "../../components/inline-error.less";
 
 .modal-container {
     .join-wombat-modal {
-        .private-game-msg {
-            width: 310px;
-            margin: 0 auto;
-            margin-bottom: 40px;
+        .private-game-container {
+            .label(@padding-left: 30px);
+
+            .private-game-msg {
+                width: 310px;
+                margin: 0 auto;
+                margin-bottom: 20px;
+                font-size: 14px;
+            }
         }
 
         .select-wombat {
             width: 310px;
             margin: 0 auto;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+            position: relative;
 
-            .select-wombat-label {
-                padding-left: 0;
-                margin-bottom: 10px;
-            }
+            .label;
 
             .placeholder {
                 color: @black;
@@ -31,6 +36,11 @@
                 &.unselected {
                     background-color: @white;
                 }
+
+                &.field-error {
+                    border: 1px solid @error-red;
+                }
+
 
                 .text {
                     color: @black;
@@ -49,6 +59,8 @@
                     }
                 }
             }
+
+            .inline-error(@padding-left: 0);
 
             .dropdown-wrapper {
                 display: block;
@@ -74,22 +86,23 @@
         }
 
         .select-color {
-            .label {
-                margin-bottom: 10px;
-            }
+            width: 310px;
+            margin: 0 auto;
+            margin-bottom: 30px;
+            
+            .label;
+            .inline-error(@padding-left: 0);
+
             .colors {
                 display: flex;
                 flex-flow: row wrap;
-                width: 310px;
-                margin: 0 auto;
-                margin-bottom: 40px;
                 justify-content: space-between;
 
                 .wombat-img-wrapper {
                     cursor: pointer;
-                    margin-bottom: 5px;
                     display: inline-block;
-                    width: 25%;
+                    width: 60px;
+                    margin: 5px;
 
                     .disabled {
                         display: none;
@@ -122,7 +135,7 @@
                         padding: 10px;
                         opacity: 1;
                         display: none;
-                       
+
                         &.display {
                             display: flex;
                         }

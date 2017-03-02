@@ -2,7 +2,7 @@
 
 (defn get-health-color [hp]
   (cond
-   (<= 70 hp 100) "healthy"
+   (<= 70 hp) "healthy"
    (<= 30 hp 69) "okay-health"
    (<= 1 hp 29) "dying"
    :else "none"))
