@@ -23,10 +23,20 @@
 ;; Accessors
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- get-player-code [state]
-  (let [players (:players @state)
+(defn- get-player [sim-state]
+  (let [players (:players @sim-state)
         player-key (first (keys players))]
-    (get-in players [player-key :state :code :code])))
+    (get-in players [player-key :state])))
+
+(defn- get-player-state [sim-state]
+  (:saved-state (get-player sim-state)))
+
+(defn- get-player-command [sim-state] 
+  (:command (get-player sim-state)))
+
+(defn- get-player-code [sim-state]
+  (get-in (get-player sim-state)
+          [:code :code]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Callback Methods
@@ -46,7 +56,7 @@
 (defn- initialize-simulator!
   [cmpnt-state templates wombats]
   (swap! cmpnt-state assoc :initialized? true)
-  (ws/send-message :connect-to-simulator 
+  (ws/send-message :connect-to-simulator
                    {:simulator-template-id (:simulator-template/id (first @templates))
                     :wombat-id (:wombat/id (first @wombats))}))
 
@@ -67,8 +77,16 @@
               :onChange #(on-code-change! %)
               :value (or (get-player-code state) "")}])
 
-(defn- render-output-tab [state]
-  [:div "OUTPUT"])
+(defn- render-output-tab [sim-state]
+  [:div {:class-name "output"}
+   
+   [:div 
+    [:h3 "Command"]
+    (prn-str (get-player-command sim-state))]
+   
+   [:div 
+    [:h3 "State"]
+    (prn-str (get-player-state sim-state))]])
 
 (defn- render-tabbed-container [cmpnt-state sim-state]
   [tabbed-container {:tabs [{:label "CODE"
