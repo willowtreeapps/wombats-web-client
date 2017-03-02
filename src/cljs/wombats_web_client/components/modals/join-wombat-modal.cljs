@@ -19,7 +19,8 @@
                               :wombat-name nil
                               :wombat-id nil
                               :wombat-color nil
-                              :password ""})
+                              :password ""
+                              :password-error nil})
 
 (def callback-success (fn [game-id wombat-id wombat-color password]
                         "closes modal on success"
@@ -97,11 +98,10 @@
   [game cmpnt-state]
   [:div.private-game-container
    [:p.private-game-msg "This is a private game. Please enter the password to join."]
-   [:label.label "Password"]
-   [:div.text-input-wrapper
-    [:input.input {:type "password"
-                   :value (:password @cmpnt-state)
-                   :on-change #(swap! cmpnt-state assoc :password (-> % .-target .-value))}]]])
+   [text-input-with-label {:name "password"
+                           :label "Password"
+                           :state cmpnt-state
+                           :is-password true}]])
 
 (defn join-wombat-modal [game-id]
   (let [modal-error (re-frame/subscribe [:modal-error])
