@@ -9,7 +9,7 @@
   (map-indexed (fn [tab-index {:keys [label]}] 
                  [:button {:key label
                            :class-name (when (= index tab-index)
-                                         "active")
+                                         "active-line-top")
                            :onClick #(on-index-change tab-index)} 
                   label])
                tabs))
