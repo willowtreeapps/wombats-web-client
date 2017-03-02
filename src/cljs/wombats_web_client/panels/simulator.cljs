@@ -17,7 +17,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn- component-will-mount! []
-  (re-frame/dispatch [:simulator/initialized false])
   (get-simulator-templates))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -45,8 +44,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn- initialize-simulator!
-  [templates wombats]
-  (re-frame/dispatch [:simulator/initialized true])
+  [cmpnt-state templates wombats]
+  (swap! cmpnt-state assoc :initialized? true)
   (ws/send-message :connect-to-simulator 
                    {:simulator-template-id (:simulator-template/id (first @templates))
                     :wombat-id (:wombat/id (first @wombats))}))
@@ -85,9 +84,9 @@
    [:button {:onClick #(on-step-click! % sim-state)}
     "Step"]])
 
-(defn- render! [cmpnt-state initialized? sim-state templates wombats]
-  (when (and (not @initialized?) @templates @wombats)
-    (initialize-simulator! templates wombats))
+(defn- render! [cmpnt-state sim-state templates wombats]
+  (when (and (not (:initialized? @cmpnt-state)) @templates @wombats)
+    (initialize-simulator! cmpnt-state templates wombats))
 
   [:div {:class-name "simulator-panel"}
    [render-left-pane! sim-state]
@@ -100,7 +99,6 @@
 (defn simulator []
   (let [cmpnt-state (reagent/atom {:tab-index 0
                                    :initialized? false})
-        sim-initialized? (re-frame/subscribe [:simulator/initialized])
         sim-state (re-frame/subscribe [:simulator/state])
         sim-templates (re-frame/subscribe [:simulator/templates])
         wombats (re-frame/subscribe [:my-wombats])]
@@ -108,7 +106,6 @@
      {:component-will-mount #(component-will-mount!)
       :props-name "simulator-panel"
       :reagent-render #(render! cmpnt-state
-                                sim-initialized? 
                                 sim-state 
                                 sim-templates
                                 wombats)})))
