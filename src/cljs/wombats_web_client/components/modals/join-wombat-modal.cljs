@@ -33,8 +33,11 @@
 
 
 (def callback-error (fn [error cmpnt-state]
+                      (print error)
                       (let [error-code (:code (:response error))
                             is-game-full? (= error-code 101001)]
+
+                        (print error-code)
                         (when is-game-full?
                           (re-frame/dispatch [:set-modal {:fn #(game-full-modal)
                                                           :show-overlay? true}]))

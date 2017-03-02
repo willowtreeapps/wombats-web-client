@@ -14,6 +14,9 @@
   (let [cmpnt-state (reagent/atom {:wombat-name nil
                                    :wombat-repo-name nil
                                    :wombat-file-path nil
+                                   :wombat-name-error nil
+                                   :wombat-repo-name-error nil
+                                   :wombat-file-path-error nil
                                    :error nil})
         modal-error (re-frame/subscribe [:modal-error])
         current-user (re-frame/subscribe [:current-user])]
