@@ -24,19 +24,31 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn- get-player [sim-state]
-  (let [players (:players @sim-state)
+  (let [players (:players (if (instance? reagent.ratom/Reaction sim-state)
+                            @sim-state
+                            sim-state))
         player-key (first (keys players))]
     (get-in players [player-key :state])))
 
 (defn- get-player-state [sim-state]
-  (:saved-state (get-player sim-state)))
+  (-> sim-state
+      (get-player)
+      (:saved-state)))
 
-(defn- get-player-command [sim-state] 
-  (:command (get-player sim-state)))
+(defn- get-player-command [sim-state]
+  (-> sim-state
+      (get-player)
+      (:command)))
 
 (defn- get-player-code [sim-state]
-  (get-in (get-player sim-state)
-          [:code :code]))
+  (-> sim-state
+      (get-player)
+      (get-in [:code :code])))
+
+(defn- get-player-stack-trace [sim-state]
+  (-> sim-state
+      (get-player)
+      (:error)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Callback Methods
@@ -76,22 +88,45 @@
   [:textarea#editor {:on-change #(on-code-change! %)
                      :value (or (get-player-code state) "")}])
 
-(defn- render-output-tab [sim-state]
+(defn- render-output-tab [state]
   [:div.output
-   
+
    [:div.output-section
     [:h3.output-section-title "Command"]
-    (prn-str (get-player-command sim-state))]
-   
+    (prn-str (get-player-command state))]
+
    [:div.output-section
     [:h3.output-section-title "State"]
-    (prn-str (get-player-state sim-state))]])
+    (prn-str (get-player-state state))]])
+
+(defn- render-stack-trace
+  [{message :message
+    stack-trace :stackTrace}]
+  [:div.stack-trace
+   [:p.stack-trace-message message]
+   [:ul.stack-trace-details
+    (for [line-item stack-trace]
+      ^{:key line-item} [:li.line-item line-item])]])
+
+(defn- get-stack-trace-notification-count
+  [state]
+  (let [stack-trace (get-player-stack-trace state)]
+    (when stack-trace 1)))
+
+(defn- render-debugger-tab [state]
+  (let [stack-trace (get-player-stack-trace state)]
+    (if stack-trace
+      (render-stack-trace stack-trace)
+      [:p.no-stack-trace-message "No errors to report. Happy Coding."])))
 
 (defn- render-tabbed-container [cmpnt-state sim-state]
   [tabbed-container {:tabs [{:label "CODE"
                              :render #(render-code-tab sim-state)}
                             {:label "OUTPUT"
-                             :render #(render-output-tab sim-state)}]
+                             :render #(render-output-tab sim-state)}
+                            {:label "DEBUGGER"
+                             :render #(render-debugger-tab sim-state)
+                             :notifications #(get-stack-trace-notification-count sim-state)}]
                      :index (:tab-index @cmpnt-state)
                      :on-index-change #(swap! cmpnt-state assoc :tab-index %)}])
 
@@ -123,6 +158,6 @@
      {:component-will-mount #(component-will-mount!)
       :props-name "simulator-panel"
       :reagent-render #(render! cmpnt-state
-                                sim-state 
+                                sim-state
                                 sim-templates
                                 wombats)})))

@@ -13,10 +13,17 @@
 
     .tabs {
         display: flex;
-        
+
         .tab-btn {
             .simple-button(@transparent, @white, @white-30);
             padding: 15px;
+
+            .notifications {
+                color: @error-red;
+                position: absolute;
+                top: 8px;
+                right: 5px;
+            }
 
             &:hover {
                 .active-line-top;
