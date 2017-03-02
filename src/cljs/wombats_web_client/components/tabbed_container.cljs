@@ -5,7 +5,7 @@
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- render-tabs [{:keys [tabs index on-index-change] :as props}]
+(defn- render-tabs [{:keys [tabs index on-index-change]}]
   (map-indexed (fn [tab-index {:keys [label notifications]}]
                  [:button.tab-btn {:key label
                                    :class (when (= index tab-index)
@@ -17,7 +17,6 @@
                tabs))
 
 (defn- render [{:keys [tabs index on-index-change] :as props}]
-  (prn tabs)
   (let [render (:render (tabs index))]
     [:div.tabbed-container
 
