@@ -8,23 +8,30 @@
 (defonce welcome-message-2 "Sign in with your GitHub account")
 
 (defn render-wombat-logo []
-	[:img {:src "img/img-logo-horizontal.png"
-		   :srcset "img/img-logo-horizontal@2x.png 2x, 
-	                img/img-logo-horizontal@3x.png 3x"
-		   :class "img_logo_horizontal"}])
+  [:div.welcome-logo-container
+    [:div.welcome-logo
+      [:img {:src "/images/img-logo-horizontal.svg"}]]])
 
 (defn render-welcome-title []
-	[:div.welcome-title-container [:div.welcome-title-content welcome-page-title]])
+  [:div.welcome-title-container 
+    [:div.welcome-title-content welcome-page-title]])
 
 (defn render-welcome-message []
-	[:div.welcome-message-container
-	[:div.welcome-message-content welcome-message-1]
-	[:div.welcome-message-content welcome-message-2]])
+  [:div.welcome-message-container
+    [:div.welcome-message-content 
+      [:div.welcome-message-content-text welcome-message-1]]
+    [:div.welcome-message-content 
+      [:div.welcome-message-content-text welcome-message-2]]])
+
+(defn render-welcome-button[]
+  [:div.welcome-button-container 
+    [:div.welcome-button 
+      [:a.welcome-button-label.emphasized-link-button {:href github-signin-url} "start playing now"]]])
 
 (defn welcome []
-	[:div.welcome-panel 
-	[render-welcome-title]
-	[render-welcome-message]
-	[:div.welcome-button-container 
-		[:div.welcome-button 
-				[:a.welcome-button-label {:href github-signin-url} "start playing now"]]]])
+  [:div.welcome-panel
+    [render-wombat-logo]
+    [:div.welcome-content-container
+      [render-welcome-title]
+      [render-welcome-message]
+      [render-welcome-button]]])

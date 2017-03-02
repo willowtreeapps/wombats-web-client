@@ -12,7 +12,6 @@
 
 (defn add-wombat-modal []
   (let [cmpnt-state (reagent/atom {:wombat-name nil
-                                   :wombat-url "MyGithubHandle/MyRepoName/contents/MyWombatFileName.clj"
                                    :wombat-repo-name nil
                                    :wombat-file-path nil
                                    :error nil})
