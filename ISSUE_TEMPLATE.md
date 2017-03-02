@@ -5,16 +5,23 @@
 
 
 ## ISSUE DESCRIPTION
-- What version of the project are you using?
-- What browser and its version are you using?
-- What did you do? (Steps to Replicate Issue)
-- What did you expect to see?
-- What did you see instead?
-- More details?
+**- What version of the project are you using?**
 
-## FEATURE REQUEST?
-- Describe the feature you would like to see
-- Why you need it
-- How it should work. 
+**- What browser and its version are you using?**
+
+**- What did you do? (Steps to Replicate Issue)**
+
+**- What did you expect to see?**
+
+**- What did you see instead?**
+
+**- More details?**
+
+## FEATURE REQUEST
+**- Describe the feature you would like to see**
+
+**- Why you need it**
+
+**- How it should work**
 
 Include any relevant documentation that will help prompt a discussion!

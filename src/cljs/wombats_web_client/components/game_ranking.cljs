@@ -2,7 +2,7 @@
 
 (defn get-health-color [hp]
   (cond
-   (<= 70 hp 100) "healthy"
+   (<= 70 hp) "healthy"
    (<= 30 hp 69) "okay-health"
    (<= 1 hp 29) "dying"
    :else "none"))
@@ -23,8 +23,7 @@
                             [:div.health-bar
                              [:span.filling {:class (get-health-color adjusted-hp-value)
                                              :style {:width (str adjusted-hp-value "%")}}]]
-                            [:div.img-wrapper
-                             [:img {:src (str "/images/wombat_" color "_right.png")}]]
+                            [:img.wombat-img {:src (str "/images/wombat_" color "_right.png")}]
                             [:div.wombat-name wombat-name]
                             [:div.username username]
                             [:div.score score]]))

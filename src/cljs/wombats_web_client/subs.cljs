@@ -87,3 +87,17 @@
  :spritesheet
  (fn [db _]
    (:spritesheet db)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Simulator subs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(re-frame/reg-sub
+ :simulator/templates
+ (fn [db _]
+   (:simulator/templates db)))
+
+(re-frame/reg-sub
+ :simulator/state
+ (fn [db _]
+   (:simulator/state db)))
