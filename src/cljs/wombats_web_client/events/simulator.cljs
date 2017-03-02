@@ -20,11 +20,6 @@
    #(print "error on get-simulator-templates")))
 
 (re-frame/reg-event-db
- :simulator/initialized
- (fn [db [_ initialized]]
-   (assoc-in db [:simulator/initialized] initialized)))
-
-(re-frame/reg-event-db
  :simulator/update-simulator-templates
  (fn [db [_ templates]]
    (assoc-in db [:simulator/templates] templates)))
