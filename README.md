@@ -1,7 +1,7 @@
 # Wombats Web Client
 This repo is a part of the Wombats Suite, documented at [Wombat Documentation](https://github.com/willowtreeapps/wombats-documentation). 
 
-## Contributing? Issues? Features? Curiousity?
+## Contributing? Issues? Features? Curiosity?
 [Learn how to contribute here.](https://github.com/willowtreeapps/wombats-documentation/blob/master/CONTRIBUTING.md)
 
 ## Our Stack
