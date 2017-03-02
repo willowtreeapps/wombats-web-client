@@ -1,9 +1,10 @@
 (ns wombats-web-client.components.modals.add-wombat-modal
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
+            [wombats-web-client.components.text-input :refer [text-input-with-label]]
             [wombats-web-client.events.user :refer [create-new-wombat]]
-            [wombats-web-client.utils.forms :refer [text-input-with-label
-                                                    cancel-modal-input]]))
+            [wombats-web-client.utils.forms :refer [cancel-modal-input
+                                                    submit-modal-input]]))
 
 (defn callback-success [state]
   "closes modal on success"
@@ -60,6 +61,4 @@
                                     :state cmpnt-state}]
             [:div.action-buttons
              [cancel-modal-input]
-             [:input.modal-button {:type "button"
-                                   :value "ADD"
-                                   :on-click #(on-submit-form-valid? cmpnt-state username)}]]]]))})))
+             [submit-modal-input "ADD" #(on-submit-form-valid? cmpnt-state username)]]]]))})))

@@ -6,7 +6,8 @@
             [wombats-web-client.events.games :refer [join-open-game
                                                      get-open-games
                                                      get-all-games]]
-            [wombats-web-client.utils.forms :refer [text-input-with-label
+            [wombats-web-client.components.text-input :refer [text-input-with-label]]
+            [wombats-web-client.utils.forms :refer [submit-modal-input
                                                     cancel-modal-input]]
             [wombats-web-client.utils.games :refer [get-occupied-colors]]
             [wombats-web-client.constants.colors :refer [colors-8]]
@@ -126,7 +127,6 @@
                            :is-password true}]])
 
 (defn correct-privacy-settings [is-private password-error]
-  (print (true? password-error))
   (cond 
    is-private (not (true? password-error)) ;; if it's private and there's no error, can submit
    (not is-private) true)) ;; if the game isn't private, password state is irrelevant
@@ -181,8 +181,6 @@
            [select-wombat-color cmpnt-state wombat-color occupied-colors]
            [:div.action-buttons
             [cancel-modal-input]
-            [:input.modal-button {:type "button"
-                                  :value "JOIN"
-                                  :on-click #(on-submit-form-valid? {:game-id game-id
+            [submit-modal-input "JOIN" #(on-submit-form-valid? {:game-id game-id
                                                                     :is-private is-private
-                                                                    :cmpnt-state cmpnt-state})}]]]))})))
+                                                                    :cmpnt-state cmpnt-state})]]]))})))
