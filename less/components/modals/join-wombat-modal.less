@@ -6,7 +6,7 @@
         .private-game-msg {
             width: 310px;
             margin: 0 auto;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .private-game-container {
@@ -17,6 +17,7 @@
             width: 310px;
             margin: 0 auto;
             margin-bottom: 30px;
+            position: relative;
 
             .label;
 
@@ -33,6 +34,11 @@
                 &.unselected {
                     background-color: @white;
                 }
+
+                &.field-error {
+                    border: 1px solid @error-red;
+                }
+
 
                 .text {
                     color: @black;
@@ -52,6 +58,13 @@
                 }
             }
 
+            .inline-error {
+                text-align: left;
+                font-size: 12px;
+                color: @error-red;
+                position: absolute;
+                top: calc(@form-input-height ~"+" @form-input-margin-bottom);
+            }
             .dropdown-wrapper {
                 display: block;
                 position: absolute;
@@ -124,7 +137,7 @@
                         padding: 10px;
                         opacity: 1;
                         display: none;
-                        
+
                         &.display {
                             display: flex;
                         }

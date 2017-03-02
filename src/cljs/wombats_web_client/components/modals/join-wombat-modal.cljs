@@ -17,6 +17,7 @@
 (defonce initial-cmpnt-state {:show-dropdown false
                               :error nil
                               :wombat-name nil
+                              :wombat-name-error nil
                               :wombat-id nil
                               :wombat-color nil
                               :password ""
@@ -52,23 +53,40 @@
   (swap! cmpnt-state assoc :show-dropdown false)
   (swap! cmpnt-state assoc :wombat-name name))
 
+(defn on-select-click [cmpnt-state]
+  (let [wombat-name-missing (nil? (:wombat-name @cmpnt-state))
+        show-dropdown (:show-dropdown @cmpnt-state)
+        error-state (if wombat-name-missing "This field is required" nil)]
+    (when show-dropdown
+       (swap! cmpnt-state assoc :wombat-name-error error-state))
+
+    (swap! cmpnt-state assoc :show-dropdown (not show-dropdown))))
+
+(defn on-select-focus [cmpnt-state]
+  (swap! cmpnt-state assoc :wombat-name-error nil))
+
 (defn wombat-options [wombat cmpnt-state]
   (let [{:keys [wombat/name wombat/id]} wombat]
     [:li {:key id
           :onClick #(on-wombat-selection cmpnt-state id name)} name]))
 
 (defn select-input-with-label [cmpnt-state]
-  (let [{:keys [show-dropdown wombat-name]} @cmpnt-state
+  (let [{:keys [show-dropdown wombat-name wombat-name-error]} @cmpnt-state
         my-wombats @(re-frame/subscribe [:my-wombats])]
     [:div.select-wombat
      [:label.label.select-wombat-label "Select Wombat"]
      [:div.placeholder
-      {:class (when-not wombat-name "unselected")
-       :onClick #(swap! cmpnt-state assoc :show-dropdown (not show-dropdown))}
+      {:class (clojure.string/join " "[(when-not wombat-name "unselected")
+                                       (when wombat-name-error "field-error")])
+       :tab-index "0"
+       :on-click #(on-select-click cmpnt-state)
+       :on-focus #(on-select-focus cmpnt-state)}
       [:div.text {:class (when-not wombat-name "unselected")}
        (str (if-not wombat-name "Select Wombat" wombat-name))]
       [:img.icon-arrow {:class (when show-dropdown "open-dropdown")
                         :src "/images/icon-arrow.svg"}]]
+     (when wombat-name-error
+       [:div.inline-error wombat-name-error])
      (when show-dropdown
        [:div.dropdown-wrapper
         (for [wombat my-wombats] (wombat-options wombat cmpnt-state))])]))
