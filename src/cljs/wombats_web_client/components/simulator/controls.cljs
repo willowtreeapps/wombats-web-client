@@ -9,4 +9,5 @@
 
 (defn render
   [sim-state]
-  [:button {:on-click #(on-step-click! % sim-state)} "Step"])
+  [:div.simulator-controls
+   [:button.step {:on-click #(on-step-click! % sim-state)} "Step"]])

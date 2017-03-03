@@ -2,11 +2,38 @@
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]))
 
-(defn- on-code-change! [evt]
-  ;; Propogate the updated code into db
-  (re-frame/dispatch [:simulator/update-code evt.target.value]))
+(defn- on-code-change! [editor]
+  (fn []
+    ;; Propogate the updated code into db
+    (re-frame/dispatch [:simulator/update-code (-> editor
+                                                   .getValue)])))
+
+(defn- render-editor
+  [code]
+  [:div#editor])
+
+ (defn- init-ace [code mode]
+   (let [editor (-> js/window
+                    .-ace
+                    (.edit "editor"))]
+
+     (when @code (-> editor
+                     .getSession
+                     (.setValue @code)))
+
+     (when @code (-> editor
+                     (.on "change" (on-code-change! editor))))
+
+     (when @mode (-> editor
+                     .getSession
+                     (.setMode (str "ace/mode/" @mode))))
+
+     (-> editor
+         (.setTheme "ace/theme/tomorrow_night_eighties"))))
 
 (defn render []
-  (let [sim-code (re-frame/subscribe [:simulator/code])]
-    [:textarea#editor {:on-change #(on-code-change! %)
-                     :value (or @sim-code "")}]))
+  (let [code (re-frame/subscribe [:simulator/code])
+        mode (re-frame/subscribe [:simulator/code-mode])]
+    (reagent/create-class
+     {:reagent-render #(render-editor code)
+      :component-did-mount #(init-ace code mode)})))

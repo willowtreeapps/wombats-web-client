@@ -109,6 +109,16 @@
    (get-in (games/get-player db) [:state :code :code])))
 
 (re-frame/reg-sub
+ :simulator/code-mode
+ (fn [db _]
+   (let [path (get-in (games/get-player db) [:state :code :path])]
+     (when path
+       (get {"clj" "clojure"
+             "js" "javascript"
+             "py" "python"}
+            (last (clojure.string/split path #"\.")))))))
+
+(re-frame/reg-sub
  :simulator/player-command
  (fn [db _]
    (get-in (games/get-player db) [:state :command])))

@@ -52,7 +52,7 @@
     [:div {:class-name "right-pane"}
      [:div.tabbed-container
       [:div.content
-       (pane-render)]
+       [pane-render]]
       [:div.tabs
        (render-tabs active-pane stack-trace)]]]))
 

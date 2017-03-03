@@ -4,6 +4,16 @@
 .simulator-panel {
     @canvas-dimensions: 600px;
     display: flex;
+    flex-wrap: wrap;
+
+    .simulator-controls {
+        display: flex;
+        width: 100%;
+
+        .step {
+            .simple-button;
+        }
+    }
 
     .right-pane {
         width: calc(~"100% - " @canvas-dimensions);
