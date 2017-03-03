@@ -81,11 +81,15 @@
                                   :show-overlay? false}]))
 
 (defn right-game-play-panel
-  [info messages]
-  (let [winner (:game-winner @info)]
+  [info messages user]
+
+  (let [{:keys [game-winner stats]} @info
+        user-bots (filter #(= (:username %)
+                              (::user/github-username @user))
+                          stats)]
     ;; Dispatch winner modal if there's a winner
-    (when winner
-      (show-winner-modal winner))
+    (when game-winner
+      (show-winner-modal game-winner))
 
     [:div.right-game-play-panel
 
@@ -95,15 +99,17 @@
       [max-players info]
       [ranking-box info]]
 
-     [:div.chat-panel
-      [chat-title]
-      [chat-box @game-id messages info]]]))
+     (when (> (count user-bots) 0)
+       [:div.chat-panel
+        [chat-title]
+        [chat-box @game-id messages info]])]))
 
 (defn game-play []
   (let [dimensions (get-arena-dimensions)
         arena (re-frame/subscribe [:game/arena])
         info (re-frame/subscribe [:game/info])
-        messages (re-frame/subscribe [:game/messages])]
+        messages (re-frame/subscribe [:game/messages])
+        user (re-frame/subscribe [:current-user])]
 
 
     ;; TODO This should come from the router
@@ -122,4 +128,4 @@
             [:canvas {:id canvas-id
                       :width dimensions
                       :height dimensions}]]
-           [right-game-play-panel info messages]]))})))
+           [right-game-play-panel info messages user]]))})))
