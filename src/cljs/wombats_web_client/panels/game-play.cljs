@@ -1,5 +1,6 @@
 (ns wombats-web-client.panels.game-play
   (:require [wombats-web-client.components.arena :as arena]
+            [wombats-web-client.components.cards.game :refer [open-join-game-modal-fn]]
             [wombats-web-client.components.chat-box :refer [chat-box]]
             [wombats-web-client.components.countdown-timer :refer [countdown-timer]]
             [wombats-web-client.components.game-ranking :refer [ranking-box]]
@@ -39,25 +40,33 @@
   (reset! game-id nil)
   (re-frame/dispatch [:set-modal nil]))
 
-(defn- game-play-title [info]
+(defn- game-play-title [info show-join-button]
   (let [{:keys [round-number
                 round-start-time
                 status]} @info]
-    [:h1.game-play-title
-     (case status
-       :closed
-       "GAME OVER"
+    [:div
+     
+     [:h1.game-play-title
+      (case status
+        :closed
+        "GAME OVER"
 
-       (:pending-open
-        :pending-closed
-        :active-intermission)
-       [:span (str "ROUND " round-number " STARTS IN: ")
-        [countdown-timer round-start-time]]
+        (:pending-open
+         :pending-closed
+         :active-intermission)
+        [:span (str "ROUND " round-number " STARTS IN: ")
+         [countdown-timer round-start-time]]
 
-       :active
-       (str "ROUND " round-number)
+        :active
+        (str "ROUND " round-number)
 
-       nil)]))
+        nil)]
+
+     (when (and show-join-button (= status :pending-open))
+       [:button.join-button 
+        {:class (when false "private")
+         :on-click (open-join-game-modal-fn "407582d6-dc0f-4303-89eb-905bd17ce296")}
+        "JOIN"])]))
 
 (defn- game-play-subtitle [info]
   (let [{:keys [name]} @info]
@@ -94,7 +103,7 @@
     [:div.right-game-play-panel
 
      [:div.top-panel
-      [game-play-title info]
+      [game-play-title info (= 0 (count user-bots))]
       [game-play-subtitle info]
       [max-players info]
       [ranking-box info]]

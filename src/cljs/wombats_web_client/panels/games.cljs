@@ -2,7 +2,7 @@
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [wombats-web-client.events.games :refer [get-all-games]]
-            [wombat-web-client.components.cards.game :refer [game-card]]))
+            [wombats-web-client.components.cards.game :refer [game-card]]))
 
 ;; Games Panel
 

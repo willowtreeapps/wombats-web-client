@@ -1,4 +1,4 @@
-(ns wombat-web-client.components.cards.game
+(ns wombats-web-client.components.cards.game
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [wombats-web-client.constants.games :refer [game-type-str-map]]
@@ -54,9 +54,8 @@
        [:div.countdown "Starts in "
         [countdown-timer start-time]])
      (when is-joinable
-       [:button {:class (str "join-button"
-                             (when is-private " private"))
-                 :onClick (open-join-game-modal-fn game-id)}
+       [:button.join-button {:class (when is-private "private")
+                             :on-click (open-join-game-modal-fn game-id)}
         "JOIN"])]))
 
 (defn render-my-wombat-icon [player]
