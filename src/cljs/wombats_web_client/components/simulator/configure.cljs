@@ -28,8 +28,7 @@
   (when-not (:template-id @form-state)
     (swap! form-state assoc :template-id (:simulator-template/id (first templates))))
 
-  [:select.select {:name "template"
-                   :on-change #(update-form-state % :template-id form-state)}
+  [:select.select {:on-change #(update-form-state % :template-id form-state)}
    (for [{id :simulator-template/id
           {arena-name :arena/name} :simulator-template/arena-template} templates]
      (render-option id arena-name (:template-id @form-state)))])
@@ -39,8 +38,7 @@
   (when-not (:wombat-id @form-state)
     (swap! form-state assoc :wombat-id (:wombat/id (first wombats))))
 
-  [:select.select {:name "wombat"
-                   :on-change #(update-form-state % :wombat-id form-state)}
+  [:select.select {:on-change #(update-form-state % :wombat-id form-state)}
    (for [{id :wombat/id
           wombat-name :wombat/name} wombats]
      (render-option id wombat-name (:wombat-id @form-state)))])
