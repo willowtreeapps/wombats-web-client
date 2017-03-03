@@ -5,6 +5,7 @@
             [day8.re-frame.http-fx]
             [pushy.core :as pushy]
             [wombats-web-client.db :as db]
+            [wombats-web-client.utils.errors :refer [get-error-message]]
             [wombats-web-client.utils.local-storage :refer [get-item remove-item!]]
             [wombats-web-client.constants.local-storage :refer [token]]
             [wombats-web-client.constants.urls :refer [self-url
@@ -87,7 +88,7 @@
    (fn []
      (get-all-wombats)
      (cb-success))
-   #(re-frame/dispatch [:update-modal-error (str %)])))
+   #(re-frame/dispatch [:update-modal-error (get-error-message %)])))
 
 (defn edit-wombat-by-id
   [name url wombat-id cb-success]
@@ -99,7 +100,7 @@
    (fn []
      (get-all-wombats)
      (cb-success))
-   #(re-frame/dispatch [:update-modal-error (str %)])))
+   #(re-frame/dispatch [:update-modal-error (get-error-message %)])))
 
 (defn delete-wombat
   [id cb-success]
@@ -109,7 +110,7 @@
    (fn []
      (get-all-wombats)
      (cb-success))
-   #(re-frame/dispatch [:update-modal-error (str %)])))
+   #(re-frame/dispatch [:update-modal-error (get-error-message %)])))
 
 ;; USER SPECIFIC
 (defn get-current-user

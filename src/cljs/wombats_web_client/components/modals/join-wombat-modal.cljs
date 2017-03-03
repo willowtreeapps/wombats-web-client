@@ -3,6 +3,7 @@
             [reagent.core :as reagent]
             [pushy.core :as pushy]
             [wombats-web-client.components.modals.game-full-modal :refer [game-full-modal]]
+            [wombats-web-client.components.modals.game-started-modal :refer [game-started-modal]]
             [wombats-web-client.events.games :refer [join-open-game
                                                      get-open-games
                                                      get-all-games]]
@@ -10,7 +11,10 @@
             [wombats-web-client.utils.forms :refer [submit-modal-input
                                                     cancel-modal-input]]
             [wombats-web-client.utils.games :refer [get-occupied-colors]]
-            [wombats-web-client.utils.errors :refer [required-field-error
+            [wombats-web-client.utils.errors :refer [get-error-message
+                                                     is-game-full?
+                                                     has-game-started?
+                                                     required-field-error
                                                      wombat-color-missing]]
             [wombats-web-client.constants.colors :refer [colors-8]]
             [wombats-web-client.utils.functions :refer [in?]]
@@ -38,14 +42,18 @@
 
 
 (def callback-error (fn [error cmpnt-state]
-                      (let [error-code (:code (:response error))
-                            is-game-full? (= error-code 101001)]
+                      (let [game-full (is-game-full? error)
+                            game-started (has-game-started? error)]
 
-                        (when is-game-full?
+                        (when game-full
                           (re-frame/dispatch [:set-modal {:fn #(game-full-modal)
                                                           :show-overlay? true}]))
 
-                        (re-frame/dispatch [:update-modal-error (:message (:response error))])
+                        (when game-started
+                          (re-frame/dispatch [:set-modal {:fn #(game-started-modal)
+                                                          :show-overlay? true}]))
+
+                        (re-frame/dispatch [:update-modal-error (get-error-message error)])
                         (get-open-games)
                         (reset! cmpnt-state initial-cmpnt-state))))
 
