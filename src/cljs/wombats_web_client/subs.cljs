@@ -1,6 +1,7 @@
 (ns wombats-web-client.subs
     (:require-macros [reagent.ratom :refer [reaction]])
-    (:require [re-frame.core :as re-frame]))
+    (:require [re-frame.core :as re-frame]
+              [wombats-web-client.utils.games :as games]))
 
 (re-frame/reg-sub
  :name
@@ -92,12 +93,6 @@
 ;; Simulator subs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- get-player [db]
-  "Pulls the player out of db to use for simulator state"
-  (let [players (get-in db [:simulator/state :players])
-        player-key (first (keys players))]
-    (get players player-key)))
-
 (re-frame/reg-sub
  :simulator/templates
  (fn [db _]
@@ -111,22 +106,22 @@
 (re-frame/reg-sub
  :simulator/code
  (fn [db _]
-   (get-in (get-player db) [:state :code :code])))
+   (get-in (games/get-player db) [:state :code :code])))
 
 (re-frame/reg-sub
  :simulator/player-command
  (fn [db _]
-   (get-in (get-player db) [:state :command])))
+   (get-in (games/get-player db) [:state :command])))
 
 (re-frame/reg-sub
  :simulator/player-state
  (fn [db _]
-   (get-in (get-player db) [:state :saved-state])))
+   (get-in (games/get-player db) [:state :saved-state])))
 
 (re-frame/reg-sub
  :simulator/player-stack-trace
  (fn [db _]
-   (get-in (get-player db) [:state :error])))
+   (get-in (games/get-player db) [:state :error])))
 
 (re-frame/reg-sub
  :simulator/active-frame

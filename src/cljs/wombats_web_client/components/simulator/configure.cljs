@@ -1,7 +1,8 @@
 (ns wombats-web-client.components.simulator.configure
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
-            [wombats-web-client.utils.socket :as ws]))
+            [wombats-web-client.utils.socket :as ws]
+            [wombats-web-client.utils.forms :as f]))
 
 (defn- update-simulator-configuration!
   [state]
@@ -15,7 +16,7 @@
 
 (defn- update-form-state
   [e id form-state]
-  (swap! form-state assoc id (-> e .-target .-value)))
+  (swap! form-state assoc id (f/get-value e)))
 
 (defn- render-template-select
   [templates form-state]

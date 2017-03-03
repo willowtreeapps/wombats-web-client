@@ -21,3 +21,10 @@
    is-full "FULL"
    is-playing "ACTIVE"
    :else nil))
+
+(defn get-player
+  [db]
+  "Pulls the player out of db to use for simulator state"
+  (let [players (get-in db [:simulator/state :players])
+        player-key (first (keys players))]
+    (get players player-key)))
