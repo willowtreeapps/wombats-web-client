@@ -10,37 +10,28 @@
             [reagent.core :as reagent]))
 
 ;; This local state can be removed when the id is passed through the router
-(defonce game-id (atom nil))
 (defonce canvas-id "arena-canvas")
 
-(defn get-game-id
-  "Returns the current game-id
+;; Lifecycle Methods
 
-   TODO There is something wrong with route state.
-        When trying to use secretary's locate-route-value
-        we receive an error and accessing secretary's
-        internal *route* state directly returns a bunch of
-        null values"
-  []
-  (last
-   (.split (-> js/window .-location .-hash) "/")))
+(defn- component-will-mount [game-id]
+  (re-frame/dispatch [:game/join-game game-id]))
+
+(defn component-will-unmount [game-id]
+  (re-frame/dispatch [:game/update-frame nil])
+  (re-frame/dispatch [:game/clear-chat-messages])
+  (re-frame/dispatch [:game/info nil])
+  (ws/send-message :leave-game {:game-id game-id})
+  (re-frame/dispatch [:set-modal nil]))
 
 (defn update-arena [arena]
   (arena/arena @arena canvas-id))
 
-(defn get-arena-dimensions
-  []
+(defn get-arena-dimensions []
   600)
 
-(defn clear-game-panel-state []
-  (re-frame/dispatch [:game/update-frame nil])
-  (re-frame/dispatch [:game/clear-chat-messages])
-  (re-frame/dispatch [:game/info nil])
-  (ws/send-message :leave-game {:game-id @game-id})
-  (reset! game-id nil)
-  (re-frame/dispatch [:set-modal nil]))
 
-(defn- game-play-title [info show-join-button]
+(defn- game-play-title [info show-join-button game-id]
   (let [{:keys [round-number
                 round-start-time
                 status]} @info]
@@ -65,7 +56,7 @@
      (when (and show-join-button (= status :pending-open))
        [:button.join-button 
         {:class (when false "private")
-         :on-click (open-join-game-modal-fn "407582d6-dc0f-4303-89eb-905bd17ce296")}
+         :on-click (open-join-game-modal-fn game-id)}
         "JOIN"])]))
 
 (defn- game-play-subtitle [info]
@@ -90,7 +81,7 @@
                                   :show-overlay? false}]))
 
 (defn right-game-play-panel
-  [info messages user]
+  [info messages user game-id]
 
   (let [{:keys [game-winner stats]} @info
         user-bots (filter #(= (:username %)
@@ -103,7 +94,7 @@
     [:div.right-game-play-panel
 
      [:div.top-panel
-      [game-play-title info (= 0 (count user-bots))]
+      [game-play-title info (= 0 (count user-bots)) game-id]
       [game-play-subtitle info]
       [max-players info]
       [ranking-box info]]
@@ -111,21 +102,18 @@
      (when (> (count user-bots) 0)
        [:div.chat-panel
         [chat-title]
-        [chat-box @game-id messages info]])]))
+        [chat-box game-id messages info]])]))
 
-(defn game-play []
+(defn game-play [{:keys [game-id]}]
   (let [dimensions (get-arena-dimensions)
         arena (re-frame/subscribe [:game/arena])
         info (re-frame/subscribe [:game/info])
         messages (re-frame/subscribe [:game/messages])
         user (re-frame/subscribe [:current-user])]
 
-
-    ;; TODO This should come from the router
-    (reset! game-id (get-game-id))
-
     (reagent/create-class
-     {:component-will-unmount #(clear-game-panel-state)
+     {:component-will-mount #(component-will-mount game-id)
+      :component-will-unmount #(component-will-unmount game-id)
       :display-name "game-play-panel"
       :reagent-render
       (fn []
@@ -137,4 +125,4 @@
             [:canvas {:id canvas-id
                       :width dimensions
                       :height dimensions}]]
-           [right-game-play-panel info messages user]]))})))
+           [right-game-play-panel info messages user game-id]]))})))

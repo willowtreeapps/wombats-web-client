@@ -59,7 +59,7 @@
       (let [active-panel @active-panel
             current-user @current-user]
         (when active-panel
-          (let [selected ((keyword active-panel) panel-router-map)]
+          (let [selected ((:panel-id active-panel) panel-router-map)]
             [:div.navbar-component
              [wombat-logo]
              [nav-links current-user selected]]))))))

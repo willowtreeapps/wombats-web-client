@@ -13,21 +13,21 @@
   ;; define routes here
 
   (defroute "/" []
-    (re-frame/dispatch [:set-active-panel :view-games-panel]))
+    (re-frame/dispatch [:set-active-panel {:panel-id :view-games-panel}]))
 
   (defroute "/games/:game-id" {game-id :game-id}
-    (re-frame/dispatch [:game/join-game game-id])
-    (re-frame/dispatch [:set-active-panel :game-play-panel]))
+    (re-frame/dispatch [:set-active-panel {:panel-id :game-play-panel 
+                                           :params {:game-id game-id}}]))
 
   (defroute "/config" []
     (if (user-is-coordinator?)
-      (re-frame/dispatch [:set-active-panel :config-panel])
-      (re-frame/dispatch [:set-active-panel :page-not-found-panel])))
+      (re-frame/dispatch [:set-active-panel {:panel-id :config-panel}])
+      (re-frame/dispatch [:set-active-panel {:panel-id :page-not-found-panel}])))
 
   (defroute "/simulator" []
-    (re-frame/dispatch [:set-active-panel :simulator-panel]))
+    (re-frame/dispatch [:set-active-panel {:panel-id :simulator-panel}]))
 
   (defroute "/account" []
-    (re-frame/dispatch [:set-active-panel :account-panel]))
+    (re-frame/dispatch [:set-active-panel {:panel-id :account-panel}]))
 
   (pushy/start! history))
