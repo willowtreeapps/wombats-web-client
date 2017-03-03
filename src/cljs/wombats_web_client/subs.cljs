@@ -92,6 +92,12 @@
 ;; Simulator subs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn- get-player [db]
+  "Pulls the player out of db to use for simulator state"
+  (let [players (get-in db [:simulator/state :players])
+        player-key (first (keys players))]
+    (get players player-key)))
+
 (re-frame/reg-sub
  :simulator/templates
  (fn [db _]
@@ -101,3 +107,43 @@
  :simulator/state
  (fn [db _]
    (:simulator/state db)))
+
+(re-frame/reg-sub
+ :simulator/code
+ (fn [db _]
+   (get-in (get-player db) [:state :code :code])))
+
+(re-frame/reg-sub
+ :simulator/player-command
+ (fn [db _]
+   (get-in (get-player db) [:state :command])))
+
+(re-frame/reg-sub
+ :simulator/player-state
+ (fn [db _]
+   (get-in (get-player db) [:state :saved-state])))
+
+(re-frame/reg-sub
+ :simulator/player-stack-trace
+ (fn [db _]
+   (get-in (get-player db) [:state :error])))
+
+(re-frame/reg-sub
+ :simulator/active-frame
+ (fn [db _]
+   (get-in db [:simulator/state :frame :frame/arena])))
+
+(re-frame/reg-sub
+ :simulator/active-pane
+ (fn [db _]
+   (:simulator/active-pane db)))
+
+(re-frame/reg-sub
+ :simulator/wombat-id
+ (fn [db _]
+   (:simulator/wombat-id db)))
+
+(re-frame/reg-sub
+ :simulator/template-id
+ (fn [db _]
+   (:simulator/template-id db)))

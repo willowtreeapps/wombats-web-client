@@ -1,4 +1,5 @@
 @import "../colors.less";
+@import "../objects/button.less";
 
 .simulator-panel {
     @canvas-dimensions: 600px;
@@ -32,6 +33,26 @@
                     .output-section-title {
                         margin: 0;
                     }
+                }
+            }
+
+            .configure {
+                padding: 10px;
+                color: @white;
+                font-family: monospace;
+
+                .select {
+                    font-family: monospace;
+                    width: 200px;
+                    display: block;
+                    margin-bottom: 20px;
+                    height: 30px;
+                }
+
+                .update-btn {
+                    .simple-button;
+                    margin-left: 0;
+                    padding: 5px;
                 }
             }
 
