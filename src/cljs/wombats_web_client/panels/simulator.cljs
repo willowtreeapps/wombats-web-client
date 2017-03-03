@@ -56,7 +56,7 @@
       [:div.tabs
        (render-tabs active-pane stack-trace)]]]))
 
-(defn- render!
+(defn- render
   [sim-pane templates wombats active-frame stack-trace simulator-state]
   [:div {:class-name "simulator-panel"}
    [simulator-arena/render active-frame]
@@ -77,9 +77,9 @@
     (reagent/create-class
      {:component-will-mount #(component-will-mount!)
       :props-name "simulator-panel"
-      :reagent-render #(render! simulator-pane
-                                @templates
-                                @wombats
-                                @active-frame
-                                @stack-trace
-                                simulator-state)})))
+      :reagent-render #(render simulator-pane
+                               @templates
+                               @wombats
+                               @active-frame
+                               @stack-trace
+                               simulator-state)})))

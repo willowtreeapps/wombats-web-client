@@ -18,6 +18,11 @@
   [e id form-state]
   (swap! form-state assoc id (f/get-value e)))
 
+(defn- render-option [id name selected-id]
+  ^{:key id}
+  [:option {:value id
+            :default-value (= id selected-id)} name])
+
 (defn- render-template-select
   [templates form-state]
   (when-not (:template-id @form-state)
@@ -27,10 +32,7 @@
                    :on-change #(update-form-state % :template-id form-state)}
    (for [{id :simulator-template/id
           {arena-name :arena/name} :simulator-template/arena-template} templates]
-     ^{:key id}
-     [:option {:value id
-               :default-value (= id (:template-id @form-state))}
-      arena-name])])
+     (render-option id arena-name (:template-id @form-state)))])
 
 (defn- render-wombat-select
   [wombats form-state]
@@ -40,11 +42,8 @@
   [:select.select {:name "wombat"
                    :on-change #(update-form-state % :wombat-id form-state)}
    (for [{id :wombat/id
-          name :wombat/name} wombats]
-     ^{:key id}
-     [:option {:value id
-               :default-value (= (:wombat/id id) (:wombat-id @form-state))}
-      name])])
+          wombat-name :wombat/name} wombats]
+     (render-option id wombat-name (:wombat-id @form-state)))])
 
 (defn- render-pane
   [wombats templates form-state]
