@@ -3,14 +3,13 @@
             [re-frame.core :as re-frame]
             [wombats-web-client.components.arena :as arena]
             [wombats-web-client.components.tabbed-container :refer [tabbed-container]]
-            [wombats-web-client.events.simulator :refer [get-simulator-templates]]
-            [wombats-web-client.utils.socket :as ws]))
-
-(defonce canvas-id "simulator-canvas")
-(defonce dimensions 600)
-
-;; TODO: Currently this page always uses the first template and first wombat.
-;;       We should hook up UI that allows you to switch between them.
+            [wombats-web-client.components.simulator.arena :as simulator-arena]
+            [wombats-web-client.components.simulator.code :as simulator-code]
+            [wombats-web-client.components.simulator.output :as simulator-output]
+            [wombats-web-client.components.simulator.stack-trace :as simulator-stack-trace]
+            [wombats-web-client.components.simulator.configure :as simulator-configure]
+            [wombats-web-client.components.simulator.controls :as simulator-controls]
+            [wombats-web-client.events.simulator :refer [get-simulator-templates]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
@@ -20,144 +19,67 @@
   (get-simulator-templates))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Accessors
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defn- get-player [sim-state]
-  (let [players (:players (if (instance? reagent.ratom/Reaction sim-state)
-                            @sim-state
-                            sim-state))
-        player-key (first (keys players))]
-    (get-in players [player-key :state])))
-
-(defn- get-player-state [sim-state]
-  (-> sim-state
-      (get-player)
-      (:saved-state)))
-
-(defn- get-player-command [sim-state]
-  (-> sim-state
-      (get-player)
-      (:command)))
-
-(defn- get-player-code [sim-state]
-  (-> sim-state
-      (get-player)
-      (get-in [:code :code])))
-
-(defn- get-player-stack-trace [sim-state]
-  (-> sim-state
-      (get-player)
-      (:error)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Callback Methods
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defn- on-code-change! [evt]
-  ;; Propogate the updated code into db
-  (re-frame/dispatch [:simulator/update-code evt.target.value]))
-
-(defn- on-step-click! [evt state]
-  (ws/send-message :process-simulation-frame {:game-state @state}))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Helper methods
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defn- initialize-simulator!
-  [cmpnt-state templates wombats]
-  (swap! cmpnt-state assoc :initialized? true)
-  (ws/send-message :connect-to-simulator
-                   {:simulator-template-id (:simulator-template/id (first @templates))
-                    :wombat-id (:wombat/id (first @wombats))}))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- render-left-pane! [state]
-  (let [arena-frame (get-in @state [:frame :frame/arena])]
-    (arena/arena arena-frame canvas-id)
-    [:div {:class-name "left-pane"}
-     [:canvas {:id canvas-id
-               :width dimensions
-               :height dimensions}]]))
+(def panes {:code
+            {:label "CODE"
+             :render simulator-code/render}
+            :output
+            {:label "OUTPUT"
+             :render simulator-output/render}
+            :debugger
+            {:label "DEBUGGER"
+             :render simulator-stack-trace/render}
+            :configure
+            {:label "CONFIGURE"
+             :render simulator-configure/render}})
 
-(defn- render-code-tab [state]
-  [:textarea#editor {:on-change #(on-code-change! %)
-                     :value (or (get-player-code state) "")}])
+(defn- render-tabs
+  [active-tab stack-trace]
+  (for [[tab-name {label :label}] panes]
+    ^{:key label}
+    [:button.tab-btn {:class (when (= tab-name active-tab) "active-line-top")
+                      :on-click #(re-frame/dispatch [:simulator/update-active-simulator-pane tab-name])}
+     label
+     (when (= tab-name :debugger)
+       (when stack-trace
+         [:span.notifications 1]))]))
 
-(defn- render-output-tab [state]
-  [:div.output
+(defn- render-right-pane
+  [active-pane stack-trace]
+  (let [{pane-render :render} (active-pane panes)]
+    [:div {:class-name "right-pane"}
+     [:div.tabbed-container
+      [:div.content
+       [pane-render]]
+      [:div.tabs
+       (render-tabs active-pane stack-trace)]]]))
 
-   [:div.output-section
-    [:h3.output-section-title "Command"]
-    (prn-str (get-player-command state))]
-
-   [:div.output-section
-    [:h3.output-section-title "State"]
-    (prn-str (get-player-state state))]])
-
-(defn- render-stack-trace
-  [{message :message
-    stack-trace :stackTrace}]
-  [:div.stack-trace
-   [:p.stack-trace-message message]
-   [:ul.stack-trace-details
-    (for [line-item stack-trace]
-      ^{:key line-item} [:li.line-item line-item])]])
-
-(defn- get-stack-trace-notification-count
-  [state]
-  (let [stack-trace (get-player-stack-trace state)]
-    (when stack-trace 1)))
-
-(defn- render-debugger-tab [state]
-  (let [stack-trace (get-player-stack-trace state)]
-    (if stack-trace
-      (render-stack-trace stack-trace)
-      [:p.no-stack-trace-message "No errors to report. Happy Coding."])))
-
-(defn- render-tabbed-container [cmpnt-state sim-state]
-  [tabbed-container {:tabs [{:label "CODE"
-                             :render #(render-code-tab sim-state)}
-                            {:label "OUTPUT"
-                             :render #(render-output-tab sim-state)}
-                            {:label "DEBUGGER"
-                             :render #(render-debugger-tab sim-state)
-                             :notifications #(get-stack-trace-notification-count sim-state)}]
-                     :index (:tab-index @cmpnt-state)
-                     :on-index-change #(swap! cmpnt-state assoc :tab-index %)}])
-
-(defn- render-right-pane [cmpnt-state sim-state]
-  [:div {:class-name "right-pane"}
-   (render-tabbed-container cmpnt-state sim-state)
-   [:button {:on-click #(on-step-click! % sim-state)}
-    "Step"]])
-
-(defn- render! [cmpnt-state sim-state templates wombats]
-  (when (and (not (:initialized? @cmpnt-state)) @templates @wombats)
-    (initialize-simulator! cmpnt-state templates wombats))
-
+(defn- render
+  [sim-pane templates wombats active-frame stack-trace simulator-state]
   [:div {:class-name "simulator-panel"}
-   [render-left-pane! sim-state]
-   [render-right-pane cmpnt-state sim-state]])
+   [simulator-arena/render active-frame]
+   [render-right-pane @sim-pane stack-trace]
+   [simulator-controls/render simulator-state]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main Method
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn simulator []
-  (let [cmpnt-state (reagent/atom {:tab-index 0
-                                   :initialized? false})
-        sim-state (re-frame/subscribe [:simulator/state])
-        sim-templates (re-frame/subscribe [:simulator/templates])
-        wombats (re-frame/subscribe [:my-wombats])]
+  (let [simulator-pane (re-frame/subscribe [:simulator/active-pane])
+        templates (re-frame/subscribe [:simulator/templates])
+        wombats (re-frame/subscribe [:my-wombats])
+        active-frame (re-frame/subscribe [:simulator/active-frame])
+        stack-trace (re-frame/subscribe [:simulator/player-stack-trace])
+        simulator-state (re-frame/subscribe [:simulator/state])]
     (reagent/create-class
      {:component-will-mount #(component-will-mount!)
       :props-name "simulator-panel"
-      :reagent-render #(render! cmpnt-state
-                                sim-state
-                                sim-templates
-                                wombats)})))
+      :reagent-render #(render simulator-pane
+                               @templates
+                               @wombats
+                               @active-frame
+                               @stack-trace
+                               simulator-state)})))
