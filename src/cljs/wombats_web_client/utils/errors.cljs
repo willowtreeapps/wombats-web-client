@@ -11,6 +11,12 @@
 (defn get-error-message [error]
   (:message (:response error)))
 
+(defn get-field-error-keyword [error]
+  (:field-error (:response error)))
+
+(defn has-field-error? [error field]
+  (= field (get-field-error-keyword error)))
+
 (defn is-game-full? [error]
   (= (get-error-code error) :game-full))
 

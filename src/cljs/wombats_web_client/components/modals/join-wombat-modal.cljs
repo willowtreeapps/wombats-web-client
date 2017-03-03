@@ -14,6 +14,7 @@
             [wombats-web-client.utils.errors :refer [get-error-message
                                                      is-game-full?
                                                      has-game-started?
+                                                     has-field-error?
                                                      required-field-error
                                                      wombat-color-missing]]
             [wombats-web-client.constants.colors :refer [colors-8]]
@@ -27,6 +28,7 @@
                               :wombat-name-error nil
                               :wombat-id nil
                               :wombat-color nil
+                              :wombat-color-error nil
                               :password ""
                               :password-error nil})
 
@@ -43,31 +45,37 @@
 
 (def callback-error (fn [error cmpnt-state]
                       (let [game-full (is-game-full? error)
-                            game-started (has-game-started? error)]
+                            game-started (has-game-started? error)
+                            password-error (has-field-error? error :password)
+                            wombat-color-error (has-field-error? error :wombat-color)]
 
-                        (when game-full
-                          (re-frame/dispatch [:set-modal {:fn #(game-full-modal)
-                                                          :show-overlay? true}]))
+                        (cond 
+                         game-full (re-frame/dispatch [:set-modal {:fn #(game-full-modal)
+                                                         :show-overlay? true}])
 
-                        (when game-started
-                          (re-frame/dispatch [:set-modal {:fn #(game-started-modal)
-                                                          :show-overlay? true}]))
+                         game-started (re-frame/dispatch [:set-modal {:fn #(game-started-modal)
+                                                         :show-overlay? true}])
 
-                        (re-frame/dispatch [:update-modal-error (get-error-message error)])
-                        (get-open-games)
-                        (reset! cmpnt-state initial-cmpnt-state))))
+                         password-error (swap! cmpnt-state assoc :password-error (get-error-message error))
+
+                         wombat-color-error (swap! cmpnt-state assoc :wombat-color-error (get-error-message error))
+                         :else
+                        
+                         (get-all-games)
+                         (re-frame/dispatch [:update-modal-error (get-error-message error)])
+                         (reset! cmpnt-state initial-cmpnt-state)))))
 
 (defn on-wombat-selection [cmpnt-state id name]
   (swap! cmpnt-state assoc :wombat-id id
-                           :show-dropdown false
-                           :wombat-name name))
+         :show-dropdown false
+         :wombat-name name))
 
 (defn on-select-click [cmpnt-state]
   (let [wombat-name-missing (nil? (:wombat-name @cmpnt-state))
         show-dropdown (:show-dropdown @cmpnt-state)
         error-state (when wombat-name-missing required-field-error)]
     (when show-dropdown
-       (swap! cmpnt-state assoc :wombat-name-error error-state))
+      (swap! cmpnt-state assoc :wombat-name-error error-state))
 
     (swap! cmpnt-state assoc :show-dropdown (not show-dropdown))))
 
@@ -115,7 +123,7 @@
                              :opacity "0.8"}}]
      [:img.selected-icon {:class (when selected "display") :src "/images/play.svg"}]
      [:img.wombat {:src (str "/images/wombat_" color-text "_right.png")
-            :onClick on-click-fn}]]))
+                   :onClick on-click-fn}]]))
 
 (defn select-wombat-color [cmpnt-state selected-color occupied-colors]
   (let [wombat-color-error (:wombat-color-error @cmpnt-state)]
@@ -155,7 +163,7 @@
 
     (when (nil? wombat-name)
       (swap! cmpnt-state assoc :wombat-name-error required-field-error))
-     
+    
     (when (and is-private (clojure.string/blank? password)) 
       (swap! cmpnt-state assoc :password-error required-field-error))
 
@@ -195,5 +203,5 @@
            [:div.action-buttons
             [cancel-modal-input]
             [submit-modal-input "JOIN" #(on-submit-form-valid? {:game-id game-id
-                                                                    :is-private is-private
-                                                                    :cmpnt-state cmpnt-state})]]]))})))
+                                                                :is-private is-private
+                                                                :cmpnt-state cmpnt-state})]]]))})))
