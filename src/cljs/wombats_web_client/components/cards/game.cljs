@@ -45,7 +45,7 @@
   (let [game-state (get-game-state-str is-full is-playing)]
 
     [:div.arena-preview
-     (when false ;;game-state
+     (when game-state
        [:div.game-state-wrapper
         [:div.state-overlay]
         [:div.game-state game-state]])
@@ -53,7 +53,7 @@
      (when is-open
        [:div.countdown "Starts in "
         [countdown-timer start-time]])
-     (when true ;;is-joinable
+     (when is-joinable
        [:button {:class (str "join-button"
                              (when is-private " private"))
                  :onClick (open-join-game-modal-fn game-id)}
