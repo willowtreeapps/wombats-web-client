@@ -44,7 +44,7 @@
   (let [{:keys [round-number
                 round-start-time
                 status]} @info]
-    [:div
+    [:div.game-play-title-container
      
      [:h1.game-play-title
       (case status
