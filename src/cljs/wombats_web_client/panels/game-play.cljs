@@ -32,7 +32,8 @@
 
 
 (defn- game-play-title [info show-join-button game-id]
-  (let [{:keys [round-number
+  (let [{:keys [is-private
+                round-number
                 round-start-time
                 status]} @info]
     [:div.game-play-title-container
@@ -55,7 +56,7 @@
 
      (when (and show-join-button (= status :pending-open))
        [:button.join-button 
-        {:class (when false "private")
+        {:class (when is-private "private")
          :on-click (open-join-game-modal-fn game-id)}
         "JOIN"])]))
 
