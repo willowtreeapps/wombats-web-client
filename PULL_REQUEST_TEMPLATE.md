@@ -1,5 +1,5 @@
 # PR for Issue # .
-Feature, adding welcome page
+
 ## PR Status
 
 **READY/IN DEVELOPMENT/HOLD**
