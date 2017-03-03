@@ -2,22 +2,15 @@
 @import "../objects/button.less";
 
 .welcome-panel {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
 	min-height: 100%;
 
-	.welcome-logo-container {
-		flex: 1;
-		display: flex;
-		align-items: start;	
-		.welcome-logo {
-			flex: 1
-		}
+	.welcome-logo-container {	
+		width: 100%;
 	}
+	
     .welcome-content-container {
-     	flex: 4;
      	width: 100%;
+     	padding-top: 200px;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -28,20 +21,13 @@
 			max-width: 600px;
 			display: block;
 			text-align: center;
-			margin: auto;
-			flex: 1;
-			display: flex;
-			align-items: flex-end;
-			
-			.welcome-title-content {
-				color: @white;
-				font-weight: 600;
-				font-size: 30px;
-				display: inline-block;
-				text-transform: uppercase; 
-				padding: 10px;
-				flex: 1;
-			}
+			margin: auto;				
+			color: @white;
+			font-weight: 600;
+			font-size: 30px;
+			display: inline-block;
+			text-transform: uppercase; 
+			padding: 10px;
 		}
 
 		.welcome-message-container {
@@ -49,59 +35,20 @@
 			height: 96px;
 			display: block;
 			margin: 0, auto;
+			font-size: 18px;
+			font-weight: 600;
+			line-height: 1.33;
 			text-align: center;
-			flex: 1;
-			display: flex;
-			align-items: center;
-			align-content: center;
-			flex-direction: column;
-
-			.welcome-message-content {
-				font-size: 18px;
-				font-weight: 600;
-				line-height: 1.33;
-				text-align: center;
-				color: @white;
-				flex: 1;
-				display: flex;
-				align-items: center;
-				align-content: center;
-
-				.welcome-message-content-text {
-					flex: 1;
-				}
-			}
+			color: @white;	
 		}
 
 		.welcome-button-container {
-			margin: auto;
+	  	  .emphasized-link-button(@wombat-green, @black-30, @wombat-dark-green, @white); 
+			width: 202px;
+			padding-left: 12.5px;
+			padding-right: 12.5px;
 			text-align: center;
-			display: flex;
-	  		align-items: flex-start;
-	  		align-content: center;
-	  		justify-content: center;
-	  		flex: 1;
-
-			.welcome-button {
-				max-width: 225px;
-				background-color: @wombat-green;
-				box-shadow: inset 0 -3px 0 0 rgba(0, 0, 0, 0.3);
-				padding: 10px 22.5px;
-
-				.welcome-button-label {
-					max-width: 180px;
-					height: 50%;
-					font-size: 14px;
-					font-weight: 600;
-					letter-spacing: 2px;
-					text-align: center;
-					color: @white;
-					vertical-align: middle;
-					text-transform: uppercase;
-					direction: rtl;
-					display: block;
-				}
-			}
-		}
+			text-transform: uppercase;
+		}	
 	}	
 }
