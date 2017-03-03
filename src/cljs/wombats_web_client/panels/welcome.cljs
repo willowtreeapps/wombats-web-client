@@ -1,6 +1,6 @@
 (ns wombats-web-client.panels.welcome
-	(:require [re-frame.core :as re-frame]
-			  [wombats-web-client.constants.urls :refer [github-signin-url]]))
+  (:require [re-frame.core :as re-frame]
+            [wombats-web-client.constants.urls :refer [github-signin-url]]))
 ;; Welcome Panel
 
 (defonce welcome-page-title "Learn Clojure Through Gaming")
