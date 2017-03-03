@@ -46,7 +46,7 @@
                :default-value (= (:wombat/id id) (:wombat-id @form-state))}
       name])])
 
-(defn- render!
+(defn- render-pane
   [wombats templates form-state]
   [:div.configure
    [:p.pane-title "Configure Simulator"]
@@ -55,12 +55,11 @@
    [:button.update-btn {:on-click #(update-simulator-configuration! @form-state)}
     "Update Simulator"]])
 
-(defn render
-  []
+(defn render []
   (let [wombats (re-frame/subscribe [:my-wombats])
         sim-templates (re-frame/subscribe [:simulator/templates])
         selected-wombat (re-frame/subscribe [:simulator/wombat-id])
         selected-template (re-frame/subscribe [:simulator/template-id])
         form-state (atom {:wombat-id @selected-wombat
                           :template-id @selected-template})]
-    (render! @wombats @sim-templates form-state)))
+    (render-pane @wombats @sim-templates form-state)))
