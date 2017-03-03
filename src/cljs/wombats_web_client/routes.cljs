@@ -27,17 +27,10 @@
   (defroute "/simulator" []
     (re-frame/dispatch [:set-active-panel :simulator-panel]))
 
+ (defroute "/welcome" []
+    (re-frame/dispatch [:set-active-panel :welcome-panel]))
+
   (defroute "/account" []
     (re-frame/dispatch [:set-active-panel :account-panel]))
 
-  (defroute "/welcome" []
-    (re-frame/dispatch [:set-active-panel :welcome-panel]))
-
-  (defroute "/signout" []
-    (sign-out-event)
-    (set! (-> js/window .-location .-hash) "#/"))
-
-  ;; --------------------
-  (hook-browser-navigation!))
   (pushy/start! history))
-
