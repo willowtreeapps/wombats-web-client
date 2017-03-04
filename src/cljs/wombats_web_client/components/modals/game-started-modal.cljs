@@ -7,9 +7,8 @@
 
 (defn game-started-modal []
   (fn []
-    [:div {:class "modal game-started-modal"}
+    [:div.modal.game-started-modal
      [:div.title "GAME HAS STARTED"]
      [:div.desc game-started-error]
      [:div.action-buttons
-      [:button {:class "close-button"
-                :on-click close-modal} "OKAY"]]]))
+      [:button.close-button {:on-click close-modal} "OKAY"]]]))

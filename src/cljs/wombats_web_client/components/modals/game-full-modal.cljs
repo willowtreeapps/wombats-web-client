@@ -9,9 +9,8 @@
 
 (defn game-full-modal []
   (fn []
-    [:div {:class "modal game-full-modal"}
+    [:div.modal.game-full-modal
      [:div.title "GAME FULL"]
      [:div.desc game-full-error]
      [:div.action-buttons
-      [:button {:class "close-button"
-                :on-click close-modal} "OKAY"]]]))
+      [:button.close-button {:on-click close-modal} "OKAY"]]]))
