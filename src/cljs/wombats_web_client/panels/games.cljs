@@ -21,9 +21,9 @@
   (let [show-open (:show-open @cmpnt-state)]
     [:div.tab-game-toggle
      [:div.game-tab {:class (when show-open "active")
-                     :onClick #(swap! cmpnt-state assoc :show-open true)} "OPEN"]
+                     :on-click #(swap! cmpnt-state assoc :show-open true)} "OPEN"]
      [:div.game-tab {:class (when-not show-open "active")
-                     :onClick #(swap! cmpnt-state assoc :show-open false)} "FINISHED"]]))
+                     :on-click #(swap! cmpnt-state assoc :show-open false)} "FINISHED"]]))
 
 (defn my-game-toggle [cmpnt-state]
   (let [current-state (:show-my-games @cmpnt-state)]

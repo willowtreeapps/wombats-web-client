@@ -56,7 +56,7 @@
      (when is-joinable
        [:button {:class (str "join-button"
                              (when is-private " private"))
-                 :onClick (open-join-game-modal-fn game-id)}
+                 :on-click (open-join-game-modal-fn game-id)}
         "JOIN"])]))
 
 (defn render-my-wombat-icon [player]

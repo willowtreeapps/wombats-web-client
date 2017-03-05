@@ -123,7 +123,7 @@
                              :opacity "0.8"}}]
      [:img.selected-icon {:class (when selected "display") :src "/images/play.svg"}]
      [:img.wombat {:src (str "/images/wombat_" color-text "_right.png")
-                   :onClick on-click-fn}]]))
+                   :on-click on-click-fn}]]))
 
 (defn select-wombat-color [cmpnt-state selected-color occupied-colors]
   (let [wombat-color-error (:wombat-color-error @cmpnt-state)]
