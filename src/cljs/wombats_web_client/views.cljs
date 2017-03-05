@@ -8,6 +8,7 @@
               [wombats-web-client.panels.games :as view-games-panel]
               [wombats-web-client.panels.account :as account-panel]
               [wombats-web-client.panels.game-play :as game-play-panel]
+              [wombats-web-client.panels.welcome :as welcome-panel]
               [wombats-web-client.panels.simulator :as simulator-panel]
               [wombats-web-client.panels.page-not-found :as page-not-found-panel]))
 
@@ -18,6 +19,7 @@
     :view-games-panel [view-games-panel/games params]
     :account-panel [account-panel/account params]
     :game-play-panel [game-play-panel/game-play params]
+    :welcome-panel [welcome-panel/welcome params]
     :simulator-panel [simulator-panel/simulator params]
     :page-not-found-panel [page-not-found-panel/page-not-found params]
     [:div]))

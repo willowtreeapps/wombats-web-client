@@ -1,8 +1,7 @@
 (ns wombats-web-client.components.modals.game-full-modal
   (:require [re-frame.core :as re-frame]
-            [wombats-web-client.events.games :refer [get-all-games]]))
-
-(defonce full-msg "This game is aready full. Please try joining another game.")
+            [wombats-web-client.events.games :refer [get-all-games]]
+            [wombats-web-client.utils.errors :refer [game-full-error]]))
 
 (defn close-modal []
   (get-all-games)
@@ -10,8 +9,8 @@
 
 (defn game-full-modal []
   (fn []
-    [:div {:class "modal game-full-modal"}
+    [:div.modal.game-full-modal
      [:div.title "GAME FULL"]
-     [:div.desc full-msg]
+     [:div.desc game-full-error]
      [:div.action-buttons
-      [:button.simple-button {:on-click close-modal} "OKAY"]]]))
+      [:button.close-button {:on-click close-modal} "OKAY"]]]))

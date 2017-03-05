@@ -15,7 +15,7 @@
 (defn header []
   [:div.header
    [:div.title "MY WOMBATS"]
-   [:button.logout {:onClick #(sign-out-event)} "LOG OUT"]])
+   [:button.logout {:on-click #(sign-out-event)} "LOG OUT"]])
 
 (defn welcome []
   (let [my-wombats @(re-frame/subscribe [:my-wombats])]

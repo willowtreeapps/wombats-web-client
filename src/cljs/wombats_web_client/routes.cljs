@@ -27,6 +27,9 @@
   (defroute "/simulator" []
     (re-frame/dispatch [:set-active-panel {:panel-id :simulator-panel}]))
 
+ (defroute "/welcome" []
+    (re-frame/dispatch [:set-active-panel :welcome-panel]))
+
   (defroute "/account" []
     (re-frame/dispatch [:set-active-panel {:panel-id :account-panel}]))
 
