@@ -47,25 +47,33 @@
 (defn get-open-games []
   (get-games
    (build-status-query [pending-open pending-closed active active-intermission])
-   #(re-frame/dispatch [:open-games %])
+   (fn [games] 
+     (re-frame/dispatch [:open-games games])
+     (re-frame/dispatch [:games games]))
    #(print "error on get open games")))
 
 (defn get-my-open-games []
   (get-my-games
    (build-status-query [pending-open pending-closed active active-intermission])
-    #(re-frame/dispatch [:my-open-games %])
+   (fn [games]
+     (re-frame/dispatch [:my-open-games games])
+     (re-frame/dispatch [:games games]))
     #(print "error on get my open games")))
 
 (defn get-closed-games []
   (get-games
    (build-status-query [closed])
-   #(re-frame/dispatch [:closed-games %])
+   (fn [games]
+     (re-frame/dispatch [:closed-games games])
+     (re-frame/dispatch [:games games]))
    #(print "error on get all closed games")))
 
 (defn get-my-closed-games []
   (get-my-games
    (build-status-query [closed])
-   #(re-frame/dispatch [:my-closed-games %])
+   (fn [games]
+     (re-frame/dispatch [:my-closed-games games])
+     (re-frame/dispatch [:games games]))
    #(print "error on get all closed games")))
 
 (defn get-all-games []
@@ -110,6 +118,12 @@
  :add-join-selection
  (fn [db [_ sel]]
    (update db :join-game-selections (fn [selections] (conj selections sel)))))
+
+(re-frame/reg-event-db
+ :games
+ (fn [db [_ games]]
+   (assoc db :games (merge (:games db)
+                           (group-by #(:game/id %) games)))))
 
 (re-frame/reg-fx
  :get-open-games

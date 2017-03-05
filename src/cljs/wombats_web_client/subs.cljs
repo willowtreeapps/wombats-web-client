@@ -101,3 +101,12 @@
  :simulator/state
  (fn [db _]
    (:simulator/state db)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Games subs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(re-frame/reg-sub
+ :games
+ (fn [db _]
+   (:games db)))

@@ -19,6 +19,9 @@
    :game/info nil
    :game/messages []
    
+   ;; Stores all of the games indexed by their id
+   :games {}
+
    :simulator/state nil
    :simulator/templates nil
 

@@ -21,10 +21,10 @@
 (defonce spritesheet-url "/spritesheet.json")
 
 (defonce ws-url (str (case js/window.location.protocol
-                   "https:" "wss:"
-                   "ws:")
-                 base-api-url
-                 "/ws/game"))
+                       "https:" "wss:"
+                       "ws:")
+                     base-api-url
+                     "/ws/game"))
 
 (defn my-wombats-url
   [id]
