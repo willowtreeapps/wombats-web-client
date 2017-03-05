@@ -103,19 +103,12 @@
 
             [get-empty-state show-open show-my-games])]]))))
 
-(defn login-prompt []
-  [:div "You must login to see open games."])
-
 (defn games []
-  (let [current-user (re-frame/subscribe [:current-user])
-        cmpnt-state (reagent/atom {:show-open true
+  (let [cmpnt-state (reagent/atom {:show-open true
                                    :show-my-games false
                                    :polling nil})]
     (reagent/create-class
      {:component-will-unmount #(js/clearInterval (:polling @cmpnt-state))
       :reagent-render
       (fn []
-        (let [current-user @current-user]
-          (if-not current-user
-            [login-prompt]
-            [main-panel cmpnt-state])))})))
+        [main-panel cmpnt-state])})))

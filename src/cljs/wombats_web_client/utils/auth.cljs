@@ -1,12 +1,11 @@
 (ns wombats-web-client.utils.auth
   (:require [re-frame.core :as re-frame]
-            [wombats-web-client.utils.local-storage :refer [get-item]]
-            [wombats-web-client.constants.local-storage :refer [token]]))
+            [wombats-web-client.utils.local-storage :refer [get-token]]))
 
 (defn get-auth-header
   "returns an Authorization header if one should be present"
   []
-  {:Authorization (get-item token)})
+  {:Authorization (get-token)})
 
 (defn add-auth-header
   "Add token to header"
