@@ -2,10 +2,16 @@
 @import "../objects/button.less";
 
 .welcome-panel {
-  min-height: 100%;
-
+  height: 100%;
+  position: relative;
+  background-image: url(/images/mini-arena.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+ 
   .welcome-logo-container {	
     width: 100%;
+    padding-left: 40px;
+    padding-top: 20px;
   }
 
   .welcome-content-container {
@@ -55,6 +61,14 @@
       text-align: center;
       text-transform: uppercase;
       cursor: pointer;
-    }	
-  }	
+    }
+  }
+
+  .copyright {
+      color: @warm-grey;
+      font-size: 12px;
+      position: absolute;
+      left: 40px;
+      bottom: 20px;
+  }
 }
