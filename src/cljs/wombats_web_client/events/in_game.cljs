@@ -21,7 +21,11 @@
 (re-frame/reg-event-db
  :game/info
  (fn [db [_ info]]
-   (assoc db :game/info info)))
+   (let [game-id (:game/id info)]
+     (assoc-in db
+               [:games game-id]
+               (merge (get-in db [:games game-id])
+                      info)))))
 
 (re-frame/reg-event-db
  :game/join-game

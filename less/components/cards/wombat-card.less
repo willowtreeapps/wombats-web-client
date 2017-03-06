@@ -6,7 +6,15 @@
     background-color: @white;
     width: 275px;
     display: inline-block;
-    
+
+    &:hover {
+        .wombat-information {
+            .hover-state-edit {
+                display: block;
+            }
+        }
+    }
+
     .wombat-image {
         width: 142px;
         height: 142px;
@@ -14,8 +22,10 @@
     }
 
     .wombat-information {
+        @hover-height: 45px;
+
         position: absolute;
-        // bottom: -45px;
+        bottom: -@hover-height;
         display: block;
 
         .name {
@@ -27,24 +37,23 @@
         }
 
         .hover-state-edit {
-            height: 45px;
-            width: 245px;
+            @hover-padding: 30px;
+
+            height: @hover-height;
+            width: calc(~"100% - " @hover-padding);
             background-color: @card-grey;
-            padding-right: 30px;
+            padding-right: @hover-padding;
+            display: none;
 
             .delete {
                 .simple-button;
                 float: right;
             }
-            
+
             .edit {
                 .simple-button;
                 float: right;
             }
-        }
-
-        &.hovering {
-            bottom: -45px;
         }
     }
 }
