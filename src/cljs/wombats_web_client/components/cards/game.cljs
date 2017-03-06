@@ -45,11 +45,11 @@
   (let [game-state (get-game-state-str is-full is-playing)]
 
     [:div.arena-preview
-     (when game-state
-       [:div.game-state-wrapper
-        [:div.state-overlay]
-        [:div.game-state game-state]])
-     [:img {:src "/images/mini-arena.png"}]
+     [:div.game-state-wrapper
+      [:div.state-overlay {:class (when game-state "not-joinable")}]
+      (when game-state
+        [:div.game-state game-state])]
+     [:img.arena-preview-img {:src "/images/mini-arena.png"}]
      (when is-open
        [:div.countdown "Starts in "
         [countdown-timer start-time]])
