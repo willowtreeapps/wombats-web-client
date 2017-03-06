@@ -2,7 +2,11 @@
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [wombats-web-client.events.games :refer [get-all-games]]
-            [wombats-web-client.components.cards.game :refer [game-card]]))
+            [wombats-web-client.components.cards.game :refer [game-card]]
+            [wombats-web-client.utils.games :refer [get-open-games
+                                                    get-my-open-games
+                                                    get-closed-games
+                                                    get-my-closed-games]]))
 
 ;; Games Panel
 
@@ -28,62 +32,8 @@
 (defn my-game-toggle [cmpnt-state]
   (let [current-state (:show-my-games @cmpnt-state)]
     [:div.my-game-toggle-wrapper {:on-click #(swap! cmpnt-state assoc :show-my-games (not current-state))}
-     [:div.checkbox {:class (when current-state "selected")}] 
+     [:div.checkbox {:class (when current-state "selected")}]
      [:div.desc "SHOW MY GAMES"]]))
-
-;; Utils (eventually move these into a better location)
-
-(defn is-open?
-  [game]
-  (let [status (:game/status game)]
-    (or (= status :pending-open)
-        (= status :pending-closed)
-        (= status :active)
-        (= status :active-intermission))))
-
-(defn is-closed?
-  [game]
-  (let [status (:game/status game)]
-    (= status :closed)))
-
-(defn is-mine?
-  [game current-user]
-  (> (count (filter #(= (:user/github-username current-user)
-                        (get-in % [:player/user :user/github-username]))
-                    (:game/players game)))
-     0))
-
-(defn get-open-games
-  [games]
-  (reduce-kv (fn [coll _ [game]]
-               (if (is-open? game)
-                 (conj coll game)
-                 coll)) [] games))
-
-(defn get-my-open-games
-  [games current-user]
-  (reduce-kv (fn [coll _ [game]]
-               (if (and (is-open? game)
-                        (is-mine? game current-user))
-                 (conj coll game)
-                 coll)) [] games))
-
-(defn get-closed-games
-  [games]
-  (reduce-kv (fn [coll _ [game]]
-               (if (is-closed? game)
-                 (conj coll game)
-                 coll)) [] games))
-
-(defn get-my-closed-games
-  [games current-user]
-  (reduce-kv (fn [coll _ [game]]
-               (if (and (is-closed? games)
-                        (is-mine? game current-user))
-                 (conj coll game)
-                 coll)) [] games))
-
-;; End Utils
 
 (defn get-sorted-games [{:keys [show-open show-my-games games current-user]}]
   (cond
@@ -130,7 +80,7 @@
           [my-game-toggle cmpnt-state]]
          [:div.games
           (if (pos? (count games-sorted))
-            [:ul.games-list 
+            [:ul.games-list
              (for [game games-sorted]
                (let [status (:game/status game)
                      players (:game/players game)
