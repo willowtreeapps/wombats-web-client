@@ -3,7 +3,7 @@
             [wombats-web-client.components.chat-box :refer [chat-box]]
             [wombats-web-client.components.countdown-timer :refer [countdown-timer]]
             [wombats-web-client.components.game-ranking :refer [ranking-box]]
-            [wombats-web-client.components.modals.wombat-modal :refer [winner-modal]]
+            [wombats-web-client.components.modals.winner-modal :refer [winner-modal]]
             [wombats-web-client.utils.socket :as ws]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
