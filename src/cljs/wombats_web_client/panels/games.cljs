@@ -47,28 +47,50 @@
     (= status :closed)))
 
 (defn is-mine?
-  [game github-username]
-  (> (count (filter #(= github-username
+  [game current-user]
+  (> (count (filter #(= (:user/github-username current-user)
                         (get-in % [:player/user :user/github-username]))
                     (:game/players game)))
      0))
+
+(defn get-open-games
+  [games]
+  (reduce-kv (fn [coll _ [game]]
+               (if (is-open? game)
+                 (conj coll game)
+                 coll)) [] games))
 
 (defn get-my-open-games
   [games current-user]
   (reduce-kv (fn [coll _ [game]]
                (if (and (is-open? game)
-                        (is-mine? game (:user/github-username current-user)))
+                        (is-mine? game current-user))
+                 (conj coll game)
+                 coll)) [] games))
+
+(defn get-closed-games
+  [games]
+  (reduce-kv (fn [coll _ [game]]
+               (if (is-closed? game)
+                 (conj coll game)
+                 coll)) [] games))
+
+(defn get-my-closed-games
+  [games current-user]
+  (reduce-kv (fn [coll _ [game]]
+               (if (and (is-closed? games)
+                        (is-mine? game current-user))
                  (conj coll game)
                  coll)) [] games))
 
 ;; End Utils
 
-(defn get-sorted-games [{:keys [show-open show-my-games open closed my-open my-closed games current-user]}]
+(defn get-sorted-games [{:keys [show-open show-my-games games current-user]}]
   (cond
     (and show-open show-my-games) (sort-by :game/start-time (get-my-open-games games current-user))
-    (and (not show-open) show-my-games) (sort-by :game/end-time > my-closed)
-    (and show-open (not show-my-games)) (sort-by :game/start-time open)
-    (and (not show-open) (not show-my-games)) (sort-by :game/end-time > closed)))
+    (and (not show-open) show-my-games) (sort-by :game/end-time > (get-my-closed-games games current-user))
+    (and show-open (not show-my-games)) (sort-by :game/start-time (get-open-games games))
+    (and (not show-open) (not show-my-games)) (sort-by :game/end-time > (get-closed-games games))))
 
 (defn get-empty-state [show-open show-my-games]
   (cond
