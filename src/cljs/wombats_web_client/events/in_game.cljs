@@ -26,8 +26,5 @@
 (re-frame/reg-event-db
  :game/join-game
  (fn [db [_ game-id]]
-   ;; TODO Add socket connection to bootstrap
-   (js/setTimeout
-    (fn []
-      (ws/send-message :join-game {:game-id game-id})) 2000)
+   (ws/send-message :join-game {:game-id game-id})
    db))

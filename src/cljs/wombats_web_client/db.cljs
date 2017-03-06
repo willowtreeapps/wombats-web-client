@@ -10,6 +10,9 @@
    :users []
    :modal nil
 
+   ;; Updates once the socket connects
+   :socket/connected false
+
    :game/arena nil
    :game/info nil
    :game/messages []

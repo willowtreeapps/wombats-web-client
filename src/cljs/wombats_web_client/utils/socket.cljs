@@ -1,5 +1,7 @@
 (ns wombats-web-client.utils.socket
-  "Handles connecting to a web socket")
+  "Handles connecting to a web socket"
+  (:require [re-frame.core :as re-frame]
+            [wombats-web-client.utils.local-storage :refer [get-token]]))
 
 (def default-socket-state {:socket nil
                            :chan-id nil
@@ -56,30 +58,34 @@
                                    :access-token access-token}
                             :payload data}))))
 
+(defn- add-user-token
+  [access-token]
+  (swap! socket-state assoc :access-token access-token)
+  (send-message :authenticate-user {:access-token access-token}))
+
+(defn- bootstrap
+  [chan-id]
+  (let [token (get-token)]
+    (re-frame/dispatch [:socket-connected true])
+    (js/console.log token)
+    (swap! socket-state assoc :chan-id chan-id)
+    (send-message :handshake {:chan-id chan-id})
+    (add-user-token token)))
+
 (defn onmessage
   "Set a callback for when the socket receives a message.
-
   On 'handshake', complete handoff"
   [callback]
   (let [onmessage-interceptor (fn [message]
                                 (let [formatted-message (parse message.data)
-                                      {metadata :meta
-                                       payload :payload} formatted-message
-                                      message-type (:msg-type metadata)
+                                      {:keys [meta payload]} formatted-message
+                                      message-type (:msg-type meta)
                                       is-handshake? (= message-type :handshake)]
                                   (if is-handshake?
-                                    (do
-                                      (swap! socket-state assoc :chan-id (:chan-id payload))
-                                      (send-message :handshake {:chan-id (:chan-id payload)}))
-                                    (callback message-type payload metadata))))]
+                                    (bootstrap (:chan-id payload))
+                                    (callback message-type payload meta))))]
 
     (set! (.-onmessage (:socket @socket-state)) onmessage-interceptor)))
-
-(defn add-user-token
-  [access-token]
-  (when access-token
-    (swap! socket-state assoc :access-token access-token)
-    (send-message :authenticate-user {:access-token access-token})))
 
 (defn connect
   [event-bus url]
@@ -99,6 +105,6 @@
   (onclose
    (fn [code]
      ;; TODO Add logging
-     ))
+     (re-frame/dispatch [:socket-connected false])))
 
   (:socket @socket-state))
