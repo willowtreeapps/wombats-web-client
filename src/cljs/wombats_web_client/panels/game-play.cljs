@@ -21,7 +21,6 @@
 (defn- component-will-unmount [game-id]
   (re-frame/dispatch [:game/update-frame nil])
   (re-frame/dispatch [:game/clear-chat-messages])
-  (re-frame/dispatch [:game/info nil])
   (ws/send-message :leave-game {:game-id game-id})
   (re-frame/dispatch [:set-modal nil]))
 
@@ -31,12 +30,12 @@
 (defn get-arena-dimensions []
   600)
 
+(defn- game-play-title [game show-join-button game-id]
+  (let [{:keys [game/is-private
+                game/round-number
+                game/start-time
+                game/status]} game]
 
-(defn- game-play-title [info show-join-button game-id]
-  (let [{:keys [is-private
-                round-number
-                round-start-time
-                status]} @info]
     [:div.game-play-title-container
 
      [:h1.game-play-title
@@ -48,7 +47,7 @@
          :pending-closed
          :active-intermission)
         [:span (str "ROUND " round-number " STARTS IN: ")
-         [countdown-timer round-start-time]]
+         [countdown-timer start-time]]
 
         :active
         (str "ROUND " round-number)
@@ -59,15 +58,13 @@
        [join-button {:is-private is-private
                      :on-click (open-join-game-modal-fn game-id)}])]))
 
-(defn- game-play-subtitle [info]
-  (let [{:keys [name]} @info]
-    [:h2.game-play-subtitle
-     (when name
-       (str name " - High Score"))]))
+(defn- game-play-subtitle [{:keys [game/name]}]
+  [:h2.game-play-subtitle
+   (when name
+     (str name " - High Score"))])
 
-(defn- max-players [info]
-  (let [{:keys [max-players stats]} @info
-        player-count (count stats)]
+(defn- max-players [{:keys [game/max-players game/stats]}]
+  (let [player-count (count stats)]
     [:p.wombat-counter (when (and max-players stats)
                          (str "Wombats: " player-count "/" max-players))]))
 
@@ -81,12 +78,13 @@
                                   :show-overlay? false}]))
 
 (defn right-game-play-panel
-  [info messages user game-id]
+  [game messages user game-id]
 
-  (let [{:keys [game-winner stats]} @info
-        user-bots (filter #(= (:username %)
-                              (::user/github-username @user))
-                          stats)]
+  (let [{:keys [game/game-winner game/players]} game
+        user-bots-count (count (filter #(= (get-in % [:player/user :user/github-username])
+                                           (::user/github-username @user))
+                                       players))]
+
     ;; Dispatch winner modal if there's a winner
     (when game-winner
       (show-winner-modal game-winner))
@@ -94,22 +92,22 @@
     [:div.right-game-play-panel
 
      [:div.top-panel
-      [game-play-title info (= 0 (count user-bots)) game-id]
-      [game-play-subtitle info]
-      [max-players info]
-      [ranking-box info]]
+      [game-play-title game (= 0 user-bots-count) game-id]
+      [game-play-subtitle game]
+      [max-players game]
+      [ranking-box game]]
 
-     (when (> (count user-bots) 0)
+     (when (> user-bots-count 0)
        [:div.chat-panel
         [chat-title]
-        [chat-box game-id messages info]])]))
+        [chat-box game-id messages game]])]))
 
 (defn game-play [{:keys [game-id]}]
   (let [dimensions (get-arena-dimensions)
         arena (re-frame/subscribe [:game/arena])
-        info (re-frame/subscribe [:game/info])
         messages (re-frame/subscribe [:game/messages])
-        user (re-frame/subscribe [:current-user])]
+        user (re-frame/subscribe [:current-user])
+        games (re-frame/subscribe [:games])]
 
     (reagent/create-class
      {:component-will-mount #(component-will-mount game-id)
@@ -117,12 +115,13 @@
       :display-name "game-play-panel"
       :reagent-render
       (fn []
-        (let [winner (:game-winner @info)]
+        (let [game (get @games game-id)
+              winner (:game/winner game)]
           (update-arena arena)
           [:div {:class-name "game-play-panel"}
            [:div.left-game-play-panel {:id "wombat-arena"
-                  :class (when winner "game-over")}
+                                       :class (when winner "game-over")}
             [:canvas {:id canvas-id
                       :width dimensions
                       :height dimensions}]]
-           [right-game-play-panel info messages user game-id]]))})))
+           [right-game-play-panel game messages user game-id]]))})))

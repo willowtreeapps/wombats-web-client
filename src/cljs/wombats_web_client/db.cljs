@@ -14,7 +14,6 @@
    :socket/connected false
 
    :game/arena nil
-   :game/info nil
    :game/messages []
 
    ;; Stores all of the games indexed by their id

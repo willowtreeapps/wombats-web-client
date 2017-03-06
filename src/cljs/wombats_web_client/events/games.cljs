@@ -80,7 +80,8 @@
    wombat-id
    color
    password
-   (fn []
+   (fn [res]
+     (re-frame/dispatch [:game/info res])
      (cb-success)
      (get-all-games))
    (fn [error]
