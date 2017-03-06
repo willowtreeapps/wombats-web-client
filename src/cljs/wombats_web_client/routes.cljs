@@ -19,26 +19,25 @@
   ;; define routes here
 
   (defroute "/" []
-    (logged-in-checker #(re-frame/dispatch [:set-active-panel :view-games-panel])))
+    (logged-in-checker #(re-frame/dispatch [:set-active-panel {:panel-id :view-games-panel}])))
 
   (defroute "/games/:game-id" {game-id :game-id}
-    (logged-in-checker (fn []
-                         (re-frame/dispatch [:game/join-game game-id])
-                         (re-frame/dispatch [:set-active-panel :game-play-panel]))))
+    (logged-in-checker #(re-frame/dispatch [:set-active-panel {:panel-id :game-play-panel
+                                                               :params {:game-id game-id}}])))
 
   (defroute "/config" []
     (logged-in-checker (fn []
                          (if (user-is-coordinator?)
-                           (re-frame/dispatch [:set-active-panel :config-panel])
-                           (re-frame/dispatch [:set-active-panel :page-not-found-panel])))))
+                           (re-frame/dispatch [:set-active-panel {:panel-id :config-panel}])
+                           (re-frame/dispatch [:set-active-panel {:panel-id :page-not-found-panel}])))))
 
   (defroute "/simulator" []
-    (logged-in-checker #(re-frame/dispatch [:set-active-panel :simulator-panel])))
+    (logged-in-checker #(re-frame/dispatch [:set-active-panel {:panel-id :simulator-panel}])))
 
   (defroute "/welcome" []
-    (re-frame/dispatch [:set-active-panel :welcome-panel]))
+    (re-frame/dispatch [:set-active-panel {:panel-id :welcome-panel}]))
 
   (defroute "/account" []
-    (logged-in-checker #(re-frame/dispatch [:set-active-panel :account-panel])))
+    (logged-in-checker #(re-frame/dispatch [:set-active-panel {:panel-id :account-panel}])))
 
   (pushy/start! history))
