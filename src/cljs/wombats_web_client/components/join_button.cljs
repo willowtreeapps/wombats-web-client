@@ -1,5 +1,4 @@
-(ns wombats-web-client.components.join-button
-  (:require [reagent.core :as reagent]))
+(ns wombats-web-client.components.join-button)
 
 (defn join-button
   [{:keys [is-private on-click]}]
