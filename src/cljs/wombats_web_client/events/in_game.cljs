@@ -22,7 +22,7 @@
  :game/info
  (fn [db [_ info]]
    (let [game-id (:game/id info)]
-     (assoc-in db 
+     (assoc-in db
                [:games game-id]
                (merge (get-in db [:games game-id])
                       info)))))

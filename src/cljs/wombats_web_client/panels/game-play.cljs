@@ -80,10 +80,10 @@
 (defn right-game-play-panel
   [game messages user game-id]
 
-  (let [{:keys [game/game-winner game/stats]} game
-        user-bots (filter #(= (:username %)
-                              (::user/github-username @user))
-                          stats)]
+  (let [{:keys [game/game-winner game/players]} game
+        user-bots-count (count (filter #(= (get-in % [:player/user :user/github-username])
+                                           (::user/github-username @user))
+                                       players))]
 
     ;; Dispatch winner modal if there's a winner
     (when game-winner
@@ -92,12 +92,12 @@
     [:div.right-game-play-panel
 
      [:div.top-panel
-      [game-play-title game (= 0 (count user-bots)) game-id]
+      [game-play-title game (= 0 user-bots-count) game-id]
       [game-play-subtitle game]
       [max-players game]
       [ranking-box game]]
 
-     (when (> (count user-bots) 0)
+     (when (> user-bots-count 0)
        [:div.chat-panel
         [chat-title]
         [chat-box game-id messages game]])]))
