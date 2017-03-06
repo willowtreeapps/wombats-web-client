@@ -24,6 +24,7 @@
    :simulator/active-pane :code
    :simulator/wombat-id nil
    :simulator/template-id nil
+   :simulator/mini-map false
 
    :join-game-selections []
    :spritesheet nil

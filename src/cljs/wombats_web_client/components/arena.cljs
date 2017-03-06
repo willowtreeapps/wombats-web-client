@@ -12,13 +12,13 @@
     (when frame
       (let [img (js/Image.)]
         (set! (.-src img) spritesheet-png)
-        (.requestAnimationFrame js/window 
-                                (fn [] 
+        (.requestAnimationFrame js/window
+                                (fn []
                                   (callback img frame)))))))
 
 (defn- draw-image
   [canvas-element img-name x y width height]
-  (subscribe-to-spritesheet img-name 
+  (subscribe-to-spritesheet img-name
                             (fn [img frame]
                               (canvas/draw-image canvas-element
                                                  img
@@ -74,6 +74,7 @@
     :shot      1
     :explosion 2
     :smoke     3
+    :fog       3
     0))
 
 (defn- sort-meta
@@ -157,6 +158,13 @@
 (defn- draw-open
   "Draws whatever belongs on an open cell"
   [canvas-element contents meta x y width height]
+  (draw-meta canvas-element contents meta x y width height))
+
+(defn- draw-fog
+  [canvas-element contents meta x y width height]
+  (draw-image canvas-element
+              "fog.png"
+              x y width height)
   (draw-meta canvas-element contents meta x y width height))
 
 (defn- draw-zakano
@@ -284,6 +292,9 @@
 
       :open
       (draw-open canvas-element contents meta x y width height)
+
+      :fog
+      (draw-fog canvas-element contents meta x y width height)
 
       (js/console.log "Unhandled: " cell-type))))
 

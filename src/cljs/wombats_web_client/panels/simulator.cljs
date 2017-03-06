@@ -57,11 +57,21 @@
        (render-tabs active-pane stack-trace)]]]))
 
 (defn- render
-  [sim-pane templates wombats active-frame stack-trace simulator-state]
+  [sim-pane
+   templates
+   wombats
+   active-frame
+   stack-trace
+   simulator-display-mini-map
+   simulator-mini-map
+   simulator-state]
   [:div {:class-name "simulator-panel"}
-   [simulator-arena/render active-frame]
+   [simulator-arena/render (if (and simulator-display-mini-map
+                                    simulator-mini-map)
+                             simulator-mini-map
+                             active-frame)]
    [render-right-pane @sim-pane stack-trace]
-   [simulator-controls/render simulator-state]])
+   [simulator-controls/render simulator-state simulator-display-mini-map]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main Method
@@ -73,6 +83,8 @@
         wombats (re-frame/subscribe [:my-wombats])
         active-frame (re-frame/subscribe [:simulator/active-frame])
         stack-trace (re-frame/subscribe [:simulator/player-stack-trace])
+        simulator-display-mini-map (re-frame/subscribe [:simulator/display-mini-map])
+        simulator-mini-map (re-frame/subscribe [:simulator/mini-map])
         simulator-state (re-frame/subscribe [:simulator/state])]
     (reagent/create-class
      {:component-will-mount #(component-will-mount!)
@@ -82,4 +94,6 @@
                                @wombats
                                @active-frame
                                @stack-trace
+                               @simulator-display-mini-map
+                               @simulator-mini-map
                                simulator-state)})))
