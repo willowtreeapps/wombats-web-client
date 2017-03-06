@@ -14,6 +14,11 @@
    (:active-panel db)))
 
 (re-frame/reg-sub
+ :auth-token
+ (fn [db _]
+   (:auth-token db)))
+
+(re-frame/reg-sub
  :current-user
  (fn [db _]
    (:current-user db)))

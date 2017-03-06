@@ -10,7 +10,9 @@
               [wombats-web-client.panels.game-play :as game-play-panel]
               [wombats-web-client.panels.welcome :as welcome-panel]
               [wombats-web-client.panels.simulator :as simulator-panel]
-              [wombats-web-client.panels.page-not-found :as page-not-found-panel]))
+              [wombats-web-client.panels.page-not-found :as page-not-found-panel]
+
+              [wombats-web-client.utils.local-storage :refer [get-token]]))
 
 ;; mainutil
 
@@ -37,12 +39,24 @@
      (when show-overlay? [:div {:class-name "modal-overlay"}])
      (when render-fn [render-fn])]))
 
+(defn logged-in-view [modal panel]
+  [:div.app-container
+   [display-modal modal]
+   [navbar/root]
+   [show-panel panel]])
+
+(defn logged-out-view [panel]
+  [:div.app-container
+   [show-panel panel]])
+
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])
+        auth-token (re-frame/subscribe [:auth-token])
         modal (re-frame/subscribe [:modal])]
     (fn []
-      (let [modal @modal]
-        [:div.app-container
-         [display-modal modal]
-         [navbar/root]
-         [show-panel @active-panel]]))))
+      (let [modal @modal
+            token @auth-token
+            panel @active-panel]
+        (if (and token (not= panel :welcome-panel)) 
+          [logged-in-view modal panel]
+          [logged-out-view panel])))))
