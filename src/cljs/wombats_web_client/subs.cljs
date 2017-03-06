@@ -34,26 +34,6 @@
    (:my-wombats db)))
 
 (re-frame/reg-sub
- :open-games
- (fn [db _]
-   (:open-games db)))
-
-(re-frame/reg-sub
- :my-open-games
- (fn [db _]
-   (:my-open-games db)))
-
-(re-frame/reg-sub
- :closed-games
- (fn [db _]
-   (:closed-games db)))
-
-(re-frame/reg-sub
- :my-closed-games
- (fn [db _]
-   (:my-closed-games db)))
-
-(re-frame/reg-sub
  :joined-games
  (fn [db _]
    (:joined-games db)))
@@ -81,8 +61,7 @@
 (re-frame/reg-sub
  :game/details
  (fn [db [_ game-id]]
-   (first (filter #(= (:game/id %) game-id)
-                  (:open-games db)))))
+   (first (get-in db [:games game-id]))))
 
 (re-frame/reg-sub
  :spritesheet

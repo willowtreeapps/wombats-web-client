@@ -10,15 +10,11 @@
    :current-user nil
    :users []
    :modal nil
-   :open-games nil
-   :my-open-games nil
-   :closed-games nil
-   :my-closed-games nil
 
    :game/arena nil
    :game/info nil
    :game/messages []
-   
+
    ;; Stores all of the games indexed by their id
    :games {}
 
