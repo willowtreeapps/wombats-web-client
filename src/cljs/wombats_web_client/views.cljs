@@ -16,18 +16,18 @@
 
 ;; mainutil
 
-(defn- panels [panel-name]
+(defn- panels [panel-name params]
   (case panel-name
-    :view-games-panel [view-games-panel/games]
-    :account-panel [account-panel/account]
-    :game-play-panel [game-play-panel/game-play]
-    :welcome-panel [welcome-panel/welcome]
-    :simulator-panel [simulator-panel/simulator]
-    :page-not-found-panel [page-not-found-panel/page-not-found]
+    :view-games-panel [view-games-panel/games params]
+    :account-panel [account-panel/account params]
+    :game-play-panel [game-play-panel/game-play params]
+    :welcome-panel [welcome-panel/welcome params]
+    :simulator-panel [simulator-panel/simulator params]
+    :page-not-found-panel [page-not-found-panel/page-not-found params]
     [:div]))
 
-(defn show-panel [panel-name]
-  [panels panel-name])
+(defn show-panel [{:keys [panel-id params]}]
+  [panels panel-id params])
 
 (defn display-modal
   [modal]

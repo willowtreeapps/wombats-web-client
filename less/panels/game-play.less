@@ -12,6 +12,7 @@
             opacity: 0.3;
         }
     }
+    
     .right-game-play-panel {
         width: 100%;
         display: flex;
@@ -21,12 +22,18 @@
             height: 60%;
             padding: 10px 19px;
 
-            .game-play-title {
-                margin: 0;
-                color: @white;
-                font-size: 30px;
+            .game-play-title-container {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
                 margin-bottom: 10px;
-                font-weight: @title-font-weight;
+
+                .game-play-title {
+                    margin: 0;
+                    color: @white;
+                    font-size: 30px;
+                    font-weight: @title-font-weight;
+                }
             }
             
             .game-play-subtitle {
