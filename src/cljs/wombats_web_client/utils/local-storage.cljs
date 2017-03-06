@@ -5,17 +5,30 @@
 ;; Local Storage
 ;;
 ;; https://gist.github.com/daveliepmann/cf923140702c8b1de301
+(defn set-item! [key value]
+  (.setItem (.-localStorage js/window) key value))
+
 (defn set-token!
-  "Set `' in browser's localStorage to `val`."
+  "Set token in browser's localStorage to `val`."
   [val]
-  (.setItem (.-localStorage js/window) token val))
+  (set-item! token val))
+
+(defn get-item 
+  "Returns value of key from browser's localStorage"
+  [key]
+  (.getItem (.-localStorage js/window) key))
 
 (defn get-token
   "Returns value of `token` from browser's localStorage."
   []
-  (.getItem (.-localStorage js/window) token))
+  (get-item token))
+
+(defn remove-item!
+  "Remove the browser's localStorage value for the given key"
+  [key]
+  (.removeItem (.-localStorage js/window) key))
 
 (defn remove-token!
-  "Remove the browser's localStorage value for the given token"
+  "Remove the browser's localStorage value for the given key"
   []
-  (.removeItem (.-localStorage js/window) token))
+  (remove-item! token))
