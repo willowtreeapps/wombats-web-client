@@ -95,7 +95,9 @@
  :games
  (fn [db [_ games]]
    (assoc db :games (merge (:games db)
-                           (group-by #(:game/id %) games)))))
+                           (reduce #(assoc %1 (:game/id %2) %2)
+                                   {}
+                                   games)))))
 
 (re-frame/reg-fx
  :get-open-games

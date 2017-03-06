@@ -54,14 +54,14 @@
 
 (defn get-open-games
   [games]
-  (reduce-kv (fn [coll _ [game]]
+  (reduce-kv (fn [coll _ game]
                (if (is-open? game)
                  (conj coll game)
                  coll)) [] games))
 
 (defn get-my-open-games
   [games current-user]
-  (reduce-kv (fn [coll _ [game]]
+  (reduce-kv (fn [coll _ game]
                (if (and (is-open? game)
                         (user-in-game? current-user game))
                  (conj coll game)
@@ -69,14 +69,14 @@
 
 (defn get-closed-games
   [games]
-  (reduce-kv (fn [coll _ [game]]
+  (reduce-kv (fn [coll _ game]
                (if (is-closed? game)
                  (conj coll game)
                  coll)) [] games))
 
 (defn get-my-closed-games
   [games current-user]
-  (reduce-kv (fn [coll _ [game]]
+  (reduce-kv (fn [coll _ game]
                (if (and (is-closed? games)
                         (user-in-game? current-user game))
                  (conj coll game)
