@@ -9,8 +9,8 @@
 
 (re-frame/reg-event-db
  :initialize-db
- (fn  [_ _]
-   db/default-db))
+ (fn [old-db _]
+   (merge db/default-db old-db)))
 
 (re-frame/reg-event-db
  :bootstrap-app

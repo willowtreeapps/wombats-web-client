@@ -58,19 +58,14 @@
                                    :access-token access-token}
                             :payload data}))))
 
-(defn- add-user-token
-  [access-token]
-  (swap! socket-state assoc :access-token access-token)
-  (send-message :authenticate-user {:access-token access-token}))
-
 (defn- bootstrap
   [chan-id]
   (let [token (get-token)]
     (re-frame/dispatch [:socket-connected true])
-    (js/console.log token)
-    (swap! socket-state assoc :chan-id chan-id)
+
+    (swap! socket-state assoc :access-token token :chan-id chan-id)
     (send-message :handshake {:chan-id chan-id})
-    (add-user-token token)))
+    (send-message :authenticate-user {:access-token token})))
 
 (defn onmessage
   "Set a callback for when the socket receives a message.
