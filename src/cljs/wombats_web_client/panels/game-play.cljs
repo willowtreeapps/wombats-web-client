@@ -4,6 +4,7 @@
             [wombats-web-client.components.chat-box :refer [chat-box]]
             [wombats-web-client.components.countdown-timer :refer [countdown-timer]]
             [wombats-web-client.components.game-ranking :refer [ranking-box]]
+            [wombats-web-client.components.join-button :refer [join-button]]
             [wombats-web-client.components.modals.wombat-modal :refer [winner-modal]]
             [wombats-web-client.utils.socket :as ws]
             [re-frame.core :as re-frame]
@@ -17,7 +18,7 @@
 (defn- component-will-mount [game-id]
   (re-frame/dispatch [:game/join-game game-id]))
 
-(defn component-will-unmount [game-id]
+(defn- component-will-unmount [game-id]
   (re-frame/dispatch [:game/update-frame nil])
   (re-frame/dispatch [:game/clear-chat-messages])
   (re-frame/dispatch [:game/info nil])
@@ -37,7 +38,7 @@
                 round-start-time
                 status]} @info]
     [:div.game-play-title-container
-     
+
      [:h1.game-play-title
       (case status
         :closed
@@ -55,10 +56,8 @@
         nil)]
 
      (when (and show-join-button (= status :pending-open))
-       [:button.join-button 
-        {:class (when is-private "private")
-         :on-click (open-join-game-modal-fn game-id)}
-        "JOIN"])]))
+       [join-button {:is-private is-private
+                     :on-click (open-join-game-modal-fn game-id)}])]))
 
 (defn- game-play-subtitle [info]
   (let [{:keys [name]} @info]
