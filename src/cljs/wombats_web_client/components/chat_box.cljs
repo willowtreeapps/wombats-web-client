@@ -45,9 +45,9 @@
    [:span {:class-name "msg-body default"} "Say something already!"]])
 
 (defn display-messages
-  [messages info]
+  [messages game]
   (fn []
-    (let [stats (:stats @info)
+    (let [stats (:game/stats game)
           messages @messages
           element (first (array-seq (.getElementsByClassName js/document
                                                              "chat-box-message-container")))]
