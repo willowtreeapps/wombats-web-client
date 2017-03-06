@@ -26,9 +26,3 @@
                [:games game-id]
                (merge (get-in db [:games game-id])
                       info)))))
-
-(re-frame/reg-event-db
- :game/join-game
- (fn [db [_ game-id]]
-   (ws/send-message :join-game {:game-id game-id})
-   db))

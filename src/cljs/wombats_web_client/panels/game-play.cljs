@@ -16,7 +16,7 @@
 ;; Lifecycle Methods
 
 (defn- component-will-mount [game-id]
-  (re-frame/dispatch [:game/join-game game-id]))
+  (ws/send-message :join-game {:game-id game-id}))
 
 (defn- component-will-unmount [game-id]
   (re-frame/dispatch [:game/update-frame nil])
