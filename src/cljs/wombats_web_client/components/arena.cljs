@@ -163,6 +163,7 @@
 (defn- draw-fog
   [canvas-element contents meta x y width height]
   (draw-image canvas-element
+              ;; TODO Get official image for fog. issue #211
               "fog.png"
               x y width height)
   (draw-meta canvas-element contents meta x y width height))
