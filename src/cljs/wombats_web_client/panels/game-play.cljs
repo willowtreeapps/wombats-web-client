@@ -33,7 +33,7 @@
 (defn- game-play-title [game show-join-button game-id]
   (let [{:keys [game/is-private
                 game/round-number
-                game/round-start-time
+                game/start-time
                 game/status]} game]
 
     [:div.game-play-title-container
@@ -47,7 +47,7 @@
          :pending-closed
          :active-intermission)
         [:span (str "ROUND " round-number " STARTS IN: ")
-         [countdown-timer round-start-time]]
+         [countdown-timer start-time]]
 
         :active
         (str "ROUND " round-number)
