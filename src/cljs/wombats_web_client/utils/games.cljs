@@ -18,7 +18,7 @@
 
 (defn- user-in-game?
   "Whether current-user is in the game"
-  [game current-user]
+  [current-user game]
   (> (count (filter #(= (:user/github-username current-user)
                         (get-in % [:player/user :user/github-username]))
                     (:game/players game)))
@@ -63,7 +63,7 @@
   [games current-user]
   (reduce-kv (fn [coll _ [game]]
                (if (and (is-open? game)
-                        (user-in-game? game current-user))
+                        (user-in-game? current-user game))
                  (conj coll game)
                  coll)) [] games))
 
@@ -78,6 +78,6 @@
   [games current-user]
   (reduce-kv (fn [coll _ [game]]
                (if (and (is-closed? games)
-                        (user-in-game? game current-user))
+                        (user-in-game? current-user game))
                  (conj coll game)
                  coll)) [] games))
