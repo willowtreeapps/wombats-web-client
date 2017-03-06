@@ -28,4 +28,5 @@
     [:div.welcome-content-container
       [render-welcome-title]
       [render-welcome-message]
-      [render-welcome-button]]])
+      [render-welcome-button]]
+   [:div.copyright "© WillowTree, Inc. 2017"]])

@@ -6,8 +6,7 @@
             [pushy.core :as pushy]
             [wombats-web-client.db :as db]
             [wombats-web-client.utils.errors :refer [get-error-message]]
-            [wombats-web-client.utils.local-storage :refer [get-item remove-item!]]
-            [wombats-web-client.constants.local-storage :refer [token]]
+            [wombats-web-client.utils.local-storage :refer [get-token remove-token!]]
             [wombats-web-client.constants.urls :refer [self-url
                                                        github-signout-url
                                                        my-wombats-url
@@ -26,7 +25,7 @@
 
 (defn sign-out-event
   []
-  (pushy/set-token! history "/")
+  (pushy/set-token! history "/welcome")
   (re-frame/dispatch [:sign-out])
   (sign-out-user))
 
@@ -138,7 +137,7 @@
 (re-frame/reg-event-db
  :sign-out
  (fn [db [_ _]]
-   (remove-item! token)
+   (remove-token!)
    (assoc db :auth-token nil :current-user nil)))
 
 (re-frame/reg-event-db
@@ -154,7 +153,7 @@
 (re-frame/reg-event-fx
  :bootstrap-user-data
  (fn [{:keys [db]} [_ user]]
-   {:db (assoc db :auth-token (get-item token))
+   {:db (assoc db :auth-token (get-token))
     :http-xhrio {:method          :get
                  :uri             (my-wombats-url (:user/id user))
                  :headers         (add-auth-header {})

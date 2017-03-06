@@ -3,8 +3,8 @@
             [cemerick.url :as url]
             [wombats-web-client.db :as db]
             [wombats-web-client.utils.url :refer [strip-access-token]]
-            [wombats-web-client.utils.local-storage :refer [set-item! get-item]]
-            [wombats-web-client.constants.local-storage :refer [access-token token]]
+            [wombats-web-client.utils.local-storage :refer [set-token! get-token]]
+            [wombats-web-client.constants.local-storage :refer [access-token]]
             [wombats-web-client.events.user :refer [load-user]]))
 
 (re-frame/reg-event-db
@@ -21,11 +21,11 @@
      ;; Access Token was pass by the server. Add token to storage,
      ;; sanitize the URL, and then load user.
      (when access-token-val
-       (set-item! token access-token-val)
+       (set-token! access-token-val)
        (strip-access-token))
 
      ;; Load user from localstorage
-     (when (get-item token)
+     (when (get-token)
        (load-user)))
 
    (assoc db :bootstrapping? true)))

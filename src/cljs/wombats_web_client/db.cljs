@@ -1,10 +1,9 @@
 (ns wombats-web-client.db
-  (:require [wombats-web-client.constants.local-storage :refer [token]]
-            [wombats-web-client.utils.local-storage :refer [get-item]]))
+  (:require [wombats-web-client.utils.local-storage :refer [get-token]]))
 
 (def default-db
   {:active-panel nil
-   :auth-token (get-item token)
+   :auth-token (get-token)
    :bootstrapping? false
    :name "WillowTree"
    :current-user nil

@@ -17,19 +17,9 @@
    [:div.title "MY WOMBATS"]
    [:button.logout {:on-click #(sign-out-event)} "LOG OUT"]])
 
-(defn welcome []
+(defn account []
   (let [my-wombats @(re-frame/subscribe [:my-wombats])]
     [:div.account-panel
      [header]
      [:div.wombats (map wombat-card/root my-wombats)]
      [add-wombat-button/root (open-add-wombat-modal)]]))
-
-(defn login-prompt []
-  [:div "You must login to see your account."])
-
-(defn account []
-  (let [current-user (re-frame/subscribe [:current-user])]
-    (fn []
-      (if-not @current-user
-        [login-prompt]
-        [welcome]))))
