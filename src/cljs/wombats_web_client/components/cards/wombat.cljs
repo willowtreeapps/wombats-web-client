@@ -11,12 +11,9 @@
 
 (defn open-edit-wombat-modal [id name url]
   (fn []
-    (let [edit-submit-fn #(on-submit-form-valid? cmpnt-state wombat-id)])
     (re-frame/dispatch [:set-modal {:fn #(wombat-modal {:wombat-id id
-                                                        :name name
-                                                        :url url
-                                                        :submit-info {:text "SAVE"
-                                                                      :fn #(on-submit-form-valid? cmpnt-state wombat-id)}})
+                                                               :name name
+                                                               :url url})
                                     :show-overlay? true}])))
 
 (defn wombat-information
