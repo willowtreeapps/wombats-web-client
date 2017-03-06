@@ -31,12 +31,44 @@
      [:div.checkbox {:class (when current-state "selected")}] 
      [:div.desc "SHOW MY GAMES"]]))
 
-(defn get-games [{:keys [show-open show-my-games open closed my-open my-closed]}]
+;; Utils (eventually move these into a better location)
+
+(defn is-open?
+  [game]
+  (let [status (:game/status game)]
+    (or (= status :pending-open)
+        (= status :pending-closed)
+        (= status :active)
+        (= status :active-intermission))))
+
+(defn is-closed?
+  [game]
+  (let [status (:game/status game)]
+    (= status :closed)))
+
+(defn is-mine?
+  [game github-username]
+  (> (count (filter #(= github-username
+                        (get-in % [:player/user :user/github-username]))
+                    (:game/players game)))
+     0))
+
+(defn get-my-open-games
+  [games current-user]
+  (reduce-kv (fn [coll _ [game]]
+               (if (and (is-open? game)
+                        (is-mine? game (:user/github-username current-user)))
+                 (conj coll game)
+                 coll)) [] games))
+
+;; End Utils
+
+(defn get-sorted-games [{:keys [show-open show-my-games open closed my-open my-closed games current-user]}]
   (cond
-   (and show-open show-my-games) (sort-by :game/start-time my-open)
-   (and (not show-open) show-my-games) (sort-by :game/end-time > my-closed)
-   (and show-open (not show-my-games)) (sort-by :game/start-time open)
-   (and (not show-open) (not show-my-games)) (sort-by :game/end-time > closed)))
+    (and show-open show-my-games) (sort-by :game/start-time (get-my-open-games games current-user))
+    (and (not show-open) show-my-games) (sort-by :game/end-time > my-closed)
+    (and show-open (not show-my-games)) (sort-by :game/start-time open)
+    (and (not show-open) (not show-my-games)) (sort-by :game/end-time > closed)))
 
 (defn get-empty-state [show-open show-my-games]
   (cond
@@ -58,23 +90,25 @@
         my-open (re-frame/subscribe [:my-open-games])
         my-closed (re-frame/subscribe [:my-closed-games])
         polling (open-game-polling)
-        current-user (re-frame/subscribe [:current-user])]
+        current-user (re-frame/subscribe [:current-user])
+        games (re-frame/subscribe [:games])]
 
     (get-all-games)
 
     (fn []
-      (let  [current-user @current-user
-             open @open-games
-             closed @closed-games
-             show-my-games (:show-my-games @cmpnt-state)
-             show-open (:show-open @cmpnt-state)
-             games (get-games {:show-open show-open
-                               :show-my-games show-my-games
-                               :open open
-                               :closed closed
-                               :my-open @my-open
-                               :my-closed @my-closed})]
-
+      (let [current-user @current-user
+            open @open-games
+            closed @closed-games
+            show-my-games (:show-my-games @cmpnt-state)
+            show-open (:show-open @cmpnt-state)
+            games-sorted (get-sorted-games {:show-open show-open
+                                            :show-my-games show-my-games
+                                            :open open
+                                            :closed closed
+                                            :games @games
+                                            :my-open @my-open
+                                            :my-closed @my-closed
+                                            :current-user current-user})]
 
         (swap! cmpnt-state assoc :polling polling)
 
@@ -83,9 +117,9 @@
           [tab-view-toggle cmpnt-state]
           [my-game-toggle cmpnt-state]]
          [:div.games
-          (if (pos? (count games))
+          (if (pos? (count games-sorted))
             [:ul.games-list 
-             (for [game games]
+             (for [game games-sorted]
                (let [status (:game/status game)
                      players (:game/players game)
                      user-in-game (first (get-user-in-game players current-user))
