@@ -1,5 +1,4 @@
 @import "../../colors.less";
-@import "../../objects/button.less";
 
 @arena-preview-width: 165px;
 @arena-preview-height: 165px;
@@ -20,7 +19,7 @@
         height: 100%;
         z-index: @link-z-index;
     }
-    
+
     &:hover {
         .arena-preview {
             .join-button {
@@ -83,22 +82,11 @@
         }
 
         .join-button {
-            width: 100px;
-            text-align: center;
             display: none;
             position: absolute;
             bottom: 60px;
             left: 34px;
             z-index: @join-button-z-index;
-
-            .emphasized-action-button(@wombat-green, @black-30, @wombat-dark-green);
-
-            &.private {
-                padding-right: 25px;
-                background-image: url(/images/lock.png);
-                background-repeat: no-repeat;
-                background-position: 65px 10px;
-            }
         }
     }
 
@@ -128,7 +116,7 @@
 
             .game-name {
                 font-size: 18px;
-                weight: 600;
+                font-weight: 600;
                 margin-bottom: 10px;
             }
         }

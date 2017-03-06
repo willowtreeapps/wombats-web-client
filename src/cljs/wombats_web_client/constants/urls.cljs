@@ -7,13 +7,12 @@
                            :simulator-panel "simulator"})
 
 ;; Remote Dev
-(def base-api-url "//dev.api.wombats.io")
+(defonce base-api-url "//dev.api.wombats.io")
 
 ;; Local Dev
 #_(defonce base-api-url "//localhost:8888")
 
-(defonce base-api-version "/api/v1")
-(defonce base-api-versioned-url (str base-api-url base-api-version))
+(defonce base-api-versioned-url (str base-api-url "/api/v1"))
 
 (defonce self-url (str base-api-versioned-url "/self"))
 (defonce github-signout-url (str base-api-versioned-url "/auth/github/signout"))
@@ -22,10 +21,10 @@
 (defonce spritesheet-url "/spritesheet.json")
 
 (defonce ws-url (str (case js/window.location.protocol
-                   "https:" "wss:"
-                   "ws:")
-                 base-api-url
-                 "/ws/game"))
+                       "https:" "wss:"
+                       "ws:")
+                     base-api-url
+                     "/ws/game"))
 
 (defn my-wombats-url
   [id]

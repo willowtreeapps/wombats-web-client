@@ -1,0 +1,15 @@
+@import "../colors.less";
+@import "../objects/button.less";
+
+.join-button {
+    width: 100px;
+    text-align: center;
+    .emphasized-action-button(@wombat-green, @black-30, @wombat-dark-green);
+
+    &.private {
+        padding-right: 25px;
+        background-image: url(/images/lock.png);
+        background-repeat: no-repeat;
+        background-position: 65px 10px;
+    }
+}
