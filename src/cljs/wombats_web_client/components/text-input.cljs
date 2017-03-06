@@ -24,6 +24,7 @@
      [:label.label {:for name} label]
      [:input.input {:class (when error-val "field-error")
                     :type (if is-password "password" "text")
+                    :auto-complete (when is-password "new-password")
                     :name name
                     :value (when val val)
                     :on-blur #(check-for-valid-text-content state error-key (get-value %))
