@@ -107,11 +107,7 @@
                 (= github-username current-username))) players)))
 
 (defn main-panel [cmpnt-state]
-  (let [open-games (re-frame/subscribe [:open-games])
-        closed-games (re-frame/subscribe [:closed-games])
-        my-open (re-frame/subscribe [:my-open-games])
-        my-closed (re-frame/subscribe [:my-closed-games])
-        polling (open-game-polling)
+  (let [polling (open-game-polling)
         current-user (re-frame/subscribe [:current-user])
         games (re-frame/subscribe [:games])]
 
@@ -119,17 +115,11 @@
 
     (fn []
       (let [current-user @current-user
-            open @open-games
-            closed @closed-games
             show-my-games (:show-my-games @cmpnt-state)
             show-open (:show-open @cmpnt-state)
             games-sorted (get-sorted-games {:show-open show-open
                                             :show-my-games show-my-games
-                                            :open open
-                                            :closed closed
                                             :games @games
-                                            :my-open @my-open
-                                            :my-closed @my-closed
                                             :current-user current-user})]
 
         (swap! cmpnt-state assoc :polling polling)
