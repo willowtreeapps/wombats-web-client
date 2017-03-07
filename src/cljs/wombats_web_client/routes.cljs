@@ -3,15 +3,15 @@
     (:require [secretary.core :as secretary]
               [pushy.core :as pushy]
               [re-frame.core :as re-frame]
-              [wombats-web-client.utils.local-storage :refer [get-token]]
-              [wombats-web-client.utils.auth :refer [user-is-coordinator?]]))
+              [wombats-web-client.utils.auth :refer [get-current-user-id
+                                                     user-is-coordinator?]]))
 
 (defonce history (pushy/pushy secretary/dispatch!
                               (fn [x]
                                 (when (secretary/locate-route x) x))))
 
 (defn logged-in-checker [logged-in-dispatch]
-  (if (get-token) 
+  (if (get-current-user-id) 
     (logged-in-dispatch)
     (pushy/set-token! history "/welcome")))
 
