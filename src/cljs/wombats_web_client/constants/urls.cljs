@@ -6,12 +6,7 @@
                            :config-panel "config"
                            :simulator-panel "simulator"})
 
-;; Remote Dev
-(defonce base-api-url "//dev.api.wombats.io")
-
-;; Local Dev
-#_(defonce base-api-url "//localhost:8888")
-
+(goog-define base-api-url "//api.wombats.io")
 (defonce base-api-versioned-url (str base-api-url "/api/v1"))
 
 (defonce self-url (str base-api-versioned-url "/self"))

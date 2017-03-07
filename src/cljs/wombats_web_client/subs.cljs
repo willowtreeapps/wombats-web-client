@@ -54,11 +54,6 @@
    (:game/arena db)))
 
 (re-frame/reg-sub
- :game/info
- (fn [db _]
-   (:game/info db)))
-
-(re-frame/reg-sub
  :game/messages
  (fn [db _]
    (:game/messages db)))
@@ -145,3 +140,12 @@
  :games
  (fn [db _]
    (:games db)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Bootstrapping subs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(re-frame/reg-sub
+ :socket/connected
+ (fn [db _]
+   (:socket/connected db)))

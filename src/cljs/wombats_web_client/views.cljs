@@ -52,11 +52,14 @@
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])
         auth-token (re-frame/subscribe [:auth-token])
-        modal (re-frame/subscribe [:modal])]
+        modal (re-frame/subscribe [:modal])
+        socket-connected (re-frame/subscribe [:socket/connected])]
     (fn []
       (let [modal @modal
             token @auth-token
             panel @active-panel]
-        (if (and token (not= panel :welcome-panel)) 
-          [logged-in-view modal panel]
+        (if (and token (not= (:panel-id panel) :welcome-panel))
+          (if @socket-connected
+            [logged-in-view modal panel]
+            [:div "Loading..."])
           [logged-out-view panel])))))

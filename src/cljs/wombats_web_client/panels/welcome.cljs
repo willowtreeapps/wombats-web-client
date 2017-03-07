@@ -4,8 +4,8 @@
 ;; Welcome Panel
 
 (defonce welcome-page-title "Learn Clojure Through Gaming")
-(defonce welcome-message-1 "Wombats is a platform for new developers to learn Clojure while playing through a fun and addictive game")
-(defonce welcome-message-2 "Sign in with your GitHub account")
+(defonce welcome-message-1 "Wombats is a platform for new developers to learn Clojure while playing through a fun and addictive game.")
+(defonce welcome-message-2 "Sign in with your GitHub account!")
 
 (defn render-wombat-logo []
   [:div.welcome-logo-container [:img {:src "/images/img-logo-horizontal.svg"}]])
