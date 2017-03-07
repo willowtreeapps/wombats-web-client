@@ -58,6 +58,7 @@
      :source-paths ["src/cljs"]
      :compiler     {:main            wombats-web-client.core
                     :output-to       "resources/public/js/compiled/app.js"
+                    :output-dir      "resources/public/js/compiled/qa"
                     :optimizations   :advanced
                     :pretty-print    false
                     :closure-defines {goog.DEBUG false
@@ -67,6 +68,7 @@
      :source-paths ["src/cljs"]
      :compiler     {:main            wombats-web-client.core
                     :output-to       "resources/public/js/compiled/app.js"
+                    :output-dir      "resources/public/js/compiled/prod"
                     :optimizations   :advanced
                     :pretty-print    false
                     :closure-defines {goog.DEBUG false
