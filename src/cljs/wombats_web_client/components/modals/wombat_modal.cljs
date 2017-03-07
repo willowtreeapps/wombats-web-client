@@ -1,29 +1,79 @@
 (ns wombats-web-client.components.modals.wombat-modal
-  (:require [re-frame.core :as re-frame]))
+  (:require [re-frame.core :as re-frame]
+            [reagent.core :as reagent]
+            [wombats-web-client.components.text-input :refer [text-input-with-label]]
+            [wombats-web-client.events.user :refer [create-new-wombat
+                                                    edit-wombat-by-id]]
+            [wombats-web-client.utils.errors :refer [required-field-error]]
+            [wombats-web-client.utils.forms :refer [cancel-modal-input
+                                                    submit-modal-input]]))
 
-(defn wombat-item [wombat]
-  (let [{:keys [wombat-name username]} wombat]
-    [:div.wombat-desc {:key username}
-     [:div.wombat-name wombat-name]
-     [:div.player-username username]]))
+(defn callback-success [state]
+  "closes modal on success"
+  (re-frame/dispatch [:update-modal-error nil])
+  (re-frame/dispatch [:set-modal nil]))
 
-(defn winner-info [wombat]
-  (let [{:keys [wombat-color wombat-name username]} wombat]
-    [:div.winner-info
-     [:img.wombat-img {:src (str "/images/wombat_" wombat-color "_right.png")}]
-     [wombat-item wombat]]))
+(defn on-submit-form-valid? [cmpnt-state username wombat-id]
+  (let [{:keys [wombat-name
+                wombat-repo-name
+                wombat-file-path]} @cmpnt-state
+        url (str username "/" 
+                 wombat-repo-name "/contents/" 
+                 wombat-file-path)]
+    (when (clojure.string/blank? wombat-name)
+      (swap! cmpnt-state assoc :wombat-name-error required-field-error))
+    (when (clojure.string/blank? wombat-repo-name)
+      (swap! cmpnt-state assoc :wombat-repo-name-error required-field-error))
+    (when (clojure.string/blank? wombat-file-path)
+      (swap! cmpnt-state assoc :wombat-file-path-error required-field-error))
 
-(defn tied-info [wombats]
-  [:div.winner-info
-   (map wombat-item wombats)])
+    (when (and wombat-name wombat-repo-name wombat-file-path)
+      (if wombat-id
+        (edit-wombat-by-id wombat-name url wombat-id #(callback-success cmpnt-state))
+        (create-new-wombat wombat-name url #(callback-success cmpnt-state))))))
 
-(defn winner-modal [wombats]
-  (let [tied? (< 1 (count wombats))
-        title (if tied? "WINNERS!" "WINNER!")]
-    [:div {:class "modal winner-modal"}
-     [:div.title title]
-     (if tied? [tied-info wombats] [winner-info (first wombats)])
-     [:div.redirect-buttons
-      [:div.return-to-lobby [:a {:href "/"
-                                 :on-click #(re-frame/dispatch [:set-modal nil])}
-                             "RETURN TO LOBBY"]]]]))
+(defn parse-url [url key]
+  (cond
+   (= key "repo-name") (get (clojure.string.split url "/") 1)
+   (= key "file-path") (last (clojure.string.split url "/"))))
+
+(defn wombat-modal [{:keys [wombat-id name url]}]
+  (let [repo-name (parse-url url "repo-name")
+        file-path (parse-url url "file-path")
+        submit-text (if wombat-id "SAVE" "ADD")
+        title (if wombat-id "EDIT WOMBAT" "ADD WOMBAT")
+        cmpnt-state (reagent/atom {:wombat-name name
+                                   :wombat-repo-name repo-name
+                                   :wombat-file-path file-path
+                                   :wombat-name-error nil
+                                   :wombat-repo-name-error nil
+                                   :wombat-file-path-error nil
+                                   :error nil})
+        modal-error (re-frame/subscribe [:modal-error])
+        current-user (re-frame/subscribe [:current-user])]
+    (reagent/create-class
+     {:component-will-unmount #(re-frame/dispatch [:update-modal-error nil])
+      :display-name "wombat-modal"
+      :reagent-render
+      (fn []
+        (let [{:keys [wombat-name wombat-repo-name wombat-file-path]} @cmpnt-state
+              error @modal-error
+              username (:user/github-username @current-user)]
+          [:div {:class "modal add-wombat-modal"}
+           [:div.title title]
+           (when error [:div.modal-error error])
+           [:form
+            [text-input-with-label {:name "wombat-name"
+                                    :label "Wombat Name"
+                                    :state cmpnt-state}]
+            [text-input-with-label {:name "wombat-repo-name"
+                                    :label "Wombat Repository Name"
+                                    :state cmpnt-state
+                                    :disabled (some? wombat-id)}]
+            [text-input-with-label {:name "wombat-file-path"
+                                    :label "Wombat File Path"
+                                    :state cmpnt-state
+                                    :disabled (some? wombat-id)}]
+            [:div.action-buttons
+             [cancel-modal-input]
+             [submit-modal-input submit-text #(on-submit-form-valid? cmpnt-state username wombat-id)]]]]))})))
