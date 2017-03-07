@@ -42,7 +42,19 @@
 
   :cljsbuild
   {:builds
-   [{:id           "dev"
+   [{:id           "local"
+     :source-paths ["src/cljs"]
+     :figwheel     {:on-jsload "wombats-web-client.core/mount-root"}
+     :compiler     {:main                 wombats-web-client.core
+                    :output-to            "resources/public/js/compiled/app.js"
+                    :output-dir           "resources/public/js/compiled/local"
+                    :asset-path           "/js/compiled/local"
+                    :source-map-timestamp true
+                    :preloads             [devtools.preload]
+                    :external-config      {:devtools/config {:features-to-install :all}}
+                    :closure-defines      {goog.DEBUG true
+                                           wombats-web-client.constants.urls/base-api-url "//localhost:8888"}}}
+    {:id           "dev"
      :source-paths ["src/cljs"]
      :figwheel     {:on-jsload "wombats-web-client.core/mount-root"}
      :compiler     {:main                 wombats-web-client.core
@@ -82,7 +94,8 @@
                     :output-dir    "resources/public/js/compiled/test/out"
                     :optimizations :none}}]}
 
-    :aliases {"local-dev"   ["pdo" "clean" ["figwheel" "dev"]          ["less" "auto"]]
+    :aliases {"run-local"   ["pdo" "clean" ["figwheel" "local"]        ["less" "auto"]]
+              "run-dev"     ["pdo" "clean" ["figwheel" "dev"]          ["less" "auto"]]
               "deploy-dev"  ["do"  "clean" ["cljsbuild" "once" "dev"]  ["less" "once"]]
               "deploy-qa"   ["do"  "clean" ["cljsbuild" "once" "qa"]   ["less" "once"]]
               "deploy-prod" ["do"  "clean" ["cljsbuild" "once" "prod"] ["less" "once"]]})
