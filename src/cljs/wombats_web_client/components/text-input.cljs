@@ -15,7 +15,7 @@
 
 ;; name must match local component state key
 (defn text-input-with-label
-  [{:keys [name label state is-password]}]
+  [{:keys [name label state is-password disabled]}]
   (let [key (keyword name)
         error-key (keyword (str name "-error"))
         val (get @state key)
@@ -24,7 +24,9 @@
      [:label.label {:for name} label]
      [:input.input {:class (when error-val "field-error")
                     :type (if is-password "password" "text")
+                    :auto-complete (when is-password "new-password")
                     :name name
+                    :disabled (true? disabled)
                     :value (when val val)
                     :on-blur #(check-for-valid-text-content state error-key (get-value %))
                     :on-change #(on-text-change state key error-key (get-value %))}]

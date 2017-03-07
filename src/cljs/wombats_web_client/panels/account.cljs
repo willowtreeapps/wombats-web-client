@@ -1,7 +1,7 @@
 (ns wombats-web-client.panels.account
   (:require [re-frame.core :as re-frame]
             [wombats-web-client.components.add-button :as add-wombat-button]
-            [wombats-web-client.components.modals.add-wombat-modal :refer [add-wombat-modal]]
+            [wombats-web-client.components.modals.wombat-modal :refer [wombat-modal]]
             [wombats-web-client.components.cards.wombat :as wombat-card]
             [wombats-web-client.events.user :refer [sign-out-event]]))
 
@@ -9,7 +9,7 @@
 
 (defn open-add-wombat-modal []
   (fn []
-    (re-frame/dispatch [:set-modal {:fn add-wombat-modal
+    (re-frame/dispatch [:set-modal {:fn wombat-modal
                                     :show-overlay? true}])))
 
 (defn header []
