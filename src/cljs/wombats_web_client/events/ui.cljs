@@ -1,7 +1,7 @@
 (ns wombats-web-client.events.ui
   (:require [re-frame.core :as re-frame]
             [cemerick.url :as url]
-            [wombats-web-client.db :as db]
+            [wombats-web-client.db :refer [default-db]]
             [wombats-web-client.utils.url :refer [strip-access-token]]
             [wombats-web-client.utils.local-storage :refer [set-token! get-token]]
             [wombats-web-client.constants.local-storage :refer [access-token]]
@@ -9,8 +9,8 @@
 
 (re-frame/reg-event-db
  :initialize-db
- (fn [old-db _]
-   (merge db/default-db old-db)))
+ (fn [db _]
+   (merge default-db db)))
 
 (re-frame/reg-event-db
  :bootstrap-app
