@@ -1,4 +1,4 @@
-(ns wombats-web-client.components.modals.wombat-modal
+(ns wombats-web-client.components.modals.winner-modal
   (:require [re-frame.core :as re-frame]))
 
 (defn wombat-item [wombat]

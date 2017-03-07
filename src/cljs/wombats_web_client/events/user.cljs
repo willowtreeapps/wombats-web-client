@@ -5,8 +5,8 @@
             [day8.re-frame.http-fx]
             [pushy.core :as pushy]
             [wombats-web-client.db :as db]
-            [wombats-web-client.utils.local-storage :refer [get-item remove-item!]]
-            [wombats-web-client.constants.local-storage :refer [token]]
+            [wombats-web-client.utils.errors :refer [get-error-message]]
+            [wombats-web-client.utils.local-storage :refer [get-token remove-token!]]
             [wombats-web-client.constants.urls :refer [self-url
                                                        github-signout-url
                                                        my-wombats-url
@@ -25,7 +25,7 @@
 
 (defn sign-out-event
   []
-  (pushy/set-token! history "/")
+  (pushy/set-token! history "/welcome")
   (re-frame/dispatch [:sign-out])
   (sign-out-user))
 
@@ -87,7 +87,7 @@
    (fn []
      (get-all-wombats)
      (cb-success))
-   #(re-frame/dispatch [:update-modal-error (str %)])))
+   #(re-frame/dispatch [:update-modal-error (get-error-message %)])))
 
 (defn edit-wombat-by-id
   [name url wombat-id cb-success]
@@ -99,7 +99,7 @@
    (fn []
      (get-all-wombats)
      (cb-success))
-   #(re-frame/dispatch [:update-modal-error (str %)])))
+   #(re-frame/dispatch [:update-modal-error (get-error-message %)])))
 
 (defn delete-wombat
   [id cb-success]
@@ -109,7 +109,7 @@
    (fn []
      (get-all-wombats)
      (cb-success))
-   #(re-frame/dispatch [:update-modal-error (str %)])))
+   #(re-frame/dispatch [:update-modal-error (get-error-message %)])))
 
 ;; USER SPECIFIC
 (defn get-current-user
@@ -131,13 +131,12 @@
 (re-frame/reg-event-db
  :update-user
  (fn [db [_ current-user]]
-   (ws/add-user-token (:user/access-token current-user))
    (assoc db :current-user current-user)))
 
 (re-frame/reg-event-db
  :sign-out
  (fn [db [_ _]]
-   (remove-item! token)
+   (remove-token!)
    (assoc db :auth-token nil :current-user nil)))
 
 (re-frame/reg-event-db
@@ -153,7 +152,7 @@
 (re-frame/reg-event-fx
  :bootstrap-user-data
  (fn [{:keys [db]} [_ user]]
-   {:db (assoc db :auth-token (get-item token))
+   {:db (assoc db :auth-token (get-token))
     :http-xhrio {:method          :get
                  :uri             (my-wombats-url (:user/id user))
                  :headers         (add-auth-header {})

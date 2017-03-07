@@ -3,6 +3,7 @@
             [reagent.core :as reagent]
             [pushy.core :as pushy]
             [wombats-web-client.components.modals.game-full-modal :refer [game-full-modal]]
+            [wombats-web-client.components.modals.game-started-modal :refer [game-started-modal]]
             [wombats-web-client.events.games :refer [join-open-game
                                                      get-open-games
                                                      get-all-games]]
@@ -10,7 +11,11 @@
             [wombats-web-client.utils.forms :refer [submit-modal-input
                                                     cancel-modal-input]]
             [wombats-web-client.utils.games :refer [get-occupied-colors]]
-            [wombats-web-client.utils.errors :refer [required-field-error
+            [wombats-web-client.utils.errors :refer [get-error-message
+                                                     is-game-full?
+                                                     has-game-started?
+                                                     has-field-error?
+                                                     required-field-error
                                                      wombat-color-missing]]
             [wombats-web-client.constants.colors :refer [colors-8]]
             [wombats-web-client.utils.functions :refer [in?]]
@@ -23,6 +28,7 @@
                               :wombat-name-error nil
                               :wombat-id nil
                               :wombat-color nil
+                              :wombat-color-error nil
                               :password ""
                               :password-error nil})
 
@@ -38,28 +44,38 @@
 
 
 (def callback-error (fn [error cmpnt-state]
-                      (let [error-code (:code (:response error))
-                            is-game-full? (= error-code 101001)]
+                      (let [game-full (is-game-full? error)
+                            game-started (has-game-started? error)
+                            password-error (has-field-error? error :password)
+                            wombat-color-error (has-field-error? error :wombat-color)]
 
-                        (when is-game-full?
-                          (re-frame/dispatch [:set-modal {:fn #(game-full-modal)
-                                                          :show-overlay? true}]))
+                        (cond
+                          game-full (re-frame/dispatch [:set-modal {:fn #(game-full-modal)
+                                                                    :show-overlay? true}])
 
-                        (re-frame/dispatch [:update-modal-error (:message (:response error))])
-                        (get-open-games)
-                        (reset! cmpnt-state initial-cmpnt-state))))
+                          game-started (re-frame/dispatch [:set-modal {:fn #(game-started-modal)
+                                                                       :show-overlay? true}])
+
+                          password-error (swap! cmpnt-state assoc :password-error (get-error-message error))
+
+                          wombat-color-error (swap! cmpnt-state assoc :wombat-color-error (get-error-message error))
+                          :else
+
+                          (get-all-games)
+                          (re-frame/dispatch [:update-modal-error (get-error-message error)])
+                          (reset! cmpnt-state initial-cmpnt-state)))))
 
 (defn on-wombat-selection [cmpnt-state id name]
   (swap! cmpnt-state assoc :wombat-id id
-                           :show-dropdown false
-                           :wombat-name name))
+         :show-dropdown false
+         :wombat-name name))
 
 (defn on-select-click [cmpnt-state]
   (let [wombat-name-missing (nil? (:wombat-name @cmpnt-state))
         show-dropdown (:show-dropdown @cmpnt-state)
         error-state (when wombat-name-missing required-field-error)]
     (when show-dropdown
-       (swap! cmpnt-state assoc :wombat-name-error error-state))
+      (swap! cmpnt-state assoc :wombat-name-error error-state))
 
     (swap! cmpnt-state assoc :show-dropdown (not show-dropdown))))
 
@@ -107,7 +123,7 @@
                              :opacity "0.8"}}]
      [:img.selected-icon {:class (when selected "display") :src "/images/play.svg"}]
      [:img.wombat {:src (str "/images/wombat_" color-text "_right.png")
-            :onClick on-click-fn}]]))
+                   :on-click on-click-fn}]]))
 
 (defn select-wombat-color [cmpnt-state selected-color occupied-colors]
   (let [wombat-color-error (:wombat-color-error @cmpnt-state)]
@@ -116,7 +132,7 @@
      [:div.colors
       (for [color colors-8]
         ^{:key color} [wombat-img color selected-color cmpnt-state occupied-colors])]
-     (when wombat-color-error 
+     (when wombat-color-error
        [:div.inline-error wombat-color-error])]))
 
 (defn private-game-password
@@ -129,9 +145,9 @@
                            :is-password true}]])
 
 (defn correct-privacy-settings [is-private password-error]
-  (cond 
-   is-private (not (true? password-error)) ;; if it's private and there's no error, can submit
-   (not is-private) true)) ;; if the game isn't private, password state is irrelevant
+  (cond
+    is-private (not (true? password-error)) ;; if it's private and there's no error, can submit
+    (not is-private) true)) ;; if the game isn't private, password state is irrelevant
 
 (defn on-submit-form-valid? [{:keys [game-id is-private cmpnt-state]}]
   (let [{:keys [wombat-name
@@ -142,13 +158,13 @@
                 password
                 password-error]} @cmpnt-state]
 
-    (when  (nil? wombat-color) 
+    (when  (nil? wombat-color)
       (swap! cmpnt-state assoc :wombat-color-error wombat-color-missing))
 
     (when (nil? wombat-name)
       (swap! cmpnt-state assoc :wombat-name-error required-field-error))
-     
-    (when (and is-private (clojure.string/blank? password)) 
+
+    (when (and is-private (clojure.string/blank? password))
       (swap! cmpnt-state assoc :password-error required-field-error))
 
     (when (and wombat-name wombat-color (correct-privacy-settings is-private password-error))
@@ -165,7 +181,7 @@
 (defn join-wombat-modal [game-id]
   (let [modal-error (re-frame/subscribe [:modal-error])
         cmpnt-state (reagent/atom initial-cmpnt-state)
-        game (re-frame/subscribe [:game/details game-id])] ;; not included in render fn
+        games (re-frame/subscribe [:games])] ;; not included in render fn
     (reagent/create-class
      {:component-will-unmount #(re-frame/dispatch [:update-modal-error nil])
       :display-name "join-game-modal"
@@ -173,19 +189,21 @@
 
       (fn [] ;; render function
         (let [{:keys [error wombat-id wombat-color password]} @cmpnt-state
+              game (get @games game-id)
               error @modal-error
-              is-private (:game/is-private @game)
-              occupied-colors (get-occupied-colors @game)
+              is-private (:game/is-private game)
+              occupied-colors (get-occupied-colors game)
               title (if is-private "JOIN PRIVATE GAME" "JOIN GAME")]
-          [:div {:class "modal join-wombat-modal"} ;; starts hiccup
+
+          [:div.modal.join-wombat-modal ;; starts hiccup
            [:div.title title]
            (when error [:div.modal-error error])
            (when is-private
-             [private-game-password @game cmpnt-state])
+             [private-game-password game cmpnt-state])
            [select-input-with-label cmpnt-state]
            [select-wombat-color cmpnt-state wombat-color occupied-colors]
            [:div.action-buttons
             [cancel-modal-input]
             [submit-modal-input "JOIN" #(on-submit-form-valid? {:game-id game-id
-                                                                    :is-private is-private
-                                                                    :cmpnt-state cmpnt-state})]]]))})))
+                                                                :is-private is-private
+                                                                :cmpnt-state cmpnt-state})]]]))})))

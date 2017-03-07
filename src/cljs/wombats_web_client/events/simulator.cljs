@@ -32,5 +32,17 @@
 
 (re-frame/reg-event-db
  :simulator/update-state
- (fn [db [_ state]]
-   (assoc db :simulator/state state)))
+ (fn [db [_ sim-state]]
+   (assoc db :simulator/state sim-state)))
+
+(re-frame/reg-event-db
+ :simulator/update-active-simulator-pane
+ (fn [db [_ active-pane]]
+   (assoc db :simulator/active-pane active-pane)))
+
+(re-frame/reg-event-db
+ :simulator/update-configuration
+ (fn [db [_ {wombat-id :wombat-id
+            template-id :template-id}]]
+   (merge db {:simulator/template-id template-id
+              :simulator/wombat-id wombat-id})))

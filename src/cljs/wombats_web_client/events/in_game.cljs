@@ -21,13 +21,8 @@
 (re-frame/reg-event-db
  :game/info
  (fn [db [_ info]]
-   (assoc db :game/info info)))
-
-(re-frame/reg-event-db
- :game/join-game
- (fn [db [_ game-id]]
-   ;; TODO Add socket connection to bootstrap
-   (js/setTimeout
-    (fn []
-      (ws/send-message :join-game {:game-id game-id})) 2000)
-   db))
+   (let [game-id (:game/id info)]
+     (assoc-in db
+               [:games game-id]
+               (merge (get-in db [:games game-id])
+                      info)))))

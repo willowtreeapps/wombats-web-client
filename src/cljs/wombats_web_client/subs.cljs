@@ -1,6 +1,7 @@
 (ns wombats-web-client.subs
     (:require-macros [reagent.ratom :refer [reaction]])
-    (:require [re-frame.core :as re-frame]))
+    (:require [re-frame.core :as re-frame]
+              [wombats-web-client.utils.games :as games]))
 
 (re-frame/reg-sub
  :name
@@ -11,6 +12,11 @@
  :active-panel
  (fn [db _]
    (:active-panel db)))
+
+(re-frame/reg-sub
+ :auth-token
+ (fn [db _]
+   (:auth-token db)))
 
 (re-frame/reg-sub
  :current-user
@@ -33,26 +39,6 @@
    (:my-wombats db)))
 
 (re-frame/reg-sub
- :open-games
- (fn [db _]
-   (:open-games db)))
-
-(re-frame/reg-sub
- :my-open-games
- (fn [db _]
-   (:my-open-games db)))
-
-(re-frame/reg-sub
- :closed-games
- (fn [db _]
-   (:closed-games db)))
-
-(re-frame/reg-sub
- :my-closed-games
- (fn [db _]
-   (:my-closed-games db)))
-
-(re-frame/reg-sub
  :joined-games
  (fn [db _]
    (:joined-games db)))
@@ -68,11 +54,6 @@
    (:game/arena db)))
 
 (re-frame/reg-sub
- :game/info
- (fn [db _]
-   (:game/info db)))
-
-(re-frame/reg-sub
  :game/messages
  (fn [db _]
    (:game/messages db)))
@@ -80,8 +61,7 @@
 (re-frame/reg-sub
  :game/details
  (fn [db [_ game-id]]
-   (first (filter #(= (:game/id %) game-id)
-                  (:open-games db)))))
+   (first (get-in db [:games game-id]))))
 
 (re-frame/reg-sub
  :spritesheet
@@ -101,3 +81,71 @@
  :simulator/state
  (fn [db _]
    (:simulator/state db)))
+
+(re-frame/reg-sub
+ :simulator/code
+ (fn [db _]
+   (get-in (games/get-player db) [:state :code :code])))
+
+(re-frame/reg-sub
+ :simulator/code-mode
+ (fn [db _]
+   (let [path (get-in (games/get-player db) [:state :code :path])]
+     (when path
+       (get {"clj" "clojure"
+             "js" "javascript"
+             "py" "python"}
+            (last (clojure.string/split path #"\.")))))))
+
+(re-frame/reg-sub
+ :simulator/player-command
+ (fn [db _]
+   (get-in (games/get-player db) [:state :command])))
+
+(re-frame/reg-sub
+ :simulator/player-state
+ (fn [db _]
+   (get-in (games/get-player db) [:state :saved-state])))
+
+(re-frame/reg-sub
+ :simulator/player-stack-trace
+ (fn [db _]
+   (get-in (games/get-player db) [:state :error])))
+
+(re-frame/reg-sub
+ :simulator/active-frame
+ (fn [db _]
+   (get-in db [:simulator/state :frame :frame/arena])))
+
+(re-frame/reg-sub
+ :simulator/active-pane
+ (fn [db _]
+   (:simulator/active-pane db)))
+
+(re-frame/reg-sub
+ :simulator/wombat-id
+ (fn [db _]
+   (:simulator/wombat-id db)))
+
+(re-frame/reg-sub
+ :simulator/template-id
+ (fn [db _]
+   (:simulator/template-id db)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Games subs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(re-frame/reg-sub
+ :games
+ (fn [db _]
+   (:games db)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Bootstrapping subs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(re-frame/reg-sub
+ :socket/connected
+ (fn [db _]
+   (:socket/connected db)))

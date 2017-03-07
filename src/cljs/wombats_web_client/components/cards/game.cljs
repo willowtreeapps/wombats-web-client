@@ -1,8 +1,9 @@
-(ns wombat-web-client.components.cards.game
+(ns wombats-web-client.components.cards.game
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [wombats-web-client.constants.games :refer [game-type-str-map]]
             [wombats-web-client.components.countdown-timer :refer [countdown-timer]]
+            [wombats-web-client.components.join-button :refer [join-button]]
             [wombats-web-client.utils.games :refer [get-user-in-game
                                                     get-game-state-str]]
             [wombats-web-client.components.modals.join-wombat-modal :refer [join-wombat-modal]]))
@@ -15,7 +16,7 @@
 
 (defn get-arena-text-info [{:keys [game-type rounds width height]}]
   (let [round-txt (if (= 1 rounds) "Round" "Rounds")
-        game-type-str (game-type game-type-str-map)]
+        game-type-str (get game-type-str-map game-type)]
     (str game-type-str " - " rounds " " round-txt " | " width "x" height)))
 
 (defn freq [freq-name amt]
@@ -28,7 +29,7 @@
   (let [{food :arena/food
          poison :arena/poison
          zakano :arena/zakano} arena
-         ratio-joined (str joined "/" capacity)]
+        ratio-joined (str joined "/" capacity)]
     [:div.arena-freq
      [freq "wombat_orange_right" ratio-joined]
      [freq "zakano_front" zakano]
@@ -45,19 +46,17 @@
   (let [game-state (get-game-state-str is-full is-playing)]
 
     [:div.arena-preview
-     (when game-state
-       [:div.game-state-wrapper
-        [:div.state-overlay]
-        [:div.game-state game-state]])
-     [:img {:src "/images/mini-arena.png"}]
+     [:div.game-state-wrapper
+      [:div.state-overlay {:class (when game-state "not-joinable")}]
+      (when game-state
+        [:div.game-state game-state])]
+     [:img.arena-preview-img {:src "/images/mini-arena.png"}]
      (when is-open
        [:div.countdown "Starts in "
         [countdown-timer start-time]])
      (when is-joinable
-       [:button {:class (str "join-button"
-                             (when is-private " private"))
-                 :onClick (open-join-game-modal-fn game-id)}
-        "JOIN"])]))
+       [join-button {:is-private is-private
+                     :on-click (open-join-game-modal-fn game-id)}])]))
 
 (defn render-my-wombat-icon [player]
   (let [color (:player/color player)]
@@ -85,23 +84,22 @@
         {arena-width :arena/width
          arena-height :arena/height} arena]
 
-    (fn [game user-in-game is-joinable is-full is-playing num-joined]
-      [:div.game-card {:key game-id}
-       [:a.link {:href (str "/games/" game-id)}]
+    [:div.game-card {:key game-id}
+     [:a.link {:href (str "/games/" game-id)}]
 
-       [arena-card {:is-open (or (= :pending-open game-status) (= :pending-closed game-status))
-                    :is-private game-private
-                    :is-joinable is-joinable
-                    :is-full is-full
-                    :is-playing is-playing
-                    :start-time game-start
-                    :game-id game-id}]
-       [:div.game-information
-        (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
-        [:div.text-info
-         [:div.game-name game-name]
-         [:div (get-arena-text-info {:game-type game-type
-                                     :rounds game-rounds
-                                     :width arena-width
-                                     :height arena-height})]]
-        [get-arena-frequencies arena num-joined game-capacity]]])))
+     [arena-card {:is-open (or (= :pending-open game-status) (= :pending-closed game-status))
+                  :is-private game-private
+                  :is-joinable is-joinable
+                  :is-full is-full
+                  :is-playing is-playing
+                  :start-time game-start
+                  :game-id game-id}]
+     [:div.game-information
+      (when (not-empty user-in-game) [render-my-wombat-icon user-in-game])
+      [:div.text-info
+       [:div.game-name game-name]
+       [:div (get-arena-text-info {:game-type game-type
+                                   :rounds game-rounds
+                                   :width arena-width
+                                   :height arena-height})]]
+      [get-arena-frequencies arena num-joined game-capacity]]]))

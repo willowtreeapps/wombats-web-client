@@ -1,8 +1,9 @@
-(ns wombats-web-client.components.modals.add-wombat-modal
+(ns wombats-web-client.components.modals.wombat-modal
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [wombats-web-client.components.text-input :refer [text-input-with-label]]
-            [wombats-web-client.events.user :refer [create-new-wombat]]
+            [wombats-web-client.events.user :refer [create-new-wombat
+                                                    edit-wombat-by-id]]
             [wombats-web-client.utils.errors :refer [required-field-error]]
             [wombats-web-client.utils.forms :refer [cancel-modal-input
                                                     submit-modal-input]]))
@@ -12,7 +13,7 @@
   (re-frame/dispatch [:update-modal-error nil])
   (re-frame/dispatch [:set-modal nil]))
 
-(defn on-submit-form-valid? [cmpnt-state username]
+(defn on-submit-form-valid? [cmpnt-state username wombat-id]
   (let [{:keys [wombat-name
                 wombat-repo-name
                 wombat-file-path]} @cmpnt-state
@@ -27,12 +28,23 @@
       (swap! cmpnt-state assoc :wombat-file-path-error required-field-error))
 
     (when (and wombat-name wombat-repo-name wombat-file-path)
-      (create-new-wombat wombat-name url #(callback-success cmpnt-state)))))
+      (if wombat-id
+        (edit-wombat-by-id wombat-name url wombat-id #(callback-success cmpnt-state))
+        (create-new-wombat wombat-name url #(callback-success cmpnt-state))))))
 
-(defn add-wombat-modal []
-  (let [cmpnt-state (reagent/atom {:wombat-name nil
-                                   :wombat-repo-name nil
-                                   :wombat-file-path nil
+(defn parse-url [url key]
+  (cond
+   (= key "repo-name") (get (clojure.string.split url "/") 1)
+   (= key "file-path") (last (clojure.string.split url "/"))))
+
+(defn wombat-modal [{:keys [wombat-id name url]}]
+  (let [repo-name (parse-url url "repo-name")
+        file-path (parse-url url "file-path")
+        submit-text (if wombat-id "SAVE" "ADD")
+        title (if wombat-id "EDIT WOMBAT" "ADD WOMBAT")
+        cmpnt-state (reagent/atom {:wombat-name name
+                                   :wombat-repo-name repo-name
+                                   :wombat-file-path file-path
                                    :wombat-name-error nil
                                    :wombat-repo-name-error nil
                                    :wombat-file-path-error nil
@@ -41,14 +53,14 @@
         current-user (re-frame/subscribe [:current-user])]
     (reagent/create-class
      {:component-will-unmount #(re-frame/dispatch [:update-modal-error nil])
-      :display-name "add-wombat-modal"
+      :display-name "wombat-modal"
       :reagent-render
       (fn []
         (let [{:keys [wombat-name wombat-repo-name wombat-file-path]} @cmpnt-state
               error @modal-error
               username (:user/github-username @current-user)]
           [:div {:class "modal add-wombat-modal"}
-           [:div.title "ADD WOMBAT"]
+           [:div.title title]
            (when error [:div.modal-error error])
            [:form
             [text-input-with-label {:name "wombat-name"
@@ -56,10 +68,12 @@
                                     :state cmpnt-state}]
             [text-input-with-label {:name "wombat-repo-name"
                                     :label "Wombat Repository Name"
-                                    :state cmpnt-state}]
+                                    :state cmpnt-state
+                                    :disabled (some? wombat-id)}]
             [text-input-with-label {:name "wombat-file-path"
                                     :label "Wombat File Path"
-                                    :state cmpnt-state}]
+                                    :state cmpnt-state
+                                    :disabled (some? wombat-id)}]
             [:div.action-buttons
              [cancel-modal-input]
-             [submit-modal-input "ADD" #(on-submit-form-valid? cmpnt-state username)]]]]))})))
+             [submit-modal-input submit-text #(on-submit-form-valid? cmpnt-state username wombat-id)]]]]))})))

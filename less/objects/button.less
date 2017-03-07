@@ -1,13 +1,16 @@
 @import "../colors.less";
 
 // this button is primarily used for modals and some hover state actions
-.simple-button(@bg-color: @card-grey, @text-color: @wombat-green, @hover-color: @wombat-green-30) {
+.simple-button(@bg-color: @card-grey,
+               @text-color: @wombat-green,
+               @hover-color: @wombat-green-30,
+               @margin-left: 20px) {
     color: @text-color;
     font-size: 14px;
     background-color: @bg-color;
     border-style: none;
     cursor: pointer;
-    margin-left: 20px;
+    margin-left: @margin-left;
     position: relative;
 
     &:hover {
