@@ -140,3 +140,12 @@
  :games
  (fn [db _]
    (:games db)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Bootstrapping subs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(re-frame/reg-sub
+ :socket/connected
+ (fn [db _]
+   (:socket/connected db)))

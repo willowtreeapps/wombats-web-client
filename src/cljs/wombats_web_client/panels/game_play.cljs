@@ -10,25 +10,54 @@
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
 
-;; This local state can be removed when the id is passed through the router
+(defonce root-class "game-play-panel")
 (defonce canvas-id "arena-canvas")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helper Methods
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- resize-canvas []
+  (let [root-element (first (array-seq (.getElementsByClassName js/document root-class)))
+        canvas-element (.getElementById js/document canvas-id)
+        half-width (/ (.-offsetWidth root-element) 2)]
+
+    (set! (.-width canvas-element) half-width)
+    (set! (.-height canvas-element) half-width)))
+
+(defn- show-winner-modal
+  [winner]
+  (re-frame/dispatch [:set-modal {:fn #(winner-modal winner)
+                                  :show-overlay? false}]))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- component-did-mount [cmpnt-state]
+  ;; Add resize listener
+  (.addEventListener js/window
+                     "resize"
+                     (:resize-fn @cmpnt-state))
+  (resize-canvas))
 
 (defn- component-will-mount [game-id]
-  (re-frame/dispatch [:game/join-game game-id]))
+  (ws/send-message :join-game {:game-id game-id}))
 
-(defn- component-will-unmount [game-id]
+(defn- component-will-unmount [game-id cmpnt-state]
   (re-frame/dispatch [:game/update-frame nil])
   (re-frame/dispatch [:game/clear-chat-messages])
   (ws/send-message :leave-game {:game-id game-id})
-  (re-frame/dispatch [:set-modal nil]))
+  (re-frame/dispatch [:set-modal nil])
 
-(defn update-arena [arena]
-  (arena/arena @arena canvas-id))
+  ;; Remove resize listener
+  (.removeEventListener js/window
+                        "resize"
+                        (:resize-fn @cmpnt-state)))
 
-(defn get-arena-dimensions []
-  600)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Render Methods
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn- game-play-title [game show-join-button game-id]
   (let [{:keys [game/is-private
@@ -68,16 +97,11 @@
     [:p.wombat-counter (when (and max-players stats)
                          (str "Wombats: " player-count "/" max-players))]))
 
-(defn chat-title []
+(defn- chat-title []
   [:div.chat-title
    [:span "CHAT"]])
 
-(defn- show-winner-modal
-  [winner]
-  (re-frame/dispatch [:set-modal {:fn #(winner-modal winner)
-                                  :show-overlay? false}]))
-
-(defn right-game-play-panel
+(defn- right-game-play-panel
   [game messages user game-id]
 
   (let [{:keys [game/game-winner game/players]} game
@@ -102,26 +126,29 @@
         [chat-title]
         [chat-box game-id messages game]])]))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Main Method
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn game-play [{:keys [game-id]}]
-  (let [dimensions (get-arena-dimensions)
-        arena (re-frame/subscribe [:game/arena])
+  (let [arena (re-frame/subscribe [:game/arena])
+        cmpnt-state (reagent/atom {:resize-fn #(resize-canvas)})
         messages (re-frame/subscribe [:game/messages])
         user (re-frame/subscribe [:current-user])
         games (re-frame/subscribe [:games])]
 
     (reagent/create-class
-     {:component-will-mount #(component-will-mount game-id)
-      :component-will-unmount #(component-will-unmount game-id)
+     {:component-did-mount #(component-did-mount cmpnt-state)
+      :component-will-mount #(component-will-mount game-id)
+      :component-will-unmount #(component-will-unmount game-id cmpnt-state)
       :display-name "game-play-panel"
       :reagent-render
       (fn []
         (let [game (get @games game-id)
               winner (:game/winner game)]
-          (update-arena arena)
-          [:div {:class-name "game-play-panel"}
+          (arena/arena @arena canvas-id)
+          [:div {:class-name root-class}
            [:div.left-game-play-panel {:id "wombat-arena"
                                        :class (when winner "game-over")}
-            [:canvas {:id canvas-id
-                      :width dimensions
-                      :height dimensions}]]
+            [:canvas {:id canvas-id}]]
            [right-game-play-panel game messages user game-id]]))})))
