@@ -274,6 +274,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">spritesheet/fog/fog.png</key>
             <key type="filename">spritesheet/smoke/smoke.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -348,6 +349,7 @@
             <filename>spritesheet/wombats</filename>
             <filename>spritesheet/wood-barrier</filename>
             <filename>spritesheet/zakano</filename>
+            <filename>spritesheet/fog</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

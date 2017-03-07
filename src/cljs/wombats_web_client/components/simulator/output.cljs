@@ -2,14 +2,18 @@
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]))
 
+(defn- format-code
+  [clj-object]
+  [:pre (.stringify js/JSON (clj->js clj-object) nil 2)])
+
 (defn render []
   (let [command (re-frame/subscribe [:simulator/player-command])
         player-state (re-frame/subscribe [:simulator/player-state])]
     [:div.output
      [:div.output-section
       [:h3.output-section-title "Command"]
-      (prn-str @command)]
+      (format-code @command)]
 
      [:div.output-section
       [:h3.output-section-title "State"]
-      (prn-str @player-state)]]))
+      (format-code @player-state)]]))

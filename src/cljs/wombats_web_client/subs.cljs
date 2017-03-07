@@ -118,6 +118,16 @@
    (get-in db [:simulator/state :frame :frame/arena])))
 
 (re-frame/reg-sub
+ :simulator/mini-map
+ (fn [db _]
+   (get-in (games/get-player db) [:state :mini-map])))
+
+(re-frame/reg-sub
+ :simulator/display-mini-map
+ (fn [db _]
+   (:simulator/mini-map db)))
+
+(re-frame/reg-sub
  :simulator/active-pane
  (fn [db _]
    (:simulator/active-pane db)))
