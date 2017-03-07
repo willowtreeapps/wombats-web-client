@@ -14,6 +14,31 @@
 (defonce canvas-id "arena-canvas")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Lifecycle Methods
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- component-did-mount [cmpnt-state]
+  ;; Add resize listener
+  (.addEventListener js/window
+                     "resize"
+                     (:resize-fn @cmpnt-state))
+  (resize-canvas))
+
+(defn- component-will-mount [game-id]
+  (ws/send-message :join-game {:game-id game-id}))
+
+(defn- component-will-unmount [game-id cmpnt-state]
+  (re-frame/dispatch [:game/update-frame nil])
+  (re-frame/dispatch [:game/clear-chat-messages])
+  (ws/send-message :leave-game {:game-id game-id})
+  (re-frame/dispatch [:set-modal nil])
+
+  ;; Remove resize listener
+  (.removeEventListener js/window
+                        "resize"
+                        (:resize-fn @cmpnt-state)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -25,23 +50,10 @@
     (set! (.-width canvas-element) half-width)
     (set! (.-height canvas-element) half-width)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Lifecycle Methods
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defn- component-did-mount []
-  ;; Add resize listener
-  (.addEventListener js/window "resize" #(resize-canvas) true)
-  (resize-canvas))
-
-(defn- component-will-mount [game-id]
-  (ws/send-message :join-game {:game-id game-id}))
-
-(defn- component-will-unmount [game-id]
-  (re-frame/dispatch [:game/update-frame nil])
-  (re-frame/dispatch [:game/clear-chat-messages])
-  (ws/send-message :leave-game {:game-id game-id})
-  (re-frame/dispatch [:set-modal nil]))
+(defn- show-winner-modal
+  [winner]
+  (re-frame/dispatch [:set-modal {:fn #(winner-modal winner)
+                                  :show-overlay? false}]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Render Methods
@@ -89,11 +101,6 @@
   [:div.chat-title
    [:span "CHAT"]])
 
-(defn- show-winner-modal
-  [winner]
-  (re-frame/dispatch [:set-modal {:fn #(winner-modal winner)
-                                  :show-overlay? false}]))
-
 (defn- right-game-play-panel
   [game messages user game-id]
 
@@ -125,14 +132,15 @@
 
 (defn game-play [{:keys [game-id]}]
   (let [arena (re-frame/subscribe [:game/arena])
+        cmpnt-state (reagent/atom {:resize-fn #(resize-canvas)})
         messages (re-frame/subscribe [:game/messages])
         user (re-frame/subscribe [:current-user])
         games (re-frame/subscribe [:games])]
 
     (reagent/create-class
-     {:component-did-mount #(component-did-mount)
+     {:component-did-mount #(component-did-mount cmpnt-state)
       :component-will-mount #(component-will-mount game-id)
-      :component-will-unmount #(component-will-unmount game-id)
+      :component-will-unmount #(component-will-unmount game-id cmpnt-state)
       :display-name "game-play-panel"
       :reagent-render
       (fn []
