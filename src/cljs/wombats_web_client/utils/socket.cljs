@@ -1,6 +1,7 @@
 (ns wombats-web-client.utils.socket
   "Handles connecting to a web socket"
-  (:require [re-frame.core :as re-frame]
+  (:require [cljs.reader :as reader]
+            [re-frame.core :as re-frame]
             [wombats-web-client.utils.local-storage :refer [get-token]]))
 
 (def default-socket-state {:socket nil
@@ -12,7 +13,7 @@
 (defn- parse
   "Parses a string into its proper structure"
   [string]
-  (cljs.reader/read-string string))
+  (reader/read-string string))
 
 (defn disconnect
   []
