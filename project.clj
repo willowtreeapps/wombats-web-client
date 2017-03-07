@@ -12,7 +12,8 @@
                  [kibu/pushy "0.3.6"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]
-            [lein-less "1.7.5"]]
+            [lein-less "1.7.5"]
+            [lein-pdo "0.1.1"]]
 
   :min-lein-version "2.5.3"
 
@@ -81,6 +82,7 @@
                     :output-dir    "resources/public/js/compiled/test/out"
                     :optimizations :none}}]}
 
-    :aliases {"deploy-dev"  ["do" "clean" ["cljsbuild" "once" "dev"]  ["less" "once"]]
-              "deploy-qa"   ["do" "clean" ["cljsbuild" "once" "qa"]   ["less" "once"]]
-              "deploy-prod" ["do" "clean" ["cljsbuild" "once" "prod"] ["less" "once"]]})
+    :aliases {"local-dev"   ["pdo" "clean" ["figwheel" "dev"]          ["less" "auto"]]
+              "deploy-dev"  ["do"  "clean" ["cljsbuild" "once" "dev"]  ["less" "once"]]
+              "deploy-qa"   ["do"  "clean" ["cljsbuild" "once" "qa"]   ["less" "once"]]
+              "deploy-prod" ["do"  "clean" ["cljsbuild" "once" "prod"] ["less" "once"]]})
