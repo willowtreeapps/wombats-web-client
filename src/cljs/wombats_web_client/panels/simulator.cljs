@@ -57,20 +57,20 @@
        (render-tabs active-pane stack-trace)]]]))
 
 (defn- render
-  [sim-pane
-   templates
-   wombats
-   active-frame
-   stack-trace
-   simulator-display-mini-map
-   simulator-mini-map
-   simulator-state]
+  [{:keys [simulator-pane
+           templates
+           wombats
+           active-frame
+           stack-trace
+           simulator-display-mini-map
+           simulator-mini-map
+           simulator-state]}]
   [:div {:class-name "simulator-panel"}
    [simulator-arena/render (if (and simulator-display-mini-map
                                     simulator-mini-map)
                              simulator-mini-map
                              active-frame)]
-   [render-right-pane @sim-pane stack-trace]
+   [render-right-pane @simulator-pane stack-trace]
    [simulator-controls/render simulator-state simulator-display-mini-map]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -78,22 +78,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn simulator []
-  (let [simulator-pane (re-frame/subscribe [:simulator/active-pane])
-        templates (re-frame/subscribe [:simulator/templates])
-        wombats (re-frame/subscribe [:my-wombats])
-        active-frame (re-frame/subscribe [:simulator/active-frame])
-        stack-trace (re-frame/subscribe [:simulator/player-stack-trace])
-        simulator-display-mini-map (re-frame/subscribe [:simulator/display-mini-map])
-        simulator-mini-map (re-frame/subscribe [:simulator/mini-map])
-        simulator-state (re-frame/subscribe [:simulator/state])]
-    (reagent/create-class
-     {:component-will-mount #(component-will-mount!)
-      :props-name "simulator-panel"
-      :reagent-render #(render simulator-pane
-                               @templates
-                               @wombats
-                               @active-frame
-                               @stack-trace
-                               @simulator-display-mini-map
-                               @simulator-mini-map
-                               simulator-state)})))
+  (reagent/create-class
+   {:component-will-mount #(component-will-mount!)
+    :props-name "simulator-panel"
+    :reagent-render #(render {:simulator-pane (re-frame/subscribe [:simulator/active-pane])
+                              :templates @(re-frame/subscribe [:simulator/templates])
+                              :wombats @(re-frame/subscribe [:my-wombats])
+                              :active-frame @(re-frame/subscribe [:simulator/active-frame])
+                              :stack-trace @(re-frame/subscribe [:simulator/player-stack-trace])
+                              :simulator-display-mini-map @(re-frame/subscribe [:simulator/display-mini-map])
+                              :simulator-mini-map @(re-frame/subscribe [:simulator/mini-map])
+                              :simulator-state (re-frame/subscribe [:simulator/state])})}))
