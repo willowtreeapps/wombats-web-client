@@ -69,11 +69,11 @@
             [text-input-with-label {:name "wombat-repo-name"
                                     :label "Wombat Repository Name"
                                     :state cmpnt-state
-                                    :disabled (not (nil? wombat-id))}]
+                                    :disabled (some? wombat-id)}]
             [text-input-with-label {:name "wombat-file-path"
                                     :label "Wombat File Path"
                                     :state cmpnt-state
-                                    :disabled (not (nil? wombat-id))}]
+                                    :disabled (some? wombat-id)}]
             [:div.action-buttons
              [cancel-modal-input]
              [submit-modal-input submit-text #(on-submit-form-valid? cmpnt-state username wombat-id)]]]]))})))

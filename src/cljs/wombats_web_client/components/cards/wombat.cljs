@@ -12,8 +12,8 @@
 (defn open-edit-wombat-modal [id name url]
   (fn []
     (re-frame/dispatch [:set-modal {:fn #(wombat-modal {:wombat-id id
-                                                               :name name
-                                                               :url url})
+                                                        :name name
+                                                        :url url})
                                     :show-overlay? true}])))
 
 (defn wombat-information
