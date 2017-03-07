@@ -1,5 +1,6 @@
 @import '../colors.less';
 @import "../objects/button.less";
+@import "emphasized-button";
 
 .chat-box {
     display: flex;
@@ -58,7 +59,7 @@
         }
 
         .chat-send-btn {
-            .emphasized-action-button(@wombat-green, @black-30, @wombat-dark-green);
+            .emphasized-button(@wombat-green, @black-30, @wombat-dark-green);
             color: @white;
             height: 45px;
         }

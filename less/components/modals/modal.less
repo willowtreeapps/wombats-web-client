@@ -1,5 +1,5 @@
 @import '../../colors.less';
-@import '../../objects/button.less';
+@import '../simple-button.less';
 
 .modal-container {
     .modal-overlay {
@@ -48,10 +48,11 @@
             margin-right: 25px;
             margin-bottom: 15px;
 
-            .close-button {
+            .close-button,
+            .modal-button {
                 .simple-button;
             }
-
+                
             input {
                 outline: none;
 

@@ -58,7 +58,7 @@
 
                           password-error (swap! cmpnt-state assoc :password-error (get-error-message error))
 
-                          wombat-color-error (swap! cmpnt-state assoc :wombat-color-error (get-error-message error))
+                          wombat-color-error (swap! cmpnt-state assoc :wombat-color nil :wombat-color-error (get-error-message error))
                           :else
 
                           (get-all-games)
@@ -194,7 +194,6 @@
               is-private (:game/is-private game)
               occupied-colors (get-occupied-colors game)
               title (if is-private "JOIN PRIVATE GAME" "JOIN GAME")]
-
           [:div.modal.join-wombat-modal ;; starts hiccup
            [:div.title title]
            (when error [:div.modal-error error])

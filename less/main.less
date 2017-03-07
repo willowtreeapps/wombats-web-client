@@ -1,8 +1,11 @@
+// DEFAULT STYLES
+@import "normalize.less";
+
 // SETTINGS
 @import "colors.less";
 
 // UTILS
-@import "forms.less";
+@import "utils/typography.less";
 
 // OBJECTS
 @import "objects/active-line.less";
@@ -33,24 +36,10 @@
 @import "components/tabbed-container.less";
 @import "components/join-button.less";
 
-
-
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic,700italic);
-
-@sans-font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-
-@font-family-primary: @sans-font-family;
-@font-family-bold: @sans-font-family;
-@font-family-secondary: @sans-font-family;
-
-@font-weight-primary: 400;
-@font-weight-bold: 700;
-@font-weight-secondary: 600;
-
 html {
     font-family: @font-family-primary;
     font-weight: @font-weight-primary;
-    font-size: 14px;
+    font-size: @font-size-default;
     min-height: 100%;
     background-color: @background-grey;
 }
