@@ -66,27 +66,33 @@
                     :external-config      {:devtools/config {:features-to-install :all}}
                     :closure-defines      {goog.DEBUG true
                                            wombats-web-client.constants.urls/base-api-url "//dev.api.wombats.io"}}}
-
-    {:id           "qa"
+    {:id           "deploy-dev"
      :source-paths ["src/cljs"]
      :compiler     {:main            wombats-web-client.core
                     :output-to       "resources/public/js/compiled/app.js"
-                    :output-dir      "resources/public/js/compiled/qa"
+                    :output-dir      "resources/public/js/compiled/deploy-dev"
+                    :optimizations   :advanced
+                    :pretty-print    false
+                    :closure-defines {goog.DEBUG false
+                                      wombats-web-client.constants.urls/base-api-url "//dev.api.wombats.io"}}}
+    {:id           "deploy-qa"
+     :source-paths ["src/cljs"]
+     :compiler     {:main            wombats-web-client.core
+                    :output-to       "resources/public/js/compiled/app.js"
+                    :output-dir      "resources/public/js/compiled/deploy-qa"
                     :optimizations   :advanced
                     :pretty-print    false
                     :closure-defines {goog.DEBUG false
                                       wombats-web-client.constants.urls/base-api-url "//qa.api.wombats.io"}}}
-
-    {:id           "prod"
+    {:id           "deploy-prod"
      :source-paths ["src/cljs"]
      :compiler     {:main            wombats-web-client.core
                     :output-to       "resources/public/js/compiled/app.js"
-                    :output-dir      "resources/public/js/compiled/prod"
+                    :output-dir      "resources/public/js/compiled/deploy-prod"
                     :optimizations   :advanced
                     :pretty-print    false
                     :closure-defines {goog.DEBUG false
                                       wombats-web-client.constants.urls/base-api-url "//api.wombats.io"}}}
-
     {:id           "test"
      :source-paths ["src/cljs" "test/cljs"]
      :compiler     {:main          wombats-web-client.runner
@@ -94,8 +100,8 @@
                     :output-dir    "resources/public/js/compiled/test/out"
                     :optimizations :none}}]}
 
-    :aliases {"run-local"   ["pdo" "clean" ["figwheel" "local"]        ["less" "auto"]]
-              "run-dev"     ["pdo" "clean" ["figwheel" "dev"]          ["less" "auto"]]
-              "deploy-dev"  ["do"  "clean" ["cljsbuild" "once" "dev"]  ["less" "once"]]
-              "deploy-qa"   ["do"  "clean" ["cljsbuild" "once" "qa"]   ["less" "once"]]
-              "deploy-prod" ["do"  "clean" ["cljsbuild" "once" "prod"] ["less" "once"]]})
+    :aliases {"run-local"   ["pdo" "clean" ["figwheel" "local"]               ["less" "auto"]]
+              "run-dev"     ["pdo" "clean" ["figwheel" "dev"]                 ["less" "auto"]]
+              "deploy-dev"  ["do"  "clean" ["cljsbuild" "once" "deploy-dev"]  ["less" "once"]]
+              "deploy-qa"   ["do"  "clean" ["cljsbuild" "once" "deploy-qa"]   ["less" "once"]]
+              "deploy-prod" ["do"  "clean" ["cljsbuild" "once" "deploy-prod"] ["less" "once"]]})
