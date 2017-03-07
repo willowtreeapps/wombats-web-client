@@ -74,7 +74,6 @@
     :shot      1
     :explosion 2
     :smoke     3
-    :fog       3
     0))
 
 (defn- sort-meta
