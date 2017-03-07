@@ -20,7 +20,6 @@
   []
   (js/setInterval #(get-all-games) 60000))
 
-
 (defn tab-view-toggle [cmpnt-state]
   (let [show-open (:show-open @cmpnt-state)]
     [:div.tab-game-toggle
