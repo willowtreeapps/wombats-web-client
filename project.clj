@@ -56,24 +56,18 @@
 
     {:id           "qa"
      :source-paths ["src/cljs"]
-     :figwheel     false
      :compiler     {:main            wombats-web-client.core
                     :output-to       "resources/public/js/compiled/app.js"
-                    :output-dir      "resources/public/js/compiled/qa"
-                    :asset-path      "/js/compiled/qa"
-                    :optimizations   :none
+                    :optimizations   :advanced
                     :pretty-print    false
                     :closure-defines {goog.DEBUG false
                                       wombats-web-client.constants.urls/base-api-url "//qa.api.wombats.io"}}}
 
     {:id           "prod"
      :source-paths ["src/cljs"]
-     :figwheel     false
      :compiler     {:main            wombats-web-client.core
                     :output-to       "resources/public/js/compiled/app.js"
-                    :output-dir      "resources/public/js/compiled/prod"
-                    :asset-path      "/js/compiled/prod"
-                    :optimizations   :none
+                    :optimizations   :advanced
                     :pretty-print    false
                     :closure-defines {goog.DEBUG false
                                       wombats-web-client.constants.urls/base-api-url "//api.wombats.io"}}}
