@@ -41,6 +41,11 @@
    (assoc db :simulator/active-pane active-pane)))
 
 (re-frame/reg-event-db
+ :simulator/toggle-simulator-mini-map
+ (fn [db _]
+   (assoc db :simulator/mini-map (not (:simulator/mini-map db)))))
+
+(re-frame/reg-event-db
  :simulator/update-configuration
  (fn [db [_ {wombat-id :wombat-id
             template-id :template-id}]]
