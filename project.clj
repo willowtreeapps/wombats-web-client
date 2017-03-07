@@ -79,4 +79,8 @@
      :compiler     {:main          wombats-web-client.runner
                     :output-to     "resources/public/js/compiled/test.js"
                     :output-dir    "resources/public/js/compiled/test/out"
-                    :optimizations :none}}]})
+                    :optimizations :none}}]}
+
+    :aliases {"deploy-dev"  ["do" "clean" ["cljsbuild" "once" "dev"]  ["less" "once"]]
+              "deploy-qa"   ["do" "clean" ["cljsbuild" "once" "qa"]   ["less" "once"]]
+              "deploy-prod" ["do" "clean" ["cljsbuild" "once" "prod"] ["less" "once"]]})
