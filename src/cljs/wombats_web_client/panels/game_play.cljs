@@ -14,6 +14,23 @@
 (defonce canvas-id "arena-canvas")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helper Methods
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- resize-canvas []
+  (let [root-element (first (array-seq (.getElementsByClassName js/document root-class)))
+        canvas-element (.getElementById js/document canvas-id)
+        half-width (/ (.-offsetWidth root-element) 2)]
+
+    (set! (.-width canvas-element) half-width)
+    (set! (.-height canvas-element) half-width)))
+
+(defn- show-winner-modal
+  [winner]
+  (re-frame/dispatch [:set-modal {:fn #(winner-modal winner)
+                                  :show-overlay? false}]))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -37,23 +54,6 @@
   (.removeEventListener js/window
                         "resize"
                         (:resize-fn @cmpnt-state)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Helper Methods
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defn- resize-canvas []
-  (let [root-element (first (array-seq (.getElementsByClassName js/document root-class)))
-        canvas-element (.getElementById js/document canvas-id)
-        half-width (/ (.-offsetWidth root-element) 2)]
-
-    (set! (.-width canvas-element) half-width)
-    (set! (.-height canvas-element) half-width)))
-
-(defn- show-winner-modal
-  [winner]
-  (re-frame/dispatch [:set-modal {:fn #(winner-modal winner)
-                                  :show-overlay? false}]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Render Methods

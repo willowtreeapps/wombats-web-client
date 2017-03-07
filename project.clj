@@ -12,7 +12,8 @@
                  [kibu/pushy "0.3.6"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]
-            [lein-less "1.7.5"]]
+            [lein-less "1.7.5"]
+            [lein-pdo "0.1.1"]]
 
   :min-lein-version "2.5.3"
 
@@ -37,8 +38,7 @@
                    [figwheel-pushstate-server "0.1.0"]]
 
     :plugins      [[lein-figwheel "0.5.7"]
-                   [lein-doo "0.1.7"]]
-    }}
+                   [lein-doo "0.1.7"]]}}
 
   :cljsbuild
   {:builds
@@ -47,25 +47,42 @@
      :figwheel     {:on-jsload "wombats-web-client.core/mount-root"}
      :compiler     {:main                 wombats-web-client.core
                     :output-to            "resources/public/js/compiled/app.js"
-                    :output-dir           "resources/public/js/compiled/out"
-                    :asset-path           "/js/compiled/out"
+                    :output-dir           "resources/public/js/compiled/dev"
+                    :asset-path           "/js/compiled/dev"
                     :source-map-timestamp true
                     :preloads             [devtools.preload]
                     :external-config      {:devtools/config {:features-to-install :all}}
-                    }}
+                    :closure-defines      {goog.DEBUG true
+                                           wombats-web-client.constants.urls/base-api-url "//dev.api.wombats.io"}}}
 
-    {:id           "min"
+    {:id           "qa"
      :source-paths ["src/cljs"]
      :compiler     {:main            wombats-web-client.core
                     :output-to       "resources/public/js/compiled/app.js"
-                    :optimizations   :whitespace
-                    :closure-defines {goog.DEBUG false}
-                    :pretty-print    false}}
+                    :output-dir      "resources/public/js/compiled/qa"
+                    :optimizations   :advanced
+                    :pretty-print    false
+                    :closure-defines {goog.DEBUG false
+                                      wombats-web-client.constants.urls/base-api-url "//qa.api.wombats.io"}}}
+
+    {:id           "prod"
+     :source-paths ["src/cljs"]
+     :compiler     {:main            wombats-web-client.core
+                    :output-to       "resources/public/js/compiled/app.js"
+                    :output-dir      "resources/public/js/compiled/prod"
+                    :optimizations   :advanced
+                    :pretty-print    false
+                    :closure-defines {goog.DEBUG false
+                                      wombats-web-client.constants.urls/base-api-url "//api.wombats.io"}}}
 
     {:id           "test"
      :source-paths ["src/cljs" "test/cljs"]
      :compiler     {:main          wombats-web-client.runner
                     :output-to     "resources/public/js/compiled/test.js"
                     :output-dir    "resources/public/js/compiled/test/out"
-                    :optimizations :none}}
-    ]})
+                    :optimizations :none}}]}
+
+    :aliases {"local-dev"   ["pdo" "clean" ["figwheel" "dev"]          ["less" "auto"]]
+              "deploy-dev"  ["do"  "clean" ["cljsbuild" "once" "dev"]  ["less" "once"]]
+              "deploy-qa"   ["do"  "clean" ["cljsbuild" "once" "qa"]   ["less" "once"]]
+              "deploy-prod" ["do"  "clean" ["cljsbuild" "once" "prod"] ["less" "once"]]})
