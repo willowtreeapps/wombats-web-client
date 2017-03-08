@@ -47,7 +47,8 @@
 
 (defn get-all-wombats []
   (let [wombats-ch (load-wombats (get-current-user-id))]
-    (re-frame/dispatch [:update-wombats (go (async/<! wombats-ch))])))
+    (go 
+      (re-frame/dispatch [:update-wombats (async/<! wombats-ch)]))))
 
 
 (defn post-new-wombat
