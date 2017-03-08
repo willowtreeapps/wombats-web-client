@@ -43,27 +43,30 @@
                         (pushy/set-token! history (str "/games/" game-id))))
 
 
-(def callback-error (fn [error cmpnt-state]
-                      (let [game-full (is-game-full? error)
-                            game-started (has-game-started? error)
-                            password-error (has-field-error? error :password)
-                            wombat-color-error (has-field-error? error :wombat-color)]
+(def callback-error
+  (fn [error cmpnt-state]
+    (let [game-full (is-game-full? error)
+          game-started (has-game-started? error)
+          password-error (has-field-error? error :password)
+          wombat-color-error (has-field-error? error :wombat-color)]
 
-                        (cond
-                          game-full (re-frame/dispatch [:set-modal {:fn #(game-full-modal)
-                                                                    :show-overlay? true}])
+      (get-all-games)
+      (cond
+        game-full (re-frame/dispatch [:set-modal {:fn #(game-full-modal)
+                                                  :show-overlay? true}])
 
-                          game-started (re-frame/dispatch [:set-modal {:fn #(game-started-modal)
-                                                                       :show-overlay? true}])
+        game-started (re-frame/dispatch [:set-modal {:fn #(game-started-modal)
+                                                     :show-overlay? true}])
 
-                          password-error (swap! cmpnt-state assoc :password-error (get-error-message error))
+        password-error (swap! cmpnt-state assoc :password-error (get-error-message error))
 
-                          wombat-color-error (swap! cmpnt-state assoc :wombat-color-error (get-error-message error))
-                          :else
-
-                          (get-all-games)
-                          (re-frame/dispatch [:update-modal-error (get-error-message error)])
-                          (reset! cmpnt-state initial-cmpnt-state)))))
+        wombat-color-error (swap! cmpnt-state assoc 
+                                  :wombat-color-error (get-error-message error)
+                                  :wombat-color nil)
+        :else
+        (do
+          (re-frame/dispatch [:update-modal-error (get-error-message error)])
+          (reset! cmpnt-state initial-cmpnt-state))))))
 
 (defn on-wombat-selection [cmpnt-state id name]
   (swap! cmpnt-state assoc :wombat-id id

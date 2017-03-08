@@ -156,6 +156,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (re-frame/reg-sub
+ :bootstrapping?
+ (fn [db _]
+   (:bootstrapping? db)))
+
+(re-frame/reg-sub
  :socket/connected
  (fn [db _]
    (:socket/connected db)))
