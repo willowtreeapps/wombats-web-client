@@ -55,13 +55,13 @@
             modal @modal
             panel @active-panel]
 
-        [:div.app-container
+
 
          ;; If you're bootstrapping show loading
          (if bootstrapping?
            [:div "Loading..."]
 
-           (do
-             [display-modal modal]
-             [display-navbar panel]
-             [show-panel panel]))]))))
+           [:div.app-container
+            [display-modal modal]
+            [display-navbar panel]
+            [show-panel panel]])))))
