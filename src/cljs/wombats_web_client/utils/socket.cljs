@@ -15,7 +15,11 @@
 (defn- parse
   "Parses a string into its proper structure"
   [string]
-  (reader/read-string string))
+  (try
+    (reader/read-string string)
+    (catch js/Error e
+      (js/console.error (clj->js {:error e
+                                  :string string})))))
 
 (defn disconnect
   []
@@ -106,7 +110,7 @@
   (onclose
    (fn [code]
      ;; TODO Add logging
-     (re-frame/dispatch [:socket-connected false])))
+     ))
 
   (let [socket (:socket @socket-state)]
     (set! (.-gameSocket js/window) socket)
