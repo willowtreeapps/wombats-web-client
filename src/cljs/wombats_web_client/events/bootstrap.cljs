@@ -47,17 +47,17 @@
       (let [socket (async/<! socket-ch)]
         (if socket
           (sd/socket-polling)
-          (bootstrap-failure)))
+          (bootstrap-failure "Socket failed to bootstrap...")))
   
       (let [sprite (async/<! sprite-ch)]
         (if sprite
           (re-frame/dispatch [:update-spritesheet sprite])
-          (bootstrap-failure)))
+          (bootstrap-failure "Spritesheet failed to load...")))
 
       (let [wombats (async/<! wombat-ch)]
         (if wombats
           (re-frame/dispatch [:update-wombats wombats])
-          (bootstrap-failure)))
+          (bootstrap-failure "Wombats failed to load...")))
       
       ;; Update bootstrapping in db
       (re-frame/dispatch [:bootstrap-complete]))))
