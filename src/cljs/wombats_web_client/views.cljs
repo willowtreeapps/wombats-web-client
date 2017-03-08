@@ -58,10 +58,11 @@
 
 
          ;; If you're bootstrapping show loading
-         (if bootstrapping?
-           [:div "Loading..."]
+        (if bootstrapping?
+          [:div.loading-app-container 
+           [:p "Loading..."]]
 
-           [:div.app-container
-            [display-modal modal]
-            [display-navbar panel]
-            [show-panel panel]])))))
+          [:div.app-container
+           [display-modal modal]
+           [display-navbar panel]
+           [show-panel panel]])))))
