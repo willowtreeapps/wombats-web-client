@@ -1,20 +1,19 @@
 (ns wombats-web-client.events.spritesheet
-  (:require [re-frame.core :as re-frame]
+  (:require [cljs.core.async :as async]
+            [re-frame.core :as re-frame]
             [ajax.core :refer [GET]]
-            [wombats-web-client.constants.urls :refer [spritesheet-url]]))
+            [wombats-web-client.constants.urls :refer [spritesheet-url]])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
-(defn get-spritesheet-request 
+(defn get-spritesheet
   "Fetches the spritesheet json"
-  [on-success on-error]
-  (GET spritesheet-url {:response-format :json
-                        :keywords? true
-                        :handler on-success
-                        :error-handler on-error}))
-
-(defn get-spritesheet []
-  (get-spritesheet-request
-   #(re-frame/dispatch [:update-spritesheet %])
-   #(print "error with get-spritesheet-request")))
+  []
+  (let [ch (async/chan)]
+    (GET spritesheet-url {:response-format :json
+                          :keywords? true
+                          :handler #(go (async/>! ch %))
+                          :error-handler #(go (async/>! ch nil))})
+    ch))
 
 (re-frame/reg-event-db
  :update-spritesheet

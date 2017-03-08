@@ -1,5 +1,6 @@
 (ns wombats-web-client.events.user
-  (:require [re-frame.core :as re-frame]
+  (:require [cljs.core.async :as async]
+            [re-frame.core :as re-frame]
             [ajax.core :refer [json-response-format GET PUT POST DELETE]]
             [ajax.edn :refer [edn-request-format edn-response-format]]
             [day8.re-frame.http-fx]
@@ -13,7 +14,8 @@
                                                        my-wombat-by-id-url]]
             [wombats-web-client.routes :refer [history]]
             [wombats-web-client.utils.auth :refer [add-auth-header get-current-user-id]]
-            [wombats-web-client.utils.socket :as ws]))
+            [wombats-web-client.utils.socket :as ws])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
 ;; AUTH SPECIFIC
 (defn sign-out-user
@@ -34,18 +36,19 @@
 ;; USER WOMBAT SPECIFIC
 (defn load-wombats
   "loads all wombats associated with user id"
-  [id on-success on-error]
-  (GET (my-wombats-url id) {:response-format (edn-response-format)
-                            :keywords? true
-                            :headers (add-auth-header {})
-                            :handler on-success
-                            :error-handler on-error}))
+  [id]
+  (let [ch (async/chan)]
+    (GET (my-wombats-url id) {:response-format (edn-response-format)
+                              :keywords? true
+                              :headers (add-auth-header {})
+                              :handler #(go (async/>! ch %))
+                              :error-handler #(go (async/>! ch nil))})
+    ch))
 
 (defn get-all-wombats []
-  (load-wombats
-   (get-current-user-id)
-   #(re-frame/dispatch [:update-wombats %])
-   (fn [] (print "error with get-all-wombats"))))
+  (let [wombats-ch (load-wombats (get-current-user-id))]
+    (re-frame/dispatch [:update-wombats (go (async/<! wombats-ch))])))
+
 
 (defn post-new-wombat
   "creates and returns a wombat"
@@ -113,10 +116,7 @@
 
 
 
-(re-frame/reg-event-db
- :update-user
- (fn [db [_ current-user]]
-   (assoc db :current-user current-user)))
+
 
 (re-frame/reg-event-db
  :sign-out

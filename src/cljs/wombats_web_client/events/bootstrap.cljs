@@ -3,17 +3,18 @@
             [cljs.core.async :as async]
             [re-frame.core :as re-frame]
             [ajax.edn :refer [edn-response-format]]
+            [wombats-web-client.events.user :refer [load-wombats]]
             [wombats-web-client.db :refer [default-db]]
             [wombats-web-client.socket-dispatcher :as sd]
             [wombats-web-client.events.spritesheet :refer [get-spritesheet]]
             [wombats-web-client.utils.local-storage :refer [remove-token!]]
-            [wombats-web-client.utils.bootstrap :refer [token-from-url redirect-unauthenticated]]
+            [wombats-web-client.utils.bootstrap :refer [bootstrap-failure 
+                                                        token-from-url
+                                                        redirect-unauthenticated]]
             [wombats-web-client.constants.urls :refer [self-url]]
             [wombats-web-client.socket-dispatcher :as sd]
             [wombats-web-client.utils.auth :refer [add-auth-header]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
-
-;; TODO: Move Helper Methods into utils
 
 (re-frame/reg-event-db
  :set-current-user
@@ -34,33 +35,41 @@
  (fn [db [_ _]]
    (assoc db :bootstrapping? false)))
 
-(defn load-user-success [current-user]
+(defn load-user-success [{:keys [user/id] :as current-user}]
   (re-frame/dispatch-sync [:set-current-user current-user])
 
   ;; Connect to web socket (and polling),
-  ;; fetch my wombats, and get spritesheet.
-  (let [socket-ch (sd/init-ws-connection)]
+  ;; get spritesheet, and fetch wombats.
+  (let [socket-ch (sd/init-ws-connection)
+        sprite-ch (get-spritesheet)
+        wombat-ch (load-wombats id)]
     (go
-      (async/<! socket-ch)
-      (sd/socket-polling))))
+      (let [socket (async/<! socket-ch)]
+        (if socket
+          (sd/socket-polling)
+          (bootstrap-failure)))
+  
+      (let [sprite (async/<! sprite-ch)]
+        (if sprite
+          (re-frame/dispatch [:update-spritesheet sprite])
+          (bootstrap-failure)))
 
-(defn load-user-failure []
-  (remove-token!)
-  (redirect-unauthenticated)
-  (re-frame/dispatch [:bootstrap-complete]))
+      (let [wombats (async/<! wombat-ch)]
+        (if wombats
+          (re-frame/dispatch [:update-wombats wombats])
+          (bootstrap-failure)))
+      
+      ;; Update bootstrapping in db
+      (re-frame/dispatch [:bootstrap-complete]))))
 
-(defn load-user   
+(defn bootstrap-user   
   "fetches the current user" 
   []
   (GET self-url {:response-format (edn-response-format)
                  :keywords? true
                  :headers (add-auth-header {})
                  :handler load-user-success
-                 :error-handler load-user-failure}))
-
-
-(defn bootstrap-user []
-  (load-user))
+                 :error-handler bootstrap-failure}))
 
 (defn bootstrap []
   ;; First check to see if token exists in db
@@ -70,5 +79,3 @@
       (do
         (re-frame/dispatch [:bootstrap-complete])
         (redirect-unauthenticated)))))
-
-;;   (get-spritesheet)
