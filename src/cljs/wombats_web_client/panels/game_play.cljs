@@ -20,10 +20,12 @@
 (defn- resize-canvas []
   (let [root-element (first (array-seq (.getElementsByClassName js/document root-class)))
         canvas-element (.getElementById js/document canvas-id)
-        half-width (/ (.-offsetWidth root-element) 2)]
+        half-width (/ (.-offsetWidth root-element) 2)
+        height (.-offsetHeight root-element)
+        dimension (min height half-width)]
 
-    (set! (.-width canvas-element) half-width)
-    (set! (.-height canvas-element) half-width)))
+    (set! (.-width canvas-element) dimension)
+    (set! (.-height canvas-element) dimension)))
 
 (defn- show-winner-modal
   [winner]
