@@ -8,8 +8,10 @@
     :else "none"))
 
 (defn get-adjusted-hp [game]
-  (let [game-status (:status game)
-        is-starting? (or (= game-status :pending-open) (= game-status :pending-closed) (= game-status :active-intermission))]
+  (let [game-status (:game/status game)
+        is-starting? (or (= game-status :pending-open)
+                         (= game-status :pending-closed)
+                         (= game-status :active-intermission))]
     (if is-starting? 100 0)))
 
 (defn render-wombat-status [game stat]
