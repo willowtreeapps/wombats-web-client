@@ -1,6 +1,8 @@
 (ns wombats-web-client.views
     (:require [re-frame.core :as re-frame]
 
+              [pushy.core :as pushy]
+
               ;; Components
               [wombats-web-client.components.navbar :as navbar]
 
@@ -11,8 +13,9 @@
               [wombats-web-client.panels.welcome :as welcome-panel]
               [wombats-web-client.panels.simulator :as simulator-panel]
               [wombats-web-client.panels.page-not-found :as page-not-found-panel]
+              [wombats-web-client.routes :refer [history]]
 
-              [wombats-web-client.utils.local-storage :refer [get-token]]))
+              [wombats-web-client.utils.local-storage :refer [get-token remove-token!]]))
 
 ;; mainutil
 
@@ -39,27 +42,26 @@
      (when show-overlay? [:div {:class-name "modal-overlay"}])
      (when render-fn [render-fn])]))
 
-(defn logged-in-view [modal panel]
-  [:div.app-container
-   [display-modal modal]
-   [navbar/root]
-   [show-panel panel]])
-
-(defn logged-out-view [panel]
-  [:div.app-container
-   [show-panel panel]])
+(defn display-navbar [panel]
+  (when (not= (:panel-id panel) :welcome-panel)
+    [navbar/root]))
 
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])
-        auth-token (re-frame/subscribe [:auth-token])
         modal (re-frame/subscribe [:modal])
-        socket-connected (re-frame/subscribe [:socket/connected])]
+        bootstrapping? (re-frame/subscribe [:bootstrapping?])]
     (fn []
-      (let [modal @modal
-            token @auth-token
+      (let [bootstrapping? @bootstrapping?
+            modal @modal
             panel @active-panel]
-        (if (and token (not= (:panel-id panel) :welcome-panel))
-          (if @socket-connected
-            [logged-in-view modal panel]
-            [:div "Loading..."])
-          [logged-out-view panel])))))
+
+
+
+         ;; If you're bootstrapping show loading
+         (if bootstrapping?
+           [:div "Loading..."]
+
+           [:div.app-container
+            [display-modal modal]
+            [display-navbar panel]
+            [show-panel panel]])))))
