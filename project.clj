@@ -72,6 +72,7 @@
                     :output-to       "resources/public/js/compiled/app.js"
                     :output-dir      "resources/public/js/compiled/deploy-dev"
                     :optimizations   :advanced
+                    :externs         ["externs.js"]
                     :pretty-print    false
                     :closure-defines {goog.DEBUG false
                                       wombats-web-client.constants.urls/base-api-url "//dev.api.wombats.io"}}}
@@ -81,6 +82,7 @@
                     :output-to       "resources/public/js/compiled/app.js"
                     :output-dir      "resources/public/js/compiled/deploy-qa"
                     :optimizations   :advanced
+                    :externs         ["externs.js"]
                     :pretty-print    false
                     :closure-defines {goog.DEBUG false
                                       wombats-web-client.constants.urls/base-api-url "//qa.api.wombats.io"}}}
@@ -90,6 +92,7 @@
                     :output-to       "resources/public/js/compiled/app.js"
                     :output-dir      "resources/public/js/compiled/deploy-prod"
                     :optimizations   :advanced
+                    :externs         ["externs.js"]
                     :pretty-print    false
                     :closure-defines {goog.DEBUG false
                                       wombats-web-client.constants.urls/base-api-url "//api.wombats.io"}}}
