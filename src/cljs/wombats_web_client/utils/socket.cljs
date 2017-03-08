@@ -1,8 +1,10 @@
 (ns wombats-web-client.utils.socket
   "Handles connecting to a web socket"
-  (:require [cljs.reader :as reader]
+  (:require [cljs.core.async :as async]
+            [cljs.reader :as reader]
             [re-frame.core :as re-frame]
-            [wombats-web-client.utils.local-storage :refer [get-token]]))
+            [wombats-web-client.utils.local-storage :refer [get-token]])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def default-socket-state {:socket nil
                            :chan-id nil
@@ -60,31 +62,33 @@
                             :payload data}))))
 
 (defn- bootstrap
-  [chan-id]
+  [chan-id connection-ch]
   (let [token (get-token)]
-    (re-frame/dispatch [:socket-connected true])
-
     (swap! socket-state assoc :access-token token :chan-id chan-id)
     (send-message :handshake {:chan-id chan-id})
-    (send-message :authenticate-user {:access-token token})))
+    (send-message :authenticate-user {:access-token token})
+
+    ;; Resolve the channel
+    (go
+      (async/>! connection-ch true))))
 
 (defn onmessage
   "Set a callback for when the socket receives a message.
   On 'handshake', complete handoff"
-  [callback]
+  [callback connection-ch]
   (let [onmessage-interceptor (fn [message]
                                 (let [formatted-message (parse message.data)
                                       {:keys [meta payload]} formatted-message
                                       message-type (:msg-type meta)
                                       is-handshake? (= message-type :handshake)]
                                   (if is-handshake?
-                                    (bootstrap (:chan-id payload))
+                                    (bootstrap (:chan-id payload) connection-ch)
                                     (callback message-type payload meta))))]
 
     (set! (.-onmessage (:socket @socket-state)) onmessage-interceptor)))
 
 (defn connect
-  [event-bus url]
+  [event-bus url connection-ch]
 
   (init url)
 
@@ -93,7 +97,8 @@
 
   (onmessage
    (fn [message-type payload metadata]
-     (event-bus send-message message-type payload metadata)))
+     (event-bus send-message message-type payload metadata))
+   connection-ch)
 
   (onerror
    (fn [error] (event-bus send-message :error error)))
@@ -103,4 +108,6 @@
      ;; TODO Add logging
      (re-frame/dispatch [:socket-connected false])))
 
-  (:socket @socket-state))
+  (let [socket (:socket @socket-state)]
+    (set! (.-gameSocket js/window) socket)
+    socket))

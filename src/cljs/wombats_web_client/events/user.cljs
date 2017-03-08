@@ -111,22 +111,7 @@
      (cb-success))
    #(re-frame/dispatch [:update-modal-error (get-error-message %)])))
 
-;; USER SPECIFIC
-(defn get-current-user
-  "fetches the current user object"
-  [on-success on-error]
-  (GET self-url {:response-format (edn-response-format)
-                 :keywords? true
-                 :headers (add-auth-header {})
-                 :handler on-success
-                 :error-handler on-error}))
 
-(defn load-user
-  "fetches the current user"
-  []
-  (get-current-user
-   #(re-frame/dispatch [:bootstrap-user-data %]) ; success function, % = payload
-   #(print "load user error")))
 
 (re-frame/reg-event-db
  :update-user
@@ -152,7 +137,8 @@
 (re-frame/reg-event-fx
  :bootstrap-user-data
  (fn [{:keys [db]} [_ user]]
-   {:db (assoc db :auth-token (get-token))
+   {:db (assoc db :auth-token (get-token)
+                  :bootstrapping? false)
     :http-xhrio {:method          :get
                  :uri             (my-wombats-url (:user/id user))
                  :headers         (add-auth-header {})
