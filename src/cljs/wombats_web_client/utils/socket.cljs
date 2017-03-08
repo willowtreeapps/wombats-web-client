@@ -110,7 +110,7 @@
   (onclose
    (fn [code]
      ;; TODO Add logging
-     (re-frame/dispatch [:socket-connected false])))
+     ))
 
   (let [socket (:socket @socket-state)]
     (set! (.-gameSocket js/window) socket)
