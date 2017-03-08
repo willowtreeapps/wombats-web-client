@@ -104,14 +104,14 @@
 (defn- right-game-play-panel
   [game messages user game-id]
 
-  (let [{:keys [game/game-winner game/players]} game
+  (let [{:keys [game/winner game/players]} game
         user-bots-count (count (filter #(= (get-in % [:player/user :user/github-username])
                                            (::user/github-username @user))
                                        players))]
 
     ;; Dispatch winner modal if there's a winner
-    (when game-winner
-      (show-winner-modal game-winner))
+    (when winner
+      (show-winner-modal winner))
 
     [:div.right-game-play-panel
 
