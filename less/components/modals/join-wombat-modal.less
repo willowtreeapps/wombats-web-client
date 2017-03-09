@@ -1,46 +1,46 @@
 @import "../../colors.less";
 @import "../../objects/label.less";
 @import "../../components/inline-error.less";
+@import "../../utils/typography";
+
+@select-margin-bottom: 30px;
 
 .modal-container {
     .join-wombat-modal {
         .private-game-container {
-            .label(@padding-left: 30px);
+            .label;
 
             .private-game-msg {
-                width: 310px;
-                margin: 0 auto;
-                margin-bottom: 20px;
-                font-size: 14px;
+                width: 100%;
             }
         }
 
         .select-wombat {
-            width: 310px;
-            margin: 0 auto;
-            margin-bottom: 30px;
+            width: 100%;
             position: relative;
+            margin-bottom: @select-margin-bottom;
+
+            &.error {
+                margin-bottom: 0;
+            }
 
             .label;
 
             .placeholder {
                 color: @black;
-                font-size: 18px;
+                font-size: @font-size-18;
                 padding: 10px;
                 cursor: pointer;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
                 background-color: @white-90;
+                position: relative;
 
                 &.unselected {
                     background-color: @white;
                 }
 
                 &.field-error {
-                    border: 1px solid @error-red;
+                   box-shadow: inset 0px 0px 0px 1px @error-red;
                 }
-
 
                 .text {
                     color: @black;
@@ -50,7 +50,10 @@
                     }
                 }
 
-                img {
+                .icon-arrow {
+                    position: absolute;
+                    right: 10px;
+                    top: 20px;
                     width: 10px;
                     height: 6px;
 
@@ -58,22 +61,27 @@
                         transform: rotate(180deg);
                     }
                 }
+
+                
+                &:focus {
+                    outline: none;
+                }
             }
 
-            .inline-error(@padding-left: 0);
+            .inline-error(@total-margin-height: @select-margin-bottom);
 
             .dropdown-wrapper {
                 display: block;
                 position: absolute;
                 background-color: @white;
                 color: @black;
-                font-size: 18px;
+                font-size: @font-size-18;
                 cursor: pointer;
                 z-index: 1;
                 width: 310px;
                 box-shadow: 0px 8px 16px 0px @black-40;
 
-                li {
+                .wombat-options {
                     list-style-type: none;
                     padding: 10px;
                     color: @black;
@@ -86,12 +94,10 @@
         }
 
         .select-color {
-            width: 310px;
-            margin: 0 auto;
-            margin-bottom: 30px;
+            width: 100%;
             
             .label;
-            .inline-error(@padding-left: 0);
+            .inline-error;
 
             .colors {
                 display: flex;
