@@ -53,13 +53,11 @@
             minutes-formatted (str (when (< minutes-adjusted 10) "0") minutes-adjusted)]
         (str (when (> hours 0) (str hours ":")) minutes-formatted ":" seconds-formatted))
 
-      ;; set to 0 time and clear timer
-      (do
-        (clear-timers cmpnt-state)
-        "0:00"))))
+      ;; set to 0 time
+      "0:00")))
 
 (defn countdown-timer
-  [start-time id]
+  [start-time]
 
   (let [cmpnt-state (reagent/atom {:interval-fn nil
                                    :timeout-fn nil
@@ -88,7 +86,7 @@
       :component-will-unmount #(clear-timers cmpnt-state)
 
       :reagent-render
-      (fn []
+      (fn [start-time]
         ;; triggers a rerender for active timers, will not affect timers with no interval timer
         (:update-counter @cmpnt-state)
 
