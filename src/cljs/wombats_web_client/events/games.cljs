@@ -81,9 +81,8 @@
    color
    password
    (fn [res]
-     (re-frame/dispatch [:game/info res])
-     (cb-success)
-     (get-all-games))
+     (re-frame/dispatch-sync [:game/info res])
+     (cb-success))
    (fn [error]
      (cb-error error))))
 
