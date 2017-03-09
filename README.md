@@ -25,7 +25,8 @@ Wait a bit, then browse to [http://localhost:3449](http://localhost:3449).
 
 ## URLs
 * `dev.api.wombats.io` points to the Development database 
-* `qa.api.wombats.io` points to the QA database - this is the base API URL for our `qa` branchb9ac8658-0165-4fc9-92f7-51ed54130cec* `api.wombats.io` points to the Production database
+* `qa.api.wombats.io` points to the QA database - this is the base API URL for our `qa` branch
+* `api.wombats.io` points to the Production database - this is the base API URL for our `master` branch
 
 ## Production Build
 
