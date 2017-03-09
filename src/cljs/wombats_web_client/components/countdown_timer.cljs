@@ -89,7 +89,7 @@
 
       :reagent-render
       (fn []
-        ;; triggers a rerender for active timers, will not effect timers with no interval timer
+        ;; triggers a rerender for active timers, will not affect timers with no interval timer
         (:update-counter @cmpnt-state)
 
         [:span {:class-name "countdown-timer"}
