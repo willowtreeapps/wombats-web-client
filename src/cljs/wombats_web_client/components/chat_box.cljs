@@ -60,10 +60,11 @@
 
     [:ul {:class-name "chat-box-message-container"}
      (if (pos? (count messages))
-       (for [{:keys [username
-                     message
-                     timestamp]} messages]
-         ^{:key (str username "-" timestamp)}
+       (for [[index {:keys [username
+                            message
+                            timestamp]}] (map-indexed vector messages)]
+
+         ^{:key (str username "-" timestamp "-" index)}
          [:li {:class-name "chat-msg"}
           [:span {:class-name "msg-timestamp"} (format-time timestamp)]
           [:span {:class-name "msg-username"
