@@ -16,37 +16,25 @@ Our web client is written with the following tools:
 ### Run application:
 
 ```
-lein clean
-lein figwheel dev
+lein run-dev
 ```
 
 Figwheel will automatically push cljs changes to the browser.
 
 Wait a bit, then browse to [http://localhost:3449](http://localhost:3449).
 
-## Run LESS styles:
-
-For hot dev:
-```
-lein less auto
-```
-
-To compile once:
- ```
- lein less once
- ```
- 
 ## URLs
 * `dev.api.wombats.io` points to the Development database 
-* `qa.api.wombats.io` points to the QA database - this is the base API URL for our `master` branch
+* `qa.api.wombats.io` points to the QA database - this is the base API URL for our `qa` branchb9ac8658-0165-4fc9-92f7-51ed54130cec* `api.wombats.io` points to the Production database
 
 ## Production Build
 
-To compile clojurescript to javascript:
+The following commands compile Wombats for the deployed environments:
 
 ```
-lein clean
-lein cljsbuild once min
+lein deploy-dev
+lein deploy-qa
+lein deploy-prod
 ```
 
 ## Spritesheet
