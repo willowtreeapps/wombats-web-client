@@ -199,6 +199,7 @@
           [:div.modal.join-wombat-modal ;; starts hiccup
            [:div.title title]
            (when error [:div.modal-error error])
+           []
            (when is-private
              [private-game-password game cmpnt-state])
            [select-input-with-label cmpnt-state]
