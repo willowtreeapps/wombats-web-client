@@ -37,7 +37,6 @@
                         (re-frame/dispatch [:add-join-selection {:game-id game-id
                                                                  :wombat-id wombat-id
                                                                  :wombat-color wombat-color}])
-                        (get-all-games)
                         (re-frame/dispatch [:update-modal-error nil])
                         (re-frame/dispatch [:set-modal nil])
                         (pushy/set-token! history (str "/games/" game-id))))
@@ -60,7 +59,7 @@
 
         password-error (swap! cmpnt-state assoc :password-error (get-error-message error))
 
-        wombat-color-error (swap! cmpnt-state assoc 
+        wombat-color-error (swap! cmpnt-state assoc
                                   :wombat-color-error (get-error-message error)
                                   :wombat-color nil)
         :else

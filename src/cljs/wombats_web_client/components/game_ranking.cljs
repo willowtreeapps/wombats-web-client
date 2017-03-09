@@ -14,6 +14,10 @@
                          (= game-status :active-intermission))]
     (if is-starting? 100 0)))
 
+(defn get-bounded-hp [hp]
+  (if (> hp 100) 100
+    (if (< hp 0) 0 hp)))
+
 (defn render-wombat-status [game stat]
   (let [{:keys [db/id
                 wombat-name
@@ -21,7 +25,7 @@
                 score
                 hp
                 color]} stat
-        adjusted-hp-value (if (nil? hp) (get-adjusted-hp game) hp)]
+        adjusted-hp-value (if (nil? hp) (get-adjusted-hp game) (get-bounded-hp hp))]
     ^{:key (or username id)} [:li.wombat-status {:class (when (= adjusted-hp-value 0) "disabled")}
                               [:div.health-bar
                                [:span.filling {:class (get-health-color adjusted-hp-value)
