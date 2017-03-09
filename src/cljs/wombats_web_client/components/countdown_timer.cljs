@@ -58,7 +58,7 @@
      {:reagent-render
       (fn [start-time]
         ;; Force timer to redraw every second
-        (if (time-left? start-time)
+        (when (time-left? start-time)
           (.setTimeout js/window
                        #(swap! cmpnt-state update-in [:update] not)
                        1000))
