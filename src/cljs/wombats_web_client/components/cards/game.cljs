@@ -53,7 +53,7 @@
      [:img.arena-preview-img {:src "/images/mini-arena.png"}]
      (when is-open
        [:div.countdown "Starts in "
-        [countdown-timer start-time]])
+        [countdown-timer start-time game-id]])
      (when is-joinable
        [join-button {:is-private is-private
                      :on-click (open-join-game-modal-fn game-id)}])]))

@@ -156,6 +156,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (re-frame/reg-sub
- :socket/connected
+ :bootstrapping?
  (fn [db _]
-   (:socket/connected db)))
+   (:bootstrapping? db)))

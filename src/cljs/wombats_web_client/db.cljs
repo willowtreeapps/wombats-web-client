@@ -4,14 +4,11 @@
 (def default-db
   {:active-panel nil
    :auth-token (get-token)
-   :bootstrapping? false
+   :bootstrapping? true
    :name "WillowTree"
    :current-user nil
    :users []
    :modal nil
-
-   ;; Updates once the socket connects
-   :socket/connected false
 
    :game/arena nil
    :game/messages []

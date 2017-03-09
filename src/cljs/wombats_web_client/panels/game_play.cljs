@@ -20,10 +20,12 @@
 (defn- resize-canvas []
   (let [root-element (first (array-seq (.getElementsByClassName js/document root-class)))
         canvas-element (.getElementById js/document canvas-id)
-        half-width (/ (.-offsetWidth root-element) 2)]
+        half-width (/ (.-offsetWidth root-element) 2)
+        height (.-offsetHeight root-element)
+        dimension (min height half-width)]
 
-    (set! (.-width canvas-element) half-width)
-    (set! (.-height canvas-element) half-width)))
+    (set! (.-width canvas-element) dimension)
+    (set! (.-height canvas-element) dimension)))
 
 (defn- show-winner-modal
   [winner]
@@ -104,14 +106,14 @@
 (defn- right-game-play-panel
   [game messages user game-id]
 
-  (let [{:keys [game/game-winner game/players]} game
+  (let [{:keys [game/winner game/players]} game
         user-bots-count (count (filter #(= (get-in % [:player/user :user/github-username])
                                            (::user/github-username @user))
                                        players))]
 
     ;; Dispatch winner modal if there's a winner
-    (when game-winner
-      (show-winner-modal game-winner))
+    (when winner
+      (show-winner-modal winner))
 
     [:div.right-game-play-panel
 

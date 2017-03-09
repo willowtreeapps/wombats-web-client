@@ -1,5 +1,6 @@
 (ns wombats-web-client.socket-dispatcher
-  (:require [re-frame.core :as re-frame]
+  (:require [cljs.core.async :as async]
+            [re-frame.core :as re-frame]
             [wombats-web-client.constants.urls :as urls]
             [wombats-web-client.utils.socket :as ws]))
 
@@ -22,8 +23,9 @@
     (event-fn)))
 
 (defn init-ws-connection []
-  (let [socket (ws/connect message-bus urls/ws-url)]
-    (set! (.-gameSocket js/window) socket)))
+  (let [socket-connection-ch (async/chan)
+        socket (ws/connect message-bus urls/ws-url socket-connection-ch)]
+    socket-connection-ch))
 
 (defn- socket-polling
   "Whenever a socket connection is lost, we want to catch that event and
@@ -40,6 +42,3 @@
           :keep-alive
           {:msg "Whether you're a brother or whether you're a mother, you're stayin' alive, stayin' alive"}))))
    5000))
-
-;; Starts the socket polling process
-(socket-polling)

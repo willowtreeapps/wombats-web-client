@@ -72,6 +72,7 @@
                     :output-to       "resources/public/js/compiled/app.js"
                     :output-dir      "resources/public/js/compiled/deploy-dev"
                     :optimizations   :advanced
+                    :externs         ["externs.js"]
                     :pretty-print    false
                     :closure-defines {goog.DEBUG false
                                       wombats-web-client.constants.urls/base-api-url "//dev.api.wombats.io"}}}
@@ -81,6 +82,7 @@
                     :output-to       "resources/public/js/compiled/app.js"
                     :output-dir      "resources/public/js/compiled/deploy-qa"
                     :optimizations   :advanced
+                    :externs         ["externs.js"]
                     :pretty-print    false
                     :closure-defines {goog.DEBUG false
                                       wombats-web-client.constants.urls/base-api-url "//qa.api.wombats.io"}}}
@@ -90,6 +92,7 @@
                     :output-to       "resources/public/js/compiled/app.js"
                     :output-dir      "resources/public/js/compiled/deploy-prod"
                     :optimizations   :advanced
+                    :externs         ["externs.js"]
                     :pretty-print    false
                     :closure-defines {goog.DEBUG false
                                       wombats-web-client.constants.urls/base-api-url "//api.wombats.io"}}}
@@ -100,8 +103,8 @@
                     :output-dir    "resources/public/js/compiled/test/out"
                     :optimizations :none}}]}
 
-    :aliases {"run-local"   ["pdo" "clean" ["figwheel" "local"]               ["less" "auto"]]
-              "run-dev"     ["pdo" "clean" ["figwheel" "dev"]                 ["less" "auto"]]
-              "deploy-dev"  ["do"  "clean" ["cljsbuild" "once" "deploy-dev"]  ["less" "once"]]
-              "deploy-qa"   ["do"  "clean" ["cljsbuild" "once" "deploy-qa"]   ["less" "once"]]
-              "deploy-prod" ["do"  "clean" ["cljsbuild" "once" "deploy-prod"] ["less" "once"]]})
+    :aliases {"run-local"   ["pdo" "clean," ["figwheel" "local"]               ["less" "auto"]]
+              "run-dev"     ["pdo" "clean," ["figwheel" "dev"]                 ["less" "auto"]]
+              "deploy-dev"  ["do"  "clean," ["cljsbuild" "once" "deploy-dev"]  ["less" "once"]]
+              "deploy-qa"   ["do"  "clean," ["cljsbuild" "once" "deploy-qa"]   ["less" "once"]]
+              "deploy-prod" ["do"  "clean," ["cljsbuild" "once" "deploy-prod"] ["less" "once"]]})
