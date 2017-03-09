@@ -60,7 +60,8 @@
          ;; If you're bootstrapping show loading
         (if bootstrapping?
           [:div.loading-app-container 
-           [:p "Loading..."]]
+           [:p "Loading..."]
+           [:img {:src "/images/naked_dancing_wombat.gif"}]]
 
           [:div.app-container
            [display-modal modal]
