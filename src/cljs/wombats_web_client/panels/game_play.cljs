@@ -44,10 +44,12 @@
 
 (defn- component-did-mount [arena cmpnt-state]
   ;; Add resize listener
-  (let [resize-fn (:resize-fn @cmpnt-state)]
-    (.addEventListener js/window
-                       "resize"
-                       resize-fn))
+  (.addEventListener js/window
+                     "resize"
+                     (:resize-fn @cmpnt-state))
+  (resize-canvas arena))
+
+(defn- component-did-update [arena]
   (resize-canvas arena))
 
 (defn- component-will-mount [game-id]
@@ -148,6 +150,7 @@
 
     (reagent/create-class
      {:component-did-mount #(component-did-mount arena cmpnt-state)
+      :component-did-update #(component-did-update arena)
       :component-will-mount #(component-will-mount game-id)
       :component-will-unmount #(component-will-unmount game-id cmpnt-state)
       :display-name "game-play-panel"
@@ -155,7 +158,7 @@
       (fn [{:keys [game-id]}]
         (let [game (get @games game-id)
               winner (:game/winner game)]
-          (arena/arena @arena canvas-id)
+          
           [:div {:class-name root-class}
            [:div.left-game-play-panel {:id "wombat-arena"
                                        :class (when winner "game-over")}
