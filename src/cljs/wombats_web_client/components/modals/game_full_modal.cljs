@@ -12,6 +12,7 @@
   (fn []
     [:div.modal.game-full-modal
      [:div.title "GAME FULL"]
-     [:div.desc game-full-error]
+     [:div.modal-content
+      [:div.desc game-full-error]]
      [:div.action-buttons
       [submit-modal-input "OKAY" close-modal]]]))
