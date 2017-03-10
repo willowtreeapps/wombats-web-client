@@ -158,7 +158,9 @@
       (fn [{:keys [game-id]}]
         (let [game (get @games game-id)
               winner (:game/winner game)]
-          
+
+          (arena/arena @arena canvas-id)
+
           [:div {:class-name root-class}
            [:div.left-game-play-panel {:id "wombat-arena"
                                        :class (when winner "game-over")}
