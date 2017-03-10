@@ -77,7 +77,7 @@
 (defn get-my-closed-games
   [games current-user]
   (reduce-kv (fn [coll _ game]
-               (if (and (is-closed? games)
+               (if (and (is-closed? game)
                         (user-in-game? current-user game))
                  (conj coll game)
                  coll)) [] games))
