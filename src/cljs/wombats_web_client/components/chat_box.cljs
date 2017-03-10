@@ -76,15 +76,13 @@
   [game-id]
   (let [send-msg-fn (send-message game-id)]
     [:div {:class-name "chat-box-input-container"}
-     [:input {:class-name "chat-input"
-              :name "chat-input"
-              :type "input"
-              :placeholder "Type something..."
-              :value @message
-              :on-key-press (check-for-enter send-msg-fn)
-              :on-change #(reset! message (-> % .-target .-value))}]
-     [:button {:class-name "chat-send-btn"
-               :on-click send-msg-fn} "SEND"]]))
+     [:input.chat-input {:name "chat-input"
+                         :type "input"
+                         :placeholder "Type something..."
+                         :value @message
+                         :on-key-press (check-for-enter send-msg-fn)
+                         :on-change #(reset! message (-> % .-target .-value))}]
+     [:button.chat-send-btn {:on-click send-msg-fn} "SEND"]]))
 
 
 

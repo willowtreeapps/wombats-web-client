@@ -1,5 +1,6 @@
 @import '../colors.less';
 @import "../objects/button.less";
+@import "../utils/typography.less";
 @import "emphasized-button";
 
 .chat-box {
@@ -32,12 +33,12 @@
             }
 
             .msg-username {
-                font-weight: bold;
+                .bold;
+
                 margin-right: 20px;
             }
             .msg-body {
                 color: @white;
-                font-weight: normal;
 
                 &.default {
                     color: @white-90;
@@ -54,8 +55,14 @@
         .chat-input {
             width: 100%;
             height: 38px;
-            font-size: 18px;
+            font-size: @font-size-18;
             margin-right: 10px;
+            color: @black;
+            text-indent: 10px;
+
+            &:focus {
+                outline: none;
+            }
         }
 
         .chat-send-btn {
