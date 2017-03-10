@@ -8,20 +8,19 @@
 
 (def message (atom ""))
 
-(defn send-message
-  [game-id]
+(defn send-message-fn
   "Sends the message and clears the chat box"
+  [game-id]
   (fn []
     ;; Send message
     (ws/send-message :chat-message {:message @message
                                     :game-id game-id})
-
     ;; Clear message box
     (reset! message "")))
 
 (defn check-for-enter
-  [send-msg]
   "Sends a message if the user hit enter in the chat box"
+  [send-msg]
   (fn [event]
     (let [key (-> event .-key)]
       (when (= "Enter" key)
@@ -41,8 +40,8 @@
     color-hex))
 
 (defn default-message []
-  [:li {:class-name "chat-msg"}
-   [:span {:class-name "msg-body default"} "Say something already!"]])
+  [:li.chat-msg
+   [:span.msg-body.default "Say something already!"]])
 
 (defn display-messages
   [messages game]
@@ -58,38 +57,35 @@
                             element.scrollHeight)
                      0))
 
-    [:ul {:class-name "chat-box-message-container"}
+    [:ul.chat-box-message-container
      (if (pos? (count messages))
        (for [[index {:keys [username
                             message
                             timestamp]}] (map-indexed vector messages)]
 
          ^{:key (str username "-" timestamp "-" index)}
-         [:li {:class-name "chat-msg"}
-          [:span {:class-name "msg-timestamp"} (format-time timestamp)]
-          [:span {:class-name "msg-username"
-                  :style {:color (get-username-color stats username)}} username]
-          [:span {:class-name "msg-body"} message]])
+         [:li.chat-msg
+          [:span.msg-timestamp (format-time timestamp)]
+          [:span.msg-username {:style {:color (get-username-color stats username)}} username]
+          [:span.msg-body message]])
        [default-message])]))
 
 (defn chat-box-input
   [game-id]
-  (let [send-msg-fn (send-message game-id)]
-    [:div {:class-name "chat-box-input-container"}
-     [:input {:class-name "chat-input"
-              :name "chat-input"
-              :type "input"
-              :placeholder "Type something..."
-              :value @message
-              :on-key-press (check-for-enter send-msg-fn)
-              :on-change #(reset! message (-> % .-target .-value))}]
-     [:button {:class-name "chat-send-btn"
-               :on-click send-msg-fn} "SEND"]]))
-
-
+  (let [send-msg-fn (send-message-fn game-id)]
+    [:div.chat-box-input-container
+     [:input.chat-input
+      {:name "chat-input"
+       :type "input"
+       :placeholder "Type something..."
+       :value @message
+       :on-key-press (check-for-enter send-msg-fn)
+       :on-change #(reset! message (-> % .-target .-value))}]
+     [:button.chat-send-btn 
+      {:on-click send-msg-fn} "SEND"]]))
 
 (defn chat-box
   [game-id messages stats]
-  [:div {:class-name "chat-box"}
+  [:div.chat-box
    [display-messages messages stats]
    [chat-box-input game-id]])
