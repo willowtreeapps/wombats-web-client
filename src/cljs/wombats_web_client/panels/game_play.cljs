@@ -28,13 +28,10 @@
     (set! (.-width canvas-element) dimension)
     (set! (.-height canvas-element) dimension)))
 
-(defn- on-resize [arena-atom cmpnt-state]
-  (let [resize-id (:timeout-fn @cmpnt-state)]
-    (js/clearTimeout resize-id)
-    (let [new-resize-id (js/setTimeout
-                                   #(resize-canvas arena-atom)
-                                   500)]
-      (swap! cmpnt-state assoc :timeout-fn new-resize-id))))
+(defn- on-resize [arena-atom]
+  (resize-canvas arena-atom)
+  (js/setTimeout #(resize-canvas arena-atom)
+                 100))
 
 (defn- show-winner-modal
   [winner]
@@ -47,7 +44,7 @@
 
 (defn- component-did-mount [arena cmpnt-state]
   ;; Add resize listener
-  (let [resize-fn #(on-resize arena cmpnt-state)]
+  (let [resize-fn (:resize-fn @cmpnt-state)]
     (.addEventListener js/window
                        "resize"
                        resize-fn))
@@ -144,8 +141,7 @@
 
 (defn game-play [{:keys [game-id]}]
   (let [arena (re-frame/subscribe [:game/arena])
-        cmpnt-state (reagent/atom {:resize-fn nil
-                                   :timeout-fn nil})
+        cmpnt-state (reagent/atom {:resize-fn #(on-resize arena)})
         messages (re-frame/subscribe [:game/messages])
         user (re-frame/subscribe [:current-user])
         games (re-frame/subscribe [:games])]
