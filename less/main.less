@@ -1,8 +1,12 @@
+// DEFAULT STYLES
+@import "normalize.less";
+
 // SETTINGS
 @import "colors.less";
+@import "z-index.less";
 
 // UTILS
-@import "forms.less";
+@import "utils/typography.less";
 
 // OBJECTS
 @import "objects/active-line.less";
@@ -21,7 +25,6 @@
 @import "components/cards/game-card.less";
 @import "components/cards/wombat-card.less";
 @import "components/modals/modal.less";
-@import "components/modals/delete-wombat-modal.less";
 @import "components/modals/join-wombat-modal.less";
 @import "components/modals/winner-modal.less";
 @import "components/add-button.less";
@@ -33,24 +36,11 @@
 @import "components/tabbed-container.less";
 @import "components/join-button.less";
 
-
-
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,600italic,700italic);
-
-@sans-font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-
-@font-family-primary: @sans-font-family;
-@font-family-bold: @sans-font-family;
-@font-family-secondary: @sans-font-family;
-
-@font-weight-primary: 400;
-@font-weight-bold: 700;
-@font-weight-secondary: 600;
-
 html {
     font-family: @font-family-primary;
     font-weight: @font-weight-primary;
-    font-size: 14px;
+    font-size: @font-size-primary;
+    color: @font-color-primary;
     min-height: 100%;
     background-color: @background-grey;
 }
@@ -66,12 +56,18 @@ body {
 
 
 .loading-app-container {
+    .bold;
+
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
     color: @white;
-    font-size: 18px;
-    font-weight: bold;
+    font-size: @font-size-18;
     letter-spacing: 2px;
+
+    .dancing-gif {
+        height: 70px;
+    }
 }
