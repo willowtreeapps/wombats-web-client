@@ -1,9 +1,16 @@
+@import "../utils/typography";
+@import "../colors.less";
 
-.inline-error(@padding-left: 30px) {
+@inline-error-height: 20px;
+@inline-error-margin-top: 2px;
+
+.inline-error(@padding-left: 0, @total-margin-height: 0) {
     .inline-error {
-        text-align: left;
         padding-left: @padding-left;
-        font-size: 12px;
+        font-size: @font-size-12;
         color: @error-red;
+        line-height: 1.7;
+        margin-top: @inline-error-margin-top;
+        margin-bottom: calc(@total-margin-height - @inline-error-height - @inline-error-margin-top);
     }
 }

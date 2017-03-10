@@ -1,9 +1,8 @@
 @import "../colors.less";
 @import "../components/navbar.less";
+@import "../utils/typography";
 
 .game-play-panel {
-    @title-font-weight: 600;
-
     display: flex;
     height: calc(~"100% - " @navbar-height);
 
@@ -29,18 +28,20 @@
                 margin-bottom: 10px;
 
                 .game-play-title {
+                    .bold;
+
                     margin: 0;
                     color: @white;
-                    font-size: 30px;
-                    font-weight: @title-font-weight;
+                    font-size: @font-size-30;
                 }
             }
             
             .game-play-subtitle {
+                .bold;
+
                 margin: 0;
                 color: @white;
-                font-size: 18px;
-                font-weight: @title-font-weight;
+                font-size: @font-size-18;
             }
 
             .wombat-counter {
@@ -55,13 +56,14 @@
             
             @chat-title-height: 30px;
             .chat-title {
+                .bold;
+
                 margin-left: 20px;
                 color: @white;
                 display: block;
                 letter-spacing: 2px;
                 height: @chat-title-height;
                 text-align: left;
-                font-weight: @title-font-weight;
                 
                 span {
                     padding: 0 10px;

@@ -86,17 +86,18 @@
 
 (defn wombat-options [wombat cmpnt-state]
   (let [{:keys [wombat/name wombat/id]} wombat]
-    [:li {:key id
-          :onClick #(on-wombat-selection cmpnt-state id name)} name]))
+    [:li.wombat-options {:key id
+                         :on-click #(on-wombat-selection cmpnt-state id name)} name]))
 
 (defn select-input-with-label [cmpnt-state]
   (let [{:keys [show-dropdown wombat-name wombat-name-error]} @cmpnt-state
-        my-wombats @(re-frame/subscribe [:my-wombats])]
-    [:div.select-wombat
+        my-wombats @(re-frame/subscribe [:my-wombats])
+        show-inline-error (and wombat-name-error (not show-dropdown))]
+    [:div.select-wombat {:class (when show-inline-error "error")}
      [:label.label.select-wombat-label "Select Wombat"]
      [:div.placeholder
       {:class (clojure.string/join " "[(when-not wombat-name "unselected")
-                                       (when wombat-name-error "field-error")])
+                                       (when show-inline-error "field-error")])
        :tab-index "0"
        :on-click #(on-select-click cmpnt-state)
        :on-focus #(on-select-focus cmpnt-state)}
@@ -104,7 +105,7 @@
        (str (if-not wombat-name "Select Wombat" wombat-name))]
       [:img.icon-arrow {:class (when show-dropdown "open-dropdown")
                         :src "/images/icon-arrow.svg"}]]
-     (when wombat-name-error
+     (when show-inline-error
        [:div.inline-error wombat-name-error])
      (when show-dropdown
        [:div.dropdown-wrapper
@@ -148,8 +149,8 @@
 
 (defn correct-privacy-settings [is-private password-error]
   (cond
-    is-private (not (true? password-error)) ;; if it's private and there's no error, can submit
-    (not is-private) true)) ;; if the game isn't private, password state is irrelevant
+   is-private (not (true? password-error)) ;; if it's private and there's no error, can submit
+   (not is-private) true)) ;; if the game isn't private, password state is irrelevant
 
 (defn on-submit-form-valid? [{:keys [game-id is-private cmpnt-state]}]
   (let [{:keys [wombat-name
@@ -196,14 +197,14 @@
               is-private (:game/is-private game)
               occupied-colors (get-occupied-colors game)
               title (if is-private "JOIN PRIVATE GAME" "JOIN GAME")]
-
           [:div.modal.join-wombat-modal ;; starts hiccup
            [:div.title title]
            (when error [:div.modal-error error])
-           (when is-private
-             [private-game-password game cmpnt-state])
-           [select-input-with-label cmpnt-state]
-           [select-wombat-color cmpnt-state wombat-color occupied-colors]
+           [:div.modal-content
+            (when is-private
+              [private-game-password game cmpnt-state])
+            [select-input-with-label cmpnt-state]
+            [select-wombat-color cmpnt-state wombat-color occupied-colors]]
            [:div.action-buttons
             [cancel-modal-input]
             [submit-modal-input "JOIN" #(on-submit-form-valid? {:game-id game-id

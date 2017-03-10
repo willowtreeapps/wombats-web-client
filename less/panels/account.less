@@ -1,5 +1,5 @@
 @import "../colors.less";
-@import "../objects/button.less";
+@import "../components/emphasized-button.less";
 
 .account-panel {
     padding: 60px;
@@ -8,14 +8,14 @@
         margin-bottom: 30px;
 
         .title {
-            font-size: 30px;
-            font-weight: 600;
-            color: @white;
+            .bold;
+
+            font-size: @font-size-30;
             display: inline-block;
         }
 
         .logout {
-            .emphasized-action-button(@white, @black-20, @hover-grey, @dark);
+            .emphasized-button(@white, @black-20, @hover-grey, @dark);
             float: right;
         }
     }
