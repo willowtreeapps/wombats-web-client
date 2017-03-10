@@ -80,11 +80,8 @@
    wombat-id
    color
    password
-   (fn [res]
-     (re-frame/dispatch-sync [:game/info res])
-     (cb-success))
-   (fn [error]
-     (cb-error error))))
+   #(cb-success %)
+   #(cb-error %)))
 
 (re-frame/reg-event-db
  :add-join-selection
