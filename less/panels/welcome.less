@@ -1,5 +1,6 @@
 @import "../colors.less";
-@import "../objects/button.less";
+@import "../components/emphasized-button.less";
+@import "../utils/typography";
 
 .welcome-panel {
     height: 100%;
@@ -24,25 +25,27 @@
         align-content: center;
 
         .welcome-title-container {
+            .bold;
+
             max-width: 600px;
             display: block;
             text-align: center;
             margin: auto;				
             color: @white;
-            font-weight: 600;
-            font-size: 30px;
+            font-size: @font-size-30;
             display: inline-block;
             text-transform: uppercase; 
             padding: 20px;
         }
 
         .welcome-message-container {
+            .bold;
+
             max-width: 560px;
             height: 96px;
             display: block;
             margin: 0 auto;
-            font-size: 18px;
-            font-weight: 600;
+            font-size: @font-size-18;
             line-height: 1.33;
             text-align: center;
             color: @white;
@@ -54,19 +57,16 @@
         }
 
         .welcome-button-container {
-            .emphasized-link-button(@wombat-green, @black-30, @wombat-dark-green, @white); 
+            .emphasized-button(@wombat-green, @black-30, @wombat-dark-green, @white); 
             width: 202px;
-            padding-left: 12.5px;
-            padding-right: 12.5px;
             text-align: center;
             text-transform: uppercase;
-            cursor: pointer;
         }
     }
 
     .copyright {
         color: @warm-grey;
-        font-size: 12px;
+        font-size: @font-size-12;
         position: absolute;
         left: 40px;
         bottom: 20px;

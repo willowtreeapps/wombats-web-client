@@ -2,7 +2,7 @@
 This repo is a part of the Wombats Suite, documented at [Wombat Documentation](https://github.com/willowtreeapps/wombats-documentation). 
 
 ## Contributing? Issues? Features? Curiosity?
-[Learn how to contribute here.](https://github.com/willowtreeapps/wombats-documentation/blob/master/CONTRIBUTING.md)
+[Learn how to contribute here.](https://github.com/willowtreeapps/wombats-web-client/blob/develop/CONTRIBUTING.md)
 
 ## Our Stack
 Our web client is written with the following tools:
@@ -16,37 +16,26 @@ Our web client is written with the following tools:
 ### Run application:
 
 ```
-lein clean
-lein figwheel dev
+lein run-dev
 ```
 
 Figwheel will automatically push cljs changes to the browser.
 
 Wait a bit, then browse to [http://localhost:3449](http://localhost:3449).
 
-## Run LESS styles:
-
-For hot dev:
-```
-lein less auto
-```
-
-To compile once:
- ```
- lein less once
- ```
- 
 ## URLs
 * `dev.api.wombats.io` points to the Development database 
-* `qa.api.wombats.io` points to the QA database - this is the base API URL for our `master` branch
+* `qa.api.wombats.io` points to the QA database - this is the base API URL for our `qa` branch
+* `api.wombats.io` points to the Production database - this is the base API URL for our `master` branch
 
 ## Production Build
 
-To compile clojurescript to javascript:
+The following commands compile Wombats for the deployed environments:
 
 ```
-lein clean
-lein cljsbuild once min
+lein deploy-dev
+lein deploy-qa
+lein deploy-prod
 ```
 
 ## Spritesheet

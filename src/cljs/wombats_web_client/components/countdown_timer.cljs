@@ -27,11 +27,16 @@
     (mod (t/in-millis (interval-from-now time))
          1000)))
 
+(defn- time-left?
+  [start-time]
+  (< 0 (seconds-until start-time)))
+
 (defn- format-time
-  [time]
+  [time cmpnt-state]
   (let [seconds-left (seconds-until time)]
-    (if (< seconds-left 0)
-      "0:00"
+    ;; if time is left and requires an active timer
+    (if (time-left? time)
+      ;; calculate format of time
       (let [seconds (mod seconds-left 60)
             seconds-formatted (if (< seconds 10)
                                 (str "0" seconds)
@@ -40,39 +45,26 @@
             hours (int (/ minutes 60))
             minutes-adjusted (- minutes (* hours 60))
             minutes-formatted (str (when (< minutes-adjusted 10) "0") minutes-adjusted)]
-        (str (when (> hours 0) (str hours ":")) minutes-formatted ":" seconds-formatted)))))
+        (str (when (> hours 0) (str hours ":")) minutes-formatted ":" seconds-formatted))
+
+      ;; set to 0 time 
+      "0:00")))
 
 (defn countdown-timer
   [start-time]
-  (let [cmpnt-state (reagent/atom {:interval-fn nil
-                                   :timeout-fn nil})
-        swap-interval-fn! (fn []
-                      (swap! cmpnt-state
-                             assoc
-                             :interval-fn
-                             (.setInterval js/window
-                                           #(reagent/force-update-all)
-                                           1000)))
-        swap-timeout-fn! (fn []
-                      (swap! cmpnt-state
-                             assoc
-                             :timeout-fn
-                             (.setTimeout js/window
-                                          swap-interval-fn!
-                                          ;; Give the browser some extra time to render the next second
-                                          (- (millis-until start-time) 100))))]
+
+  (let [cmpnt-state (reagent/atom {:update nil})]
     (reagent/create-class
-     {:component-will-mount
-      ;; Force timer to redraw every second, start interval when the countdown timer should switch
-      (swap-timeout-fn!)
+     {:reagent-render
+      (fn [start-time]
+        ;; Force timer to redraw every second
+        (when (time-left? start-time)
+          (.setTimeout js/window
+                       #(swap! cmpnt-state update-in [:update] not)
+                       1000))
+        
+        ;; triggers a rerender for active timers, will not affect timers with no interval timer
+        (:update @cmpnt-state)
 
-      :component-will-unmount
-      (fn []
-        (let [{:keys [interval-fn timeout-fn]} @cmpnt-state]
-          (.clearTimeout js/window timeout-fn)
-          (.clearInterval js/window interval-fn)))
-
-      :reagent-render
-      (fn []
         [:span {:class-name "countdown-timer"}
-         (format-time start-time)])})))
+         (format-time start-time cmpnt-state)])})))

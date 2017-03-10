@@ -1,26 +1,29 @@
 @import '../colors.less';
 
+@add-button-distance: 30px;
+@add-button-dimension: 56px;
+@add-button-custom-font: 25px;
+
 .add-button {
     position: fixed;
-    right: 30px;
-    bottom: 30px;
+    right: @add-button-distance;
+    bottom: @add-button-distance;
     display: block;
-    height: 56px;
-    width: 56px;
+    height: @add-button-dimension;
+    width: @add-button-dimension;
     border-radius: 50%;
-    border: 1px solid @wombat-green;
+    border: none;
     background-color: @wombat-green;
     cursor: pointer; 
 
     .text {
         display: block;
         padding: 10px 21px;
-        font-size: 25px;
+        font-size: @add-button-custom-font;
         color: @white;
     }
 
     &:hover {
         background-color: @wombat-dark-green;
-        border-color: @wombat-dark-green;
     }
 }

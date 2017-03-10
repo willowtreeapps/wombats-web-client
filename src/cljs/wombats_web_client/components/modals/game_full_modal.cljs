@@ -1,6 +1,7 @@
 (ns wombats-web-client.components.modals.game-full-modal
   (:require [re-frame.core :as re-frame]
             [wombats-web-client.events.games :refer [get-all-games]]
+            [wombats-web-client.utils.forms :refer [submit-modal-input]]
             [wombats-web-client.utils.errors :refer [game-full-error]]))
 
 (defn close-modal []
@@ -11,6 +12,7 @@
   (fn []
     [:div.modal.game-full-modal
      [:div.title "GAME FULL"]
-     [:div.desc game-full-error]
+     [:div.modal-content
+      [:div.desc game-full-error]]
      [:div.action-buttons
-      [:button.close-button {:on-click close-modal} "OKAY"]]]))
+      [submit-modal-input "OKAY" close-modal]]]))

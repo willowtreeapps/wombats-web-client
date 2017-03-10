@@ -1,6 +1,7 @@
 (ns wombats-web-client.components.modals.game-started-modal
   (:require [re-frame.core :as re-frame]
-            [wombats-web-client.utils.errors :refer [game-started-error]]))
+            [wombats-web-client.utils.errors :refer [game-started-error]]
+            [wombats-web-client.utils.forms :refer [submit-modal-input]]))
 
 (defn close-modal []
   (re-frame/dispatch [:set-modal nil]))
@@ -9,6 +10,7 @@
   (fn []
     [:div.modal.game-started-modal
      [:div.title "GAME HAS STARTED"]
-     [:div.desc game-started-error]
+     [:div.modal-content
+      [:div.desc game-started-error]]
      [:div.action-buttons
-      [:button.close-button {:on-click close-modal} "OKAY"]]]))
+      [submit-modal-input "OKAY" close-modal]]]))

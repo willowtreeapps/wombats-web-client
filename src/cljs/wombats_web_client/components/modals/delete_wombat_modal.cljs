@@ -1,7 +1,8 @@
 (ns wombats-web-client.components.modals.delete-wombat-modal
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
-            [wombats-web-client.utils.forms :refer [cancel-modal-input]]
+            [wombats-web-client.utils.forms :refer [cancel-modal-input
+                                                    submit-modal-input]]
             [wombats-web-client.events.user :refer [delete-wombat]]))
 
 (def error (reagent/atom nil))
@@ -23,13 +24,12 @@
       (fn []
         [:div {:class "modal delete-wombat-modal"}
          [:div.title "DELETE WOMBAT"]
-         [:div.modal-error @modal-error]
-         [:div.desc "You are about to delete this wombat. Are you sure you want to do this?"]
+         (when @modal-error [:div.modal-error @modal-error])
+         [:div.modal-content
+          [:div.desc "You are about to delete this wombat. Are you sure you want to do this?"]]
          [:div.action-buttons
           [cancel-modal-input]
-          [:input.modal-button {:type "button"
-                                :value "DELETE"
-                                :on-click (fn []
-                                            (delete-wombat
-                                             id
-                                             #(callback-success cmpnt-state)))}]]])})))
+          [submit-modal-input "DELETE" (fn []
+                                         (delete-wombat
+                                          id
+                                          #(callback-success cmpnt-state)))]]])})))

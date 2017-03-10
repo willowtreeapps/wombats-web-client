@@ -1,6 +1,6 @@
 @import "../colors.less";
 @import "../objects/active-line";
-@import "../objects/button";
+@import "../components/simple-button";
 
 .tabbed-container {
     display: flex;
@@ -9,6 +9,7 @@
     .content {
         position: relative;
         flex-grow: 1;
+        overflow: scroll;
     }
 
     .tabs {

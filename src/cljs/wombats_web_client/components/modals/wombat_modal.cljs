@@ -62,7 +62,7 @@
           [:div {:class "modal add-wombat-modal"}
            [:div.title title]
            (when error [:div.modal-error error])
-           [:form
+           [:div.modal-content
             [text-input-with-label {:name "wombat-name"
                                     :label "Wombat Name"
                                     :state cmpnt-state}]
@@ -73,7 +73,7 @@
             [text-input-with-label {:name "wombat-file-path"
                                     :label "Wombat File Path"
                                     :state cmpnt-state
-                                    :disabled (some? wombat-id)}]
-            [:div.action-buttons
-             [cancel-modal-input]
-             [submit-modal-input submit-text #(on-submit-form-valid? cmpnt-state username wombat-id)]]]]))})))
+                                    :disabled (some? wombat-id)}]]
+           [:div.action-buttons
+            [cancel-modal-input]
+            [submit-modal-input submit-text #(on-submit-form-valid? cmpnt-state username wombat-id)]]]))})))
