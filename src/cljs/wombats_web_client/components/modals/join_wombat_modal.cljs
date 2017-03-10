@@ -87,7 +87,7 @@
 (defn wombat-options [wombat cmpnt-state]
   (let [{:keys [wombat/name wombat/id]} wombat]
     [:li.wombat-options {:key id
-          :onClick #(on-wombat-selection cmpnt-state id name)} name]))
+                         :on-click #(on-wombat-selection cmpnt-state id name)} name]))
 
 (defn select-input-with-label [cmpnt-state]
   (let [{:keys [show-dropdown wombat-name wombat-name-error]} @cmpnt-state
@@ -106,7 +106,6 @@
       [:img.icon-arrow {:class (when show-dropdown "open-dropdown")
                         :src "/images/icon-arrow.svg"}]]
      (when show-inline-error
-       (print "showing ")
        [:div.inline-error wombat-name-error])
      (when show-dropdown
        [:div.dropdown-wrapper
@@ -150,8 +149,8 @@
 
 (defn correct-privacy-settings [is-private password-error]
   (cond
-    is-private (not (true? password-error)) ;; if it's private and there's no error, can submit
-    (not is-private) true)) ;; if the game isn't private, password state is irrelevant
+   is-private (not (true? password-error)) ;; if it's private and there's no error, can submit
+   (not is-private) true)) ;; if the game isn't private, password state is irrelevant
 
 (defn on-submit-form-valid? [{:keys [game-id is-private cmpnt-state]}]
   (let [{:keys [wombat-name
