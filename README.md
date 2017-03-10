@@ -2,7 +2,7 @@
 This repo is a part of the Wombats Suite, documented at [Wombat Documentation](https://github.com/willowtreeapps/wombats-documentation). 
 
 ## Contributing? Issues? Features? Curiosity?
-[Learn how to contribute here.](https://github.com/willowtreeapps/wombats-documentation/blob/master/CONTRIBUTING.md)
+[Learn how to contribute here.](https://github.com/willowtreeapps/wombats-web-client/blob/master/CONTRIBUTING.md)
 
 ## Our Stack
 Our web client is written with the following tools:
