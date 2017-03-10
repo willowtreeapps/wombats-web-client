@@ -8,20 +8,19 @@
 
 (def message (atom ""))
 
-(defn send-message
-  [game-id]
+(defn send-message-fn
   "Sends the message and clears the chat box"
+  [game-id]
   (fn []
     ;; Send message
     (ws/send-message :chat-message {:message @message
                                     :game-id game-id})
-
     ;; Clear message box
     (reset! message "")))
 
 (defn check-for-enter
-  [send-msg]
   "Sends a message if the user hit enter in the chat box"
+  [send-msg]
   (fn [event]
     (let [key (-> event .-key)]
       (when (= "Enter" key)
@@ -41,54 +40,52 @@
     color-hex))
 
 (defn default-message []
-  [:li {:class-name "chat-msg"}
-   [:span {:class-name "msg-body default"} "Say something already!"]])
+  [:li.chat-msg
+   [:span.msg-body.default "Say something already!"]])
 
 (defn display-messages
   [messages game]
-  (fn []
-    (let [stats (:game/stats game)
-          messages @messages
-          element (first (array-seq (.getElementsByClassName js/document
-                                                             "chat-box-message-container")))]
+  (let [stats (:game/stats game)
+        messages @messages
+        element (first (array-seq (.getElementsByClassName js/document
+                                                           "chat-box-message-container")))]
 
-      ;; Check if you should auto scroll to the bottom
-      (when (and element (= (+ element.scrollTop element.clientHeight) element.scrollHeight))
-        ;; On the next tick, scroll the rendered element down
-        (js/setTimeout #(set! (.-scrollTop element)
-                              element.scrollHeight)
-                       0))
+    ;; Check if you should auto scroll to the bottom
+    (when (and element (= (+ element.scrollTop element.clientHeight) element.scrollHeight))
+      ;; On the next tick, scroll the rendered element down
+      (js/setTimeout #(set! (.-scrollTop element)
+                            element.scrollHeight)
+                     0))
 
-       [:ul {:class-name "chat-box-message-container"}
-        (if (pos? (count messages))
-          (for [{:keys [username
-                        message
-                        timestamp]} messages]
-            ^{:key (str username "-" timestamp)}
-            [:li {:class-name "chat-msg"}
-             [:span {:class-name "msg-timestamp"} (format-time timestamp)]
-             [:span {:class-name "msg-username"
-                     :style {:color (get-username-color stats username)}} username]
-             [:span {:class-name "msg-body"} message]])
-          [default-message])])))
+    [:ul.chat-box-message-container
+     (if (pos? (count messages))
+       (for [[index {:keys [username
+                            message
+                            timestamp]}] (map-indexed vector messages)]
+
+         ^{:key (str username "-" timestamp "-" index)}
+         [:li.chat-msg
+          [:span.msg-timestamp (format-time timestamp)]
+          [:span.msg-username {:style {:color (get-username-color stats username)}} username]
+          [:span.msg-body message]])
+       [default-message])]))
 
 (defn chat-box-input
   [game-id]
-  (let [send-msg-fn (send-message game-id)]
-    [:div {:class-name "chat-box-input-container"}
-     [:input.chat-input {:name "chat-input"
-                         :type "input"
-                         :placeholder "Type something..."
-                         :value @message
-                         :on-key-press (check-for-enter send-msg-fn)
-                         :on-change #(reset! message (-> % .-target .-value))}]
-     [:button.chat-send-btn {:on-click send-msg-fn} "SEND"]]))
-
-
+  (let [send-msg-fn (send-message-fn game-id)]
+    [:div.chat-box-input-container
+     [:input.chat-input
+      {:name "chat-input"
+       :type "input"
+       :placeholder "Type something..."
+       :value @message
+       :on-key-press (check-for-enter send-msg-fn)
+       :on-change #(reset! message (-> % .-target .-value))}]
+     [:button.chat-send-btn 
+      {:on-click send-msg-fn} "SEND"]]))
 
 (defn chat-box
   [game-id messages stats]
-  (fn []
-    [:div {:class-name "chat-box"}
-     [display-messages messages stats]
-     [chat-box-input game-id]]))
+  [:div.chat-box
+   [display-messages messages stats]
+   [chat-box-input game-id]])
