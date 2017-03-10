@@ -17,15 +17,24 @@
 ;; Helper Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- resize-canvas []
+(defn- resize-canvas [arena-atom]
   (let [root-element (first (array-seq (.getElementsByClassName js/document root-class)))
         canvas-element (.getElementById js/document canvas-id)
         half-width (/ (.-offsetWidth root-element) 2)
         height (.-offsetHeight root-element)
         dimension (min height half-width)]
 
+    (arena/arena @arena-atom canvas-id)
     (set! (.-width canvas-element) dimension)
     (set! (.-height canvas-element) dimension)))
+
+(defn- on-resize [arena-atom cmpnt-state]
+  (let [resize-id (:timeout-fn @cmpnt-state)]
+    (js/clearTimeout resize-id)
+    (let [new-resize-id (js/setTimeout
+                                   #(resize-canvas arena-atom)
+                                   500)]
+      (swap! cmpnt-state assoc :timeout-fn new-resize-id))))
 
 (defn- show-winner-modal
   [winner]
@@ -36,12 +45,13 @@
 ;; Lifecycle Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- component-did-mount [cmpnt-state]
+(defn- component-did-mount [arena cmpnt-state]
   ;; Add resize listener
-  (.addEventListener js/window
-                     "resize"
-                     (:resize-fn @cmpnt-state))
-  (resize-canvas))
+  (let [resize-fn #(on-resize arena cmpnt-state)]
+    (.addEventListener js/window
+                       "resize"
+                       resize-fn))
+  (resize-canvas arena))
 
 (defn- component-will-mount [game-id]
   (ws/send-message :join-game {:game-id game-id}))
@@ -134,18 +144,19 @@
 
 (defn game-play [{:keys [game-id]}]
   (let [arena (re-frame/subscribe [:game/arena])
-        cmpnt-state (reagent/atom {:resize-fn #(resize-canvas)})
+        cmpnt-state (reagent/atom {:resize-fn nil
+                                   :timeout-fn nil})
         messages (re-frame/subscribe [:game/messages])
         user (re-frame/subscribe [:current-user])
         games (re-frame/subscribe [:games])]
 
     (reagent/create-class
-     {:component-did-mount #(component-did-mount cmpnt-state)
+     {:component-did-mount #(component-did-mount arena cmpnt-state)
       :component-will-mount #(component-will-mount game-id)
       :component-will-unmount #(component-will-unmount game-id cmpnt-state)
       :display-name "game-play-panel"
       :reagent-render
-      (fn []
+      (fn [{:keys [game-id]}]
         (let [game (get @games game-id)
               winner (:game/winner game)]
           (arena/arena @arena canvas-id)
