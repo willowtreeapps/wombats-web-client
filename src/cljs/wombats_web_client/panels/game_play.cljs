@@ -50,7 +50,7 @@
   (resize-canvas arena))
 
 (defn- component-did-update [arena]
-  (resize-canvas arena))
+  (arena/arena @arena canvas-id))
 
 (defn- component-will-mount [game-id]
   (ws/send-message :join-game {:game-id game-id}))
@@ -160,7 +160,6 @@
               winner (:game/winner game)]
 
           (arena/arena @arena canvas-id)
-
           [:div {:class-name root-class}
            [:div.left-game-play-panel {:id "wombat-arena"
                                        :class (when winner "game-over")}
