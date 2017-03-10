@@ -57,7 +57,7 @@
                             element.scrollHeight)
                      0))
 
-    [:ul {:class-name "chat-box-message-container"}
+    [:ul.chat-box-message-container
      (if (pos? (count messages))
        (for [[index {:keys [username
                             message
