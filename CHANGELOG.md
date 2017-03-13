@@ -9,10 +9,6 @@ CHANGELOG
 * Fixed Flickering of Canvas  
 [CP Dehli](https://github.com/dehli) No issue created.
 
-## Alpha2
-**Enhancements**
-
-**Bug Fixes**
 ## Alpha1
 **Enhancements**
 * Basic gameplay set up
@@ -21,3 +17,6 @@ CHANGELOG
 * Watch a game
 * Chat during a game
 * Playing simulator
+
+**Bug Fixes**
+* None
