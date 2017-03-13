@@ -1,10 +1,12 @@
 # PR for Issue # .
 
 ## PR Status
-
 **READY/IN DEVELOPMENT/HOLD**
 
-## Changes proposed in the pull request:
+## Ready for PR?
+- [ ] I have updated the CHANGELOG following format shown in file and pushed those changes to my PR branch.
+
+## Changes Proposed:
 -
 -
 -
