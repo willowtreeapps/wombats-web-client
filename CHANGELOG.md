@@ -9,6 +9,20 @@ CHANGELOG
 * Fixed Flickering of Canvas  
 [CP Dehli](https://github.com/dehli) No issue created.
 
+## QA
+**Enhancements**
+* None
+
+**Bug Fixes**
+* None
+
+## Develop
+**Enhancements**
+* None
+
+**Bug Fixes**
+* None
+
 ## 1.0.0-alpha1 (3.10.2017)
 **Enhancements**
 * Basic gameplay set up
