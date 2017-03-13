@@ -13,7 +13,6 @@
   [send-ch msg-type payload metadata]
   (let [event-fn
         (condp = msg-type
-          :simulator-update #(re-frame/dispatch [:simulator/update-state payload])
           :frame-update #(re-frame/dispatch [:game/update-frame payload])
           :chat-message #(re-frame/dispatch [:game/add-chat-message payload])
           :game-info #(re-frame/dispatch [:game/info payload])

@@ -1,18 +1,13 @@
 (ns wombats-web-client.components.simulator.configure
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
-            [wombats-web-client.utils.socket :as ws]
             [wombats-web-client.utils.forms :as f]))
 
 (defn- update-simulator-configuration!
   [state]
-
-  (ws/send-message
-   :connect-to-simulator
-   {:simulator-template-id (:template-id state)
-    :wombat-id (:wombat-id state)})
-
-  (re-frame/dispatch [:simulator/update-configuration state]))
+  (re-frame/dispatch [:simulator/initialize-simulator
+                      {:simulator/template-id (:template-id state)
+                       :simulator/wombat-id (:wombat-id state)}]))
 
 (defn- update-form-state
   [e id form-state]

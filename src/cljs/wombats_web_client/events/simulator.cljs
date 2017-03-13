@@ -4,15 +4,16 @@
             [re-frame.core :as re-frame]
             [wombats-web-client.constants.urls :refer [simulator-templates-url]]
             [wombats-web-client.utils.auth :refer [add-auth-header]]
-            [wombats-web-client.utils.socket :as ws]))
+            [wombats-web-client.constants.urls :refer [initialize-simulator-url
+                                                       process-simulator-frame-url]]))
 
 (defn- get-simulator-templates-request [on-success on-error]
   (GET simulator-templates-url {:response-format (edn-response-format)
-                               :keywords? true
-                               :format (edn-request-format)
-                               :headers (add-auth-header {})
-                               :handler on-success
-                               :error-handler on-error}))
+                                :keywords? true
+                                :format (edn-request-format)
+                                :headers (add-auth-header {})
+                                :handler on-success
+                                :error-handler on-error}))
 
 (defn get-simulator-templates []
   (get-simulator-templates-request
@@ -36,6 +37,12 @@
    (assoc db :simulator/state sim-state)))
 
 (re-frame/reg-event-db
+ :simulator/simulator-error
+ (fn [db [_ error]]
+   ;; TODO #279 Error State
+   (assoc db :simulator/error error)))
+
+(re-frame/reg-event-db
  :simulator/update-active-simulator-pane
  (fn [db [_ active-pane]]
    (assoc db :simulator/active-pane active-pane)))
@@ -51,3 +58,28 @@
             template-id :template-id}]]
    (merge db {:simulator/template-id template-id
               :simulator/wombat-id wombat-id})))
+
+(re-frame/reg-event-fx
+ :simulator/initialize-simulator
+ (fn [_ [_ simulation-payload]]
+   {:http-xhrio {:method :post
+                 :uri initialize-simulator-url
+                 :params simulation-payload
+                 :headers (add-auth-header {})
+                 :format (edn-request-format)
+                 :response-format (edn-response-format)
+                 :on-success [:simulator/update-state]
+                 :on-failure [:simulator/simulator-error]}
+    :dispatch [:simulator/update-configuration simulation-payload]}))
+
+(re-frame/reg-event-fx
+ :simulator/process-simulation-frame
+ (fn [_ [_ game-state]]
+   {:http-xhrio {:method :post
+                 :uri process-simulator-frame-url
+                 :params game-state
+                 :headers (add-auth-header {})
+                 :format (edn-request-format)
+                 :response-format (edn-response-format)
+                 :on-success [:simulator/update-state]
+                 :on-failure [:simulator/simulator-error]}}))
