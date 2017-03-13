@@ -22,6 +22,7 @@
    :simulator/wombat-id nil
    :simulator/template-id nil
    :simulator/mini-map false
+   :simulator/error nil
 
    :join-game-selections []
    :spritesheet nil

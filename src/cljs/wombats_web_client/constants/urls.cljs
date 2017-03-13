@@ -34,4 +34,11 @@
 (defn games-join-url [game-id]
   (str base-api-versioned-url "/games/" game-id "/join"))
 
-(defonce simulator-templates-url (str base-api-versioned-url "/simulator/templates"))
+(defonce simulator-templates-url
+  (str base-api-versioned-url "/simulator/templates"))
+
+(defonce initialize-simulator-url
+  (str base-api-versioned-url "/simulator/initialize"))
+
+(defonce process-simulator-frame-url
+  (str base-api-versioned-url "/simulator/process_frame"))

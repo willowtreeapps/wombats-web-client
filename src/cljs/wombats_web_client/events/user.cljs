@@ -47,7 +47,7 @@
 
 (defn get-all-wombats []
   (let [wombats-ch (load-wombats (get-current-user-id))]
-    (go 
+    (go
       (re-frame/dispatch [:update-wombats (async/<! wombats-ch)]))))
 
 

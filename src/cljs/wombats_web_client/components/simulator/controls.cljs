@@ -5,7 +5,8 @@
 
 (defn- on-step-click!
   [evt sim-state]
-  (ws/send-message :process-simulation-frame {:game-state @sim-state}))
+  (re-frame/dispatch [:simulator/process-simulation-frame
+                      {:game-state @sim-state}]))
 
 (defn render
   [sim-state show-mini-map]
