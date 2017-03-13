@@ -4,7 +4,7 @@
 **READY/IN DEVELOPMENT/HOLD**
 
 ## Ready for PR?
-- [ ] I have updated the CHANGELOG following format shown in file and pushed those changes to my PR branch.
+- [ ] I have updated the CHANGELOG following the format shown in file and pushed those changes to my PR branch.
 
 ## Changes Proposed:
 -
