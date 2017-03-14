@@ -1,13 +1,16 @@
 CHANGELOG
 =========
 
-## Master
+## Develop
 **Enhancements**
-* None
+* Created a general Select Component ready for any form
+	[Emily Seibert](https://github.com/emilyseibert) [#200](https://github.com/willowtreeapps/wombats-web-client/issues/200)
 
 **Bug Fixes**
-* Fixed Flickering of Canvas
-	[CP Dehli](https://github.com/dehli) No issue created.
+* Join Modal dropdown z index updated to be drawn over disabled color overlay
+	[Emily Seibert](https://github.com/emilyseibert) [#275](https://github.com/willowtreeapps/wombats-web-client/issues/275)
+* Fixed simulator (large frame processing)
+    [Matt O'Connell](https://github.com/oconn) API Issue #[326](https://github.com/willowtreeapps/wombats-api/issues/326)
 
 ## QA
 **Enhancements**
@@ -16,15 +19,13 @@ CHANGELOG
 **Bug Fixes**
 * None
 
-## Develop
+## Master
 **Enhancements**
 * None
 
 **Bug Fixes**
-* Join Modal dropdown z index updated to be drawn over disabled color overlay
-	[Emily Seibert](https://github.com/emilyseibert) [#275](https://github.com/willowtreeapps/wombats-web-client/issues/275)
-* Fixed simulator (large frame processing)
-    [Matt O'Connell](https://github.com/oconn) API Issue #[326](https://github.com/willowtreeapps/wombats-api/issues/326)
+* Fixed Flickering of Canvas
+	[CP Dehli](https://github.com/dehli) No issue created.
 
 ## 1.0.0-alpha1 (3.10.2017)
 **Enhancements**
