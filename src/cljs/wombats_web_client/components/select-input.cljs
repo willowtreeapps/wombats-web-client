@@ -32,11 +32,16 @@
   (swap! form-state assoc error-key nil))
 
 (defn select-input 
-  [form-state form-key error-key option-list label]
+  [params]
   (let [cmpnt-state (reagent/atom {:is-closed true
                                    :selected-option nil})]
-    (fn [form-state form-key error-key option-list label]
-      (let [closed (:is-closed @cmpnt-state)
+    (fn [params]
+      (let [{:keys [form-state 
+                    form-key
+                    error-key
+                    option-list
+                    label]} params
+            closed (:is-closed @cmpnt-state)
             selected-option (:selected-option @cmpnt-state)
             is-no-selection? (nil? selected-option)
             displayed-option (if is-no-selection? label selected-option)

@@ -15,7 +15,6 @@
         cursor: pointer;
         height: 45px;
         margin-bottom: @select-margin-bottom;
-        z-index: @join-modal-dropdown-z-idx;
 
         &.error {
             box-shadow: 0px 0px 0px 1px @error-red;
@@ -60,6 +59,8 @@
             .option {
                 line-height: 45px;
                 background-color: @white;
+                z-index: @join-modal-dropdown-z-idx;
+                position: relative;
 
                 &:hover {
                     background-color: @white-two;

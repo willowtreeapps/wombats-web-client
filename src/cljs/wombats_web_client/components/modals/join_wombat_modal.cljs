@@ -153,7 +153,7 @@
               error @modal-error
               is-private (:game/is-private game)
               occupied-colors (get-occupied-colors game)
-              my-wombat-options (optionize :wombat/id :wombat/name @my-wombats)
+              my-wombat-options (optionize [:wombat/id] [:wombat/name] @my-wombats)
               title (if is-private "JOIN PRIVATE GAME" "JOIN GAME")]
           [:div.modal.join-wombat-modal ;; starts hiccup
            [:div.title title]
@@ -161,7 +161,11 @@
            [:div.modal-content
             (when is-private
               [private-game-password game cmpnt-state])
-            [select-input cmpnt-state :wombat-id :wombat-id-error my-wombat-options  "Select Wombat"]
+            [select-input {:form-state cmpnt-state
+                           :form-key :wombat-id
+                           :error-key :wombat-id-error
+                           :option-list my-wombat-options
+                           :label "Select Wombat"}]
             [select-wombat-color cmpnt-state wombat-color occupied-colors]]
            [:div.action-buttons
             [cancel-modal-input]
