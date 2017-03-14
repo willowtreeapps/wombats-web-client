@@ -4,6 +4,10 @@
 (defn get-value [element]
   (-> element .-target .-value))
 
+(defn optionize [id-key name-key coll]
+  (map (fn [el] {:id (get el id-key)
+                 :display-name (get el name-key)}) coll))
+
 (defn cancel-modal-input []
   [:input.modal-button {:type "button"
                         :value "CANCEL"
