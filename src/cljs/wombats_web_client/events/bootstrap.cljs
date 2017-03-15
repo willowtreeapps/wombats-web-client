@@ -34,7 +34,7 @@
 (re-frame/reg-event-db
  :bootstrap-complete
  (fn [db [_ _]]
-   (assoc db :bootstrapping? false)))
+   (assoc db :bootstrapping false)))
 
 (defn load-user-success [{:keys [user/id] :as current-user}]
   (re-frame/dispatch-sync [:set-current-user current-user])

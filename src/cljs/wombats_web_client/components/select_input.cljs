@@ -47,8 +47,8 @@
                     label]} params
             closed (:is-closed @cmpnt-state)
             selected-option (:selected-option @cmpnt-state)
-            is-no-selection? (nil? selected-option)
-            displayed-option (if is-no-selection? label selected-option)
+            is-no-selection (nil? selected-option)
+            displayed-option (if is-no-selection label selected-option)
             error-val (get @form-state error-key)]
         [:div.select-input
          [:label.label.select-input-label label]
@@ -63,7 +63,7 @@
                                     error-key)}
           [:ul.option-list
            ;; will display default text or selection display name
-           [:p.display-selected {:class (when is-no-selection? "default")
+           [:p.display-selected {:class (when is-no-selection "default")
                                  :on-click #(select-input-on-click cmpnt-state)}
             displayed-option]
 

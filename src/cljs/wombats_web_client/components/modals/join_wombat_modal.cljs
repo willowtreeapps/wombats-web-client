@@ -61,11 +61,11 @@
       (cond
        game-full
        (re-frame/dispatch [:set-modal {:fn #(game-full-modal)
-                                       :show-overlay? true}])
+                                       :show-overlay true}])
 
        game-started
        (re-frame/dispatch [:set-modal {:fn #(game-started-modal)
-                                       :show-overlay? true}])
+                                       :show-overlay true}])
 
        password-error
        (swap! cmpnt-state assoc :password-error (get-error-message error))
@@ -126,21 +126,21 @@
    ;; if the game isn't private, password state is irrelevant
    (not is-private) true))
 
-(defn on-submit-form-valid? [{:keys [game-id is-private cmpnt-state]}]
+(defn on-submit-form-valid [{:keys [game-id is-private cmpnt-state]}]
   (let [{:keys [wombat-color
                 wombat-color-error
                 wombat-id
                 wombat-id-error
                 password
                 password-error]} @cmpnt-state
-                password-blank? (and is-private
-                                     (clojure.string/blank? password))
-                private-input-correct? (correct-privacy-settings
-                                        is-private
-                                        password-error)
-                ready-to-submit? (and wombat-id
-                                      wombat-color
-                                      private-input-correct?)]
+                password-blank (and is-private
+                                    (clojure.string/blank? password))
+                private-input-correct (correct-privacy-settings
+                                       is-private
+                                       password-error)
+                ready-to-submit (and wombat-id
+                                     wombat-color
+                                     private-input-correct)]
 
     (when  (nil? wombat-color)
       (swap! cmpnt-state assoc :wombat-color-error wombat-color-missing))
@@ -148,10 +148,10 @@
     (when (nil? wombat-id)
       (swap! cmpnt-state assoc :wombat-id-error required-field-error))
 
-    (when password-blank?
+    (when password-blank
       (swap! cmpnt-state assoc :password-error required-field-error))
 
-    (when ready-to-submit?
+    (when ready-to-submit
       (join-open-game game-id
                       wombat-id
                       wombat-color
@@ -196,7 +196,7 @@
             [select-wombat-color cmpnt-state wombat-color occupied-colors]]
            [:div.action-buttons
             [cancel-modal-input]
-            [submit-modal-input "JOIN" #(on-submit-form-valid?
+            [submit-modal-input "JOIN" #(on-submit-form-valid
                                          {:game-id game-id
                                           :is-private is-private
                                           :cmpnt-state cmpnt-state})]]]))})))

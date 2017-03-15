@@ -151,6 +151,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (re-frame/reg-sub
- :bootstrapping?
+ :bootstrapping
  (fn [db _]
-   (:bootstrapping? db)))
+   (:bootstrapping db)))

@@ -146,7 +146,7 @@
  :bootstrap-user-data
  (fn [{:keys [db]} [_ user]]
    {:db (assoc db :auth-token (get-token)
-                  :bootstrapping? false)
+                  :bootstrapping false)
     :http-xhrio {:method          :get
                  :uri             (my-wombats-url (:user/id user))
                  :headers         (add-auth-header {})

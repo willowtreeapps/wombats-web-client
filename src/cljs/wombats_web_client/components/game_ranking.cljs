@@ -2,17 +2,17 @@
 
 (defn get-health-color [hp]
   (cond
-    (<= 70 hp) "healthy"
-    (<= 30 hp 69) "okay-health"
-    (<= 1 hp 29) "dying"
-    :else "none"))
+   (<= 70 hp) "healthy"
+   (<= 30 hp 69) "okay-health"
+   (<= 1 hp 29) "dying"
+   :else "none"))
 
 (defn get-adjusted-hp [game]
   (let [game-status (:game/status game)
-        is-starting? (or (= game-status :pending-open)
-                         (= game-status :pending-closed)
-                         (= game-status :active-intermission))]
-    (if is-starting? 100 0)))
+        is-starting (or (= game-status :pending-open)
+                        (= game-status :pending-closed)
+                        (= game-status :active-intermission))]
+    (if is-starting 100 0)))
 
 (defn get-bounded-hp [hp]
   (if (> hp 100) 100
@@ -28,11 +28,11 @@
                 adjusted-hp-value (if (nil? hp)
                                     (get-adjusted-hp game)
                                     (get-bounded-hp hp))
-                is-dead? (zero? adjusted-hp-value)
+                is-dead (zero? adjusted-hp-value)
                 health-color (get-health-color adjusted-hp-value)
                 health-percent (str adjusted-hp-value "%")]
     ^{:key (or username id)}
-    [:li.wombat-status {:class (when is-dead? "disabled")}
+    [:li.wombat-status {:class (when is-dead "disabled")}
      [:div.health-bar
       [:span.filling {:class health-color
                       :style

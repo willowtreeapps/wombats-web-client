@@ -11,7 +11,7 @@
 (defn open-add-wombat-modal []
   (fn []
     (re-frame/dispatch [:set-modal {:fn wombat-modal
-                                    :show-overlay? true}])))
+                                    :show-overlay true}])))
 
 (defn header []
   [:div.header
