@@ -4,11 +4,6 @@
               [wombats-web-client.utils.games :as games]))
 
 (re-frame/reg-sub
- :name
- (fn [db]
-   (:name db)))
-
-(re-frame/reg-sub
  :active-panel
  (fn [db _]
    (:active-panel db)))

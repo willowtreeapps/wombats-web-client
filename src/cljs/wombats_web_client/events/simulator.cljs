@@ -50,7 +50,7 @@
 (re-frame/reg-event-db
  :simulator/toggle-simulator-mini-map
  (fn [db _]
-   (assoc db :simulator/mini-map (not (:simulator/mini-map db)))))
+   (update-in db [:simulator/mini-map] not)))
 
 (re-frame/reg-event-db
  :simulator/update-configuration

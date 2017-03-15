@@ -16,7 +16,7 @@
 
 (defn get-bounded-hp [hp]
   (if (> hp 100) 100
-    (if (< hp 0) 0 hp)))
+    (if (neg? hp) 0 hp)))
 
 (defn render-wombat-status [game stat]
   (let [{:keys [db/id
