@@ -107,6 +107,6 @@
 
     :aliases {"run-local"   ["pdo" "clean," ["figwheel" "local"] ["less" "auto"]]
               "run-dev"     ["pdo" "clean," ["figwheel" "dev"]   ["less" "auto"]]
-              "deploy-dev"  ["do"  "clean," ["kibit"] ["cljsbuild" "once" "deploy-dev"]  ["less" "once"]]
-              "deploy-qa"   ["do"  "clean," ["cljsbuild" "once" "deploy-qa"]   ["less" "once"]]
-              "deploy-prod" ["do"  "clean," ["cljsbuild" "once" "deploy-prod"] ["less" "once"]]})
+              "deploy-dev"  ["do"  "clean," ["kibit" "src/cljs/wombats_web_client/"] ["cljsbuild" "once" "deploy-dev"]  ["less" "once"]]
+              "deploy-qa"   ["do"  "clean," ["kibit" "src/cljs/wombats_web_client/"] ["cljsbuild" "once" "deploy-qa"]   ["less" "once"]]
+              "deploy-prod" ["do"  "clean," ["kibit" "src/cljs/wombats_web_client/"] ["cljsbuild" "once" "deploy-prod"] ["less" "once"]]})
