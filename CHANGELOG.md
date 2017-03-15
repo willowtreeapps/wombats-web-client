@@ -21,7 +21,8 @@ CHANGELOG
 
 ## Master
 **Enhancements**
-* None
+* Access Key Redirect
+      [Matt O'Connell](https://github.com/oconn) API Issue #325[https://github.com/willowtreeapps/wombats-api/issues/325]
 
 **Bug Fixes**
 * Fixed Flickering of Canvas
