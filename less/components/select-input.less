@@ -5,6 +5,7 @@
 @import "../z-index.less";
 
 @select-margin-bottom: 30px;
+@select-height: 45px;
 
 .select-input {
     .label;
@@ -13,7 +14,7 @@
         width: 100%;
         position: relative;
         cursor: pointer;
-        height: 45px;
+        height: @select-height;
         margin-bottom: @select-margin-bottom;
 
         &.error {
@@ -53,11 +54,10 @@
             margin: 0;
             padding: 0;
             text-indent: 10px;
-            line-height: 45px;
+            line-height: @select-height;
             width: 100%;
 
             .option {
-                line-height: 45px;
                 background-color: @white;
                 z-index: @join-modal-dropdown-z-idx;
                 position: relative;
