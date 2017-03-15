@@ -14,7 +14,7 @@
   (re-frame/dispatch [:update-modal-error nil])
   (re-frame/dispatch [:set-modal nil]))
 
-(defn on-submit-form-valid? [cmpnt-state username wombat-id]
+(defn on-submit-form-valid [cmpnt-state username wombat-id]
   (let [{:keys [wombat-name
                 wombat-repo-name
                 wombat-file-path]} @cmpnt-state
@@ -85,7 +85,7 @@
             [cancel-modal-input]
             [submit-modal-input
              submit-text
-             #(on-submit-form-valid?
+             #(on-submit-form-valid
                cmpnt-state
                username
                wombat-id)]]]))})))

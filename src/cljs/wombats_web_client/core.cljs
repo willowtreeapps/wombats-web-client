@@ -21,8 +21,8 @@
                   (.getElementById js/document "app")))
 
 (defn ^:export init []
+  (dev-setup)
   (re-frame/dispatch-sync [:initialize-db])
   (routes/app-routes)
-  (dev-setup)
   (mount-root)
   (bootstrap))

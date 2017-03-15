@@ -43,7 +43,7 @@
 (defn- show-winner-modal
   [winner]
   (re-frame/dispatch [:set-modal {:fn #(winner-modal winner)
-                                  :show-overlay? true}]))
+                                  :show-overlay true}]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods

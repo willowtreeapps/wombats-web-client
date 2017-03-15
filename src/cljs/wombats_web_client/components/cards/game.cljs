@@ -14,7 +14,7 @@
   (fn [e]
     (.preventDefault e)
     (re-frame/dispatch [:set-modal {:fn #(join-wombat-modal game-id)
-                                    :show-overlay? true}])))
+                                    :show-overlay true}])))
 
 (defn get-arena-text-info [{:keys [game-type rounds width height]}]
   (let [round-txt (if (= 1 rounds) "Round" "Rounds")
@@ -84,13 +84,13 @@
          game-private :game/is-private} game
         {arena-width :arena/width
          arena-height :arena/height} arena
-         is-pending-open? (= :pending-open game-status)
-         is-pending-closed? (= :pending-closed game-status)]
+         is-pending-open (= :pending-open game-status)
+         is-pending-closed (= :pending-closed game-status)]
 
     [:div.game-card {:key game-id}
      [:a.link {:href (str "/games/" game-id)}]
 
-     [arena-card {:is-open (or is-pending-open? is-pending-closed?)
+     [arena-card {:is-open (or is-pending-open is-pending-closed)
                   :is-private game-private
                   :is-joinable is-joinable
                   :is-full is-full

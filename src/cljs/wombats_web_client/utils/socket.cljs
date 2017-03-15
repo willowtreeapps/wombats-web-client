@@ -84,8 +84,8 @@
                                 (let [formatted-message (parse message.data)
                                       {:keys [meta payload]} formatted-message
                                       message-type (:msg-type meta)
-                                      is-handshake? (= message-type :handshake)]
-                                  (if is-handshake?
+                                      is-handshake (= message-type :handshake)]
+                                  (if is-handshake
                                     (bootstrap (:chan-id payload) connection-ch)
                                     (callback message-type payload meta))))]
 

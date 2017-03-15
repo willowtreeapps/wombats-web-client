@@ -44,11 +44,11 @@
             minutes (/ (- seconds-left seconds) 60)
             hours (int (/ minutes 60))
             minutes-adjusted (- minutes (* hours 60))
-            minutes-single-digit? (< minutes-adjusted 10)
-            minutes-formatted (str (when minutes-single-digit? "0")
+            minutes-single-digit (< minutes-adjusted 10)
+            minutes-formatted (str (when minutes-single-digit "0")
                                    minutes-adjusted)
-            has-hours? (pos? hours)]
-        (str (when has-hours?
+            has-hours (pos? hours)]
+        (str (when has-hours
                (str hours ":"))
              minutes-formatted ":" seconds-formatted))
 

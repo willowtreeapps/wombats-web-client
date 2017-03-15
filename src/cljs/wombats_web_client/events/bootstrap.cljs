@@ -8,10 +8,9 @@
             [wombats-web-client.socket-dispatcher :as sd]
             [wombats-web-client.events.spritesheet :refer [get-spritesheet]]
             [wombats-web-client.utils.local-storage :refer [remove-token!]]
-            [wombats-web-client.utils.bootstrap
-             :refer [bootstrap-failure
-                     token-from-url
-                     redirect-unauthenticated]]
+            [wombats-web-client.utils.bootstrap :refer [bootstrap-failure
+                                                        token-from-url
+                                                        redirect-unauthenticated]]
             [wombats-web-client.constants.urls :refer [self-url]]
             [wombats-web-client.socket-dispatcher :as sd]
             [wombats-web-client.utils.auth :refer [add-auth-header]])
@@ -34,7 +33,7 @@
 (re-frame/reg-event-db
  :bootstrap-complete
  (fn [db [_ _]]
-   (assoc db :bootstrapping? false)))
+   (assoc db :bootstrapping false)))
 
 (defn load-user-success [{:keys [user/id] :as current-user}]
   (re-frame/dispatch-sync [:set-current-user current-user])

@@ -37,11 +37,11 @@
 (defn display-modal
   [modal]
   (let [render-fn (:fn modal)
-        show-overlay? (:show-overlay? modal)
+        show-overlay (:show-overlay modal)
         visibility (if modal "visible" "hidden")]
     [:div {:class-name "modal-container"
            :style {:visibility visibility}}
-     (when show-overlay? [:div {:class-name "modal-overlay"}])
+     (when show-overlay [:div {:class-name "modal-overlay"}])
      (when render-fn [render-fn])]))
 
 (defn display-navbar [panel]
@@ -51,16 +51,16 @@
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])
         modal (re-frame/subscribe [:modal])
-        bootstrapping? (re-frame/subscribe [:bootstrapping?])]
+        bootstrapping (re-frame/subscribe [:bootstrapping])]
     (fn []
-      (let [bootstrapping? @bootstrapping?
+      (let [bootstrapping @bootstrapping
             modal @modal
             panel @active-panel]
 
 
 
          ;; If you're bootstrapping show loading
-        (if bootstrapping?
+        (if bootstrapping
           [:div.loading-app-container
            [:p "Loading..."]
            [:img.dancing-gif {:src "/images/naked_dancing_wombat.gif"}]]

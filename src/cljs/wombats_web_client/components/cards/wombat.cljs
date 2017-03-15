@@ -9,14 +9,14 @@
 (defn open-delete-wombat-modal [id]
   (fn []
     (re-frame/dispatch [:set-modal {:fn #(delete-wombat-modal id)
-                                    :show-overlay? true}])))
+                                    :show-overlay true}])))
 
 (defn open-edit-wombat-modal [id name url]
   (fn []
     (re-frame/dispatch [:set-modal {:fn #(wombat-modal {:wombat-id id
                                                         :name name
                                                         :url url})
-                                    :show-overlay? true}])))
+                                    :show-overlay true}])))
 
 (defn wombat-information
   [name id url]
