@@ -19,7 +19,6 @@
       (re-frame/dispatch [:simulator/initialize-simulator
                           {:simulator/template-id template-id
                            :simulator/wombat-id wombat-id}]))))
-
 (defn render []
   (let [wombats (re-frame/subscribe [:my-wombats])
         sim-templates (re-frame/subscribe [:simulator/templates])
@@ -37,15 +36,21 @@
          [select-input {:form-state form-state
                         :form-key :template-id
                         :error-key :template-id-error
-                        :option-list 
-                        (f/optionize [:simulator-template/id] 
-                                     [:simulator-template/arena-template :arena/name]
-                                     templates)
+                        :option-list
+                        (f/optionize
+                         [:simulator-template/id]
+                         [:simulator-template/arena-template :arena/name]
+                         templates)
                         :label "Select Template"}]
          [select-input {:form-state form-state
                         :form-key :wombat-id
                         :error-key :wombat-id-error
-                        :option-list (f/optionize [:wombat/id] [:wombat/name] wombats)
+                        :option-list
+                        (f/optionize
+                         [:wombat/id]
+                         [:wombat/name]
+                         wombats)
                         :label "Select Wombat"}]
-         [:button.update-btn {:on-click #(update-simulator-configuration! form-state)}
+         [:button.update-btn
+          {:on-click #(update-simulator-configuration! form-state)}
           "Update Simulator"]]))))

@@ -22,7 +22,7 @@
   "Sends a message if the user hit enter in the chat box"
   [send-msg]
   (fn [event]
-    (let [key (-> event .-key)]
+    (let [key (.-key event)]
       (when (= "Enter" key)
         (send-msg)))
     event))
@@ -47,11 +47,17 @@
   [messages game]
   (let [stats (:game/stats game)
         messages @messages
-        element (first (array-seq (.getElementsByClassName js/document
-                                                           "chat-box-message-container")))]
+        element (first
+                 (array-seq
+                  (.getElementsByClassName
+                   js/document
+                   "chat-box-message-container")))]
 
     ;; Check if you should auto scroll to the bottom
-    (when (and element (= (+ element.scrollTop element.clientHeight) element.scrollHeight))
+    (when (and element
+               (=
+                (+ element.scrollTop element.clientHeight)
+                element.scrollHeight))
       ;; On the next tick, scroll the rendered element down
       (js/setTimeout #(set! (.-scrollTop element)
                             element.scrollHeight)
@@ -66,7 +72,10 @@
          ^{:key (str username "-" timestamp "-" index)}
          [:li.chat-msg
           [:span.msg-timestamp (format-time timestamp)]
-          [:span.msg-username {:style {:color (get-username-color stats username)}} username]
+          [:span.msg-username
+           {:style
+            {:color (get-username-color stats username)}}
+           username]
           [:span.msg-body message]])
        [default-message])]))
 
@@ -81,7 +90,7 @@
        :value @message
        :on-key-press (check-for-enter send-msg-fn)
        :on-change #(reset! message (-> % .-target .-value))}]
-     [:button.chat-send-btn 
+     [:button.chat-send-btn
       {:on-click send-msg-fn} "SEND"]]))
 
 (defn chat-box

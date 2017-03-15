@@ -5,6 +5,9 @@
                                                     submit-modal-input]]
             [wombats-web-client.events.user :refer [delete-wombat]]))
 
+(defonce delete-desc
+  "You are about to delete this wombat. Are you sure you want to do this?")
+
 (def error (reagent/atom nil))
 
 (defn reset-state []
@@ -26,10 +29,11 @@
          [:div.title "DELETE WOMBAT"]
          (when @modal-error [:div.modal-error @modal-error])
          [:div.modal-content
-          [:div.desc "You are about to delete this wombat. Are you sure you want to do this?"]]
+          [:div.desc delete-desc]]
          [:div.action-buttons
           [cancel-modal-input]
-          [submit-modal-input "DELETE" (fn []
-                                         (delete-wombat
-                                          id
-                                          #(callback-success cmpnt-state)))]]])})))
+          [submit-modal-input "DELETE"
+           (fn []
+             (delete-wombat
+              id
+              #(callback-success cmpnt-state)))]]])})))

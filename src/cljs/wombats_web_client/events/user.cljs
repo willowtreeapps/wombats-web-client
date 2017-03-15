@@ -7,13 +7,15 @@
             [pushy.core :as pushy]
             [wombats-web-client.db :as db]
             [wombats-web-client.utils.errors :refer [get-error-message]]
-            [wombats-web-client.utils.local-storage :refer [get-token remove-token!]]
+            [wombats-web-client.utils.local-storage :refer [get-token
+                                                            remove-token!]]
             [wombats-web-client.constants.urls :refer [self-url
                                                        github-signout-url
                                                        my-wombats-url
                                                        my-wombat-by-id-url]]
             [wombats-web-client.routes :refer [history]]
-            [wombats-web-client.utils.auth :refer [add-auth-header get-current-user-id]]
+            [wombats-web-client.utils.auth :refer [add-auth-header
+                                                   get-current-user-id]]
             [wombats-web-client.utils.socket :as ws])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
@@ -59,29 +61,38 @@
                              :keywords? true
                              :headers (add-auth-header {})
                              :handler on-success
-                             :params {:wombat/name name :wombat/url url}
+                             :params {:wombat/name name
+                                      :wombat/url url}
                              :error-handler on-error}))
 
 (defn delete-wombat-by-id
   "deletes wombat from db by id"
   [user-id wombat-id on-success on-error]
-  (DELETE (my-wombat-by-id-url user-id wombat-id) {:response-format (edn-response-format)
-                                                   :format (edn-request-format)
-                                                   :keywoards? true
-                                                   :headers (add-auth-header {})
-                                                   :handler on-success
-                                                   :error-handler on-error}))
+  (DELETE (my-wombat-by-id-url
+           user-id
+           wombat-id)
+          {:response-format (edn-response-format)
+           :format (edn-request-format)
+           :keywoards? true
+           :headers (add-auth-header {})
+           :handler on-success
+           :error-handler on-error}))
 
 (defn edit-wombat
   "edits wombat by id in db"
   [user-id wombat-id name url on-success on-error]
-  (PUT (my-wombat-by-id-url user-id wombat-id) {:response-format (edn-response-format)
-                                                :format (edn-request-format)
-                                                :keywords? true
-                                                :headers (add-auth-header {})
-                                                :handler on-success
-                                                :params {:wombat/name name :wombat/url url}
-                                                :error-handler on-error}))
+  (PUT (my-wombat-by-id-url
+        user-id
+        wombat-id)
+       {:response-format (edn-response-format)
+        :format (edn-request-format)
+        :keywords? true
+        :headers (add-auth-header {})
+        :handler on-success
+        :params {:wombat/name name
+                 :wombat/url url}
+        :error-handler on-error}))
+
 (defn create-new-wombat
   [name url cb-success]
   (post-new-wombat
@@ -135,7 +146,7 @@
  :bootstrap-user-data
  (fn [{:keys [db]} [_ user]]
    {:db (assoc db :auth-token (get-token)
-                  :bootstrapping? false)
+                  :bootstrapping false)
     :http-xhrio {:method          :get
                  :uri             (my-wombats-url (:user/id user))
                  :headers         (add-auth-header {})

@@ -5,6 +5,8 @@ CHANGELOG
 **Enhancements**
 * Created a general Select Component ready for any form
 	[Emily Seibert](https://github.com/emilyseibert) [#200](https://github.com/willowtreeapps/wombats-web-client/issues/200)
+* Added linter and fixed code with suggestions from kibit & bikeshed
+	[Emily Seibert](https://github.com/emilyseibert) [#205](https://github.com/willowtreeapps/wombats-web-client/issues/205)
 * Access Key Redirect
     [Matt O'Connell](https://github.com/oconn) API Issue #325[https://github.com/willowtreeapps/wombats-api/issues/325]
 

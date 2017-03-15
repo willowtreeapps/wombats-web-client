@@ -19,10 +19,12 @@
 (defn- user-in-game?
   "Whether current-user is in the game"
   [current-user game]
-  (> (count (filter #(= (:user/github-username current-user)
-                        (get-in % [:player/user :user/github-username]))
-                    (:game/players game)))
-     0))
+  (pos?
+   (count
+    (filter
+     #(= (:user/github-username current-user)
+         (get-in % [:player/user :user/github-username]))
+       (:game/players game)))))
 
 (defn get-game-state-str [is-full is-playing]
   (cond

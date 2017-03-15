@@ -2,8 +2,9 @@
   (:require [re-frame.core :as re-frame]))
 
 (defn render []
-  (let [{message :message
-         stack-trace :stackTrace} @(re-frame/subscribe [:simulator/player-stack-trace])]
+  (let [stack @(re-frame/subscribe [:simulator/player-stack-trace])
+        {message :message
+         stack-trace :stackTrace} stack]
     (if stack-trace
       [:div.stack-trace
        [:p.stack-trace-message message]

@@ -4,8 +4,7 @@
 (def default-db
   {:active-panel nil
    :auth-token (get-token)
-   :bootstrapping? true
-   :name "WillowTree"
+   :bootstrapping true
    :current-user nil
    :users []
    :modal nil

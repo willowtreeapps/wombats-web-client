@@ -35,30 +35,32 @@
   [canvas-element img-name x y width height rotation]
   (subscribe-to-spritesheet img-name
                             (fn [img frame]
-                              (canvas/draw-image-rotated canvas-element
-                                                         img
-                                                         (:x frame)
-                                                         (:y frame)
-                                                         (:w frame)
-                                                         (:h frame)
-                                                         x y
-                                                         width
-                                                         height
-                                                         rotation))))
+                              (canvas/draw-image-rotated
+                               canvas-element
+                               img
+                               (:x frame)
+                               (:y frame)
+                               (:w frame)
+                               (:h frame)
+                               x y
+                               width
+                               height
+                               rotation))))
 
 (defn- draw-image-flipped-horizontally
   [canvas-element img-name x y width height]
   (subscribe-to-spritesheet img-name
                             (fn [img frame]
-                              (canvas/draw-image-flipped-horizontally canvas-element
-                                                                      img
-                                                                      (:x frame)
-                                                                      (:y frame)
-                                                                      (:w frame)
-                                                                      (:h frame)
-                                                                      x y
-                                                                      width
-                                                                      height))))
+                              (canvas/draw-image-flipped-horizontally
+                               canvas-element
+                               img
+                               (:x frame)
+                               (:y frame)
+                               (:w frame)
+                               (:h frame)
+                               x y
+                               width
+                               height))))
 
 (defn- draw-background
   "This draws the background of a cell (only called for cells that need it)"
@@ -82,9 +84,9 @@
   (sort #(let [val1 (meta-value %1)
                val2 (meta-value %2)]
            (cond
-             (< val1 val2) -1
-             (> val1 val2) 1
-             :else 0)) meta))
+            (< val1 val2) -1
+            (> val1 val2) 1
+            :else 0)) meta))
 
 (defn- draw-meta
   "Draws generic meta objects"
@@ -217,13 +219,13 @@
   (let [{color :color
          orientation :orientation
          hp :hp} contents
-        direction (case orientation
-                    :s "front"
-                    :n "back"
-                    "right")
-        img-name (str "wombat_" color "_" direction ".png")
-        img-name-fire (str "wombat_" color "_" direction "_fire.png")
-        flipped (= orientation :w)]
+         direction (case orientation
+                     :s "front"
+                     :n "back"
+                     "right")
+         img-name (str "wombat_" color "_" direction ".png")
+         img-name-fire (str "wombat_" color "_" direction "_fire.png")
+         flipped (= orientation :w)]
 
     ;; Always draw the base wombat
     (if flipped
@@ -268,7 +270,7 @@
 
   (let [{contents :contents
          meta :meta} cell
-        cell-type (:type contents)]
+         cell-type (:type contents)]
 
     (case cell-type
 

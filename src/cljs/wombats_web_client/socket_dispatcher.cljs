@@ -32,12 +32,13 @@
   []
   (js/setInterval
    (fn []
-     (let [socket (-> js/window .-gameSocket)
+     (let [socket (.-gameSocket js/window)
            ready-state (.-readyState socket)]
 
        (if-not (= ready-state 1)
          (init-ws-connection)
          (ws/send-message
           :keep-alive
-          {:msg "Whether you're a brother or whether you're a mother, you're stayin' alive, stayin' alive"}))))
+          {:msg (str "Whether you're a brother or whether you're"
+                     "a mother, you're stayin' alive, stayin' alive")}))))
    5000))

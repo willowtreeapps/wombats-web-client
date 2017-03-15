@@ -10,7 +10,8 @@
             [wombats-web-client.utils.games :refer [build-status-query]]
             [wombats-web-client.constants.urls :refer [games-url
                                                        games-join-url]]
-            [wombats-web-client.utils.auth :refer [add-auth-header get-current-user-id]]))
+            [wombats-web-client.utils.auth :refer [add-auth-header
+                                                   get-current-user-id]]))
 
 (defn get-games [status on-success on-error]
   (GET games-url {:response-format (edn-response-format)
@@ -80,8 +81,8 @@
    wombat-id
    color
    password
-   #(cb-success %)
-   #(cb-error %)))
+   cb-success
+   cb-error))
 
 (re-frame/reg-event-db
  :add-join-selection
@@ -91,10 +92,11 @@
 (re-frame/reg-event-db
  :games
  (fn [db [_ games]]
-   (assoc db :games (merge (:games db)
-                           (reduce #(assoc %1 (:game/id %2) %2)
-                                   {}
-                                   games)))))
+   (update-in
+    db
+    [:games]
+    merge
+    (reduce #(assoc %1 (:game/id %2) %2) {} games))))
 
 (re-frame/reg-fx
  :get-open-games

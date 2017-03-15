@@ -28,6 +28,12 @@
                     :name name
                     :disabled (true? disabled)
                     :value (when val val)
-                    :on-blur #(check-for-valid-text-content state error-key (get-value %))
-                    :on-change #(on-text-change state key error-key (get-value %))}]
+                    :on-blur #(check-for-valid-text-content
+                               state
+                               error-key
+                               (get-value %))
+                    :on-change #(on-text-change
+                                 state key
+                                 error-key
+                                 (get-value %))}]
      [inline-error error-val]]))
