@@ -4,12 +4,14 @@
             [pushy.core :as pushy]
             [wombats-web-client.components.modals.game-full-modal :refer [game-full-modal]]
             [wombats-web-client.components.modals.game-started-modal :refer [game-started-modal]]
+            [wombats-web-client.components.select-input :refer [select-input]]
             [wombats-web-client.events.games :refer [join-open-game
                                                      get-open-games
                                                      get-all-games]]
             [wombats-web-client.components.text-input :refer [text-input-with-label]]
             [wombats-web-client.utils.forms :refer [submit-modal-input
-                                                    cancel-modal-input]]
+                                                    cancel-modal-input
+                                                    optionize]]
             [wombats-web-client.utils.games :refer [get-occupied-colors]]
             [wombats-web-client.utils.errors :refer [get-error-message
                                                      is-game-full?
@@ -24,9 +26,8 @@
 
 (defonce initial-cmpnt-state {:show-dropdown false
                               :error nil
-                              :wombat-name nil
-                              :wombat-name-error nil
                               :wombat-id nil
+                              :wombat-id-error nil
                               :wombat-color nil
                               :wombat-color-error nil
                               :password ""
@@ -66,50 +67,6 @@
         (do
           (re-frame/dispatch [:update-modal-error (get-error-message error)])
           (reset! cmpnt-state initial-cmpnt-state))))))
-
-(defn on-wombat-selection [cmpnt-state id name]
-  (swap! cmpnt-state assoc :wombat-id id
-         :show-dropdown false
-         :wombat-name name))
-
-(defn on-select-click [cmpnt-state]
-  (let [wombat-name-missing (nil? (:wombat-name @cmpnt-state))
-        show-dropdown (:show-dropdown @cmpnt-state)
-        error-state (when wombat-name-missing required-field-error)]
-    (when show-dropdown
-      (swap! cmpnt-state assoc :wombat-name-error error-state))
-
-    (swap! cmpnt-state assoc :show-dropdown (not show-dropdown))))
-
-(defn on-select-focus [cmpnt-state]
-  (swap! cmpnt-state assoc :wombat-name-error nil))
-
-(defn wombat-options [wombat cmpnt-state]
-  (let [{:keys [wombat/name wombat/id]} wombat]
-    [:li.wombat-options {:key id
-                         :on-click #(on-wombat-selection cmpnt-state id name)} name]))
-
-(defn select-input-with-label [cmpnt-state]
-  (let [{:keys [show-dropdown wombat-name wombat-name-error]} @cmpnt-state
-        my-wombats @(re-frame/subscribe [:my-wombats])
-        show-inline-error (and wombat-name-error (not show-dropdown))]
-    [:div.select-wombat {:class (when show-inline-error "error")}
-     [:label.label.select-wombat-label "Select Wombat"]
-     [:div.placeholder
-      {:class (clojure.string/join " "[(when-not wombat-name "unselected")
-                                       (when show-inline-error "field-error")])
-       :tab-index "0"
-       :on-click #(on-select-click cmpnt-state)
-       :on-focus #(on-select-focus cmpnt-state)}
-      [:div.text {:class (when-not wombat-name "unselected")}
-       (str (if-not wombat-name "Select Wombat" wombat-name))]
-      [:img.icon-arrow {:class (when show-dropdown "open-dropdown")
-                        :src "/images/icon-arrow.svg"}]]
-     (when show-inline-error
-       [:div.inline-error wombat-name-error])
-     (when show-dropdown
-       [:div.dropdown-wrapper
-        (for [wombat my-wombats] (wombat-options wombat cmpnt-state))])]))
 
 (defn on-wombat-image-select [cmpnt-state color-text]
   (swap! cmpnt-state assoc :wombat-color color-text :wombat-color-error nil))
@@ -153,24 +110,23 @@
    (not is-private) true)) ;; if the game isn't private, password state is irrelevant
 
 (defn on-submit-form-valid? [{:keys [game-id is-private cmpnt-state]}]
-  (let [{:keys [wombat-name
-                wombat-name-error
-                wombat-color
+  (let [{:keys [wombat-color
                 wombat-color-error
                 wombat-id
+                wombat-id-error
                 password
                 password-error]} @cmpnt-state]
 
     (when  (nil? wombat-color)
       (swap! cmpnt-state assoc :wombat-color-error wombat-color-missing))
 
-    (when (nil? wombat-name)
-      (swap! cmpnt-state assoc :wombat-name-error required-field-error))
+    (when (nil? wombat-id)
+      (swap! cmpnt-state assoc :wombat-id-error required-field-error))
 
     (when (and is-private (clojure.string/blank? password))
       (swap! cmpnt-state assoc :password-error required-field-error))
 
-    (when (and wombat-name wombat-color (correct-privacy-settings is-private password-error))
+    (when (and wombat-id wombat-color (correct-privacy-settings is-private password-error))
       (join-open-game game-id
                       wombat-id
                       wombat-color
@@ -183,6 +139,7 @@
 
 (defn join-wombat-modal [game-id]
   (let [modal-error (re-frame/subscribe [:modal-error])
+        my-wombats (re-frame/subscribe [:my-wombats])
         cmpnt-state (reagent/atom initial-cmpnt-state)
         games (re-frame/subscribe [:games])] ;; not included in render fn
     (reagent/create-class
@@ -196,6 +153,7 @@
               error @modal-error
               is-private (:game/is-private game)
               occupied-colors (get-occupied-colors game)
+              my-wombat-options (optionize [:wombat/id] [:wombat/name] @my-wombats)
               title (if is-private "JOIN PRIVATE GAME" "JOIN GAME")]
           [:div.modal.join-wombat-modal ;; starts hiccup
            [:div.title title]
@@ -203,7 +161,11 @@
            [:div.modal-content
             (when is-private
               [private-game-password game cmpnt-state])
-            [select-input-with-label cmpnt-state]
+            [select-input {:form-state cmpnt-state
+                           :form-key :wombat-id
+                           :error-key :wombat-id-error
+                           :option-list my-wombat-options
+                           :label "Select Wombat"}]
             [select-wombat-color cmpnt-state wombat-color occupied-colors]]
            [:div.action-buttons
             [cancel-modal-input]
