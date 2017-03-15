@@ -20,13 +20,15 @@
 
 (defn- render-template-select
   [templates form-state]
-  (when-not (:template-id @form-state)
-    (swap! form-state assoc :template-id (:simulator-template/id (first templates))))
+  (let [id (:simulator-template/id (first templates))]
+    (when-not (:template-id @form-state)
+      (swap! form-state assoc :template-id id)))
 
   [:select.select {:on-change #(update-form-state % :template-id form-state)}
    (for [{id :simulator-template/id
-          {arena-name :arena/name} :simulator-template/arena-template} templates]
-     (render-option id arena-name (:template-id @form-state)))])
+          arena :simulator-template/arena-template} templates]
+     (let [name (:arena/name arena)]
+       (render-option id name (:template-id @form-state))))])
 
 (defn- render-wombat-select
   [wombats form-state]
@@ -44,7 +46,8 @@
    [:p.pane-title "Configure Simulator"]
    (render-template-select templates form-state)
    (render-wombat-select wombats form-state)
-   [:button.update-btn {:on-click #(update-simulator-configuration! @form-state)}
+   [:button.update-btn
+    {:on-click #(update-simulator-configuration! @form-state)}
     "Update Simulator"]])
 
 (defn render []

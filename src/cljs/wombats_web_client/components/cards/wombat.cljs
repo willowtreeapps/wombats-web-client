@@ -1,8 +1,10 @@
 (ns wombats-web-client.components.cards.wombat
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
-            [wombats-web-client.components.modals.delete-wombat-modal :refer [delete-wombat-modal]]
-            [wombats-web-client.components.modals.wombat-modal :refer [wombat-modal]]))
+            [wombats-web-client.components.modals.delete-wombat-modal
+             :refer [delete-wombat-modal]]
+            [wombats-web-client.components.modals.wombat-modal
+             :refer [wombat-modal]]))
 
 (defn open-delete-wombat-modal [id]
   (fn []

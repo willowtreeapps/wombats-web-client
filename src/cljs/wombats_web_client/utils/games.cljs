@@ -20,8 +20,8 @@
   "Whether current-user is in the game"
   [current-user game]
   (pos?
-   (count 
-    (filter 
+   (count
+    (filter
      #(= (:user/github-username current-user)
          (get-in % [:player/user :user/github-username]))
        (:game/players game)))))

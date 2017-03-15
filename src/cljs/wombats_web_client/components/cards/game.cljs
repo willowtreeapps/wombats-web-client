@@ -2,11 +2,13 @@
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [wombats-web-client.constants.games :refer [game-type-str-map]]
-            [wombats-web-client.components.countdown-timer :refer [countdown-timer]]
+            [wombats-web-client.components.countdown-timer
+             :refer [countdown-timer]]
             [wombats-web-client.components.join-button :refer [join-button]]
             [wombats-web-client.utils.games :refer [get-user-in-game
                                                     get-game-state-str]]
-            [wombats-web-client.components.modals.join-wombat-modal :refer [join-wombat-modal]]))
+            [wombats-web-client.components.modals.join-wombat-modal
+             :refer [join-wombat-modal]]))
 
 (defn open-join-game-modal-fn [game-id]
   (fn [e]
@@ -81,12 +83,14 @@
          game-start :game/start-time
          game-private :game/is-private} game
         {arena-width :arena/width
-         arena-height :arena/height} arena]
+         arena-height :arena/height} arena
+         is-pending-open? (= :pending-open game-status)
+         is-pending-closed? (= :pending-closed game-status)]
 
     [:div.game-card {:key game-id}
      [:a.link {:href (str "/games/" game-id)}]
 
-     [arena-card {:is-open (or (= :pending-open game-status) (= :pending-closed game-status))
+     [arena-card {:is-open (or is-pending-open? is-pending-closed?)
                   :is-private game-private
                   :is-joinable is-joinable
                   :is-full is-full

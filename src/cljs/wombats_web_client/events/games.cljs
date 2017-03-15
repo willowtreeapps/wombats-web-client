@@ -10,7 +10,8 @@
             [wombats-web-client.utils.games :refer [build-status-query]]
             [wombats-web-client.constants.urls :refer [games-url
                                                        games-join-url]]
-            [wombats-web-client.utils.auth :refer [add-auth-header get-current-user-id]]))
+            [wombats-web-client.utils.auth :refer [add-auth-header
+                                                   get-current-user-id]]))
 
 (defn get-games [status on-success on-error]
   (GET games-url {:response-format (edn-response-format)

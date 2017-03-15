@@ -2,14 +2,20 @@
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [wombats-web-client.components.arena :as arena]
-            [wombats-web-client.components.tabbed-container :refer [tabbed-container]]
+            [wombats-web-client.components.tabbed-container
+             :refer [tabbed-container]]
             [wombats-web-client.components.simulator.arena :as simulator-arena]
             [wombats-web-client.components.simulator.code :as simulator-code]
-            [wombats-web-client.components.simulator.output :as simulator-output]
-            [wombats-web-client.components.simulator.stack-trace :as simulator-stack-trace]
-            [wombats-web-client.components.simulator.configure :as simulator-configure]
-            [wombats-web-client.components.simulator.controls :as simulator-controls]
-            [wombats-web-client.events.simulator :refer [get-simulator-templates]]))
+            [wombats-web-client.components.simulator.output
+             :as simulator-output]
+            [wombats-web-client.components.simulator.stack-trace
+             :as simulator-stack-trace]
+            [wombats-web-client.components.simulator.configure
+             :as simulator-configure]
+            [wombats-web-client.components.simulator.controls
+             :as simulator-controls]
+            [wombats-web-client.events.simulator
+             :refer [get-simulator-templates]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
@@ -40,7 +46,9 @@
   (for [[tab-name {label :label}] panes]
     ^{:key label}
     [:button.tab-btn {:class (when (= tab-name active-tab) "active-line-top")
-                      :on-click #(re-frame/dispatch [:simulator/update-active-simulator-pane tab-name])}
+                      :on-click #(re-frame/dispatch
+                                  [:simulator/update-active-simulator-pane
+                                   tab-name])}
      label
      (when (= tab-name :debugger)
        (when stack-trace
@@ -81,11 +89,20 @@
   (reagent/create-class
    {:component-will-mount #(component-will-mount!)
     :props-name "simulator-panel"
-    :reagent-render #(render {:simulator-pane (re-frame/subscribe [:simulator/active-pane])
-                              :templates @(re-frame/subscribe [:simulator/templates])
-                              :wombats @(re-frame/subscribe [:my-wombats])
-                              :active-frame @(re-frame/subscribe [:simulator/active-frame])
-                              :stack-trace @(re-frame/subscribe [:simulator/player-stack-trace])
-                              :simulator-display-mini-map @(re-frame/subscribe [:simulator/display-mini-map])
-                              :simulator-mini-map @(re-frame/subscribe [:simulator/mini-map])
-                              :simulator-state (re-frame/subscribe [:simulator/state])})}))
+    :reagent-render
+    #(render {:simulator-pane (re-frame/subscribe
+                               [:simulator/active-pane])
+              :templates @(re-frame/subscribe
+                           [:simulator/templates])
+              :wombats @(re-frame/subscribe
+                         [:my-wombats])
+              :active-frame @(re-frame/subscribe
+                              [:simulator/active-frame])
+              :stack-trace @(re-frame/subscribe
+                             [:simulator/player-stack-trace])
+              :simulator-display-mini-map @(re-frame/subscribe
+                                            [:simulator/display-mini-map])
+              :simulator-mini-map @(re-frame/subscribe
+                                    [:simulator/mini-map])
+              :simulator-state (re-frame/subscribe
+                                [:simulator/state])})}))

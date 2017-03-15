@@ -5,8 +5,8 @@
 (defn- before-now?
   "Returns a boolean whether time is in the past"
   [time]
-  (or (nil? time) 
-      (t/after? (t/now) 
+  (or (nil? time)
+      (t/after? (t/now)
                 time)))
 
 (defn- interval-from-now
@@ -44,10 +44,15 @@
             minutes (/ (- seconds-left seconds) 60)
             hours (int (/ minutes 60))
             minutes-adjusted (- minutes (* hours 60))
-            minutes-formatted (str (when (< minutes-adjusted 10) "0") minutes-adjusted)]
-        (str (when (pos? hours) (str hours ":")) minutes-formatted ":" seconds-formatted))
+            minutes-single-digit? (< minutes-adjusted 10)
+            minutes-formatted (str (when minutes-single-digit? "0")
+                                   minutes-adjusted)
+            has-hours? (pos? hours)]
+        (str (when has-hours?
+               (str hours ":"))
+             minutes-formatted ":" seconds-formatted))
 
-      ;; set to 0 time 
+      ;; set to 0 time
       "0:00")))
 
 (defn countdown-timer
@@ -62,8 +67,9 @@
           (.setTimeout js/window
                        #(swap! cmpnt-state update-in [:update] not)
                        1000))
-        
-        ;; triggers a rerender for active timers, will not affect timers with no interval timer
+
+        ;; triggers a rerender for active timers
+        ;; will not affect timers with no interval timer
         (:update @cmpnt-state)
 
         [:span {:class-name "countdown-timer"}

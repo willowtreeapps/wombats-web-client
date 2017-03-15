@@ -39,5 +39,6 @@
          (init-ws-connection)
          (ws/send-message
           :keep-alive
-          {:msg "Whether you're a brother or whether you're a mother, you're stayin' alive, stayin' alive"}))))
+          {:msg (str "Whether you're a brother or whether you're"
+                     "a mother, you're stayin' alive, stayin' alive")}))))
    5000))

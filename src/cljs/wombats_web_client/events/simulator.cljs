@@ -4,8 +4,9 @@
             [re-frame.core :as re-frame]
             [wombats-web-client.constants.urls :refer [simulator-templates-url]]
             [wombats-web-client.utils.auth :refer [add-auth-header]]
-            [wombats-web-client.constants.urls :refer [initialize-simulator-url
-                                                       process-simulator-frame-url]]))
+            [wombats-web-client.constants.urls
+             :refer [initialize-simulator-url
+                     process-simulator-frame-url]]))
 
 (defn- get-simulator-templates-request [on-success on-error]
   (GET simulator-templates-url {:response-format (edn-response-format)
@@ -28,8 +29,15 @@
 (re-frame/reg-event-db
  :simulator/update-code
  (fn [db [_ code]]
-   (let [player-id (first (keys (get-in db [:simulator/state :players])))]
-     (assoc-in db [:simulator/state :players player-id :state :code :code] code))))
+   (let [player-id (first
+                    (keys
+                     (get-in db [:simulator/state :players])))]
+     (assoc-in db [:simulator/state
+                   :players
+                   player-id
+                   :state
+                   :code
+                   :code] code))))
 
 (re-frame/reg-event-db
  :simulator/update-state

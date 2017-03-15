@@ -1,11 +1,14 @@
 (ns wombats-web-client.panels.game-play
   (:require [wombats-web-client.components.arena :as arena]
-            [wombats-web-client.components.cards.game :refer [open-join-game-modal-fn]]
+            [wombats-web-client.components.cards.game
+             :refer [open-join-game-modal-fn]]
             [wombats-web-client.components.chat-box :refer [chat-box]]
-            [wombats-web-client.components.countdown-timer :refer [countdown-timer]]
+            [wombats-web-client.components.countdown-timer
+             :refer [countdown-timer]]
             [wombats-web-client.components.game-ranking :refer [ranking-box]]
             [wombats-web-client.components.join-button :refer [join-button]]
-            [wombats-web-client.components.modals.winner-modal :refer [winner-modal]]
+            [wombats-web-client.components.modals.winner-modal
+             :refer [winner-modal]]
             [wombats-web-client.utils.socket :as ws]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
@@ -18,7 +21,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn- resize-canvas [arena-atom]
-  (let [root-element (first (array-seq (.getElementsByClassName js/document root-class)))
+  (let [root-element (first
+                      (array-seq
+                       (.getElementsByClassName
+                        js/document
+                        root-class)))
         canvas-element (.getElementById js/document canvas-id)
         half-width (/ (.-offsetWidth root-element) 2)
         height (.-offsetHeight root-element)
@@ -116,9 +123,12 @@
   [game messages user game-id]
 
   (let [{:keys [game/winner game/players]} game
-        user-bots-count (count (filter #(= (get-in % [:player/user :user/github-username])
-                                           (::user/github-username @user))
-                                       players))]
+        user-bots-count (count
+                         (filter #(=
+                                   (get-in %
+                                           [:player/user :user/github-username])
+                                   (::user/github-username @user))
+                                 players))]
 
     ;; Dispatch winner modal if there's a winner
     (when winner

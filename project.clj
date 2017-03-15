@@ -15,11 +15,12 @@
             [lein-less "1.7.5"]
             [lein-pdo "0.1.1"]
             [lein-kibit "0.1.3"]
-            [lein-auto "0.1.3"]]
+            [lein-auto "0.1.3"]
+            [lein-bikeshed "0.4.1"]]
 
   :min-lein-version "2.5.3"
 
-  :source-paths ["src/clj"]
+  :source-paths ["src/cljs"]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "test/js"]
@@ -107,6 +108,6 @@
 
     :aliases {"run-local"   ["pdo" "clean," ["figwheel" "local"] ["less" "auto"]]
               "run-dev"     ["pdo" "clean," ["figwheel" "dev"]   ["less" "auto"]]
-              "deploy-dev"  ["do"  "clean," ["kibit" "src/cljs/wombats_web_client/"] ["cljsbuild" "once" "deploy-dev"]  ["less" "once"]]
-              "deploy-qa"   ["do"  "clean," ["kibit" "src/cljs/wombats_web_client/"] ["cljsbuild" "once" "deploy-qa"]   ["less" "once"]]
-              "deploy-prod" ["do"  "clean," ["kibit" "src/cljs/wombats_web_client/"] ["cljsbuild" "once" "deploy-prod"] ["less" "once"]]})
+              "deploy-dev"  ["do"  "clean," ["kibit" "src/cljs/wombats_web_client/"] "bikeshed" ["cljsbuild" "once" "deploy-dev"]  ["less" "once"]]
+              "deploy-qa"   ["do"  "clean," ["kibit" "src/cljs/wombats_web_client/"] "bikeshed" ["cljsbuild" "once" "deploy-qa"]   ["less" "once"]]
+              "deploy-prod" ["do"  "clean," ["kibit" "src/cljs/wombats_web_client/"] "bikeshed" ["cljsbuild" "once" "deploy-prod"] ["less" "once"]]})
