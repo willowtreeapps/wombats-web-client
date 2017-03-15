@@ -7,7 +7,8 @@ CHANGELOG
 	[Emily Seibert](https://github.com/emilyseibert) [#200](https://github.com/willowtreeapps/wombats-web-client/issues/200)
 * Added linter and fixed code with suggestions from kibit & bikeshed
 	[Emily Seibert](https://github.com/emilyseibert) [#205](https://github.com/willowtreeapps/wombats-web-client/issues/205)
-
+* Access Key Redirect
+    [Matt O'Connell](https://github.com/oconn) API Issue #325[https://github.com/willowtreeapps/wombats-api/issues/325]
 
 **Bug Fixes**
 * Join Modal dropdown z index updated to be drawn over disabled color overlay
@@ -28,7 +29,7 @@ CHANGELOG
 
 **Bug Fixes**
 * Fixed Flickering of Canvas
-	[CP Dehli](https://github.com/dehli) No issue created.
+    [CP Dehli](https://github.com/dehli) No issue created.
 
 ## 1.0.0-alpha1 (3.10.2017)
 **Enhancements**

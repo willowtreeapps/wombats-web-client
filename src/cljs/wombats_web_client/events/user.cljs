@@ -126,10 +126,6 @@
      (cb-success))
    #(re-frame/dispatch [:update-modal-error (get-error-message %)])))
 
-
-
-
-
 (re-frame/reg-event-db
  :sign-out
  (fn [db [_ _]]
