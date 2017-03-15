@@ -2,19 +2,19 @@
 @import "../utils/typography";
 
 // this button is larger, has a box shadow and is used when always shown on the page
-.emphasized-button(@bg-color, @shadow-color, @hover-color, @text-color: @dark) {
+.emphasized-button(@bg-color, @shadow-color, @hover-color, @text-color: @dark, @width: 100px) {
     .bold;
     .button;
 
     display: inline-block;
-    width: 100px;
+    width: @width;
     height: 40px;
     background-color: @bg-color;
     box-shadow: inset 0 -3px 0 0 @shadow-color;
     vertical-align: middle;
     letter-spacing: 2px;
     color: @text-color;
-   
+
     a {
         letter-spacing: 2px;
         color: @text-color;
