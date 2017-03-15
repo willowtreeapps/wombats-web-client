@@ -47,10 +47,8 @@
             minutes-single-digit? (< minutes-adjusted 10)
             minutes-formatted (str (when minutes-single-digit? "0")
                                    minutes-adjusted)
-            has-hours? (pos? hours)]
-        (str (when has-hours?
-               (str hours ":"))
-             minutes-formatted ":" seconds-formatted))
+            has-hours? (> 0 hours)]
+        (str (when has-hours? (str hours ":")) minutes-formatted ":" seconds-formatted))
 
       ;; set to 0 time
       "0:00")))

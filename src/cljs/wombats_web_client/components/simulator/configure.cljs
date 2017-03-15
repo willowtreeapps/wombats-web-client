@@ -37,14 +37,20 @@
                         :form-key :template-id
                         :error-key :template-id-error
                         :option-list
-                        (f/optionize [:simulator-template/id]
-                                     [:simulator-template/arena-template :arena/name]
-                                     templates)
+                        (f/optionize
+                         [:simulator-template/id]
+                         [:simulator-template/arena-template :arena/name]
+                         templates)
                         :label "Select Template"}]
          [select-input {:form-state form-state
                         :form-key :wombat-id
                         :error-key :wombat-id-error
-                        :option-list (f/optionize [:wombat/id] [:wombat/name] wombats)
+                        :option-list
+                        (f/optionize
+                         [:wombat/id]
+                         [:wombat/name]
+                         wombats)
                         :label "Select Wombat"}]
-         [:button.update-btn {:on-click #(update-simulator-configuration! form-state)}
+         [:button.update-btn
+          {:on-click #(update-simulator-configuration! form-state)}
           "Update Simulator"]]))))

@@ -6,7 +6,8 @@
   "Please select a color for your wombat.")
 (defonce game-full-error
   "This game is already full. Please try joining another game.")
-(defonce game-started-error "This game has already started. Please try joining another game.")
+(defonce game-started-error
+  "This game has already started. Please try joining another game.")
 
 (defn get-error-code [error]
   (:code (:response error)))

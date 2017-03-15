@@ -178,7 +178,9 @@
               error @modal-error
               is-private (:game/is-private game)
               occupied-colors (get-occupied-colors game)
-              my-wombat-options (optionize [:wombat/id] [:wombat/name] @my-wombats)
+              my-wombat-options (optionize [:wombat/id]
+                                           [:wombat/name]
+                                           @my-wombats)
               title (if is-private "JOIN PRIVATE GAME" "JOIN GAME")]
           [:div.modal.join-wombat-modal ;; starts hiccup
            [:div.title title]
