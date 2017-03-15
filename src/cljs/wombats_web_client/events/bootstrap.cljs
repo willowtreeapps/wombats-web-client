@@ -8,7 +8,7 @@
             [wombats-web-client.socket-dispatcher :as sd]
             [wombats-web-client.events.spritesheet :refer [get-spritesheet]]
             [wombats-web-client.utils.local-storage :refer [remove-token!]]
-            [wombats-web-client.utils.bootstrap :refer [bootstrap-failure 
+            [wombats-web-client.utils.bootstrap :refer [bootstrap-failure
                                                         token-from-url
                                                         redirect-unauthenticated]]
             [wombats-web-client.constants.urls :refer [self-url]]
@@ -48,7 +48,7 @@
         (if socket
           (sd/socket-polling)
           (bootstrap-failure "Socket failed to bootstrap...")))
-  
+
       (let [sprite (async/<! sprite-ch)]
         (if sprite
           (re-frame/dispatch [:update-spritesheet sprite])
@@ -58,12 +58,12 @@
         (if wombats
           (re-frame/dispatch [:update-wombats wombats])
           (bootstrap-failure "Wombats failed to load...")))
-      
+
       ;; Update bootstrapping in db
       (re-frame/dispatch [:bootstrap-complete]))))
 
-(defn bootstrap-user   
-  "fetches the current user" 
+(defn bootstrap-user
+  "fetches the current user"
   []
   (GET self-url {:response-format (edn-response-format)
                  :keywords? true
