@@ -1,60 +1,50 @@
 (ns wombats-web-client.components.simulator.configure
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
-            [wombats-web-client.utils.forms :as f]))
+            [wombats-web-client.utils.forms :as f]
+            [wombats-web-client.components.select-input :refer [select-input]]
+            [wombats-web-client.utils.errors :refer [required-field-error]]))
 
 (defn- update-simulator-configuration!
   [state]
-  (re-frame/dispatch [:simulator/initialize-simulator
-                      {:simulator/template-id (:template-id state)
-                       :simulator/wombat-id (:wombat-id state)}]))
-
-(defn- update-form-state
-  [e id form-state]
-  (swap! form-state assoc id (f/get-value e)))
-
-(defn- render-option [id name selected-id]
-  ^{:key id}
-  [:option {:value id
-            :default-value (= id selected-id)} name])
-
-(defn- render-template-select
-  [templates form-state]
-  (let [id (:simulator-template/id (first templates))]
-    (when-not (:template-id @form-state)
-      (swap! form-state assoc :template-id id)))
-
-  [:select.select {:on-change #(update-form-state % :template-id form-state)}
-   (for [{id :simulator-template/id
-          arena :simulator-template/arena-template} templates]
-     (let [name (:arena/name arena)]
-       (render-option id name (:template-id @form-state))))])
-
-(defn- render-wombat-select
-  [wombats form-state]
-  (when-not (:wombat-id @form-state)
-    (swap! form-state assoc :wombat-id (:wombat/id (first wombats))))
-
-  [:select.select {:on-change #(update-form-state % :wombat-id form-state)}
-   (for [{id :wombat/id
-          wombat-name :wombat/name} wombats]
-     (render-option id wombat-name (:wombat-id @form-state)))])
-
-(defn- render-pane
-  [wombats templates form-state]
-  [:div.configure
-   [:p.pane-title "Configure Simulator"]
-   (render-template-select templates form-state)
-   (render-wombat-select wombats form-state)
-   [:button.update-btn
-    {:on-click #(update-simulator-configuration! @form-state)}
-    "Update Simulator"]])
-
+  (let [wombat-id (:wombat-id @state)
+        wombat-id-error (:wombat-id-error @state)
+        template-id (:template-id @state)
+        template-id-error (:template-id-error @state)]
+    (when (nil? wombat-id)
+      (swap! state assoc :wombat-id-error required-field-error))
+    (when (nil? template-id)
+      (swap! state assoc :template-id-error required-field-error))
+    (when (and wombat-id template-id)
+      (re-frame/dispatch [:simulator/initialize-simulator
+                          {:simulator/template-id template-id
+                           :simulator/wombat-id wombat-id}]))))
 (defn render []
   (let [wombats (re-frame/subscribe [:my-wombats])
         sim-templates (re-frame/subscribe [:simulator/templates])
         selected-wombat (re-frame/subscribe [:simulator/wombat-id])
         selected-template (re-frame/subscribe [:simulator/template-id])
-        form-state (atom {:wombat-id @selected-wombat
-                          :template-id @selected-template})]
-    (render-pane @wombats @sim-templates form-state)))
+        form-state (reagent/atom {:wombat-id @selected-wombat
+                                  :wombat-id-error nil
+                                  :template-id @selected-template
+                                  :template-id-error nil})]
+    (fn []
+      (let [wombats @wombats
+            templates @sim-templates]
+        [:div.configure
+         [:p.pane-title "Configure Simulator"]
+         [select-input {:form-state form-state
+                        :form-key :template-id
+                        :error-key :template-id-error
+                        :option-list
+                        (f/optionize [:simulator-template/id]
+                                     [:simulator-template/arena-template :arena/name]
+                                     templates)
+                        :label "Select Template"}]
+         [select-input {:form-state form-state
+                        :form-key :wombat-id
+                        :error-key :wombat-id-error
+                        :option-list (f/optionize [:wombat/id] [:wombat/name] wombats)
+                        :label "Select Wombat"}]
+         [:button.update-btn {:on-click #(update-simulator-configuration! form-state)}
+          "Update Simulator"]]))))
