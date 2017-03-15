@@ -127,12 +127,12 @@
     [:div.right-game-play-panel
 
      [:div.top-panel
-      [game-play-title game (= 0 user-bots-count) game-id]
+      [game-play-title game (zero? user-bots-count) game-id]
       [game-play-subtitle game]
       [max-players game]
       [ranking-box game]]
 
-     (when (> user-bots-count 0)
+     (when (pos? user-bots-count)
        [:div.chat-panel
         [chat-title]
         [chat-box game-id messages game]])]))

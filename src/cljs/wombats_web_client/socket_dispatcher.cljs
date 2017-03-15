@@ -32,7 +32,7 @@
   []
   (js/setInterval
    (fn []
-     (let [socket (-> js/window .-gameSocket)
+     (let [socket (.-gameSocket js/window)
            ready-state (.-readyState socket)]
 
        (if-not (= ready-state 1)

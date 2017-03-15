@@ -80,8 +80,8 @@
    wombat-id
    color
    password
-   #(cb-success %)
-   #(cb-error %)))
+   cb-success
+   cb-error))
 
 (re-frame/reg-event-db
  :add-join-selection
@@ -91,10 +91,11 @@
 (re-frame/reg-event-db
  :games
  (fn [db [_ games]]
-   (assoc db :games (merge (:games db)
-                           (reduce #(assoc %1 (:game/id %2) %2)
-                                   {}
-                                   games)))))
+   (update-in
+    db
+    [:games]
+    merge
+    (reduce #(assoc %1 (:game/id %2) %2) {} games))))
 
 (re-frame/reg-fx
  :get-open-games

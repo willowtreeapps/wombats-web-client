@@ -5,7 +5,6 @@
   {:active-panel nil
    :auth-token (get-token)
    :bootstrapping? true
-   :name "WillowTree"
    :current-user nil
    :users []
    :modal nil

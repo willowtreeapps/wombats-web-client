@@ -22,7 +22,7 @@
   "Sends a message if the user hit enter in the chat box"
   [send-msg]
   (fn [event]
-    (let [key (-> event .-key)]
+    (let [key (.-key event)]
       (when (= "Enter" key)
         (send-msg)))
     event))

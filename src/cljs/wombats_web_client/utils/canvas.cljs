@@ -48,7 +48,7 @@
 (defn draw-image-rotated
   "Same as draw-image but you can rotate the image before drawing it"
   [canvas image sx sy swidth sheight dx dy dwidth dheight degreeRotation]
-    (if (= degreeRotation 0)
+    (if (zero? degreeRotation)
       (draw-image canvas image
                   sx sy swidth sheight 
                   dx dy dwidth dheight)

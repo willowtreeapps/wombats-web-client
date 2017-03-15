@@ -29,7 +29,7 @@
 
 (defn- time-left?
   [start-time]
-  (< 0 (seconds-until start-time)))
+  (pos? (seconds-until start-time)))
 
 (defn- format-time
   [time cmpnt-state]
@@ -45,7 +45,7 @@
             hours (int (/ minutes 60))
             minutes-adjusted (- minutes (* hours 60))
             minutes-formatted (str (when (< minutes-adjusted 10) "0") minutes-adjusted)]
-        (str (when (> hours 0) (str hours ":")) minutes-formatted ":" seconds-formatted))
+        (str (when (> 0 hours) (str hours ":")) minutes-formatted ":" seconds-formatted))
 
       ;; set to 0 time 
       "0:00")))

@@ -18,7 +18,7 @@
 (defn- open-game-polling
   "Poll for newly created games every minute when viewing games panel and repopulate app state"
   []
-  (js/setInterval #(get-all-games) 60000))
+  (js/setInterval get-all-games 60000))
 
 (defn tab-view-toggle [cmpnt-state]
   (let [show-open (:show-open @cmpnt-state)]
