@@ -1,6 +1,5 @@
 (ns wombats-web-client.events.user
   (:require [cljs.core.async :as async]
-            [cemerick.url :as url]
             [re-frame.core :as re-frame]
             [ajax.core :refer [json-response-format GET PUT POST DELETE]]
             [ajax.edn :refer [edn-request-format edn-response-format]]
