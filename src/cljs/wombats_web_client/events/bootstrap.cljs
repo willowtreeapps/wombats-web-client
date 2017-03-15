@@ -8,9 +8,10 @@
             [wombats-web-client.socket-dispatcher :as sd]
             [wombats-web-client.events.spritesheet :refer [get-spritesheet]]
             [wombats-web-client.utils.local-storage :refer [remove-token!]]
-            [wombats-web-client.utils.bootstrap :refer [bootstrap-failure
-                                                        token-from-url
-                                                        redirect-unauthenticated]]
+            [wombats-web-client.utils.bootstrap
+             :refer [bootstrap-failure
+                     token-from-url
+                     redirect-unauthenticated]]
             [wombats-web-client.constants.urls :refer [self-url]]
             [wombats-web-client.socket-dispatcher :as sd]
             [wombats-web-client.utils.auth :refer [add-auth-header]])
