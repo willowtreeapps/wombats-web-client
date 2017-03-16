@@ -31,29 +31,37 @@
   [start-time]
   (pos? (seconds-until start-time)))
 
-(defn- format-time
-  [time cmpnt-state]
-  (let [seconds-left (seconds-until time)]
-    ;; if time is left and requires an active timer
-    (if (time-left? time)
-      ;; calculate format of time
-      (let [seconds (mod seconds-left 60)
-            seconds-formatted (if (< seconds 10)
-                                (str "0" seconds)
-                                seconds)
-            minutes (/ (- seconds-left seconds) 60)
-            hours (int (/ minutes 60))
-            minutes-adjusted (- minutes (* hours 60))
-            minutes-single-digit (< minutes-adjusted 10)
-            minutes-formatted (str (when minutes-single-digit "0")
-                                   minutes-adjusted)
-            has-hours (pos? hours)]
-        (str (when has-hours
-               (str hours ":"))
-             minutes-formatted ":" seconds-formatted))
+(defn pad-time [time]
+  (if (< time 10)
+    (str "0" time)
+    time))
 
-      ;; set to 0 time
-      "0:00")))
+(defn total-time [smaller-unit divisor]
+  (int (/ smaller-unit divisor)))
+
+(defn remaining-time [total larger-total multiplier]
+  (- total (* larger-total multiplier)))
+
+(defn format-time2 [time]
+ (if (time-left? time)
+   (let [total-seconds (seconds-until time)
+         total-minutes (total-time total-seconds 60)
+         total-hours (total-time total-minutes 60)
+         total-days (total-time total-hours 24)
+         remaining-secs
+         (remaining-time total-seconds total-minutes 60)
+         remaining-mins
+         (remaining-time total-minutes total-hours 60)
+         remaining-hrs
+         (remaining-time total-hours total-days 24)]
+     (str
+      (when (pos? total-days)
+        (str (pad-time total-days) ":"))
+      (when (pos? total-hours)
+        (str (pad-time remaining-hrs) ":"))
+      (pad-time remaining-mins) ":"
+      (pad-time remaining-secs)))
+   "00:00"))
 
 (defn countdown-timer
   [start-time]
@@ -73,4 +81,4 @@
         (:update @cmpnt-state)
 
         [:span {:class-name "countdown-timer"}
-         (format-time start-time cmpnt-state)])})))
+         (format-time2 start-time)])})))
