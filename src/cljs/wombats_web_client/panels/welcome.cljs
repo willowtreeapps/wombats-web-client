@@ -31,9 +31,11 @@
    [:div.welcome-message-content welcome-message-1]
    [:div.welcome-message-content welcome-message-2]])
 
-(defn render-welcome-button[]
-  [:div.welcome-button-container
-   [:a "get started now"]])
+(defn render-welcome-button [cmpnt-state]
+  (let [url (str github-signin-url "?access-key=" (:access-key @cmpnt-state))]
+    [:div.welcome-button-container
+     [:a {:href url}
+      "get started now"]]))
 
 (defn render-access-form [cmpnt-state]
   [:div.access-form
@@ -41,7 +43,7 @@
                            :label "Access Key"
                            :state cmpnt-state
                            :is-password false}]
-   [render-welcome-button]])
+   [render-welcome-button cmpnt-state]])
 
 (defn render-login-prompt []
   [:div.login-prompt
