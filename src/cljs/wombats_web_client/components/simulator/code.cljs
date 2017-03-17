@@ -9,24 +9,25 @@
 
 (defn- render-editor
   [code]
+  (prn @code)
   [:div#editor])
 
- (defn- init-ace [code mode]
-   (let [editor (-> js/window
-                    .-ace
-                    (.edit "editor"))]
+(defn- init-ace [code mode]
+  (let [editor (-> js/window
+                   .-ace
+                   (.edit "editor"))]
 
-     (when @code (-> editor
-                     .getSession
-                     (.setValue @code)))
+    (when @code (-> editor
+                    .getSession
+                    (.setValue @code)))
 
-     (when @code (.on editor "change" (on-code-change! editor)))
+    (when @code (.on editor "change" (on-code-change! editor)))
 
-     (when @mode (-> editor
-                     .getSession
-                     (.setMode (str "ace/mode/" @mode))))
+    (when @mode (-> editor
+                    .getSession
+                    (.setMode (str "ace/mode/" @mode))))
 
-     (.setTheme editor "ace/theme/tomorrow_night_eighties")))
+    (.setTheme editor "ace/theme/tomorrow_night_eighties")))
 
 (defn render []
   (let [code (re-frame/subscribe [:simulator/code])

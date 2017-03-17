@@ -166,7 +166,7 @@
   (let [modal-error (re-frame/subscribe [:modal-error])
         my-wombats (re-frame/subscribe [:my-wombats])
         cmpnt-state (reagent/atom initial-cmpnt-state)
-        games (re-frame/subscribe [:games])] ;; not included in render fn
+        games (re-frame/subscribe [:games/games])] ;; not included in render fn
     (reagent/create-class
      {:component-will-unmount #(re-frame/dispatch [:update-modal-error nil])
       :display-name "join-game-modal"

@@ -35,7 +35,7 @@
 (defn get-player
   [db]
   "Pulls the player out of db to use for simulator state"
-  (let [players (get-in db [:simulator/state :players])
+  (let [players (get-in db [:simulator/state :game/players])
         player-key (first (keys players))]
     (get players player-key)))
 
