@@ -42,7 +42,7 @@
 (defn remaining-time [total larger-total multiplier]
   (- total (* larger-total multiplier)))
 
-(defn format-time2 [time]
+(defn format-time [time]
  (if (time-left? time)
    (let [total-seconds (seconds-until time)
          total-minutes (total-time total-seconds 60)
@@ -81,4 +81,4 @@
         (:update @cmpnt-state)
 
         [:span {:class-name "countdown-timer"}
-         (format-time2 start-time)])})))
+         (format-time start-time)])})))
