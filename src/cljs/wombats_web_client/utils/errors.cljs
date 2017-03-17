@@ -9,6 +9,8 @@
 (defonce game-started-error
   "This game has already started. Please try joining another game.")
 
+(def login-error "login-error")
+
 (defn get-error-code [error]
   (:code (:response error)))
 
