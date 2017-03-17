@@ -8,7 +8,7 @@
    :else "none"))
 
 (defn get-adjusted-hp [game]
-  (let [game-status (:game/status game)
+  (let [game-status (:game/status @game)
         is-starting (or (= game-status :pending-open)
                         (= game-status :pending-closed)
                         (= game-status :active-intermission))]
@@ -18,20 +18,33 @@
   (if (> hp 100) 100
       (if (neg? hp) 0 hp)))
 
-(defn render-wombat-status [game stat]
-  (let [{:keys [db/id
-                wombat-name
-                username
-                score
-                hp
-                color]} stat
-                adjusted-hp-value (if (nil? hp)
-                                    (get-adjusted-hp game)
-                                    (get-bounded-hp hp))
-                is-dead (zero? adjusted-hp-value)
-                health-color (get-health-color adjusted-hp-value)
-                health-percent (str adjusted-hp-value "%")]
-    ^{:key (or username id)}
+(defn- get-player-hp
+  [game player-color]
+  (let [arena (get-in @game [:game/frame :frame/arena])
+        wombats (filter #(let [contents (:contents %)]
+                           (and (= (:type contents)
+                                   :wombat)
+                                (= (:color contents)
+                                   player-color)))
+                        (flatten arena))
+        wombat (first wombats)]
+
+    (get-in wombat [:contents :hp])))
+
+(defn render-wombat-status [game player]
+  (let [{:keys [:player/id
+                :player/user
+                :player/wombat
+                :player/stats
+                :player/color]} player
+        hp (get-player-hp game color)
+        adjusted-hp-value (if (nil? hp)
+                            (get-adjusted-hp game)
+                            (get-bounded-hp hp))
+        is-dead (zero? adjusted-hp-value)
+        health-color (get-health-color adjusted-hp-value)
+        health-percent (str adjusted-hp-value "%")]
+    ^{:key id}
     [:li.wombat-status {:class (when is-dead "disabled")}
      [:div.health-bar
       [:span.filling {:class health-color
@@ -39,12 +52,13 @@
                       {:width health-percent}}]]
      [:img.wombat-img {:src
                        (str "/images/wombat_" color "_right.png")}]
-     [:div.wombat-name wombat-name]
-     [:div.username username]
-     [:div.score score]]))
+     [:div.wombat-name (:wombat/name wombat)]
+     [:div.username (:user/github-username user)]
+     [:div.score (:stats/score stats)]]))
 
 (defn ranking-box
-  [{:keys [:game/players] :as game}]
-  [:div.game-ranking-box
-   [:ul.list-wombat-status
-    (doall (map #(render-wombat-status game %) players))]])
+  [game]
+  (let [players (:game/players @game)]
+    [:div.game-ranking-box
+     [:ul.list-wombat-status
+      (doall (map #(render-wombat-status game (last %)) players))]]))
