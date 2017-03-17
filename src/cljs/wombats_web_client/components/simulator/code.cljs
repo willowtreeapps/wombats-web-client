@@ -9,7 +9,6 @@
 
 (defn- render-editor
   [code]
-  (prn @code)
   [:div#editor])
 
 (defn- init-ace [code mode]
