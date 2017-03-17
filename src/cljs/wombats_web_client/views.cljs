@@ -12,6 +12,7 @@
               [wombats-web-client.panels.game-play :as game-play-panel]
               [wombats-web-client.panels.welcome :as welcome-panel]
               [wombats-web-client.panels.simulator :as simulator-panel]
+              [wombats-web-client.panels.config :as config-panel]
               [wombats-web-client.panels.page-not-found
                :as page-not-found-panel]
               [wombats-web-client.routes :refer [history]]
@@ -29,6 +30,7 @@
     :welcome-panel [welcome-panel/welcome params]
     :simulator-panel [simulator-panel/simulator params]
     :page-not-found-panel [page-not-found-panel/page-not-found params]
+    :config-panel [config-panel/config params]
     [:div]))
 
 (defn show-panel [{:keys [panel-id params]}]

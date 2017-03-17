@@ -154,3 +154,14 @@
  :bootstrapping
  (fn [db _]
    (:bootstrapping db)))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Arena  subs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(re-frame/reg-sub
+ :arenas
+ (fn [db _]
+   (:arenas db)))

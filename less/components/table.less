@@ -1,0 +1,24 @@
+@import "../colors.less";
+@import "../utils/typography.less";
+
+@row-height: 50px;
+
+.table {
+    background-color: @card-grey;
+
+    .header-row {
+        height: @row-height;
+
+        .title-cell {
+            .normal;
+
+            color: @warm-grey;
+            font-size: @font-size-12;
+        }
+    }
+
+    .data-row {
+        height: @row-height;
+        border-top: 1px solid @white-20;
+    }
+}

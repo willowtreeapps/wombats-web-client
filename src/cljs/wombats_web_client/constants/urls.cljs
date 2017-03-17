@@ -29,6 +29,7 @@
   [user-id id]
   (str base-api-versioned-url "/users/" user-id "/wombats/" id))
 
+(defonce arenas-url (str base-api-versioned-url "/arenas"))
 (defonce games-url (str base-api-versioned-url "/games"))
 
 (defn games-join-url [game-id]

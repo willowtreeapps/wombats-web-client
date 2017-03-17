@@ -20,6 +20,7 @@
                                            :params {:game-id game-id}}]))
 
   (defroute "/config" []
+    (print "config")
     (if (user-is-coordinator?)
       (re-frame/dispatch
        [:set-active-panel

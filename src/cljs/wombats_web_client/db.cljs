@@ -15,6 +15,8 @@
    ;; Stores all of the games indexed by their id
    :games {}
 
+   :arenas nil
+
    :simulator/state nil
    :simulator/templates nil
    :simulator/active-pane :code
