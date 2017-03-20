@@ -83,6 +83,7 @@
                 :game/frame
                 :game/start-time
                 :game/status]} @game
+        round-start-time (:frame/round-start-time frame)
         round-number (:frame/round-number frame)]
 
     [:div.game-play-title-container
@@ -96,7 +97,7 @@
          :pending-closed
          :active-intermission)
         [:span (str "ROUND " round-number " STARTS IN: ")
-         [countdown-timer start-time]]
+         [countdown-timer round-start-time]]
 
         :active
         (str "ROUND " round-number)

@@ -8,7 +8,7 @@
    :else "none"))
 
 (defn get-adjusted-hp [game]
-  (let [game-status (:game/status @game)
+  (let [game-status (:game/status game)
         is-starting (or (= game-status :pending-open)
                         (= game-status :pending-closed)
                         (= game-status :active-intermission))]
@@ -20,7 +20,7 @@
 
 (defn- get-player-hp
   [game player-color]
-  (let [arena (get-in @game [:game/frame :frame/arena])
+  (let [arena (get-in game [:game/frame :frame/arena])
         wombats (filter #(let [contents (:contents %)]
                            (and (= (:type contents)
                                    :wombat)
@@ -58,7 +58,8 @@
 
 (defn ranking-box
   [game]
-  (let [players (:game/players @game)]
+  (let [game @game
+        players (:game/players game)]
     [:div.game-ranking-box
      [:ul.list-wombat-status
       (doall (map #(render-wombat-status game (last %)) players))]]))
