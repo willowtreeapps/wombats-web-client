@@ -14,8 +14,8 @@
     [:tr.data-row
          (map-indexed create-data-cell data)]))
 
-(defn table [headers data get-items-fn]
-  [:table.table
+(defn table [classname headers data get-items-fn]
+  [:table.table {:class classname}
    [:thead.headers
     [:tr.header-row
      (map-indexed create-header-item headers)]]
