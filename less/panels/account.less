@@ -1,23 +1,19 @@
 @import "../colors.less";
 @import "../components/emphasized-button.less";
+@import "../components/header.less";
+
+@account-panel-padding: 60px;
 
 .account-panel {
-    padding: 60px;
+    padding: @account-panel-padding;
+    position: relative;
+    width: calc(~"100% - " (@account-panel-padding * 2));
+    .header;
 
-    .header {
-        margin-bottom: 30px;
-
-        .title {
-            .bold;
-
-            font-size: @font-size-30;
-            display: inline-block;
-        }
-
-        .logout {
-            .emphasized-button(@white, @black-20, @hover-grey, @dark);
-            float: right;
-        }
+    .logout {
+        .emphasized-button(@white, @black-20, @hover-grey, @dark);
+        position: absolute;
+        right: @account-panel-padding;
     }
 
     .wombats {

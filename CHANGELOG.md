@@ -3,6 +3,8 @@ CHANGELOG
 
 ## Develop
 **Enhancements**
+* Added Table Component, Used on Config Panel
+	[Emily Seibert](https://github.com/emilyseibert) [#282](https://github.com/willowtreeapps/wombats-web-client/issues/282)
 * Updated the welcome page to prompt for access token
 	[Emily Seibert][/emily] [#278](https://github.com/willowtreeapps/wombats-web-client/issues/278)
 * Refactored Countdown Timer to include days for improved readability

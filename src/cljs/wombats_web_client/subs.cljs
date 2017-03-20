@@ -164,3 +164,12 @@
  :login-error
  (fn [db _]
    (:login-error db)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Arena  subs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(re-frame/reg-sub
+ :arenas
+ (fn [db _]
+   (:arenas db)))
