@@ -29,4 +29,4 @@
                   (merge game
                          (update info
                                  :game/players
-                                 #(sort-players %))))))))
+                                 sort-players)))))))

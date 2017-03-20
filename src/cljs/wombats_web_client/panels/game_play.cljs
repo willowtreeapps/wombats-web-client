@@ -9,7 +9,8 @@
             [wombats-web-client.components.join-button :refer [join-button]]
             [wombats-web-client.components.modals.winner-modal
              :refer [winner-modal]]
-            [wombats-web-client.utils.games :refer [get-player-score]]
+            [wombats-web-client.utils.games
+             :refer [get-player-by-username get-player-score]]
             [wombats-web-client.utils.socket :as ws]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
@@ -120,9 +121,8 @@
                 :game/end-time
                 :game/players
                 :game/max-players]} @game
-        in-game (pos? (count (filter #(= (get-in % [:player/user :user/github-username])
-                                         (:user/github-username @user))
-                                     players)))]
+        in-game (get-player-by-username (:user/github-username @user)
+                                        players)]
 
     ;; Dispatch winner modal if there's a winner
     (when end-time

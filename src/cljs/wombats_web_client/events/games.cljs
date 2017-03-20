@@ -7,7 +7,8 @@
                                                         active
                                                         active-intermission
                                                         closed]]
-            [wombats-web-client.utils.games :refer [build-status-query sort-players]]
+            [wombats-web-client.utils.games
+             :refer [build-status-query sort-players]]
             [wombats-web-client.constants.urls :refer [games-url
                                                        games-join-url]]
             [wombats-web-client.utils.auth :refer [add-auth-header
@@ -101,7 +102,7 @@
                      (:game/id game)
                      (update game
                              :game/players
-                             #(sort-players %))))
+                             sort-players)))
             {}
             games))))
 

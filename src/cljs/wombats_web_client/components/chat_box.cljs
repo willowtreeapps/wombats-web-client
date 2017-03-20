@@ -1,6 +1,7 @@
 (ns wombats-web-client.components.chat-box
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent :refer [atom]]
+            [wombats-web-client.utils.games :refer [get-player-by-username]]
             [wombats-web-client.utils.socket :as ws]
             [cljs-time.format :as f]
             [cljs-time.core :as t]
@@ -33,8 +34,7 @@
              (t/to-default-time-zone timestamp)))
 
 (defn get-username-color [players username]
-  (let [player (first (filter #(= (get-in % [:player/user :user/github-username])
-                                  username) players))
+  (let [player (get-player-by-username username players)
         color-text (:player/color player)
         colors-8-filter-fn (fn [color] (= (:color-text color) color-text))
         color-hex (:color-hex (first (filter colors-8-filter-fn colors-8)))]

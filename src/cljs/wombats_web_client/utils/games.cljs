@@ -84,6 +84,13 @@
                  (conj coll game)
                  coll)) [] games))
 
+(defn get-player-by-username
+  [username players]
+  (first (filter #(= (get-in %
+                             [:player/user
+                              :user/github-username])
+                     username))))
+
 (defn get-player-score
   [player]
   (get-in player [:player/stats :stats/score]))
