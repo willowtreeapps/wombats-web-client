@@ -1,6 +1,7 @@
 (ns wombats-web-client.components.chat-box
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent :refer [atom]]
+            [wombats-web-client.utils.games :refer [get-player-by-username]]
             [wombats-web-client.utils.socket :as ws]
             [cljs-time.format :as f]
             [cljs-time.core :as t]
@@ -32,9 +33,9 @@
   (f/unparse (f/formatter "h:mm A")
              (t/to-default-time-zone timestamp)))
 
-(defn get-username-color [stats username]
-  (let [stat-filter-fn (fn [stat] (= (:username stat) username))
-        color-text (:color (first (filter stat-filter-fn stats)))
+(defn get-username-color [players username]
+  (let [player (get-player-by-username username players)
+        color-text (:player/color player)
         colors-8-filter-fn (fn [color] (= (:color-text color) color-text))
         color-hex (:color-hex (first (filter colors-8-filter-fn colors-8)))]
     color-hex))
@@ -44,9 +45,8 @@
    [:span.msg-body.default "Say something already!"]])
 
 (defn display-messages
-  [messages game]
-  (let [stats (:game/stats game)
-        messages @messages
+  [messages players]
+  (let [messages @messages
         element (first
                  (array-seq
                   (.getElementsByClassName
@@ -74,7 +74,7 @@
           [:span.msg-timestamp (format-time timestamp)]
           [:span.msg-username
            {:style
-            {:color (get-username-color stats username)}}
+            {:color (get-username-color players username)}}
            username]
           [:span.msg-body message]])
        [default-message])]))
@@ -94,7 +94,9 @@
       {:on-click send-msg-fn} "SEND"]]))
 
 (defn chat-box
-  [game-id messages stats]
-  [:div.chat-box
-   [display-messages messages stats]
-   [chat-box-input game-id]])
+  [game messages]
+  (let [{:keys [:game/id
+                :game/players]} @game]
+    [:div.chat-box
+     [display-messages messages players]
+     [chat-box-input id]]))

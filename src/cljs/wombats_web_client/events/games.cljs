@@ -7,7 +7,8 @@
                                                         active
                                                         active-intermission
                                                         closed]]
-            [wombats-web-client.utils.games :refer [build-status-query]]
+            [wombats-web-client.utils.games
+             :refer [build-status-query sort-players]]
             [wombats-web-client.constants.urls :refer [games-url
                                                        games-join-url]]
             [wombats-web-client.utils.auth :refer [add-auth-header
@@ -96,7 +97,14 @@
     db
     [:games]
     merge
-    (reduce #(assoc %1 (:game/id %2) %2) {} games))))
+    (reduce (fn [map game]
+              (assoc map
+                     (:game/id game)
+                     (update game
+                             :game/players
+                             sort-players)))
+            {}
+            games))))
 
 (re-frame/reg-fx
  :get-open-games

@@ -83,7 +83,7 @@
 (defn main-panel [cmpnt-state]
   (let [polling (open-game-polling)
         current-user (re-frame/subscribe [:current-user])
-        games (re-frame/subscribe [:games])]
+        games (re-frame/subscribe [:games/games])]
 
     (get-all-games)
 
