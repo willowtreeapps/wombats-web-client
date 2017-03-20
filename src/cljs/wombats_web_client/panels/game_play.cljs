@@ -41,9 +41,15 @@
                  100))
 
 (defn- show-winner-modal
-  [winner]
-  (re-frame/dispatch [:set-modal {:fn #(winner-modal winner)
-                                  :show-overlay true}]))
+  ;; Players are always sorted by score
+  [players]
+  (let [top-score (get-in (first players)
+                          [:player/stats :stats/score])
+        winners (filter #(= (get-in % [:player/stats :stats/score])
+                            top-score)
+                        players)]
+    (re-frame/dispatch [:set-modal {:fn #(winner-modal winners)
+                                    :show-overlay true}])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
@@ -111,7 +117,7 @@
 (defn- right-game-play-panel
   [game messages user]
   (let [{:keys [:game/name
-                :game/winner
+                :game/end-time
                 :game/players
                 :game/max-players]} @game
         in-game (pos? (count (filter #(= (get-in % [:player/user :user/github-username])
@@ -119,8 +125,8 @@
                                      (vals players))))]
 
     ;; Dispatch winner modal if there's a winner
-    (when winner
-      (show-winner-modal winner))
+    (when end-time
+      (show-winner-modal (vals players)))
 
     [:div.right-game-play-panel
 
@@ -155,11 +161,11 @@
       :display-name "game-play-panel"
       :reagent-render
       (fn []
-        (let [winner (:game/winner @game)]
+        (let [game-over (:game/end-time @game)]
 
           (arena/arena @arena canvas-id)
           [:div {:class-name root-class}
            [:div.left-game-play-panel {:id "wombat-arena"
-                                       :class (when winner "game-over")}
+                                       :class (when game-over "game-over")}
             [:canvas {:id canvas-id}]]
            [right-game-play-panel game messages user]]))})))
