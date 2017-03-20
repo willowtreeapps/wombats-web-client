@@ -105,7 +105,7 @@
          :pending-closed
          :active-intermission)
         [:span (str "ROUND " round-number " STARTS IN: ")
-         [countdown-timer round-start-time]]
+         [countdown-timer (or round-start-time start-time)]]
 
         :active
         (str "ROUND " round-number)
