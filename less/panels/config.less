@@ -1,8 +1,9 @@
 @import "../components/header.less";
 
+@width-padding: 60px;
 .config-panel {
-    width: calc(~"100% - 120px");
-    padding: 30px 60px;
+    width: calc(~"100% - " (@width-padding * 2));
+    padding: 30px @width-padding;
 
     .header;
 }
