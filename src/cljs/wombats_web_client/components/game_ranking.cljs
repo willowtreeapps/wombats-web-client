@@ -1,4 +1,6 @@
-(ns wombats-web-client.components.game-ranking)
+(ns wombats-web-client.components.game-ranking
+  (:require [wombats-web-client.utils.games
+             :refer [get-wombat-in-game]]))
 
 (defn get-health-color [hp]
   (cond
@@ -20,15 +22,7 @@
 
 (defn- get-player-hp
   [game player-color]
-  (let [arena (get-in game [:game/frame :frame/arena])
-        wombats (filter #(let [contents (:contents %)]
-                           (and (= (:type contents)
-                                   :wombat)
-                                (= (:color contents)
-                                   player-color)))
-                        (flatten arena))
-        wombat (first wombats)]
-
+  (let [wombat (get-wombat-in-game game player-color)]
     (get-in wombat [:contents :hp])))
 
 (defn render-wombat-status [game player]
@@ -58,8 +52,9 @@
 
 (defn ranking-box
   [game]
-  (let [game @game]
+  (let [game @game
+        players (:game/players game)]
     [:div.game-ranking-box
      [:ul.list-wombat-status
       (doall (map #(render-wombat-status game %)
-                  (:game/players game)))]]))
+                  players))]]))

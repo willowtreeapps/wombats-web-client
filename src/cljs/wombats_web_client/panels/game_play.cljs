@@ -9,6 +9,7 @@
             [wombats-web-client.components.join-button :refer [join-button]]
             [wombats-web-client.components.modals.winner-modal
              :refer [winner-modal]]
+            [wombats-web-client.constants.games :refer [game-type-str-map]]
             [wombats-web-client.utils.games
              :refer [get-player-by-username get-player-score]]
             [wombats-web-client.utils.socket :as ws]
@@ -120,7 +121,9 @@
   (let [{:keys [:game/name
                 :game/end-time
                 :game/players
-                :game/max-players]} @game
+                :game/max-players
+                :game/num-rounds]} @game
+        game-type (:game/type @game)
         in-game (get-player-by-username (:user/github-username @user)
                                         players)]
 
@@ -132,7 +135,11 @@
 
      [:div.top-panel
       [game-play-title game (not in-game)]
-      [:h2.game-play-subtitle (str name " - High Score")]
+      [:h2.game-play-subtitle
+       (clojure.string/join " - "
+                            [name
+                             (get game-type-str-map game-type)
+                             (str num-rounds " Rounds")])]
       [:p.wombat-counter
        (str "Wombats: " (count players) "/" max-players)]
       [ranking-box game]]
