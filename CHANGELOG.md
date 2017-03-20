@@ -3,6 +3,8 @@ CHANGELOG
 
 ## Develop
 **Enhancements**
+* Updated the welcome page to prompt for access token
+	[Emily Seibert](https://github.com/emilyseibert) [#278](https://github.com/willowtreeapps/wombats-web-client/issues/278)
 * Refactored Countdown Timer to include days for improved readability
 	[Emily Seibert](https://github.com/emilyseibert) [#201](https://github.com/willowtreeapps/wombats-web-client/issues/201)
 * Created a general Select Component ready for any form
