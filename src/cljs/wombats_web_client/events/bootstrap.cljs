@@ -23,6 +23,11 @@
    (assoc db :current-user current-user)))
 
 (re-frame/reg-event-db
+ :login-error
+ (fn [db [_ login-error]]
+   (assoc db :login-error login-error)))
+
+(re-frame/reg-event-db
  :initialize-db
  (fn [_ _]
    ;; Check to see if token is in the url, if so assoc it into the db

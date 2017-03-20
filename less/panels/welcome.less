@@ -1,6 +1,10 @@
 @import "../colors.less";
 @import "../components/emphasized-button.less";
+@import "../components/simple-button.less";
 @import "../utils/typography";
+
+@access-form-width: 310px;
+@logo-height: 50px;
 
 .welcome-panel {
     height: 100%;
@@ -8,16 +12,22 @@
     background-image: url(/images/welcome-background.png);
     background-repeat: no-repeat;
     background-size: cover;
-    
-    .welcome-logo-container {	
+
+    .welcome-logo-container {
         width: 100%;
-        padding-left: 40px;
-        padding-top: 20px;
+        height: @logo-height;
+        position: relative;
+
+        .logo {
+            position: absolute;
+            left: 40px;
+            top: 20px;
+        }
     }
 
     .welcome-content-container {
         width: 100%;
-        padding-top: 200px;
+        height: calc(~"100% -" @logo-height);
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -27,40 +37,41 @@
         .welcome-title-container {
             .bold;
 
-            max-width: 600px;
-            display: block;
+            max-width: 290px;
             text-align: center;
-            margin: auto;				
             color: @white;
             font-size: @font-size-30;
-            display: inline-block;
-            text-transform: uppercase; 
-            padding: 20px;
+            text-transform: uppercase;
+            padding-bottom: 20px;
         }
 
         .welcome-message-container {
-            .bold;
-
-            max-width: 560px;
-            height: 96px;
-            display: block;
-            margin: 0 auto;
+            max-width: 550px;
             font-size: @font-size-18;
-            line-height: 1.33;
             text-align: center;
             color: @white;
-            padding-bottom: 20px;
 
             .welcome-message-content {
-        	margin-bottom: 24px;
-            }	
+        	margin-bottom: 20px;
+            }
         }
 
-        .welcome-button-container {
-            .emphasized-button(@wombat-green, @black-30, @wombat-dark-green, @white); 
-            width: 202px;
+        .access-form {
+            width: @access-form-width;
+
+            .welcome-button-container {
+                .emphasized-button(@wombat-green, @black-30, @wombat-dark-green, @white, @access-form-width);
+                text-align: center;
+                text-transform: uppercase;
+                cursor: pointer;
+            }
+        }
+
+        .login-prompt {
             text-align: center;
-            text-transform: uppercase;
+            .login {
+               .simple-button(@margin-left: 0);
+            }
         }
     }
 
