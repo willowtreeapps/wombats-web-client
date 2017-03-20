@@ -1,0 +1,34 @@
+@import "../utils/typography.less";
+@import "../objects/label.less";
+@import "../colors.less";
+@import "../components/inline-error.less";
+
+@datepicker-height: 45px;
+@datepicker-margin-bottom: 30px;
+
+.datepicker-wrapper {
+    width: 100%;
+    font-size: @font-size-20;
+    color: @black;
+
+    .label;
+
+    .input {
+        width: 100%;
+        text-indent: 10px;
+        height: @datepicker-height;
+        letter-spacing: 0.5px;
+        border-style: none;
+        margin-bottom: @datepicker-margin-bottom;
+
+        &.field-error {
+            box-shadow: inset 0px 0px 0px 1px @error-red;
+            margin-bottom: 0;
+        }
+        &:focus {
+            outline: none;
+        }
+    }
+
+    .inline-error(@total-margin-height: @datepicker-margin-bottom);
+}

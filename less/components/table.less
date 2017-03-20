@@ -31,6 +31,11 @@ table, caption, tbody, tfoot, thead, tr, th, td {
     .body > .data-row {
         height: @row-height;
         border-top: 1px solid @white-20;
+
+        &:hover {
+            background-color: @white-20;
+            cursor: pointer;
+        }
     }
 
     .header-cell:nth-child(1),

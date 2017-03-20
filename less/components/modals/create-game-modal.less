@@ -1,0 +1,26 @@
+@import "../text-input.less";
+
+.modal-container {
+    .modal {
+        width: 400px;
+
+        &.create-game-modal {
+            .modal-content {
+                display: flex;
+                justify-content: space-between;
+                flex-flow: row wrap;
+
+                .number-of-players,
+                .number-of-rounds,
+                .intermission-time {
+                    .text-input-wrapper;
+
+                    width: 107px;
+                    .inline-error {
+                        font-size: 11px;
+                    }
+                }
+            }
+        }
+    }
+}
