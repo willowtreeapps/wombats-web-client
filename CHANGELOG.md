@@ -3,6 +3,8 @@ CHANGELOG
 
 ## Develop
 **Enhancements**
+* Refactored Countdown Timer to include days for improved readability
+	[Emily Seibert](https://github.com/emilyseibert) [#201](https://github.com/willowtreeapps/wombats-web-client/issues/201)
 * Created a general Select Component ready for any form
 	[Emily Seibert](https://github.com/emilyseibert) [#200](https://github.com/willowtreeapps/wombats-web-client/issues/200)
 * Added linter and fixed code with suggestions from kibit & bikeshed
