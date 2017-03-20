@@ -2,11 +2,11 @@
 
 (defn create-header-item [idx title]
   ^{:key (str idx "-" title)}
-  [:th.title-cell {:class idx} title])
+  [:th.header-cell title])
 
 (defn create-data-cell [idx item]
   ^{:key (str idx "-" item)}
-  [:td.data-cell {:class idx} item])
+  [:td.data-cell item])
 
 (defn create-rows [row-data-obj get-items-fn]
   (let [data (get-items-fn row-data-obj)]
@@ -16,9 +16,9 @@
 
 (defn table [headers data get-items-fn]
   [:table.table
-   [:thead
+   [:thead.headers
     [:tr.header-row
      (map-indexed create-header-item headers)]]
-   [:tbody
+   [:tbody.body
     (for [row-data-obj data]
       (create-rows row-data-obj get-items-fn))]])

@@ -3,22 +3,37 @@
 
 @row-height: 50px;
 
+// from http://meyerweb.com/eric/tools/css/reset/
+table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+}
+
 .table {
+    border-collapse: collapse;
+    border-spacing: 0;
     background-color: @card-grey;
 
-    .header-row {
+    .headers > .header-row {
         height: @row-height;
 
-        .title-cell {
-            .normal;
-
+        .header-cell {
             color: @warm-grey;
             font-size: @font-size-12;
+            text-align: left;
         }
     }
 
-    .data-row {
+    .body > .data-row {
         height: @row-height;
         border-top: 1px solid @white-20;
+    }
+
+    .header-cell:nth-child(1),
+    .data-cell:nth-child(1) {
+        text-indent: 10px;
     }
 }
