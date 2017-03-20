@@ -21,6 +21,8 @@ CHANGELOG
     [Matt O'Connell][/oconn] API Issue #[326](https://github.com/willowtreeapps/wombats-api/issues/326)
 * Fixed game & game_play pages to reflect API changes
     [C.P. Dehli][/dehli] #[344](https://github.com/willowtreeapps/wombats-api/pull/344)
+* Fix countdown timer between rounds (regression from Game State Refactor)
+    [C.P. Dehli][/dehli]
 
 ## QA
 **Enhancements**
