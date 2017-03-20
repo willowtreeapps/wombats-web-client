@@ -155,7 +155,10 @@
  (fn [db _]
    (:bootstrapping db)))
 
-
+(re-frame/reg-sub
+ :login-error
+ (fn [db _]
+   (:login-error db)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Arena  subs

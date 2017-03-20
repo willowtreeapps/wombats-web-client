@@ -27,4 +27,5 @@
 
    :join-game-selections []
    :spritesheet nil
-   :modal-error nil})
+   :modal-error nil
+   :login-error nil})
