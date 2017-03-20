@@ -1,5 +1,6 @@
 (ns wombats-web-client.events.in-game
   (:require [re-frame.core :as re-frame]
+            [wombats-web-client.utils.games :refer [sort-players]]
             [wombats-web-client.utils.socket :as ws]))
 
 (re-frame/reg-event-db
@@ -25,4 +26,7 @@
      (update-in db
                 [:games game-id]
                 (fn [game]
-                  (merge game info))))))
+                  (merge game
+                         (update info
+                                 :game/players
+                                 #(sort-players %))))))))

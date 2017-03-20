@@ -83,3 +83,13 @@
                         (user-in-game? current-user game))
                  (conj coll game)
                  coll)) [] games))
+
+(defn get-player-score
+  [player]
+  (get-in player [:player/stats :stats/score]))
+
+(defn sort-players
+  [players-map]
+  (sort #(compare (get-player-score %1)
+                  (get-player-score %2))
+        (vals players-map)))

@@ -34,7 +34,7 @@
 
 (defn get-username-color [players username]
   (let [player (first (filter #(= (get-in % [:player/user :user/github-username])
-                                  username) (vals players)))
+                                  username) players))
         color-text (:player/color player)
         colors-8-filter-fn (fn [color] (= (:color-text color) color-text))
         color-hex (:color-hex (first (filter colors-8-filter-fn colors-8)))]

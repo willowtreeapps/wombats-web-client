@@ -9,6 +9,7 @@
             [wombats-web-client.components.join-button :refer [join-button]]
             [wombats-web-client.components.modals.winner-modal
              :refer [winner-modal]]
+            [wombats-web-client.utils.games :refer [get-player-score]]
             [wombats-web-client.utils.socket :as ws]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
@@ -43,9 +44,8 @@
 (defn- show-winner-modal
   ;; Players are always sorted by score
   [players]
-  (let [top-score (get-in (first players)
-                          [:player/stats :stats/score])
-        winners (filter #(= (get-in % [:player/stats :stats/score])
+  (let [top-score (get-player-score (first players))
+        winners (filter #(= (get-player-score %)
                             top-score)
                         players)]
     (re-frame/dispatch [:set-modal {:fn #(winner-modal winners)
@@ -115,18 +115,18 @@
                      :on-click (open-join-game-modal-fn id)}])]))
 
 (defn- right-game-play-panel
-  [game messages user sorted-players]
+  [game messages user]
   (let [{:keys [:game/name
                 :game/end-time
                 :game/players
                 :game/max-players]} @game
         in-game (pos? (count (filter #(= (get-in % [:player/user :user/github-username])
                                          (:user/github-username @user))
-                                     (vals players))))]
+                                     players)))]
 
     ;; Dispatch winner modal if there's a winner
     (when end-time
-      (show-winner-modal sorted-players))
+      (show-winner-modal players))
 
     [:div.right-game-play-panel
 
@@ -135,7 +135,7 @@
       [:h2.game-play-subtitle (str name " - High Score")]
       [:p.wombat-counter
        (str "Wombats: " (count players) "/" max-players)]
-      [ranking-box game sorted-players]]
+      [ranking-box game]]
 
      (when in-game
        [:div.chat-panel
@@ -161,13 +161,10 @@
       :display-name "game-play-panel"
       :reagent-render
       (fn []
-        (let [{:keys [:game/end-time :game/players]} @game
-              sorted-players (sort #(compare (get-in %1 [:player/stats :stats/score])
-                                             (get-in %2 [:player/stats :stats/score]))
-                                   (vals players))]
+        (let [game-over (:game/end-time @game)]
           (arena/arena @arena canvas-id)
           [:div {:class-name root-class}
            [:div.left-game-play-panel {:id "wombat-arena"
-                                       :class (when end-time "game-over")}
+                                       :class (when game-over "game-over")}
             [:canvas {:id canvas-id}]]
-           [right-game-play-panel game messages user sorted-players]]))})))
+           [right-game-play-panel game messages user]]))})))
