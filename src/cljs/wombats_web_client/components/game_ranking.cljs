@@ -57,9 +57,9 @@
      [:div.score (:stats/score stats)]]))
 
 (defn ranking-box
-  [game]
+  [game sorted-players]
   (let [game @game]
     [:div.game-ranking-box
      [:ul.list-wombat-status
-      (doall (map #(render-wombat-status game (last %))
-                  (:game/players game)))]]))
+      (doall (map #(render-wombat-status game %)
+                  sorted-players))]]))

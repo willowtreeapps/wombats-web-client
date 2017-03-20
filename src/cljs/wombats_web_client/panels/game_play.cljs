@@ -115,7 +115,7 @@
                      :on-click (open-join-game-modal-fn id)}])]))
 
 (defn- right-game-play-panel
-  [game messages user]
+  [game messages user sorted-players]
   (let [{:keys [:game/name
                 :game/end-time
                 :game/players
@@ -126,7 +126,7 @@
 
     ;; Dispatch winner modal if there's a winner
     (when end-time
-      (show-winner-modal (vals players)))
+      (show-winner-modal sorted-players))
 
     [:div.right-game-play-panel
 
@@ -135,7 +135,7 @@
       [:h2.game-play-subtitle (str name " - High Score")]
       [:p.wombat-counter
        (str "Wombats: " (count players) "/" max-players)]
-      [ranking-box game]]
+      [ranking-box game sorted-players]]
 
      (when in-game
        [:div.chat-panel
@@ -161,11 +161,13 @@
       :display-name "game-play-panel"
       :reagent-render
       (fn []
-        (let [game-over (:game/end-time @game)]
-
+        (let [{:keys [:game/end-time :game/players]} @game
+              sorted-players (sort #(compare (get-in %1 [:player/stats :stats/score])
+                                             (get-in %2 [:player/stats :stats/score]))
+                                   (vals players))]
           (arena/arena @arena canvas-id)
           [:div {:class-name root-class}
            [:div.left-game-play-panel {:id "wombat-arena"
-                                       :class (when game-over "game-over")}
+                                       :class (when end-time "game-over")}
             [:canvas {:id canvas-id}]]
-           [right-game-play-panel game messages user]]))})))
+           [right-game-play-panel game messages user sorted-players]]))})))
