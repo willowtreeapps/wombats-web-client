@@ -4,21 +4,23 @@ CHANGELOG
 ## Develop
 **Enhancements**
 * Updated the welcome page to prompt for access token
-	[Emily Seibert](https://github.com/emilyseibert) [#278](https://github.com/willowtreeapps/wombats-web-client/issues/278)
+	[Emily Seibert][/emily] [#278](https://github.com/willowtreeapps/wombats-web-client/issues/278)
 * Refactored Countdown Timer to include days for improved readability
-	[Emily Seibert](https://github.com/emilyseibert) [#201](https://github.com/willowtreeapps/wombats-web-client/issues/201)
+	[Emily Seibert][/emily] [#201](https://github.com/willowtreeapps/wombats-web-client/issues/201)
 * Created a general Select Component ready for any form
-	[Emily Seibert](https://github.com/emilyseibert) [#200](https://github.com/willowtreeapps/wombats-web-client/issues/200)
+	[Emily Seibert][/emily] [#200](https://github.com/willowtreeapps/wombats-web-client/issues/200)
 * Added linter and fixed code with suggestions from kibit & bikeshed
-	[Emily Seibert](https://github.com/emilyseibert) [#205](https://github.com/willowtreeapps/wombats-web-client/issues/205)
+	[Emily Seibert][/emily] [#205](https://github.com/willowtreeapps/wombats-web-client/issues/205)
 * Access Key Redirect
-    [Matt O'Connell](https://github.com/oconn) API Issue #325[https://github.com/willowtreeapps/wombats-api/issues/325]
+    [Matt O'Connell][/oconn] API Issue #325[https://github.com/willowtreeapps/wombats-api/issues/325]
 
 **Bug Fixes**
 * Join Modal dropdown z index updated to be drawn over disabled color overlay
-	[Emily Seibert](https://github.com/emilyseibert) [#275](https://github.com/willowtreeapps/wombats-web-client/issues/275)
+	[Emily Seibert][/emily] [#275](https://github.com/willowtreeapps/wombats-web-client/issues/275)
 * Fixed simulator (large frame processing)
-    [Matt O'Connell](https://github.com/oconn) API Issue #[326](https://github.com/willowtreeapps/wombats-api/issues/326)
+    [Matt O'Connell][/oconn] API Issue #[326](https://github.com/willowtreeapps/wombats-api/issues/326)
+* Fixed game & game_play pages to reflect API changes
+    [C.P. Dehli][/dehli] #[344](https://github.com/willowtreeapps/wombats-api/pull/344)
 
 ## QA
 **Enhancements**
@@ -46,3 +48,7 @@ CHANGELOG
 
 **Bug Fixes**
 * None
+
+[/dehli]: https://github.com/dehli
+[/emily]: https://github.com/emilyseibert
+[/oconn]: https://github.com/oconn
