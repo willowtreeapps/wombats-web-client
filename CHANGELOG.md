@@ -32,6 +32,8 @@ CHANGELOG
     [C.P. Dehli][/dehli] #[344](https://github.com/willowtreeapps/wombats-api/pull/344)
 * Fix countdown timer between rounds (regression from Game State Refactor)
     [C.P. Dehli][/dehli]
+* Fix sorting order for storing players in db
+    [C.P. Dehli][/dehli] #[307](https://github.com/willowtreeapps/wombats-web-client/issues/307)
 
 ## Master
 **Enhancements**
