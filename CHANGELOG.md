@@ -3,6 +3,13 @@ CHANGELOG
 
 ## Develop
 **Enhancements**
+* None
+
+**Bug Fixes**
+* None
+
+## QA (3.21.2017)
+**Enhancements**
 * Added Table Component, Used on Config Panel
 	[Emily Seibert](https://github.com/emilyseibert) [#282](https://github.com/willowtreeapps/wombats-web-client/issues/282)
 * Updated the welcome page to prompt for access token
@@ -25,13 +32,6 @@ CHANGELOG
     [C.P. Dehli][/dehli] #[344](https://github.com/willowtreeapps/wombats-api/pull/344)
 * Fix countdown timer between rounds (regression from Game State Refactor)
     [C.P. Dehli][/dehli]
-
-## QA
-**Enhancements**
-* None
-
-**Bug Fixes**
-* None
 
 ## Master
 **Enhancements**
