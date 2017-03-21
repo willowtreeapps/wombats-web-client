@@ -13,6 +13,7 @@
             [wombats-web-client.utils.games
              :refer [get-player-by-username get-player-score]]
             [wombats-web-client.utils.socket :as ws]
+            [wombats-web-client.utils.time :as time]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
 
@@ -63,16 +64,34 @@
                                     :show-overlay true}])))
 
 (defn- get-transition-text
-  [game]
+  [{:keys [:game/frame :game/start-time :game/status]} cmpnt-state]
+  (let [round-start-time (:frame/round-start-time frame)
+        seconds-left (time/seconds-until (if round-start-time
+                                           round-start-time
+                                           start-time))
+        timeout-time (* (max (- seconds-left 3)
+                             1)
+                        1000)]
 
-  ;; When there's 1 second left show GO!
+    ;; Force a rerender when the transition-text should change
+    (when (pos? seconds-left)
+      (js/setTimeout #(swap! cmpnt-state update-in [:update] not)
+                     timeout-time))
 
-  ;; When there's 2 seconds left show SET
+    (when (or (= status :active-intermission)
+              (= status :pending-open)
+              (= status :pending-closed))
+      (case seconds-left
+        3
+        "READY"
 
-  ;;  When there's 3 seconds left show READY
+        2
+        "SET"
 
-  (js/console.log game)
-  "READY")
+        (0 1)
+        "GO!"
+
+        nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
@@ -176,7 +195,8 @@
 
 (defn game-play [{:keys [game-id]}]
   (let [arena (re-frame/subscribe [:game/arena])
-        cmpnt-state (reagent/atom {:resize-fn #(on-resize arena)})
+        cmpnt-state (reagent/atom {:resize-fn #(on-resize arena)
+                                   :update nil})
         messages (re-frame/subscribe [:game/messages])
         user (re-frame/subscribe [:current-user])
         game (re-frame/subscribe [:games/game-by-id game-id])]
@@ -190,8 +210,12 @@
       :reagent-render
       (fn [{:keys [game-id]}]
         (let [game-over (:game/end-time @game)
-              transition-text (get-transition-text @game)]
+              transition-text (get-transition-text @game cmpnt-state)]
           (arena/arena @arena canvas-id)
+
+          ;; Trigger rerender for transition screen
+          (:update @cmpnt-state)
+
           [:div {:class-name root-class}
            [:div.left-game-play-panel {:id canvas-container-id
                                        :class (when (or game-over

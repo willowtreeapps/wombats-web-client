@@ -47,9 +47,8 @@
       (fn [start-time]
         ;; Force timer to redraw every second
         (when (time-left? start-time)
-          (.setTimeout js/window
-                       #(swap! cmpnt-state update-in [:update] not)
-                       1000))
+          (js/setTimeout #(swap! cmpnt-state update-in [:update] not)
+                         1000))
 
         ;; triggers a rerender for active timers
         ;; will not affect timers with no interval timer
