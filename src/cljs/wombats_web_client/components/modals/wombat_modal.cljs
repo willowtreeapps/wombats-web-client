@@ -1,7 +1,8 @@
 (ns wombats-web-client.components.modals.wombat-modal
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
-            [wombats-web-client.components.text-input :refer [text-input-with-label]]
+            [wombats-web-client.components.text-input
+             :refer [text-input-with-label]]
             [wombats-web-client.events.user :refer [create-new-wombat
                                                     edit-wombat-by-id]]
             [wombats-web-client.utils.errors :refer [required-field-error]]
@@ -13,12 +14,12 @@
   (re-frame/dispatch [:update-modal-error nil])
   (re-frame/dispatch [:set-modal nil]))
 
-(defn on-submit-form-valid? [cmpnt-state username wombat-id]
+(defn on-submit-form-valid [cmpnt-state username wombat-id]
   (let [{:keys [wombat-name
                 wombat-repo-name
                 wombat-file-path]} @cmpnt-state
-        url (str username "/" 
-                 wombat-repo-name "/contents/" 
+        url (str username "/"
+                 wombat-repo-name "/contents/"
                  wombat-file-path)]
     (when (clojure.string/blank? wombat-name)
       (swap! cmpnt-state assoc :wombat-name-error required-field-error))
@@ -29,7 +30,11 @@
 
     (when (and wombat-name wombat-repo-name wombat-file-path)
       (if wombat-id
-        (edit-wombat-by-id wombat-name url wombat-id #(callback-success cmpnt-state))
+        (edit-wombat-by-id
+         wombat-name
+         url
+         wombat-id
+         #(callback-success cmpnt-state))
         (create-new-wombat wombat-name url #(callback-success cmpnt-state))))))
 
 (defn parse-url [url key]
@@ -56,9 +61,11 @@
       :display-name "wombat-modal"
       :reagent-render
       (fn []
-        (let [{:keys [wombat-name wombat-repo-name wombat-file-path]} @cmpnt-state
-              error @modal-error
-              username (:user/github-username @current-user)]
+        (let [{:keys [wombat-name
+                      wombat-repo-name
+                      wombat-file-path]} @cmpnt-state
+                      error @modal-error
+                      username (:user/github-username @current-user)]
           [:div {:class "modal add-wombat-modal"}
            [:div.title title]
            (when error [:div.modal-error error])
@@ -76,4 +83,9 @@
                                     :disabled (some? wombat-id)}]]
            [:div.action-buttons
             [cancel-modal-input]
-            [submit-modal-input submit-text #(on-submit-form-valid? cmpnt-state username wombat-id)]]]))})))
+            [submit-modal-input
+             submit-text
+             #(on-submit-form-valid
+               cmpnt-state
+               username
+               wombat-id)]]]))})))

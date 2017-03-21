@@ -12,10 +12,13 @@
               [wombats-web-client.panels.game-play :as game-play-panel]
               [wombats-web-client.panels.welcome :as welcome-panel]
               [wombats-web-client.panels.simulator :as simulator-panel]
-              [wombats-web-client.panels.page-not-found :as page-not-found-panel]
+              [wombats-web-client.panels.config :as config-panel]
+              [wombats-web-client.panels.page-not-found
+               :as page-not-found-panel]
               [wombats-web-client.routes :refer [history]]
 
-              [wombats-web-client.utils.local-storage :refer [get-token remove-token!]]))
+              [wombats-web-client.utils.local-storage :refer [get-token
+                                                              remove-token!]]))
 
 ;; mainutil
 
@@ -27,6 +30,7 @@
     :welcome-panel [welcome-panel/welcome params]
     :simulator-panel [simulator-panel/simulator params]
     :page-not-found-panel [page-not-found-panel/page-not-found params]
+    :config-panel [config-panel/config params]
     [:div]))
 
 (defn show-panel [{:keys [panel-id params]}]
@@ -35,11 +39,11 @@
 (defn display-modal
   [modal]
   (let [render-fn (:fn modal)
-        show-overlay? (:show-overlay? modal)
+        show-overlay (:show-overlay modal)
         visibility (if modal "visible" "hidden")]
     [:div {:class-name "modal-container"
            :style {:visibility visibility}}
-     (when show-overlay? [:div {:class-name "modal-overlay"}])
+     (when show-overlay [:div {:class-name "modal-overlay"}])
      (when render-fn [render-fn])]))
 
 (defn display-navbar [panel]
@@ -49,17 +53,17 @@
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])
         modal (re-frame/subscribe [:modal])
-        bootstrapping? (re-frame/subscribe [:bootstrapping?])]
+        bootstrapping (re-frame/subscribe [:bootstrapping])]
     (fn []
-      (let [bootstrapping? @bootstrapping?
+      (let [bootstrapping @bootstrapping
             modal @modal
             panel @active-panel]
 
 
 
          ;; If you're bootstrapping show loading
-        (if bootstrapping?
-          [:div.loading-app-container 
+        (if bootstrapping
+          [:div.loading-app-container
            [:p "Loading..."]
            [:img.dancing-gif {:src "/images/naked_dancing_wombat.gif"}]]
 

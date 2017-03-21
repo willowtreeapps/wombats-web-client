@@ -26,12 +26,12 @@
    (let [ctx (context canvas)]
      (.save ctx)
      (transforms ctx)
-     
+
      (.drawImage ctx
                  image
                  sx sy swidth sheight
                  dx dy dwidth dheight)
-     
+
      (.restore ctx))))
 
 (defn draw-image-flipped-horizontally
@@ -48,9 +48,9 @@
 (defn draw-image-rotated
   "Same as draw-image but you can rotate the image before drawing it"
   [canvas image sx sy swidth sheight dx dy dwidth dheight degreeRotation]
-    (if (= degreeRotation 0)
+    (if (zero? degreeRotation)
       (draw-image canvas image
-                  sx sy swidth sheight 
+                  sx sy swidth sheight
                   dx dy dwidth dheight)
 
       (let [radians (/ (* js/Math.PI degreeRotation) 180)]

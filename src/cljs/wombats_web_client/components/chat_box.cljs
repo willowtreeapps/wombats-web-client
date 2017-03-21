@@ -1,6 +1,7 @@
 (ns wombats-web-client.components.chat-box
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent :refer [atom]]
+            [wombats-web-client.utils.games :refer [get-player-by-username]]
             [wombats-web-client.utils.socket :as ws]
             [cljs-time.format :as f]
             [cljs-time.core :as t]
@@ -22,7 +23,7 @@
   "Sends a message if the user hit enter in the chat box"
   [send-msg]
   (fn [event]
-    (let [key (-> event .-key)]
+    (let [key (.-key event)]
       (when (= "Enter" key)
         (send-msg)))
     event))
@@ -32,9 +33,9 @@
   (f/unparse (f/formatter "h:mm A")
              (t/to-default-time-zone timestamp)))
 
-(defn get-username-color [stats username]
-  (let [stat-filter-fn (fn [stat] (= (:username stat) username))
-        color-text (:color (first (filter stat-filter-fn stats)))
+(defn get-username-color [players username]
+  (let [player (get-player-by-username username players)
+        color-text (:player/color player)
         colors-8-filter-fn (fn [color] (= (:color-text color) color-text))
         color-hex (:color-hex (first (filter colors-8-filter-fn colors-8)))]
     color-hex))
@@ -44,14 +45,19 @@
    [:span.msg-body.default "Say something already!"]])
 
 (defn display-messages
-  [messages game]
-  (let [stats (:game/stats game)
-        messages @messages
-        element (first (array-seq (.getElementsByClassName js/document
-                                                           "chat-box-message-container")))]
+  [messages players]
+  (let [messages @messages
+        element (first
+                 (array-seq
+                  (.getElementsByClassName
+                   js/document
+                   "chat-box-message-container")))]
 
     ;; Check if you should auto scroll to the bottom
-    (when (and element (= (+ element.scrollTop element.clientHeight) element.scrollHeight))
+    (when (and element
+               (=
+                (+ element.scrollTop element.clientHeight)
+                element.scrollHeight))
       ;; On the next tick, scroll the rendered element down
       (js/setTimeout #(set! (.-scrollTop element)
                             element.scrollHeight)
@@ -66,7 +72,10 @@
          ^{:key (str username "-" timestamp "-" index)}
          [:li.chat-msg
           [:span.msg-timestamp (format-time timestamp)]
-          [:span.msg-username {:style {:color (get-username-color stats username)}} username]
+          [:span.msg-username
+           {:style
+            {:color (get-username-color players username)}}
+           username]
           [:span.msg-body message]])
        [default-message])]))
 
@@ -81,11 +90,13 @@
        :value @message
        :on-key-press (check-for-enter send-msg-fn)
        :on-change #(reset! message (-> % .-target .-value))}]
-     [:button.chat-send-btn 
+     [:button.chat-send-btn
       {:on-click send-msg-fn} "SEND"]]))
 
 (defn chat-box
-  [game-id messages stats]
-  [:div.chat-box
-   [display-messages messages stats]
-   [chat-box-input game-id]])
+  [game messages]
+  (let [{:keys [:game/id
+                :game/players]} @game]
+    [:div.chat-box
+     [display-messages messages players]
+     [chat-box-input id]]))

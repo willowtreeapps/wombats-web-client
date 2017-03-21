@@ -4,8 +4,7 @@
 (def default-db
   {:active-panel nil
    :auth-token (get-token)
-   :bootstrapping? true
-   :name "WillowTree"
+   :bootstrapping true
    :current-user nil
    :users []
    :modal nil
@@ -16,13 +15,17 @@
    ;; Stores all of the games indexed by their id
    :games {}
 
+   :arenas nil
+
    :simulator/state nil
    :simulator/templates nil
    :simulator/active-pane :code
    :simulator/wombat-id nil
    :simulator/template-id nil
    :simulator/mini-map false
+   :simulator/error nil
 
    :join-game-selections []
    :spritesheet nil
-   :modal-error nil})
+   :modal-error nil
+   :login-error nil})

@@ -13,11 +13,14 @@
 
   :plugins [[lein-cljsbuild "1.1.5"]
             [lein-less "1.7.5"]
-            [lein-pdo "0.1.1"]]
+            [lein-pdo "0.1.1"]
+            [lein-kibit "0.1.3"]
+            [lein-auto "0.1.3"]
+            [lein-bikeshed "0.4.1"]]
 
   :min-lein-version "2.5.3"
 
-  :source-paths ["src/clj"]
+  :source-paths ["src/cljs"]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "test/js"]
@@ -103,8 +106,9 @@
                     :output-dir    "resources/public/js/compiled/test/out"
                     :optimizations :none}}]}
 
-    :aliases {"run-local"   ["pdo" "clean," ["figwheel" "local"]               ["less" "auto"]]
-              "run-dev"     ["pdo" "clean," ["figwheel" "dev"]                 ["less" "auto"]]
-              "deploy-dev"  ["do"  "clean," ["cljsbuild" "once" "deploy-dev"]  ["less" "once"]]
-              "deploy-qa"   ["do"  "clean," ["cljsbuild" "once" "deploy-qa"]   ["less" "once"]]
-              "deploy-prod" ["do"  "clean," ["cljsbuild" "once" "deploy-prod"] ["less" "once"]]})
+    :aliases {"run-local"   ["pdo" "clean," ["figwheel" "local"] ["less" "auto"]]
+              "run-dev"     ["pdo" "clean," ["figwheel" "dev"]   ["less" "auto"]]
+              "run-lint"    ["pdo" "bikeshed" ["kibit" "src/cljs/wombats_web_client/"]]
+              "deploy-dev"  ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-dev"]  ["less" "once"]]
+              "deploy-qa"   ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-qa"]   ["less" "once"]]
+              "deploy-prod" ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-prod"] ["less" "once"]]})

@@ -13,7 +13,7 @@
   [val]
   (set-item! token val))
 
-(defn get-item 
+(defn get-item
   "Returns value of key from browser's localStorage"
   [key]
   (.getItem (.-localStorage js/window) key))

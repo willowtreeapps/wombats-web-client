@@ -1,11 +1,17 @@
 (ns wombats-web-client.panels.game-play
   (:require [wombats-web-client.components.arena :as arena]
-            [wombats-web-client.components.cards.game :refer [open-join-game-modal-fn]]
+            [wombats-web-client.components.cards.game
+             :refer [open-join-game-modal-fn]]
             [wombats-web-client.components.chat-box :refer [chat-box]]
-            [wombats-web-client.components.countdown-timer :refer [countdown-timer]]
+            [wombats-web-client.components.countdown-timer
+             :refer [countdown-timer]]
             [wombats-web-client.components.game-ranking :refer [ranking-box]]
             [wombats-web-client.components.join-button :refer [join-button]]
-            [wombats-web-client.components.modals.winner-modal :refer [winner-modal]]
+            [wombats-web-client.components.modals.winner-modal
+             :refer [winner-modal]]
+            [wombats-web-client.constants.games :refer [game-type-str-map]]
+            [wombats-web-client.utils.games
+             :refer [get-player-by-username get-player-score]]
             [wombats-web-client.utils.socket :as ws]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
@@ -18,7 +24,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn- resize-canvas [arena-atom]
-  (let [root-element (first (array-seq (.getElementsByClassName js/document root-class)))
+  (let [root-element (first
+                      (array-seq
+                       (.getElementsByClassName
+                        js/document
+                        root-class)))
         canvas-element (.getElementById js/document canvas-id)
         half-width (/ (.-offsetWidth root-element) 2)
         height (.-offsetHeight root-element)
@@ -34,9 +44,14 @@
                  100))
 
 (defn- show-winner-modal
-  [winner]
-  (re-frame/dispatch [:set-modal {:fn #(winner-modal winner)
-                                  :show-overlay? true}]))
+  ;; Players are always sorted by score
+  [players]
+  (let [top-score (get-player-score (first players))
+        winners (filter #(= (get-player-score %)
+                            top-score)
+                        players)]
+    (re-frame/dispatch [:set-modal {:fn #(winner-modal winners)
+                                    :show-overlay true}])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
@@ -70,11 +85,14 @@
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- game-play-title [game show-join-button game-id]
-  (let [{:keys [game/is-private
-                game/round-number
-                game/start-time
-                game/status]} game]
+(defn- game-play-title [game show-join-button]
+  (let [{:keys [:game/id
+                :game/is-private
+                :game/frame
+                :game/start-time
+                :game/status]} @game
+        round-start-time (:frame/round-start-time frame)
+        round-number (:frame/round-number frame)]
 
     [:div.game-play-title-container
 
@@ -87,7 +105,7 @@
          :pending-closed
          :active-intermission)
         [:span (str "ROUND " round-number " STARTS IN: ")
-         [countdown-timer start-time]]
+         [countdown-timer (or round-start-time start-time)]]
 
         :active
         (str "ROUND " round-number)
@@ -96,46 +114,40 @@
 
      (when (and show-join-button (= status :pending-open))
        [join-button {:is-private is-private
-                     :on-click (open-join-game-modal-fn game-id)}])]))
-
-(defn- game-play-subtitle [{:keys [game/name]}]
-  [:h2.game-play-subtitle
-   (when name
-     (str name " - High Score"))])
-
-(defn- max-players [{:keys [game/max-players game/stats]}]
-  (let [player-count (count stats)]
-    [:p.wombat-counter (when (and max-players stats)
-                         (str "Wombats: " player-count "/" max-players))]))
-
-(defn- chat-title []
-  [:div.chat-title
-   [:span "CHAT"]])
+                     :on-click (open-join-game-modal-fn id)}])]))
 
 (defn- right-game-play-panel
-  [game messages user game-id]
-
-  (let [{:keys [game/winner game/players]} game
-        user-bots-count (count (filter #(= (get-in % [:player/user :user/github-username])
-                                           (::user/github-username @user))
-                                       players))]
+  [game messages user]
+  (let [{:keys [:game/name
+                :game/end-time
+                :game/players
+                :game/max-players
+                :game/num-rounds]} @game
+        game-type (:game/type @game)
+        in-game (get-player-by-username (:user/github-username @user)
+                                        players)]
 
     ;; Dispatch winner modal if there's a winner
-    (when winner
-      (show-winner-modal winner))
+    (when end-time
+      (show-winner-modal players))
 
     [:div.right-game-play-panel
 
      [:div.top-panel
-      [game-play-title game (= 0 user-bots-count) game-id]
-      [game-play-subtitle game]
-      [max-players game]
+      [game-play-title game (not in-game)]
+      [:h2.game-play-subtitle
+       (clojure.string/join " - "
+                            [name
+                             (get game-type-str-map game-type)
+                             (str num-rounds " Rounds")])]
+      [:p.wombat-counter
+       (str "Wombats: " (count players) "/" max-players)]
       [ranking-box game]]
 
-     (when (> user-bots-count 0)
+     (when in-game
        [:div.chat-panel
-        [chat-title]
-        [chat-box game-id messages game]])]))
+        [:div.chat-title [:span "CHAT"]]
+        [chat-box game messages]])]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main Method
@@ -146,7 +158,7 @@
         cmpnt-state (reagent/atom {:resize-fn #(on-resize arena)})
         messages (re-frame/subscribe [:game/messages])
         user (re-frame/subscribe [:current-user])
-        games (re-frame/subscribe [:games])]
+        game (re-frame/subscribe [:games/game-by-id game-id])]
 
     (reagent/create-class
      {:component-did-mount #(component-did-mount arena cmpnt-state)
@@ -155,13 +167,11 @@
       :component-will-unmount #(component-will-unmount game-id cmpnt-state)
       :display-name "game-play-panel"
       :reagent-render
-      (fn [{:keys [game-id]}]
-        (let [game (get @games game-id)
-              winner (:game/winner game)]
-
+      (fn []
+        (let [game-over (:game/end-time @game)]
           (arena/arena @arena canvas-id)
           [:div {:class-name root-class}
            [:div.left-game-play-panel {:id "wombat-arena"
-                                       :class (when winner "game-over")}
+                                       :class (when game-over "game-over")}
             [:canvas {:id canvas-id}]]
-           [right-game-play-panel game messages user game-id]]))})))
+           [right-game-play-panel game messages user]]))})))

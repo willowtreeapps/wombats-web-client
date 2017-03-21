@@ -21,8 +21,12 @@
 
   (defroute "/config" []
     (if (user-is-coordinator?)
-      (re-frame/dispatch [:set-active-panel {:panel-id :config-panel}])
-      (re-frame/dispatch [:set-active-panel {:panel-id :page-not-found-panel}])))
+      (re-frame/dispatch
+       [:set-active-panel
+        {:panel-id :config-panel}])
+      (re-frame/dispatch
+       [:set-active-panel
+        {:panel-id :page-not-found-panel}])))
 
   (defroute "/simulator" []
     (re-frame/dispatch [:set-active-panel {:panel-id :simulator-panel}]))

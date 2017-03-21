@@ -5,31 +5,28 @@
 (defn- on-code-change! [editor]
   (fn []
     ;; Propogate the updated code into db
-    (re-frame/dispatch [:simulator/update-code (-> editor
-                                                   .getValue)])))
+    (re-frame/dispatch [:simulator/update-code (.getValue editor)])))
 
 (defn- render-editor
   [code]
   [:div#editor])
 
- (defn- init-ace [code mode]
-   (let [editor (-> js/window
-                    .-ace
-                    (.edit "editor"))]
+(defn- init-ace [code mode]
+  (let [editor (-> js/window
+                   .-ace
+                   (.edit "editor"))]
 
-     (when @code (-> editor
-                     .getSession
-                     (.setValue @code)))
+    (when @code (-> editor
+                    .getSession
+                    (.setValue @code)))
 
-     (when @code (-> editor
-                     (.on "change" (on-code-change! editor))))
+    (when @code (.on editor "change" (on-code-change! editor)))
 
-     (when @mode (-> editor
-                     .getSession
-                     (.setMode (str "ace/mode/" @mode))))
+    (when @mode (-> editor
+                    .getSession
+                    (.setMode (str "ace/mode/" @mode))))
 
-     (-> editor
-         (.setTheme "ace/theme/tomorrow_night_eighties"))))
+    (.setTheme editor "ace/theme/tomorrow_night_eighties")))
 
 (defn render []
   (let [code (re-frame/subscribe [:simulator/code])
