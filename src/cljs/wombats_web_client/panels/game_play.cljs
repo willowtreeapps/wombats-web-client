@@ -17,6 +17,7 @@
             [reagent.core :as reagent]))
 
 (defonce root-class "game-play-panel")
+(defonce canvas-container-id "wombat-arena")
 (defonce canvas-id "arena-canvas")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -29,12 +30,20 @@
                        (.getElementsByClassName
                         js/document
                         root-class)))
+        container-element (.getElementById js/document canvas-container-id)
         canvas-element (.getElementById js/document canvas-id)
         half-width (/ (.-offsetWidth root-element) 2)
         height (.-offsetHeight root-element)
         dimension (min height half-width)]
 
     (arena/arena @arena-atom canvas-id)
+
+    ;; Set dimensions of canvas-container and canvas
+    (set! (.-width (.-style container-element))
+          (str dimension "px"))
+    (set! (.-height (.-style container-element))
+          (str dimension "px"))
+
     (set! (.-width canvas-element) dimension)
     (set! (.-height canvas-element) dimension)))
 
@@ -52,6 +61,18 @@
                         players)]
     (re-frame/dispatch [:set-modal {:fn #(winner-modal winners)
                                     :show-overlay true}])))
+
+(defn- get-transition-text
+  [game]
+
+  ;; When there's 1 second left show GO!
+
+  ;; When there's 2 seconds left show SET
+
+  ;;  When there's 3 seconds left show READY
+
+  (js/console.log game)
+  "READY")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
@@ -167,11 +188,16 @@
       :component-will-unmount #(component-will-unmount game-id cmpnt-state)
       :display-name "game-play-panel"
       :reagent-render
-      (fn []
-        (let [game-over (:game/end-time @game)]
+      (fn [{:keys [game-id]}]
+        (let [game-over (:game/end-time @game)
+              transition-text (get-transition-text @game)]
           (arena/arena @arena canvas-id)
           [:div {:class-name root-class}
-           [:div.left-game-play-panel {:id "wombat-arena"
-                                       :class (when game-over "game-over")}
+           [:div.left-game-play-panel {:id canvas-container-id
+                                       :class (when (or game-over
+                                                        transition-text)
+                                                "disabled")}
+            [:span.transition-text
+             transition-text]
             [:canvas {:id canvas-id}]]
            [right-game-play-panel game messages user]]))})))
