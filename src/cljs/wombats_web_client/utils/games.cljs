@@ -99,8 +99,8 @@
 
 (defn sort-players
   [players-map]
-  (sort #(compare (get-player-score %1)
-                  (get-player-score %2))
+  (sort #(compare (get-player-score %2)
+                  (get-player-score %1))
         (vals players-map)))
 
 (defn get-arena-from-game
