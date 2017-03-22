@@ -6,7 +6,8 @@ CHANGELOG
 * None
 
 **Bug Fixes**
-* None
+* Fixed simulator code editing
+    [C.P. Dehli][/dehli] [#311](https://github.com/willowtreeapps/wombats-web-client/issues/311)
 
 ## QA (3.21.2017)
 **Enhancements**
