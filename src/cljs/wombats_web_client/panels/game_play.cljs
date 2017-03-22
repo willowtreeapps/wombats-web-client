@@ -78,24 +78,12 @@
                                     ms))]
 
     ;; Force a rerender when the transition-text should change
-    (when (or (= status :active-intermission)
-              (= status :pending-open)
-              (= status :pending-closed))
+    (when (contains? #{:active-intermission :pending-open :pending-closed}
+                     status)
       (case millis-left
-        3000
-        (do
-          (timeout-fn 1000)
-          "READY")
-
-        2000
-        (do
-          (timeout-fn 1000)
-          "SET")
-
-        (0 1000)
-        (do
-          (timeout-fn 1000)
-          "GO!")
+        3000 (do (timeout-fn 1000) "READY")
+        2000 (do (timeout-fn 1000) "SET")
+        (0 1000) (do (timeout-fn 1000) "GO!")
 
         ;; The first 3 seconds of a round ending, show transition text
         (let [time-since-round-end (- round-intermission
@@ -106,10 +94,10 @@
             (do
               (timeout-fn transition-time-left)
               (str "ROUND " (dec round-number) " OVER"))
-            (do
-              ;; This is when we need to transition to showing "READY"
-              (when (pos? (- millis-left 3000))
-                (timeout-fn (- millis-left 3000)))
+            ;; When we need to transition to show "READY"
+            (let [show-ready-ms (- millis-left 3000)]
+              (when (pos? show-ready-ms)
+                (timeout-fn show-ready-ms))
               nil)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
