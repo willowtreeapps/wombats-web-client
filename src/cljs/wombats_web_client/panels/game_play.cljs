@@ -64,20 +64,18 @@
                                     :show-overlay true}])))
 
 (defn- get-transition-text
-  [{:keys [:game/frame
-           :game/round-intermission
+  [{:keys [:game/round-intermission
            :game/start-time
-           :game/status]} cmpnt-state]
-  (let [{:keys [:frame/round-start-time
-                :frame/round-number]} frame
-        millis-left (* (time/seconds-until (if round-start-time
-                                             round-start-time
-                                             start-time))
+           :game/status]
+    {:keys [:frame/round-number
+            :frame/round-start-time]} :game/frame}
+   cmpnt-state]
+  (let [millis-left (* (time/seconds-until (or round-start-time
+                                               start-time))
                        1000)
-        timeout-fn (fn [timeout]
-                     (js/console.log "TRANSITION FN")
+        timeout-fn (fn [ms]
                      (js/setTimeout #(swap! cmpnt-state update-in [:update] not)
-                                    timeout))]
+                                    ms))]
 
     ;; Force a rerender when the transition-text should change
     (when (or (= status :active-intermission)
@@ -104,13 +102,13 @@
                                       millis-left)
               transition-time-left (- 3000 time-since-round-end)]
           (if (and (> round-number 1)
-                   (> transition-time-left 0))
+                   (pos? transition-time-left))
             (do
               (timeout-fn transition-time-left)
-              (str "ROUND " (- round-number 1) " OVER"))
+              (str "ROUND " (dec round-number) " OVER"))
             (do
               ;; This is when we need to transition to showing "READY"
-              (when (> (- millis-left 3000) 0)
+              (when (pos? (- millis-left 3000))
                 (timeout-fn (- millis-left 3000)))
               nil)))))))
 
