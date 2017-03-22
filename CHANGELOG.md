@@ -7,7 +7,8 @@ CHANGELOG
     [C.P. Dehli][/dehli] [#211](https://github.com/willowtreeapps/wombats-web-client/issues/211)
 
 **Bug Fixes**
-* None
+* Fixed issue where you couldn't join private games
+    [C.P. Dehli][/dehli] [#310](https://github.com/willowtreeapps/wombats-web-client/issues/310)
 
 ## QA (3.21.2017)
 **Enhancements**
