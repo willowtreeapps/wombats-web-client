@@ -64,34 +64,55 @@
                                     :show-overlay true}])))
 
 (defn- get-transition-text
-  [{:keys [:game/frame :game/start-time :game/status]} cmpnt-state]
-  (let [round-start-time (:frame/round-start-time frame)
-        seconds-left (time/seconds-until (if round-start-time
-                                           round-start-time
-                                           start-time))
-        timeout-time (* (max (- seconds-left 3)
-                             1)
-                        1000)]
+  [{:keys [:game/frame
+           :game/round-intermission
+           :game/start-time
+           :game/status]} cmpnt-state]
+  (let [{:keys [:frame/round-start-time
+                :frame/round-number]} frame
+        millis-left (* (time/seconds-until (if round-start-time
+                                             round-start-time
+                                             start-time))
+                       1000)
+        timeout-fn (fn [timeout]
+                     (js/console.log "TRANSITION FN")
+                     (js/setTimeout #(swap! cmpnt-state update-in [:update] not)
+                                    timeout))]
 
     ;; Force a rerender when the transition-text should change
-    (when (pos? seconds-left)
-      (js/setTimeout #(swap! cmpnt-state update-in [:update] not)
-                     timeout-time))
-
     (when (or (= status :active-intermission)
               (= status :pending-open)
               (= status :pending-closed))
-      (case seconds-left
-        3
-        "READY"
+      (case millis-left
+        3000
+        (do
+          (timeout-fn 1000)
+          "READY")
 
-        2
-        "SET"
+        2000
+        (do
+          (timeout-fn 1000)
+          "SET")
 
-        (0 1)
-        "GO!"
+        (0 1000)
+        (do
+          (timeout-fn 1000)
+          "GO!")
 
-        nil))))
+        ;; The first 3 seconds of a round ending, show transition text
+        (let [time-since-round-end (- round-intermission
+                                      millis-left)
+              transition-time-left (- 3000 time-since-round-end)]
+          (if (and (> round-number 1)
+                   (> transition-time-left 0))
+            (do
+              (timeout-fn transition-time-left)
+              (str "ROUND " (- round-number 1) " OVER"))
+            (do
+              ;; This is when we need to transition to showing "READY"
+              (when (> (- millis-left 3000) 0)
+                (timeout-fn (- millis-left 3000)))
+              nil)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
