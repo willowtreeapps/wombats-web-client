@@ -74,7 +74,8 @@
   ;; The first 3 seconds of a round ending, show transition text
   (let [time-since-round-end (- round-intermission
                                 millis-left)
-        transition-time-left (- 3000 time-since-round-end)]
+        transition-time-left (- transition-time
+                                time-since-round-end)]
     (if (and (> round-number 1)
              (pos? transition-time-left))
       (do
