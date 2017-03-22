@@ -21,6 +21,9 @@
 (defonce canvas-container-id "wombat-arena")
 (defonce canvas-id "arena-canvas")
 
+;; This is how long "ROUND x OVER" will show for (between rounds)
+(defonce transition-time 3000)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -63,12 +66,31 @@
     (re-frame/dispatch [:set-modal {:fn #(winner-modal winners)
                                     :show-overlay true}])))
 
+(defn- get-next-round-text
+  [{:keys [:game/round-intermission]
+    {:keys [:frame/round-number]} :game/frame}
+   millis-left
+   timeout-fn]
+  ;; The first 3 seconds of a round ending, show transition text
+  (let [time-since-round-end (- round-intermission
+                                millis-left)
+        transition-time-left (- 3000 time-since-round-end)]
+    (if (and (> round-number 1)
+             (pos? transition-time-left))
+      (do
+        (timeout-fn transition-time-left)
+        (str "ROUND " (dec round-number) " OVER"))
+      ;; When we need to transition to show "READY"
+      (let [show-ready-ms (- millis-left transition-time)]
+        (when (pos? show-ready-ms)
+          (timeout-fn show-ready-ms))
+        nil))))
+
 (defn- get-transition-text
-  [{:keys [:game/round-intermission
-           :game/start-time
+  [{:keys [:game/start-time
            :game/status]
-    {:keys [:frame/round-number
-            :frame/round-start-time]} :game/frame}
+    {:keys [:frame/round-start-time]} :game/frame
+    :as game}
    cmpnt-state]
   (let [millis-left (* (time/seconds-until (or round-start-time
                                                start-time))
@@ -84,21 +106,10 @@
         3000 (do (timeout-fn 1000) "READY")
         2000 (do (timeout-fn 1000) "SET")
         (0 1000) (do (timeout-fn 1000) "GO!")
+        (get-next-round-text game
+                             millis-left
+                             timeout-fn)))))
 
-        ;; The first 3 seconds of a round ending, show transition text
-        (let [time-since-round-end (- round-intermission
-                                      millis-left)
-              transition-time-left (- 3000 time-since-round-end)]
-          (if (and (> round-number 1)
-                   (pos? transition-time-left))
-            (do
-              (timeout-fn transition-time-left)
-              (str "ROUND " (dec round-number) " OVER"))
-            ;; When we need to transition to show "READY"
-            (let [show-ready-ms (- millis-left 3000)]
-              (when (pos? show-ready-ms)
-                (timeout-fn show-ready-ms))
-              nil)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
