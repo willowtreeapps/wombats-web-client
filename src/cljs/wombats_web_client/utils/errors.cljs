@@ -8,6 +8,8 @@
   "This game is already full. Please try joining another game.")
 (defonce game-started-error
   "This game has already started. Please try joining another game.")
+(defonce not-an-integer
+  "Not an integer.")
 
 (def login-error "login-error")
 

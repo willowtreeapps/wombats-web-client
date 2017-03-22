@@ -1,4 +1,5 @@
 @import "../text-input.less";
+@import "../../utils/typography.less";
 
 .modal-container {
     .modal {
@@ -12,12 +13,22 @@
 
                 .number-of-players,
                 .number-of-rounds,
-                .intermission-time {
+                .intermission-time,
+                .round-time {
                     .text-input-wrapper;
 
                     width: 107px;
                     .inline-error {
                         font-size: 11px;
+                    }
+                }
+
+                .start-time {
+                    font-size: @font-size-14;
+                    width: 222px;
+
+                    .input {
+                        text-indent: 4px;
                     }
                 }
             }

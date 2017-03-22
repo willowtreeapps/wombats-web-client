@@ -1,6 +1,6 @@
 (ns wombats-web-client.events.games
   (:require [re-frame.core :as re-frame]
-            [ajax.core :refer [GET PUT]]
+            [ajax.core :refer [GET POST PUT]]
             [ajax.edn :refer [edn-request-format edn-response-format]]
             [wombats-web-client.constants.games :refer [pending-open
                                                         pending-closed
@@ -10,7 +10,8 @@
             [wombats-web-client.utils.games
              :refer [build-status-query sort-players]]
             [wombats-web-client.constants.urls :refer [games-url
-                                                       games-join-url]]
+                                                       games-join-url
+                                                       create-game-url]]
             [wombats-web-client.utils.auth :refer [add-auth-header
                                                    get-current-user-id]]))
 
@@ -43,6 +44,34 @@
                                  :params {:player/wombat-id wombat-id
                                           :player/color color
                                           :game/password password}}))
+
+(defn create-game [{:keys [arena-id
+                           start-time
+                           num-rounds
+                           round-length
+                           round-intermission
+                           max-players
+                           password
+                           is-private
+                           game-type
+                           name
+                           on-success
+                           on-error]}]
+  (POST (create-game-url arena-id) {:response-format (edn-response-format)
+                                    :keywords? true
+                                    :format (edn-request-format)
+                                    :headers (add-auth-header {})
+                                    :params #:game{:start-time start-time
+                                                   :num-rounds num-rounds
+                                                   :round-length round-length
+                                                   :round-intermission round-intermission
+                                                   :max-players max-players
+                                                   :password password
+                                                   :is-private is-private
+                                                   :type game-type
+                                                   :name name}
+                                    :handler on-success
+                                    :error-handler on-error}))
 
 ;; TODO Scaling Issue with Lots of games - only update with games that are new?
 
