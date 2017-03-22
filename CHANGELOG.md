@@ -7,6 +7,8 @@ CHANGELOG
     [C.P. Dehli][/dehli] [#211](https://github.com/willowtreeapps/wombats-web-client/issues/211)
 
 **Bug Fixes**
+* Fixed simulator code editing
+    [C.P. Dehli][/dehli] [#311](https://github.com/willowtreeapps/wombats-web-client/issues/311)
 * Fixed issue where you couldn't join private games
     [C.P. Dehli][/dehli] [#310](https://github.com/willowtreeapps/wombats-web-client/issues/310)
 
