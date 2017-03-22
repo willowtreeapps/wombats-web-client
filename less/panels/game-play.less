@@ -1,4 +1,5 @@
 @import "../colors.less";
+@import "../z-index.less";
 @import "../components/navbar.less";
 @import "../utils/typography";
 
@@ -7,15 +8,35 @@
     height: calc(~"100% - " @navbar-height);
 
     .left-game-play-panel {
-        &.game-over {
-            opacity: 0.3;
+        &.disabled {
+            #arena-canvas {
+                opacity: 0.3;
+            }
+        }
+
+        &#wombat-arena {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .transition-text {
+                font-size: 60px;
+                z-index: @game-play-transition-text;
+                width: 50%;
+                text-align: center;
+            }
+
+            #arena-canvas {
+                position: absolute;
+                left: 0;
+            }
         }
     }
-    
+
     .right-game-play-panel {
-        width: 100%;
         display: flex;
         flex-direction: column;
+        flex-grow: 1;
 
         .top-panel {
             height: 60%;
@@ -35,7 +56,7 @@
                     font-size: @font-size-30;
                 }
             }
-            
+
             .game-play-subtitle {
                 .bold;
 
@@ -53,7 +74,7 @@
             height: 40%;
             display: flex;
             flex-direction: column;
-            
+
             @chat-title-height: 30px;
             .chat-title {
                 .bold;
@@ -64,7 +85,7 @@
                 letter-spacing: 2px;
                 height: @chat-title-height;
                 text-align: left;
-                
+
                 span {
                     padding: 0 10px;
                     position: relative;
@@ -87,4 +108,3 @@
         }
     }
 }
-

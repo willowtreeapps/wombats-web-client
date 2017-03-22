@@ -31,9 +31,9 @@
  (fn [db [_ code]]
    (let [player-id (first
                     (keys
-                     (get-in db [:simulator/state :players])))]
+                     (get-in db [:simulator/state :game/players])))]
      (assoc-in db [:simulator/state
-                   :players
+                   :game/players
                    player-id
                    :state
                    :code
