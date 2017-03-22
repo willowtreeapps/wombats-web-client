@@ -31,7 +31,8 @@
  :initialize-db
  (fn [_ _]
    ;; Check to see if token is in the url, if so assoc it into the db
-   (let [token (token-from-url)]
+   default-db
+   #_(let [token (token-from-url)]
      (if token
        (assoc default-db :auth-token token)
        default-db))))

@@ -69,14 +69,14 @@
    [:p "Already have an account?"]
    [:a.login {:href github-signin-url} "LOG IN"]])
 
-(defn welcome []
+(defn welcome [args]
   (let [login-error (re-frame/subscribe [:login-error])
         cmpnt-state (reagent/atom {:access-key nil
                                    :access-key-error nil})]
     (reagent/create-class
      {:component-will-unmount #(re-frame/dispatch [:login-error nil])
       :reagent-render
-      (fn []
+      (fn [args]
         (when @login-error
           (swap! cmpnt-state assoc :access-key-error @login-error))
 
