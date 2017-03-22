@@ -13,10 +13,10 @@
 
 (defn datepicker
   [{:keys [class name label state]}]
-  (let [key (keyword name)
+  (let [name-key (keyword name)
         error-key (keyword (str name "-error"))
-        val (get @state key)
-        error-val (get @state error-key)]
+        val (name-key @state)
+        error-val (error-key @state)]
     [:div.datepicker-wrapper {:class class}
      [:label.label {:for name} label]
      [:input.input {:class (when error-val "field-error")
@@ -27,7 +27,7 @@
                                (get-value %))
                     :on-change #(on-date-change
                                  state
-                                 key
+                                 name-key
                                  error-key
                                  (get-value %))}]
      [inline-error error-val]]))

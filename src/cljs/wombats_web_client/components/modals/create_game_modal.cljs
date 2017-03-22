@@ -5,6 +5,8 @@
             [wombats-web-client.utils.forms
              :refer [submit-modal-input
                      cancel-modal-input]]
+            [wombats-web-client.utils.games
+             :refer [is-private?]]
             [wombats-web-client.components.text-input
              :refer [text-input-with-label]]
             [wombats-web-client.components.datepicker
@@ -13,7 +15,9 @@
              :refer [radio-select]]
             [wombats-web-client.utils.errors :refer [get-error-message
                                                      required-field-error
-                                                     not-an-integer]]
+                                                     not-an-integer
+                                                     max-eight
+                                                     incorrect-format-colon]]
             [wombats-web-client.events.games :refer [create-game]]))
 
 (defonce radios ["public" "private"])
@@ -34,16 +38,18 @@
    :password nil
    :password-error nil})
 
-(defn input-error! [input test-fn cmpnt-state error-key error]
-  (when (test-fn input)
-    (swap! cmpnt-state assoc error-key error)))
+(defn input-error! [check cmpnt-state]
+  (let [{:keys [key-name test-fn error]} check
+        input (key-name @cmpnt-state)
+        key-string (name key-name)
+        error-key (keyword (str key-string "-error"))]
 
+    (when (test-fn input)
+      (swap! cmpnt-state assoc error-key error))))
 
-(defn has-value? [value-list]
-  (reduce (fn [truth value]
-            (if (some? value)
-              truth
-              (and truth false))) true value-list))
+(defn no-blanks? [value-list]
+  ;; if something returned, a field is missing a value.
+  (empty? (filter nil? value-list)))
 
 (defn get-milliseconds [min-str]
   (let [list (clojure.string/split min-str #":")
@@ -60,79 +66,69 @@
         time-split (clojure.string/split (last time-string) #":")
         hour-num (js/parseInt (first time-split))
         min-num (js/parseInt (last time-split))
-        local-time (time/local-date-time year-num month-num day-num hour-num min-num)
-        utc-time-without-format (.toUTCIsoString (goog.date.UtcDateTime.fromTimestamp
-                                                  (.getTime local-time))  true)
+        local-time (time/local-date-time year-num
+                                         month-num
+                                         day-num
+                                         hour-num
+                                         min-num)
+        utc-time-without-format (.toUTCIsoString
+                                 (goog.date.UtcDateTime.fromTimestamp
+                                  (.getTime local-time)) true)
         utc-split (clojure.string/split utc-time-without-format #" ")]
     (clojure.string/join "T" utc-split)))
 
-(defn check-for-errors [cmpnt-state num-rounds num-players]
-  (let [{:keys [game-name
-                game-name-error
-                number-of-players
-                number-of-players-error
-                number-of-rounds
-                number-of-rounds-error
-                intermission-time
-                intermission-time-error
-                start-time
-                start-time-error
-                round-time
-                round-time-error
-                game-status
-                password
-                password-error]} @cmpnt-state]
+(defn check-for-errors [cmpnt-state]
+  (let [{:keys [:game-status
+                :number-of-players
+                :number-of-rounds]} @cmpnt-state
+                validation-checks
+                [{:key-name :game-name
+                  :test-fn clojure.string/blank?
+                  :error required-field-error}
+                 {:key-name :number-of-players
+                  :test-fn clojure.string/blank?
+                  :error required-field-error}
+                 {:key-name :number-of-players
+                  :test-fn #(not
+                             (integer? (js/parseInt %)))
+                  :error not-an-integer}
+                 {:key-name :number-of-players
+                  :test-fn #(not
+                             (< (js/parseInt %) 9))
+                  :error max-eight}
+                 {:key-name :number-of-rounds
+                  :test-fn clojure.string/blank?
+                  :error required-field-error}
+                 {:key-name :number-of-rounds
+                  :test-fn #(not
+                             (integer? (js/parseInt %)))
+                  :error not-an-integer}
+                 {:key-name :intermission-time
+                  :test-fn clojure.string/blank?
+                  :error required-field-error}
+                 {:key-name :intermission-time
+                  :test-fn #(not
+                             (clojure.string/includes? % ":"))
+                  :error incorrect-format-colon}
+                 {:key-name :start-time
+                  :test-fn clojure.string/blank?
+                  :error required-field-error}
+                 {:key-name :round-time
+                  :test-fn clojure.string/blank?
+                  :error required-field-error}
+                 {:key-name :round-time
+                  :test-fn #(not
+                             (clojure.string/includes? % ":"))
+                  :error incorrect-format-colon}
+                 {:key-name :password
+                  :test-fn #(and
+                             (is-private? game-status)
+                             (clojure.string/blank? %))
+                  :error required-field-error}]]
 
-    (input-error! game-name
-                  clojure.string/blank?
-                  cmpnt-state
-                  :game-name-error
-                  required-field-error)
-    (input-error! number-of-players
-                  clojure.string/blank?
-                  cmpnt-state
-                  :number-of-players-error
-                  required-field-error)
-    (input-error! num-players
-                  #(not (integer? %))
-                  cmpnt-state
-                  :number-of-players-error
-                  not-an-integer)
-    (input-error! number-of-rounds
-                  clojure.string/blank?
-                  cmpnt-state
-                  :number-of-rounds-error
-                  required-field-error)
-    (input-error! num-rounds
-                  #(not (integer? %))
-                  cmpnt-state
-                  :number-of-rounds-error
-                  not-an-integer)
-    (input-error! intermission-time
-                  clojure.string/blank?
-                  cmpnt-state
-                  :intermission-time-error
-                  required-field-error)
-    (input-error! start-time
-                  clojure.string/blank?
-                  cmpnt-state
-                  :start-time-error
-                  required-field-error)
-    (input-error! round-time
-                  clojure.string/blank?
-                  cmpnt-state
-                  :round-time-error
-                  required-field-error)
-    (input-error! password
-                  #(and (= game-status "private") (clojure.string/blank? %))
-                  cmpnt-state
-                  :password-error
-                  required-field-error)))
+    (doall (map #(input-error! % cmpnt-state) validation-checks))))
 
-(defn is-private? [game-status]
-  (= "private" game-status))
-
-(defn check-private [game-status password]
+(defn check-private-validity [game-status password]
   (if (is-private? game-status)
     (not (clojure.string/blank? password))
     true))
@@ -152,20 +148,23 @@
                 game-status
                 password
                 password-error]} @cmpnt-state
-                not-blank (has-value? [game-name
+                not-blank (no-blanks? [game-name
                                        number-of-players
                                        number-of-rounds
                                        intermission-time
                                        start-time])
-                correct-private-input (check-private game-status password)
+                correct-private (check-private-validity
+                                 game-status
+                                 password)
                 num-rounds (js/parseInt number-of-rounds)
                 num-players (js/parseInt number-of-players)
                 valid-answers (and (integer? num-rounds)
                                    (integer? num-players)
-                                   correct-private-input)
+                                   (< num-players 9)
+                                   correct-private)
                 ready-to-submit (and not-blank valid-answers)]
 
-    (check-for-errors cmpnt-state num-rounds num-players)
+    (check-for-errors cmpnt-state)
 
     (when ready-to-submit
       (let [intermission-ms (get-milliseconds intermission-time)
@@ -174,7 +173,6 @@
             game-type :high-score ;; hardcoded for now
             is-private (is-private? game-status)
             password (if is-private password "")]
-        (print utc-time)
         (create-game {:arena-id arena-id
                       :start-time utc-time
                       :num-rounds num-rounds
@@ -235,4 +233,6 @@
         [render-password cmpnt-state]]
        [:div.action-buttons
         [cancel-modal-input]
-        [submit-modal-input "CREATE" #(on-submit-form-valid arena-id cmpnt-state)]]])))
+        [submit-modal-input
+         "CREATE"
+         #(on-submit-form-valid arena-id cmpnt-state)]]])))

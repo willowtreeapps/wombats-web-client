@@ -57,21 +57,22 @@
                            name
                            on-success
                            on-error]}]
-  (POST (create-game-url arena-id) {:response-format (edn-response-format)
-                                    :keywords? true
-                                    :format (edn-request-format)
-                                    :headers (add-auth-header {})
-                                    :params #:game{:start-time start-time
-                                                   :num-rounds num-rounds
-                                                   :round-length round-length
-                                                   :round-intermission round-intermission
-                                                   :max-players max-players
-                                                   :password password
-                                                   :is-private is-private
-                                                   :type game-type
-                                                   :name name}
-                                    :handler on-success
-                                    :error-handler on-error}))
+  (POST (create-game-url arena-id)
+        {:response-format (edn-response-format)
+         :keywords? true
+         :format (edn-request-format)
+         :headers (add-auth-header {})
+         :params {:game/start-time start-time
+                  :game/num-rounds num-rounds
+                  :game/round-length round-length
+                  :game/round-intermission round-intermission
+                  :game/max-players max-players
+                  :game/password password
+                  :game/is-private is-private
+                  :game/type game-type
+                  :game/name name}
+         :handler on-success
+         :error-handler on-error}))
 
 ;; TODO Scaling Issue with Lots of games - only update with games that are new?
 
@@ -128,10 +129,10 @@
     merge
     (reduce (fn [map game]
               (assoc map
-                     (:game/id game)
-                     (update game
-                             :game/players
-                             sort-players)))
+                (:game/id game)
+                (update game
+                        :game/players
+                        sort-players)))
             {}
             games))))
 

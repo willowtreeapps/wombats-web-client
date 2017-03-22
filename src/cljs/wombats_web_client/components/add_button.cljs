@@ -1,7 +1,7 @@
 (ns wombats-web-client.components.add-button)
 
 (defn root
-  [onClick classname]
+  [on-click classname]
   [:a.add-button {:class classname
-                  :on-click onClick}
+                  :on-click on-click}
    [:div.text "+"]])

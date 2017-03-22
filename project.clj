@@ -7,7 +7,7 @@
                  [secretary "1.2.3"]
                  [com.cemerick/url "0.1.1"]
                  [cljs-ajax "0.5.4"]
-                 [com.andrewmcveigh/cljs-time "0.5.0-alpha2"]
+                 [com.andrewmcveigh/cljs-time "0.4.0"]
                  [day8.re-frame/http-fx "0.1.3"]
                  [kibu/pushy "0.3.6"]]
 

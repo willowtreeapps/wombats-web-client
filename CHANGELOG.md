@@ -3,7 +3,7 @@ CHANGELOG
 
 ## Develop
 **Enhancements**
-* None
+* Create Game Modal [Emily Seibert][/emily] [#283](https://github.com/willowtreeapps/wombats-web-client/issues/283) [#93](https://github.com/willowtreeapps/wombats-web-client/issues/93)
 
 **Bug Fixes**
 * None

@@ -54,6 +54,11 @@
   (let [status (:game/status game)]
     (= status :closed)))
 
+(defn is-private?
+  "Whether the game is private"
+  [game-status]
+  (= "private" game-status))
+
 (defn get-open-games
   [games]
   (reduce-kv (fn [coll _ game]
