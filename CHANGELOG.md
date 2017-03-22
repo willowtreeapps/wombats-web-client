@@ -3,7 +3,8 @@ CHANGELOG
 
 ## Develop
 **Enhancements**
-* None
+* Updated fog and smoke assets in spritesheet
+    [C.P. Dehli][/dehli] [#211](https://github.com/willowtreeapps/wombats-web-client/issues/211)
 
 **Bug Fixes**
 * None
