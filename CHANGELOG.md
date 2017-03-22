@@ -3,6 +3,8 @@ CHANGELOG
 
 ## Develop
 **Enhancements**
+* Added transitions between rounds
+    [C.P. Dehli][/dehli] [#27](https://github.com/willowtreeapps/wombats-web-client/issues/27)
 * Updated fog and smoke assets in spritesheet
     [C.P. Dehli][/dehli] [#211](https://github.com/willowtreeapps/wombats-web-client/issues/211)
 
@@ -15,7 +17,7 @@ CHANGELOG
 ## QA (3.21.2017)
 **Enhancements**
 * Added Table Component, Used on Config Panel
-	[Emily Seibert](https://github.com/emilyseibert) [#282](https://github.com/willowtreeapps/wombats-web-client/issues/282)
+	[Emily Seibert][/emily] [#282](https://github.com/willowtreeapps/wombats-web-client/issues/282)
 * Updated the welcome page to prompt for access token
 	[Emily Seibert][/emily] [#278](https://github.com/willowtreeapps/wombats-web-client/issues/278)
 * Refactored Countdown Timer to include days for improved readability
