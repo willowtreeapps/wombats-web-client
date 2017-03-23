@@ -4,7 +4,6 @@
               [secretary.core :as secretary]
               [pushy.core :as pushy]
               [re-frame.core :as re-frame]
-              [wombats-web-client.constants.urls :refer [github-signin-url]]
               [wombats-web-client.utils.auth :refer [get-current-user-id
                                                      user-is-coordinator?]]))
 
