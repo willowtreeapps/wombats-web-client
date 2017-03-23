@@ -3,23 +3,19 @@ CHANGELOG
 
 ## Develop
 **Enhancements**
+* None
+
+**Bug Fixes**
+* None
+
+## QA (3.23.2017)
+**Enhancements**
 * Create Game Modal
     [Emily Seibert][/emily] [#283](https://github.com/willowtreeapps/wombats-web-client/issues/283) [#93](https://github.com/willowtreeapps/wombats-web-client/issues/93)
 * Added transitions between rounds
     [C.P. Dehli][/dehli] [#27](https://github.com/willowtreeapps/wombats-web-client/issues/27)
 * Updated fog and smoke assets in spritesheet
     [C.P. Dehli][/dehli] [#211](https://github.com/willowtreeapps/wombats-web-client/issues/211)
-
-**Bug Fixes**
-* Fixed simulator code editing
-    [C.P. Dehli][/dehli] [#311](https://github.com/willowtreeapps/wombats-web-client/issues/311)
-* Fixed issue where you couldn't join private games
-    [C.P. Dehli][/dehli] [#310](https://github.com/willowtreeapps/wombats-web-client/issues/310)
-* Fixed bug where query parameters weren't propogating
-    [C.P. Dehli][/dehli] [#293](https://github.com/willowtreeapps/wombats-web-client/issues/293)
-
-## QA (3.21.2017)
-**Enhancements**
 * Added Table Component, Used on Config Panel
     [Emily Seibert][/emily] [#282](https://github.com/willowtreeapps/wombats-web-client/issues/282)
 * Updated the welcome page to prompt for access token
@@ -34,6 +30,12 @@ CHANGELOG
     [Matt O'Connell][/oconn] API Issue #325[https://github.com/willowtreeapps/wombats-api/issues/325]
 
 **Bug Fixes**
+* Fixed simulator code editing
+    [C.P. Dehli][/dehli] [#311](https://github.com/willowtreeapps/wombats-web-client/issues/311)
+* Fixed issue where you couldn't join private games
+    [C.P. Dehli][/dehli] [#310](https://github.com/willowtreeapps/wombats-web-client/issues/310)
+* Fixed bug where query parameters weren't propogating
+    [C.P. Dehli][/dehli] [#293](https://github.com/willowtreeapps/wombats-web-client/issues/293)
 * Join Modal dropdown z index updated to be drawn over disabled color overlay
 	[Emily Seibert][/emily] [#275](https://github.com/willowtreeapps/wombats-web-client/issues/275)
 * Fixed simulator (large frame processing)
