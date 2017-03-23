@@ -7,20 +7,26 @@
             [wombats-web-client.db :refer [default-db]]
             [wombats-web-client.socket-dispatcher :as sd]
             [wombats-web-client.events.spritesheet :refer [get-spritesheet]]
-            [wombats-web-client.utils.local-storage :refer [remove-token!]]
             [wombats-web-client.utils.bootstrap
              :refer [bootstrap-failure
-                     token-from-url
+                     redirect-authenticated
                      redirect-unauthenticated]]
             [wombats-web-client.constants.urls :refer [self-url]]
             [wombats-web-client.socket-dispatcher :as sd]
-            [wombats-web-client.utils.auth :refer [add-auth-header]])
+            [wombats-web-client.utils.auth :refer [add-auth-header]]
+            [wombats-web-client.utils.local-storage :refer [set-token!]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (re-frame/reg-event-db
  :set-current-user
  (fn [db [_ current-user]]
    (assoc db :current-user current-user)))
+
+(re-frame/reg-event-db
+  :login-success
+  (fn [db [_ auth-token]]
+    (set-token! auth-token)
+    (assoc db :auth-token auth-token)))
 
 (re-frame/reg-event-db
  :login-error
@@ -30,17 +36,17 @@
 (re-frame/reg-event-db
  :initialize-db
  (fn [_ _]
-   ;; Check to see if token is in the url, if so assoc it into the db
-   default-db
-   #_(let [token (token-from-url)]
-     (if token
-       (assoc default-db :auth-token token)
-       default-db))))
+   default-db))
 
 (re-frame/reg-event-db
  :bootstrap-complete
  (fn [db [_ _]]
    (assoc db :bootstrapping false)))
+
+(re-frame/reg-event-fx
+ :redirect-authenticated
+ (fn [_ [_ _]]
+   (redirect-authenticated)))
 
 (defn load-user-success [{:keys [user/id] :as current-user}]
   (re-frame/dispatch-sync [:set-current-user current-user])

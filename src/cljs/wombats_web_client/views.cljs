@@ -23,7 +23,6 @@
 ;; mainutil
 
 (defn- panels [panel-name params]
-  (js/console.log params)
   (case panel-name
     :view-games-panel [view-games-panel/games params]
     :account-panel [account-panel/account params]
@@ -59,8 +58,6 @@
       (let [bootstrapping @bootstrapping
             modal @modal
             panel @active-panel]
-
-        (js/console.log panel)
 
         ;; If you're bootstrapping show loading
         (if bootstrapping
