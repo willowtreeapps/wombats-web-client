@@ -2,7 +2,7 @@
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [wombats-web-client.constants.urls :refer [panel-router-map]]
-            [wombats-web-client.utils.auth :refer [is-coordinator?]]))
+            [wombats-web-client.utils.auth :refer [user-is-coordinator?]]))
 
 (defn- wombat-logo []
   [:a {:href "/"} [:img.wombat-logo {:src "/images/img-logo-horizontal.svg"}]])
@@ -22,7 +22,7 @@
              :current selected}])
 
 (defn- nav-links
-  [user selected]
+  [selected]
   [:ul.navbar
    [nav-link {:id "games"
               :class "regular-link"
@@ -30,7 +30,7 @@
               :title "GAMES"
               :current selected}]
 
-   (when (is-coordinator? @user) [coordinator-links selected])
+   (when (user-is-coordinator?) [coordinator-links selected])
 
    [nav-link {:id "simulator"
               :class "regular-link"
@@ -46,12 +46,11 @@
 
 (defn root
   []
-  (let [current-user (re-frame/subscribe [:current-user])
-        active-panel (re-frame/subscribe [:active-panel])]
+  (let [active-panel (re-frame/subscribe [:active-panel])]
     (fn []
       (let [active-panel @active-panel]
         (when active-panel
           (let [selected ((:panel-id active-panel) panel-router-map)]
             [:div.navbar-component
              [wombat-logo]
-             [nav-links current-user selected]]))))))
+             [nav-links selected]]))))))
