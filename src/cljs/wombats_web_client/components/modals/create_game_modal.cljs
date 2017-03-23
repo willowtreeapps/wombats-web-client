@@ -4,7 +4,8 @@
             [cljs-time.core :as time]
             [wombats-web-client.utils.forms
              :refer [submit-modal-input
-                     cancel-modal-input]]
+                     cancel-modal-input
+                     input-error!]]
             [wombats-web-client.utils.games
              :refer [is-private?]]
             [wombats-web-client.components.text-input
@@ -18,7 +19,8 @@
                                                      not-an-integer
                                                      max-eight
                                                      incorrect-format-colon]]
-            [wombats-web-client.events.games :refer [create-game]]))
+            [wombats-web-client.events.games :refer [create-game]]
+            [wombats-web-client.utils.functions :refer [no-blanks?]]))
 
 (defonce radios ["public" "private"])
 (defonce initial-cmpnt-state
@@ -37,19 +39,6 @@
    :game-status (first radios)
    :password nil
    :password-error nil})
-
-(defn input-error! [check cmpnt-state]
-  (let [{:keys [key-name test-fn error]} check
-        input (key-name @cmpnt-state)
-        key-string (name key-name)
-        error-key (keyword (str key-string "-error"))]
-
-    (when (test-fn input)
-      (swap! cmpnt-state assoc error-key error))))
-
-(defn no-blanks? [value-list]
-  ;; if something returned, a field is missing a value.
-  (empty? (filter nil? value-list)))
 
 (defn get-milliseconds [min-str]
   (let [list (clojure.string/split min-str #":")
