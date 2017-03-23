@@ -14,19 +14,10 @@
                                  %)))
 
 (defn- check-for-access-token
-  "This checks query params for routes to do some
-  bootstrapping stuff."
-  [{:keys [access-key access-token login-error]}]
+  "Access Token was passed by the server. Add token to storage,
+  sanitize the URL, and then load user."
+  [{:keys [access-token login-error]}]
 
-  ;; If there was an accesskey provided, we want to redirect
-  ;; to the API signin endpoint providing the access-key
-  (when access-key
-    (-> js/window
-        .-location
-        (.replace (str github-signin-url "?access-key=" access-key))))
-
-  ;; Access Token was passed by the server. Add token to storage,
-  ;; sanitize the URL, and then load user.
   (when access-token
     (re-frame/dispatch-sync [:login-success access-token])
     (re-frame/dispatch [:redirect-authenticated]))

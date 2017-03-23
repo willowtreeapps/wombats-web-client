@@ -13,19 +13,21 @@ CHANGELOG
     [C.P. Dehli][/dehli] [#311](https://github.com/willowtreeapps/wombats-web-client/issues/311)
 * Fixed issue where you couldn't join private games
     [C.P. Dehli][/dehli] [#310](https://github.com/willowtreeapps/wombats-web-client/issues/310)
+* Fixed bug where query parameters weren't propogating
+    [C.P. Dehli][/dehli] [#293](https://github.com/willowtreeapps/wombats-web-client/issues/293)
 
 ## QA (3.21.2017)
 **Enhancements**
 * Added Table Component, Used on Config Panel
-	[Emily Seibert][/emily] [#282](https://github.com/willowtreeapps/wombats-web-client/issues/282)
+    [Emily Seibert][/emily] [#282](https://github.com/willowtreeapps/wombats-web-client/issues/282)
 * Updated the welcome page to prompt for access token
-	[Emily Seibert][/emily] [#278](https://github.com/willowtreeapps/wombats-web-client/issues/278)
+    [Emily Seibert][/emily] [#278](https://github.com/willowtreeapps/wombats-web-client/issues/278)
 * Refactored Countdown Timer to include days for improved readability
-	[Emily Seibert][/emily] [#201](https://github.com/willowtreeapps/wombats-web-client/issues/201)
+    [Emily Seibert][/emily] [#201](https://github.com/willowtreeapps/wombats-web-client/issues/201)
 * Created a general Select Component ready for any form
-	[Emily Seibert][/emily] [#200](https://github.com/willowtreeapps/wombats-web-client/issues/200)
+    [Emily Seibert][/emily] [#200](https://github.com/willowtreeapps/wombats-web-client/issues/200)
 * Added linter and fixed code with suggestions from kibit & bikeshed
-	[Emily Seibert][/emily] [#205](https://github.com/willowtreeapps/wombats-web-client/issues/205)
+    [Emily Seibert][/emily] [#205](https://github.com/willowtreeapps/wombats-web-client/issues/205)
 * Access Key Redirect
     [Matt O'Connell][/oconn] API Issue #325[https://github.com/willowtreeapps/wombats-api/issues/325]
 
