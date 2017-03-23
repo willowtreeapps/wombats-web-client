@@ -173,3 +173,13 @@
  :arenas
  (fn [db _]
    (:arenas db)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Access Key  subs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(re-frame/reg-sub
+ :access-keys
+ (fn [db _]
+   (:access-keys db)))
