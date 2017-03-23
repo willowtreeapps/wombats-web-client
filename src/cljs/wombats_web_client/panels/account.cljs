@@ -20,4 +20,4 @@
      [header "MY WOMBATS"]
      [:button.logout {:on-click #(sign-out-event)} "LOG OUT"]
      [:div.wombats (map wombat-card/root my-wombats)]
-     [add-wombat-button/root (open-add-wombat-modal)]]))
+     [add-wombat-button/root (open-add-wombat-modal) "add-wombat"]]))

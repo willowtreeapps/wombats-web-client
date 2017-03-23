@@ -4,9 +4,13 @@
 
 @text-input-padding-left: 30px;
 @text-input-height: 45px;
-@text-input-margin-bottom: 30px;
 
-.text-input-wrapper {
+.text-input-wrapper(@text-input-margin-bottom: 30px, @inline-error-height: 20px) {
+
+    width: 100%;
+    display: inline-flex;
+    flex-direction: column;
+
     .label;
 
     .input {
@@ -20,7 +24,6 @@
         box-sizing: border-box;
         margin-bottom: @text-input-margin-bottom;
 
-        
         &.field-error {
             box-shadow: inset 0px 0px 0px 1px @error-red;
             margin-bottom: 0;
@@ -36,5 +39,11 @@
         }
     }
 
-    .inline-error(@total-margin-height: @text-input-margin-bottom);
+    .inline-error(@total-margin-height: @text-input-margin-bottom,
+                  @inline-error-height: @inline-error-height);
+}
+
+
+.text-input-wrapper {
+    .text-input-wrapper;
 }

@@ -3,6 +3,8 @@ CHANGELOG
 
 ## Develop
 **Enhancements**
+* Create Game Modal
+    [Emily Seibert][/emily] [#283](https://github.com/willowtreeapps/wombats-web-client/issues/283) [#93](https://github.com/willowtreeapps/wombats-web-client/issues/93)
 * Added transitions between rounds
     [C.P. Dehli][/dehli] [#27](https://github.com/willowtreeapps/wombats-web-client/issues/27)
 * Updated fog and smoke assets in spritesheet
