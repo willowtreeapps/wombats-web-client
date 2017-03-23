@@ -1,6 +1,7 @@
 (ns wombats-web-client.components.access-key-table
   (:require [re-frame.core :as re-frame]
-           [wombats-web-client.components.table :refer [table]]))
+            [wombats-web-client.components.add-button :as add-button]
+            [wombats-web-client.components.table :refer [table]]))
 
 (defonce headers ["Name"
                   "Description"
@@ -19,4 +20,5 @@
 
 (defn access-key-table [keys]
   [:div.access-key-display
+   [add-button/root #(print "adding") "add-access-key"]
    [table "access-key-table" headers @keys get-items-fn]])
