@@ -8,22 +8,34 @@ CHANGELOG
 **Bug Fixes**
 * None
 
-## QA (3.21.2017)
+## QA (3.23.2017)
 **Enhancements**
+* Create Game Modal
+    [Emily Seibert][/emily] [#283](https://github.com/willowtreeapps/wombats-web-client/issues/283) [#93](https://github.com/willowtreeapps/wombats-web-client/issues/93)
+* Added transitions between rounds
+    [C.P. Dehli][/dehli] [#27](https://github.com/willowtreeapps/wombats-web-client/issues/27)
+* Updated fog and smoke assets in spritesheet
+    [C.P. Dehli][/dehli] [#211](https://github.com/willowtreeapps/wombats-web-client/issues/211)
 * Added Table Component, Used on Config Panel
-	[Emily Seibert](https://github.com/emilyseibert) [#282](https://github.com/willowtreeapps/wombats-web-client/issues/282)
+    [Emily Seibert][/emily] [#282](https://github.com/willowtreeapps/wombats-web-client/issues/282)
 * Updated the welcome page to prompt for access token
-	[Emily Seibert][/emily] [#278](https://github.com/willowtreeapps/wombats-web-client/issues/278)
+    [Emily Seibert][/emily] [#278](https://github.com/willowtreeapps/wombats-web-client/issues/278)
 * Refactored Countdown Timer to include days for improved readability
-	[Emily Seibert][/emily] [#201](https://github.com/willowtreeapps/wombats-web-client/issues/201)
+    [Emily Seibert][/emily] [#201](https://github.com/willowtreeapps/wombats-web-client/issues/201)
 * Created a general Select Component ready for any form
-	[Emily Seibert][/emily] [#200](https://github.com/willowtreeapps/wombats-web-client/issues/200)
+    [Emily Seibert][/emily] [#200](https://github.com/willowtreeapps/wombats-web-client/issues/200)
 * Added linter and fixed code with suggestions from kibit & bikeshed
-	[Emily Seibert][/emily] [#205](https://github.com/willowtreeapps/wombats-web-client/issues/205)
+    [Emily Seibert][/emily] [#205](https://github.com/willowtreeapps/wombats-web-client/issues/205)
 * Access Key Redirect
     [Matt O'Connell][/oconn] API Issue #325[https://github.com/willowtreeapps/wombats-api/issues/325]
 
 **Bug Fixes**
+* Fixed simulator code editing
+    [C.P. Dehli][/dehli] [#311](https://github.com/willowtreeapps/wombats-web-client/issues/311)
+* Fixed issue where you couldn't join private games
+    [C.P. Dehli][/dehli] [#310](https://github.com/willowtreeapps/wombats-web-client/issues/310)
+* Fixed bug where query parameters weren't propogating
+    [C.P. Dehli][/dehli] [#293](https://github.com/willowtreeapps/wombats-web-client/issues/293)
 * Join Modal dropdown z index updated to be drawn over disabled color overlay
 	[Emily Seibert][/emily] [#275](https://github.com/willowtreeapps/wombats-web-client/issues/275)
 * Fixed simulator (large frame processing)

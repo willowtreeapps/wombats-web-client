@@ -59,9 +59,7 @@
             modal @modal
             panel @active-panel]
 
-
-
-         ;; If you're bootstrapping show loading
+        ;; If you're bootstrapping show loading
         (if bootstrapping
           [:div.loading-app-container
            [:p "Loading..."]

@@ -13,11 +13,16 @@
             [wombats-web-client.utils.games
              :refer [get-player-by-username get-player-score]]
             [wombats-web-client.utils.socket :as ws]
+            [wombats-web-client.utils.time :as time]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
 
 (defonce root-class "game-play-panel")
+(defonce canvas-container-id "wombat-arena")
 (defonce canvas-id "arena-canvas")
+
+;; This is how long "ROUND x OVER" will show for (between rounds)
+(defonce transition-time 3000)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper Methods
@@ -29,12 +34,20 @@
                        (.getElementsByClassName
                         js/document
                         root-class)))
+        container-element (.getElementById js/document canvas-container-id)
         canvas-element (.getElementById js/document canvas-id)
         half-width (/ (.-offsetWidth root-element) 2)
         height (.-offsetHeight root-element)
         dimension (min height half-width)]
 
     (arena/arena @arena-atom canvas-id)
+
+    ;; Set dimensions of canvas-container and canvas
+    (set! (.-width (.-style container-element))
+          (str dimension "px"))
+    (set! (.-height (.-style container-element))
+          (str dimension "px"))
+
     (set! (.-width canvas-element) dimension)
     (set! (.-height canvas-element) dimension)))
 
@@ -52,6 +65,52 @@
                         players)]
     (re-frame/dispatch [:set-modal {:fn #(winner-modal winners)
                                     :show-overlay true}])))
+
+(defn- get-next-round-text
+  [{:keys [:game/round-intermission]
+    {:keys [:frame/round-number]} :game/frame}
+   millis-left
+   timeout-fn]
+  ;; The first 3 seconds of a round ending, show transition text
+  (let [time-since-round-end (- round-intermission
+                                millis-left)
+        transition-time-left (- transition-time
+                                time-since-round-end)]
+    (if (and (> round-number 1)
+             (pos? transition-time-left))
+      (do
+        (timeout-fn transition-time-left)
+        (str "ROUND " (dec round-number) " OVER"))
+      ;; When we need to transition to show "READY"
+      (let [show-ready-ms (- millis-left transition-time)]
+        (when (pos? show-ready-ms)
+          (timeout-fn show-ready-ms))
+        nil))))
+
+(defn- get-transition-text
+  [{:keys [:game/start-time
+           :game/status]
+    {:keys [:frame/round-start-time]} :game/frame
+    :as game}
+   cmpnt-state]
+  (let [millis-left (* (time/seconds-until (or round-start-time
+                                               start-time))
+                       1000)
+        timeout-fn (fn [ms]
+                     (js/setTimeout #(swap! cmpnt-state update-in [:update] not)
+                                    ms))]
+
+    ;; Force a rerender when the transition-text should change
+    (when (contains? #{:active-intermission :pending-open :pending-closed}
+                     status)
+      (case millis-left
+        3000 (do (timeout-fn 1000) "READY")
+        2000 (do (timeout-fn 1000) "SET")
+        (0 1000) (do (timeout-fn 1000) "GO!")
+        (get-next-round-text game
+                             millis-left
+                             timeout-fn)))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
@@ -155,7 +214,8 @@
 
 (defn game-play [{:keys [game-id]}]
   (let [arena (re-frame/subscribe [:game/arena])
-        cmpnt-state (reagent/atom {:resize-fn #(on-resize arena)})
+        cmpnt-state (reagent/atom {:resize-fn #(on-resize arena)
+                                   :update nil})
         messages (re-frame/subscribe [:game/messages])
         user (re-frame/subscribe [:current-user])
         game (re-frame/subscribe [:games/game-by-id game-id])]
@@ -167,11 +227,20 @@
       :component-will-unmount #(component-will-unmount game-id cmpnt-state)
       :display-name "game-play-panel"
       :reagent-render
-      (fn []
-        (let [game-over (:game/end-time @game)]
+      (fn [{:keys [game-id]}]
+        (let [game-over (:game/end-time @game)
+              transition-text (get-transition-text @game cmpnt-state)]
           (arena/arena @arena canvas-id)
+
+          ;; Trigger rerender for transition screen
+          (:update @cmpnt-state)
+
           [:div {:class-name root-class}
-           [:div.left-game-play-panel {:id "wombat-arena"
-                                       :class (when game-over "game-over")}
+           [:div.left-game-play-panel {:id canvas-container-id
+                                       :class (when (or game-over
+                                                        transition-text)
+                                                "disabled")}
+            [:span.transition-text
+             transition-text]
             [:canvas {:id canvas-id}]]
            [right-game-play-panel game messages user]]))})))

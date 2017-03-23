@@ -121,7 +121,7 @@
 (defn correct-privacy-settings [is-private password-error]
   (cond
    ;; if it's private and there's no error, can submit
-   is-private (false? password-error)
+   is-private (nil? password-error)
 
    ;; if the game isn't private, password state is irrelevant
    (not is-private) true))

@@ -8,6 +8,10 @@
   "This game is already full. Please try joining another game.")
 (defonce game-started-error
   "This game has already started. Please try joining another game.")
+(defonce not-an-integer
+  "Not an integer.")
+(defonce max-eight "Max is 8.")
+(defonce incorrect-format-colon "Format is mm:ss.")
 
 (def login-error "login-error")
 
