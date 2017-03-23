@@ -42,14 +42,11 @@
               :title "SIMULATOR"
               :current selected}]
 
-   (if-not user
-     [:li {:class "regular-link account"}
-      [:a {:href github-signin-url} "LOGIN"]]
-     [nav-link {:id "account"
-                :class "regular-link account"
-                :link "/account"
-                :title "MY WOMBATS"
-                :current selected}])])
+   [nav-link {:id "account"
+              :class "regular-link account"
+              :link "/account"
+              :title "MY WOMBATS"
+              :current selected}]])
 
 (defn root
   []

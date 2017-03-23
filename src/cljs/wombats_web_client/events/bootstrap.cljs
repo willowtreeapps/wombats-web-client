@@ -7,7 +7,6 @@
             [wombats-web-client.db :refer [default-db]]
             [wombats-web-client.socket-dispatcher :as sd]
             [wombats-web-client.events.spritesheet :refer [get-spritesheet]]
-            [wombats-web-client.utils.local-storage :refer [set-token!]]
             [wombats-web-client.utils.bootstrap
              :refer [bootstrap-failure
                      redirect-authenticated
@@ -25,7 +24,7 @@
 (re-frame/reg-event-db
   :login-success
   (fn [db [_ auth-token]]
-    (set-token! auth-token)
+    (redirect-authenticated auth-token)
     (assoc db :auth-token auth-token)))
 
 (re-frame/reg-event-db
@@ -42,11 +41,6 @@
  :bootstrap-complete
  (fn [db [_ _]]
    (assoc db :bootstrapping false)))
-
-(re-frame/reg-event-fx
- :redirect-authenticated
- (fn [_ [_ _]]
-   (redirect-authenticated)))
 
 (defn load-user-success [{:keys [user/id] :as current-user}]
   (re-frame/dispatch-sync [:set-current-user current-user])

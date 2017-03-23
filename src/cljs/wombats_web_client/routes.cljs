@@ -18,8 +18,7 @@
   [{:keys [access-token login-error]}]
 
   (when access-token
-    (re-frame/dispatch-sync [:login-success access-token])
-    (re-frame/dispatch [:redirect-authenticated]))
+    (re-frame/dispatch [:login-success access-token]))
 
   (when login-error
     (re-frame/dispatch [:login-error login-error])))
