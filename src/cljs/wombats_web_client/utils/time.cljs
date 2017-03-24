@@ -36,12 +36,14 @@
         hour-num (js/parseInt (first time-split))
         min-num (js/parseInt (last time-split))
         local-time (t/local-date-time year-num
-                                         month-num
-                                         day-num
-                                         hour-num
-                                         min-num)
-        utc-time-without-format (.toUTCIsoString
-                                 (goog.date.UtcDateTime.fromTimestamp
-                                  (.getTime local-time)) true)
+                                      month-num
+                                      day-num
+                                      hour-num
+                                      min-num)
+        utc-time-without-format (-> local-time
+                                    .getTime
+                                    goog.date.UtcDateTime.fromTimestamp
+                                    (.toUTCIsoString true))
+
         utc-split (clojure.string/split utc-time-without-format #" ")]
     (clojure.string/join "T" utc-split)))
