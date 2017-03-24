@@ -3,7 +3,8 @@ CHANGELOG
 
 ## Develop
 **Enhancements**
-* None
+* Create Access Keys in Config
+    [Emily Seibert][/emily] [#287](https://github.com/willowtreeapps/wombats-web-client/issues/287)
 
 **Bug Fixes**
 * None
