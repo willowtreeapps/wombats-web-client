@@ -6,6 +6,8 @@
              :refer [submit-modal-input
                      cancel-modal-input
                      input-error!]]
+            [wombats-web-client.utils.time
+             :refer [local-time-to-utc]]
             [wombats-web-client.utils.games
              :refer [is-private?]]
             [wombats-web-client.components.text-input
@@ -45,26 +47,6 @@
         mins (js/parseInt (first list))
         secs (js/parseInt (last list))]
     (* 1000 (+ secs (* mins 60)))))
-
-(defn get-utc [start-time]
-  (let [date-split (clojure.string/split start-time #"-")
-        year-num (js/parseInt (first date-split))
-        month-num (js/parseInt (second date-split))
-        time-string (clojure.string/split (last date-split) #"T")
-        day-num (js/parseInt (first time-string))
-        time-split (clojure.string/split (last time-string) #":")
-        hour-num (js/parseInt (first time-split))
-        min-num (js/parseInt (last time-split))
-        local-time (time/local-date-time year-num
-                                         month-num
-                                         day-num
-                                         hour-num
-                                         min-num)
-        utc-time-without-format (.toUTCIsoString
-                                 (goog.date.UtcDateTime.fromTimestamp
-                                  (.getTime local-time)) true)
-        utc-split (clojure.string/split utc-time-without-format #" ")]
-    (clojure.string/join "T" utc-split)))
 
 (defn check-for-errors [cmpnt-state]
   (let [{:keys [:game-status
@@ -122,6 +104,10 @@
     (not (clojure.string/blank? password))
     true))
 
+(defn callback-success []
+  (re-frame/dispatch [:update-modal-error nil])
+  (re-frame/dispatch [:set-modal nil]))
+
 (def callback-error
   (fn [error cmpnt-state]
     (re-frame/dispatch [:update-modal-error (get-error-message error)])
@@ -158,7 +144,7 @@
     (when ready-to-submit
       (let [intermission-ms (get-milliseconds intermission-time)
             round-ms (get-milliseconds round-time)
-            utc-time (get-utc start-time)
+            utc-time (local-time-to-utc start-time)
             game-type :high-score ;; hardcoded for now
             is-private (is-private? game-status)
             password (if is-private password "")]
@@ -172,7 +158,7 @@
                       :is-private is-private
                       :game-type game-type
                       :name game-name
-                      :on-success #(re-frame/dispatch [:set-modal nil])
+                      :on-success #(callback-success)
                       :on-error #(callback-error % cmpnt-state)})))))
 
 (defn render-password [cmpnt-state]

@@ -9,9 +9,13 @@
              :refer [text-input-with-label]]
             [wombats-web-client.components.datepicker
              :refer [datepicker]]
+            [wombats-web-client.utils.time :refer [local-time-to-utc]]
             [wombats-web-client.utils.functions :refer [no-blanks?]]
-            [wombats-web-client.utils.errors :refer [required-field-error
-                                                     not-an-integer]]))
+            [wombats-web-client.utils.errors :refer [get-error-message
+                                                     required-field-error
+                                                     not-an-integer]]
+            [wombats-web-client.events.access-key :refer [get-access-keys
+                                                          create-access-key]]))
 
 (defonce initial-state {:key-name nil
                         :key-name-error nil
@@ -21,6 +25,16 @@
                         :number-of-keys-error nil
                         :expiration-date nil
                         :expiration-date-error nil})
+
+(defn callback-success []
+  (get-access-keys)
+  (re-frame/dispatch [:update-modal-error nil])
+  (re-frame/dispatch [:set-modal nil]))
+
+(def callback-error
+  (fn [error cmpnt-state]
+    (re-frame/dispatch [:update-modal-error (get-error-message error)])
+    (reset! cmpnt-state initial-state)))
 
 (defn check-for-errors [cmpnt-state]
   (let [validation-checks
@@ -56,7 +70,13 @@
                                      not-blank)]
     (check-for-errors cmpnt-state)
     (when ready-to-submit
-      (print "ready!"))))
+      (let [expiration-utc (local-time-to-utc expiration-date)]
+        (create-access-key {:key-name key-name
+                            :max-num num-keys
+                            :expiration expiration-utc
+                            :desc description
+                            :on-success #(callback-success)
+                            :on-error #(callback-error % cmpnt-state)})))))
 
 (defn create-access-key-modal []
   (let [modal-error (re-frame/subscribe [:modal-error])

@@ -1,5 +1,6 @@
 (ns wombats-web-client.components.access-key-table
   (:require [re-frame.core :as re-frame]
+            [wombats-web-client.utils.time :refer [format-local-date]]
             [wombats-web-client.components.add-button :as add-button]
             [wombats-web-client.components.table :refer [table]]
             [wombats-web-client.components.modals.create-access-key-modal
@@ -20,10 +21,12 @@
                 :access-key/number-of-uses
                 :access-key/expiration-date]} row-data
                 keys-left (- max-number-of-uses number-of-uses)
-                date (str expiration-date)]
-    [key description keys-left date]))
+                formatted-date (format-local-date expiration-date)]
+
+    [key description keys-left formatted-date]))
 
 (defn access-key-table [keys]
-  [:div.access-key-display
-   [add-button/root #(open-create-access-key-modal) "add-access-key"]
-   [table "access-key-table" headers @keys get-items-fn]])
+  (fn [keys]
+    [:div.access-key-display
+     [add-button/root open-create-access-key-modal "add-access-key"]
+     [table "access-key-table" headers @keys get-items-fn]]))
