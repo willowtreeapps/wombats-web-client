@@ -3,6 +3,8 @@ CHANGELOG
 
 ## Develop
 **Enhancements**
+* Hide Delete Button for Wombats
+    [C.P. Dehli][/dehli] [#303](https://github.com/willowtreeapps/wombats-web-client/issues/303)
 * Create Access Keys in Config
     [Emily Seibert][/emily] [#287](https://github.com/willowtreeapps/wombats-web-client/issues/287)
 
