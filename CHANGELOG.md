@@ -10,6 +10,13 @@ CHANGELOG
 
 ## QA (3.23.2017)
 **Enhancements**
+* None
+
+**Bug Fixes**
+* None
+
+## Master (3.27.2017)
+**Enhancements**
 * Create Game Modal
     [Emily Seibert][/emily] [#283](https://github.com/willowtreeapps/wombats-web-client/issues/283) [#93](https://github.com/willowtreeapps/wombats-web-client/issues/93)
 * Added transitions between rounds
@@ -46,12 +53,6 @@ CHANGELOG
     [C.P. Dehli][/dehli]
 * Fix sorting order for storing players in db
     [C.P. Dehli][/dehli] #[307](https://github.com/willowtreeapps/wombats-web-client/issues/307)
-
-## Master
-**Enhancements**
-* None
-
-**Bug Fixes**
 * Fixed Flickering of Canvas
     [CP Dehli](https://github.com/dehli) No issue created.
 
