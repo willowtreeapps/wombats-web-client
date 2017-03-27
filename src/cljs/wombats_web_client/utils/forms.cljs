@@ -18,3 +18,12 @@
   [:input.modal-button {:type "button"
                         :value submit-value
                         :on-click on-click-fn}])
+
+(defn input-error! [check cmpnt-state]
+  (let [{:keys [key-name test-fn error]} check
+        input (key-name @cmpnt-state)
+        key-string (name key-name)
+        error-key (keyword (str key-string "-error"))]
+
+    (when (test-fn input)
+      (swap! cmpnt-state assoc error-key error))))
