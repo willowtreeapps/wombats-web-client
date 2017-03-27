@@ -1,0 +1,45 @@
+@import "../colors.less";
+@import "../utils/typography.less";
+
+@row-height: 50px;
+
+// from http://meyerweb.com/eric/tools/css/reset/
+table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background-color: @card-grey;
+
+    .headers > .header-row {
+        height: @row-height;
+
+        .header-cell {
+            color: @warm-grey;
+            font-size: @font-size-12;
+            text-align: left;
+        }
+    }
+
+    .body > .data-row {
+        height: @row-height;
+        border-top: 1px solid @white-20;
+
+        &:hover {
+            background-color: @white-20;
+            cursor: pointer;
+        }
+    }
+
+    .header-cell:nth-child(1),
+    .data-cell:nth-child(1) {
+        text-indent: 10px;
+    }
+}

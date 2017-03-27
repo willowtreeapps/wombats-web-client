@@ -29,9 +29,20 @@
   [user-id id]
   (str base-api-versioned-url "/users/" user-id "/wombats/" id))
 
+(defonce arenas-url (str base-api-versioned-url "/arenas"))
 (defonce games-url (str base-api-versioned-url "/games"))
 
 (defn games-join-url [game-id]
   (str base-api-versioned-url "/games/" game-id "/join"))
 
-(defonce simulator-templates-url (str base-api-versioned-url "/simulator/templates"))
+(defn create-game-url [arena-id]
+  (str base-api-versioned-url "/games?arena-id=" arena-id))
+
+(defonce simulator-templates-url
+  (str base-api-versioned-url "/simulator/templates"))
+
+(defonce initialize-simulator-url
+  (str base-api-versioned-url "/simulator/initialize"))
+
+(defonce process-simulator-frame-url
+  (str base-api-versioned-url "/simulator/process_frame"))

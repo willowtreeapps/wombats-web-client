@@ -1,12 +1,7 @@
 (ns wombats-web-client.subs
-    (:require-macros [reagent.ratom :refer [reaction]])
-    (:require [re-frame.core :as re-frame]
-              [wombats-web-client.utils.games :as games]))
-
-(re-frame/reg-sub
- :name
- (fn [db]
-   (:name db)))
+  (:require-macros [reagent.ratom :refer [reaction]])
+  (:require [re-frame.core :as re-frame]
+            [wombats-web-client.utils.games :as games]))
 
 (re-frame/reg-sub
  :active-panel
@@ -115,7 +110,7 @@
 (re-frame/reg-sub
  :simulator/active-frame
  (fn [db _]
-   (get-in db [:simulator/state :frame :frame/arena])))
+   (get-in db [:simulator/state :game/frame :frame/arena])))
 
 (re-frame/reg-sub
  :simulator/mini-map
@@ -147,15 +142,34 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (re-frame/reg-sub
- :games
+ :games/games
  (fn [db _]
    (:games db)))
+
+(re-frame/reg-sub
+ :games/game-by-id
+ (fn [db [_ game-id]]
+   (get-in db [:games game-id])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bootstrapping subs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (re-frame/reg-sub
- :bootstrapping?
+ :bootstrapping
  (fn [db _]
-   (:bootstrapping? db)))
+   (:bootstrapping db)))
+
+(re-frame/reg-sub
+ :login-error
+ (fn [db _]
+   (:login-error db)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Arena  subs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(re-frame/reg-sub
+ :arenas
+ (fn [db _]
+   (:arenas db)))

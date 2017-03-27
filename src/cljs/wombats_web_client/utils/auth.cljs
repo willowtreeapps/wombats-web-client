@@ -20,9 +20,9 @@
 
 (defn user-is-coordinator? []
   (let [roles (get-current-user-roles)]
-    (reduce (fn [is-admin? role]
+    (reduce (fn [is-admin role]
               (let [role-name (:db/ident role)]
                 (or
-                 is-admin?
+                 is-admin
                  (= role-name :user.roles/admin)
                  (= role-name :user.roles/coordinator)))) false roles)))

@@ -5,13 +5,15 @@
 
 (defn- on-step-click!
   [evt sim-state]
-  (ws/send-message :process-simulation-frame {:game-state @sim-state}))
+  (re-frame/dispatch [:simulator/process-simulation-frame
+                      {:game-state @sim-state}]))
 
 (defn render
   [sim-state show-mini-map]
   [:div.simulator-controls
    [:button.step {:on-click #(on-step-click! % sim-state)} "Step"]
-   [:button.mini-map {:on-click #(re-frame/dispatch [:simulator/toggle-simulator-mini-map])}
+   [:button.mini-map
+    {:on-click #(re-frame/dispatch [:simulator/toggle-simulator-mini-map])}
     (if show-mini-map
       "Show Full View"
       "Show Wombat View")]])

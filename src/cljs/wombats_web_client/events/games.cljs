@@ -1,16 +1,19 @@
 (ns wombats-web-client.events.games
   (:require [re-frame.core :as re-frame]
-            [ajax.core :refer [GET PUT]]
+            [ajax.core :refer [GET POST PUT]]
             [ajax.edn :refer [edn-request-format edn-response-format]]
             [wombats-web-client.constants.games :refer [pending-open
                                                         pending-closed
                                                         active
                                                         active-intermission
                                                         closed]]
-            [wombats-web-client.utils.games :refer [build-status-query]]
+            [wombats-web-client.utils.games
+             :refer [build-status-query sort-players]]
             [wombats-web-client.constants.urls :refer [games-url
-                                                       games-join-url]]
-            [wombats-web-client.utils.auth :refer [add-auth-header get-current-user-id]]))
+                                                       games-join-url
+                                                       create-game-url]]
+            [wombats-web-client.utils.auth :refer [add-auth-header
+                                                   get-current-user-id]]))
 
 (defn get-games [status on-success on-error]
   (GET games-url {:response-format (edn-response-format)
@@ -41,6 +44,35 @@
                                  :params {:player/wombat-id wombat-id
                                           :player/color color
                                           :game/password password}}))
+
+(defn create-game [{:keys [arena-id
+                           start-time
+                           num-rounds
+                           round-length
+                           round-intermission
+                           max-players
+                           password
+                           is-private
+                           game-type
+                           name
+                           on-success
+                           on-error]}]
+  (POST (create-game-url arena-id)
+        {:response-format (edn-response-format)
+         :keywords? true
+         :format (edn-request-format)
+         :headers (add-auth-header {})
+         :params {:game/start-time start-time
+                  :game/num-rounds num-rounds
+                  :game/round-length round-length
+                  :game/round-intermission round-intermission
+                  :game/max-players max-players
+                  :game/password password
+                  :game/is-private is-private
+                  :game/type game-type
+                  :game/name name}
+         :handler on-success
+         :error-handler on-error}))
 
 ;; TODO Scaling Issue with Lots of games - only update with games that are new?
 
@@ -80,8 +112,8 @@
    wombat-id
    color
    password
-   #(cb-success %)
-   #(cb-error %)))
+   cb-success
+   cb-error))
 
 (re-frame/reg-event-db
  :add-join-selection
@@ -91,10 +123,18 @@
 (re-frame/reg-event-db
  :games
  (fn [db [_ games]]
-   (assoc db :games (merge (:games db)
-                           (reduce #(assoc %1 (:game/id %2) %2)
-                                   {}
-                                   games)))))
+   (update-in
+    db
+    [:games]
+    merge
+    (reduce (fn [map game]
+              (assoc map
+                (:game/id game)
+                (update game
+                        :game/players
+                        sort-players)))
+            {}
+            games))))
 
 (re-frame/reg-fx
  :get-open-games

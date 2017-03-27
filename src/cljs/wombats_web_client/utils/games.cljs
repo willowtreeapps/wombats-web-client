@@ -19,10 +19,12 @@
 (defn- user-in-game?
   "Whether current-user is in the game"
   [current-user game]
-  (> (count (filter #(= (:user/github-username current-user)
-                        (get-in % [:player/user :user/github-username]))
-                    (:game/players game)))
-     0))
+  (pos?
+   (count
+    (filter
+     #(= (:user/github-username current-user)
+         (get-in % [:player/user :user/github-username]))
+       (:game/players game)))))
 
 (defn get-game-state-str [is-full is-playing]
   (cond
@@ -33,7 +35,7 @@
 (defn get-player
   [db]
   "Pulls the player out of db to use for simulator state"
-  (let [players (get-in db [:simulator/state :players])
+  (let [players (get-in db [:simulator/state :game/players])
         player-key (first (keys players))]
     (get players player-key)))
 
@@ -51,6 +53,11 @@
   [game]
   (let [status (:game/status game)]
     (= status :closed)))
+
+(defn is-private?
+  "Whether the game is private"
+  [game-status]
+  (= "private" game-status))
 
 (defn get-open-games
   [games]
@@ -81,3 +88,46 @@
                         (user-in-game? current-user game))
                  (conj coll game)
                  coll)) [] games))
+
+(defn get-player-by-username
+  [username players]
+  (first
+   (filter #(= (get-in %
+                       [:player/user
+                        :user/github-username])
+               username)
+           players)))
+
+(defn get-player-score
+  [player]
+  (get-in player [:player/stats :stats/score]))
+
+(defn sort-players
+  [players-map]
+  (sort #(compare (get-player-score %2)
+                  (get-player-score %1))
+        (vals players-map)))
+
+(defn get-arena-from-game
+  [game]
+  (get-in game [:game/frame :frame/arena]))
+
+(defn get-wombats-in-arena
+  [arena]
+  (let [flattened-arena (flatten arena)]
+    (filter #(= (get-in % [:contents :type])
+                :wombat)
+            flattened-arena)))
+
+(defn filter-wombats-by-color
+  [wombats color]
+  (first ;; There can only be one wombat per color
+   (filter #(= (get-in % [:contents :color])
+               color)
+           wombats)))
+
+(defn get-wombat-in-game
+  [game color]
+  (let [arena (get-arena-from-game game)
+        wombats (get-wombats-in-arena arena)]
+    (filter-wombats-by-color wombats color)))
