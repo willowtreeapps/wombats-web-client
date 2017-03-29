@@ -10,15 +10,12 @@ CHANGELOG
 
 ## QA (3.27.2017)
 **Enhancements**
-* Hide Delete Button for Wombats
-    [C.P. Dehli][/dehli] [#303](https://github.com/willowtreeapps/wombats-web-client/issues/303)
-* Create Access Keys in Config
-    [Emily Seibert][/emily] [#287](https://github.com/willowtreeapps/wombats-web-client/issues/287)
+* None
 
 **Bug Fixes**
 * None
 
-## Master (3.27.2017)
+## Master (3.29.2017)
 **Enhancements**
 * Create Game Modal
     [Emily Seibert][/emily] [#283](https://github.com/willowtreeapps/wombats-web-client/issues/283) [#93](https://github.com/willowtreeapps/wombats-web-client/issues/93)
@@ -38,6 +35,10 @@ CHANGELOG
     [Emily Seibert][/emily] [#205](https://github.com/willowtreeapps/wombats-web-client/issues/205)
 * Access Key Redirect
     [Matt O'Connell][/oconn] API Issue #325[https://github.com/willowtreeapps/wombats-api/issues/325]
+* Hide Delete Button for Wombats
+    [C.P. Dehli][/dehli] [#303](https://github.com/willowtreeapps/wombats-web-client/issues/303)
+* Create Access Keys in Config
+    [Emily Seibert][/emily] [#287](https://github.com/willowtreeapps/wombats-web-client/issues/287)
 
 **Bug Fixes**
 * Fixed simulator code editing
