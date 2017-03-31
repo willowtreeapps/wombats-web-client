@@ -80,10 +80,22 @@
                     github-username (:user/github-username user)]
                 (= github-username current-username))) players)))
 
-(defn main-panel [cmpnt-state]
+(defn- parse-query-params
+  [{:keys [closed page mine]}]
+  (let [page-parsed (js/parseInt page)]
+    {:page (if (js/isNaN page-parsed) 0 page-parsed)
+     :mine (some? mine)
+     :closed (some? closed)}))
+
+(defn main-panel [{:keys [cmpnt-state query-params]}]
   (let [polling (open-game-polling)
         current-user (re-frame/subscribe [:current-user])
-        games (re-frame/subscribe [:games/games])]
+        games (re-frame/subscribe [:games/games])
+        {page :page
+         mine :mine
+         closed :closed} (parse-query-params query-params)]
+
+    (js/console.log page mine closed)
 
     (get-all-games)
 
@@ -128,12 +140,13 @@
 
             [get-empty-state show-open show-my-games])]]))))
 
-(defn games []
+(defn games [query-params]
   (let [cmpnt-state (reagent/atom {:show-open true
                                    :show-my-games false
                                    :polling nil})]
     (reagent/create-class
      {:component-will-unmount #(js/clearInterval (:polling @cmpnt-state))
       :reagent-render
-      (fn []
-        [main-panel cmpnt-state])})))
+      (fn [query-params]
+        [main-panel {:cmpnt-state cmpnt-state
+                     :query-params query-params}])})))
