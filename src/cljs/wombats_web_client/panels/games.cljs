@@ -3,12 +3,15 @@
             [reagent.core :as reagent]
             [wombats-web-client.events.games :refer [get-all-games]]
             [wombats-web-client.components.cards.game :refer [game-card]]
+            [wombats-web-client.routes :refer [nav!]]
             [wombats-web-client.utils.games :refer [get-open-games
                                                     get-my-open-games
                                                     get-closed-games
                                                     get-my-closed-games]]))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Constants
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defonce empty-open-page
   "Sorry, there are no games to join at the moment.")
@@ -19,41 +22,87 @@
 (defonce empty-finished-page
   "No games have ended yet! Check back later.")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- parse-query-params
+(defn- construct-query-params
   [{:keys [closed page mine]}]
-  (let [page-parsed (js/parseInt page)]
-    {:page (if (js/isNaN page-parsed) 0 page-parsed)
-     :mine (some? mine)
-     :closed (some? closed)}))
+  ;; Make sure that if page is invalid, replace it with a 0
+  ;; TODO: Use Cemerick
+  (let [parsed-page (js/Number page)]
+    (str "/?page=" (if (js/isNaN parsed-page) 0 parsed-page)
+         (when closed "&closed")
+         (when mine "&mine"))))
 
+(defn- nav-open!
+  [query-params]
+  (nav! (construct-query-params (dissoc query-params :closed))))
+
+(defn- nav-finished!
+  [query-params]
+  (nav! (construct-query-params (merge query-params
+                                       {:closed true}))))
+
+(defn- toggle-mine!
+  "This is triggered whenever you press SHOW MY GAMES"
+  [{:keys [mine] :as query-params}]
+  (nav! (construct-query-params (merge query-params
+                                       {:mine (not mine)}))))
+
+(defn- get-games
+  "This is used to retrieve games based on params"
+  [{:keys [closed mine page]}]
+  #_(cond
+    (and closed mine)
+    (get-my-closed-games)
+
+    (and closed (not mine))
+    (get-closed-games)
+
+    (and (not closed) mine)
+    (get-my-open-games)
+
+    (and (not closed) (not mine))
+    (get-open-games)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- component-will-receive-props
+  [this [_ query-params]]
+  (js/console.log query-params))
 
 (defn- component-will-mount
   "Poll for whichever games are in query-params"
   [query-params]
-  (let [params (parse-query-params query-params)]
-    (js/setInterval get-all-games 60000)))
+  (let [game-fn #(get-games query-params)]
+    (game-fn)
+    (js/setInterval game-fn
+                    60000)
 
+    ;; Make sure the url has valid query params
+    (nav! (construct-query-params query-params))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Render Methods
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn tab-view-toggle [show-closed]
+(defn tab-view-toggle [{:keys [closed] :as query-params}]
   [:div.tab-game-toggle
-   [:div.game-tab {:class (when-not show-closed "active")
-                   :on-click #(prn "SHOW OPEN")}
+   [:div.game-tab {:class (when-not closed "active")
+                   :on-click #(nav-open! query-params)}
     "OPEN"]
-   [:div.game-tab {:class (when show-closed "active")
-                   :on-click #(prn "SHOW CLOSED")}
+   [:div.game-tab {:class (when closed "active")
+                   :on-click #(nav-finished! query-params)}
     "FINISHED"]])
 
-(defn my-game-toggle [show-my-games]
+(defn my-game-toggle [{:keys [mine] :as query-params}]
   [:div.my-game-toggle-wrapper
-   {:on-click #(prn "TOGGLE MY GAMES")}
-   [:div.checkbox {:class (when show-my-games "selected")}]
+   {:on-click #(toggle-mine! query-params)}
+   [:div.checkbox {:class (when mine "selected")}]
    [:div.desc "SHOW MY GAMES"]])
-
-;; Helper Methods
 
 (defn get-sorted-games [{:keys [show-open show-my-games games current-user]}]
   (cond
@@ -91,22 +140,17 @@
                     github-username (:user/github-username user)]
                 (= github-username current-username))) players)))
 
-
-
 (defn main-panel [{:keys [cmpnt-state query-params]}]
   (let [current-user (re-frame/subscribe [:current-user])
         games (re-frame/subscribe [:games/games])
         {page :page
          show-my-games :mine
-         show-closed :closed} (parse-query-params query-params)]
+         show-closed :closed} query-params]
 
-    (js/console.log @games)
-
-    ;; Based on the query parameters, start polling for games
     [:div.games-panel
      [:div.toggles
-      [tab-view-toggle show-closed]
-      [my-game-toggle show-my-games]]
+      [tab-view-toggle query-params]
+      [my-game-toggle query-params]]
      [:div.games
       (if true
         [:ul.games-list
@@ -137,8 +181,8 @@
   (let [cmpnt-state (reagent/atom {:polling nil})]
     (reagent/create-class
      {:component-will-mount #(component-will-mount query-params)
+      :component-will-receive-props component-will-receive-props
       :component-will-unmount #(js/clearInterval (:polling @cmpnt-state))
-      :reagent-render
-      (fn [query-params]
-        [main-panel {:cmpnt-state cmpnt-state
-                     :query-params query-params}])})))
+      :reagent-render (fn [query-params]
+                        [main-panel {:cmpnt-state cmpnt-state
+                                     :query-params query-params}])})))
