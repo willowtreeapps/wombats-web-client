@@ -84,6 +84,13 @@
       (and (not closed) (not mine))
       (get-open-games page))))
 
+(defn get-user-in-game [players current-user]
+  (let [current-username (:user/github-username current-user)]
+    (filter (fn [player]
+              (let [user (:player/user player)
+                    github-username (:user/github-username user)]
+                (= github-username current-username))) players)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -132,13 +139,6 @@
 
      (and (not closed) (not mine))
      empty-open-page)])
-
-(defn get-user-in-game [players current-user]
-  (let [current-username (:user/github-username current-user)]
-    (filter (fn [player]
-              (let [user (:player/user player)
-                    github-username (:user/github-username user)]
-                (= github-username current-username))) players)))
 
 (defn- page-switcher [{:keys [page] :as query-params}]
   (let [prev-link (previous-page-link query-params)
