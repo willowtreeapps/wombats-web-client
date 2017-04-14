@@ -31,8 +31,8 @@
   ;; TODO: Use Cemerick
   (let [parsed-page (js/Number page)]
     (str "/?page=" (if (or (js/isNaN parsed-page)
-                           (< parsed-page 0))
-                     0 parsed-page)
+                           (< parsed-page 1))
+                     1 parsed-page)
          (when closed "&closed")
          (when mine "&mine"))))
 
@@ -51,6 +51,11 @@
   (nav! (construct-query-params (merge query-params
                                        {:mine (not mine)}))))
 
+(defn- page-link
+  [query-params page-number]
+  (construct-query-params (merge query-params
+                                 {:page page-number})))
+
 (defn- previous-page-link
   [{:keys [page] :as query-params}]
   (construct-query-params (merge query-params
@@ -64,18 +69,20 @@
 (defn- get-games
   "This is used to retrieve games based on params"
   [{:keys [closed mine page]}]
-  (cond
-    (and closed mine)
-    (get-my-closed-games page)
+  ;; Subtract 1 since the API is 0-indexed
+  (let [page (- page 1)]
+    (cond
+      (and closed mine)
+      (get-my-closed-games page)
 
-    (and closed (not mine))
-    (get-closed-games page)
+      (and closed (not mine))
+      (get-closed-games page)
 
-    (and (not closed) mine)
-    (get-my-open-games page)
+      (and (not closed) mine)
+      (get-my-open-games page)
 
-    (and (not closed) (not mine))
-    (get-open-games page)))
+      (and (not closed) (not mine))
+      (get-open-games page))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
@@ -133,19 +140,38 @@
                     github-username (:user/github-username user)]
                 (= github-username current-username))) players)))
 
-(defn- page-switcher [query-params]
+(defn- page-switcher [{:keys [page] :as query-params}]
   (let [prev-link (previous-page-link query-params)
-        next-link (next-page-link query-params)]
+        next-link (next-page-link query-params)
+        page (js/Number page)]
     [:div.page-toggle
-     [:a {:class-name (when (= "0" (:page query-params)) "disabled")
-          :href prev-link
-          :on-click #(do
-                       (.preventDefault %)
-                       (nav! prev-link))} "PREVIOUS"]
-     [:a {:href next-link
-          :on-click #(do
-                       (.preventDefault %)
-                       (nav! next-link))} "NEXT"]]))
+     [:a.nav-link
+      {:class-name (when (= 1 page) "disabled")
+       :href prev-link
+       :on-click #(do
+                    (.preventDefault %)
+                    (nav! prev-link))} "PREVIOUS"]
+
+     ;; This is where the possible pages go
+     (map
+      (fn [i]
+        (let [new-page (+ i page)
+              link (page-link query-params new-page)]
+          [:a.page
+           {:key (str "page-" i)
+            :class-name (when (= i 0) "current")
+            :href link
+            :on-click #(do
+                         (.preventDefault %)
+                         (nav! link))}
+           new-page]))
+      (range 5))
+
+     [:a.nav-link
+      {:href next-link
+       :on-click #(do
+                    (.preventDefault %)
+                    (nav! next-link))} "NEXT"]]))
 
 (defn main-panel [{:keys [query-params]}]
   (let [current-user (re-frame/subscribe [:current-user])

@@ -1,4 +1,5 @@
 @import "../colors.less";
+@import "../components/simple-button.less";
 @import "../utils/typography";
 @desktop-and-up: ~"only screen and (min-width: 1920px)";
 
@@ -95,6 +96,38 @@
             font-size: @font-size-18;
             text-align: center;
             margin-top: 250px;
+        }
+    }
+
+    .page-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 65px;
+
+        .nav-link {
+            .simple-button(transparent,
+                           @white,
+                           @white-50,
+                           20px,
+                           20px);
+
+            &.disabled {
+                color: @white-50;
+            }
+        }
+
+        .page {
+            padding: 6px 10px;
+            .simple-button(transparent,
+                           @white,
+                           @white-50,
+                           10px,
+                           10px);
+
+            &.current {
+                background-color: @wombat-green;
+            }
         }
     }
 }

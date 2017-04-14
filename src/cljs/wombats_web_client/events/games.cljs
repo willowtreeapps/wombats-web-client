@@ -127,10 +127,9 @@
 (re-frame/reg-event-db
  :games
  (fn [db [_ games]]
-   (update-in
+   (assoc
     db
-    [:games]
-    merge
+    :games
     (reduce (fn [map game]
               (assoc map
                 (:game/id game)
