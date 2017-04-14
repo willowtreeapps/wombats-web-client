@@ -5,6 +5,9 @@
 
 .games-panel {
     padding: 45px 60px;
+    min-height: ~"calc(100% - 135px)";
+    display: flex;
+    flex-direction: column;
 
     .toggles {
         display: flex;
@@ -70,7 +73,15 @@
     }
 
     .games {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
         padding-top: 60px;
+
+        .games-list,
+        .empty-text {
+            flex-grow: 1;
+        }
 
         .games-list {
             padding: 0;
@@ -92,10 +103,12 @@
         .empty-text {
             .bold;
 
+            display: flex;
             color: @white;
             font-size: @font-size-18;
             text-align: center;
-            margin-top: 250px;
+            flex-direction: column;
+            justify-content: center;
         }
     }
 

@@ -198,8 +198,8 @@
                    is-joinable (and (= :pending-open status)
                                     (nil? user-in-game))
                    is-full (= :pending-closed status)
-                         is-playing (or (= :active status)
-                                        (= :active-intermission status))
+                   is-playing (or (= :active status)
+                                  (= :active-intermission status))
                    num-joined (count players)]
 
                ^{:key (:game/id game)} [game-card game
