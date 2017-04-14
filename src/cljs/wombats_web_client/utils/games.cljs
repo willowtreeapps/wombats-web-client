@@ -1,7 +1,8 @@
 (ns wombats-web-client.utils.games)
 
-(defn build-status-query [statuses]
-  (clojure.string/join "&status=" statuses))
+(defn build-status-query [statuses page]
+  (str (clojure.string/join "&status=" statuses)
+       "&page=" page))
 
 (defn get-occupied-colors [game]
   (let [players (:game/players game)]
