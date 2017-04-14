@@ -31,7 +31,9 @@
   ;; Make sure that if page is invalid, replace it with a 0
   ;; TODO: Use Cemerick
   (let [parsed-page (js/Number page)]
-    (str "/?page=" (if (js/isNaN parsed-page) 0 parsed-page)
+    (str "/?page=" (if (or (js/isNaN parsed-page)
+                           (< parsed-page 0))
+                     0 parsed-page)
          (when closed "&closed")
          (when mine "&mine"))))
 
@@ -49,6 +51,16 @@
   [{:keys [mine] :as query-params}]
   (nav! (construct-query-params (merge query-params
                                        {:mine (not mine)}))))
+
+(defn- previous-page-link
+  [{:keys [page] :as query-params}]
+  (construct-query-params (merge query-params
+                                 {:page (- (js/Number page) 1)})))
+
+(defn- next-page-link
+  [{:keys [page] :as query-params}]
+  (construct-query-params (merge query-params
+                                 {:page (+ (js/Number page) 1)})))
 
 (defn- get-games
   "This is used to retrieve games based on params"
@@ -143,15 +155,16 @@
 (defn main-panel [{:keys [cmpnt-state query-params]}]
   (let [current-user (re-frame/subscribe [:current-user])
         games (re-frame/subscribe [:games/games])
-        {page :page
-         show-my-games :mine
-         show-closed :closed} query-params]
+        prev-link (previous-page-link query-params)
+        next-link (next-page-link query-params)]
 
     [:div.games-panel
      [:div.toggles
       [tab-view-toggle query-params]
       [my-game-toggle query-params]]
      [:div.games
+
+      ;; If there are games, then render them
       (if true
         [:ul.games-list
          (for [game []]
@@ -173,9 +186,21 @@
                                       is-joinable
                                       is-full
                                       is-playing
-                                      num-joined]))])
+                                      num-joined]))]
 
-      [get-empty-state nil nil]]]))
+        [get-empty-state nil nil])
+
+      ;; Render the page switcher
+      [:div.page-toggle
+       [:a {:class-name (when (= "0" (:page query-params)) "disabled")
+            :href prev-link
+            :on-click #(do
+                         (.preventDefault %)
+                         (nav! prev-link))} "PREVIOUS"]
+       [:a {:href next-link
+            :on-click #(do
+                         (.preventDefault %)
+                         (nav! next-link))} "NEXT"]]]]))
 
 (defn games [query-params]
   (let [cmpnt-state (reagent/atom {:polling nil})]
