@@ -1,5 +1,6 @@
 (ns wombats-web-client.panels.games
-  (:require [re-frame.core :as re-frame]
+  (:require [cemerick.url :refer [map->query url]]
+            [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [wombats-web-client.components.cards.game :refer [game-card]]
             [wombats-web-client.routes :refer [nav!]]
@@ -27,12 +28,13 @@
 
 (defn- construct-query-params
   [{:keys [closed page mine]}]
-  ;; Make sure that if page is invalid, replace it with a 0
-  ;; TODO: Use Cemerick
-  (let [parsed-page (js/Number page)]
-    (str "/?page=" (if (or (js/isNaN parsed-page)
-                           (< parsed-page 1))
-                     1 parsed-page)
+  ;; Make sure that if page is invalid, replace it with a 1
+  (let [page (js/Number page)
+        page (if (or (js/isNaN page)
+                     (< page 1))
+               1 page)]
+
+    (str "/?page=" page
          (when closed "&closed")
          (when mine "&mine"))))
 
@@ -153,19 +155,22 @@
                     (nav! prev-link))} "PREVIOUS"]
 
      ;; This is where the possible pages go
-     (map
-      (fn [i]
-        (let [new-page (+ i page)
-              link (page-link query-params new-page)]
-          [:a.page
-           {:key (str "page-" i)
-            :class-name (when (= i 0) "current")
-            :href link
-            :on-click #(do
-                         (.preventDefault %)
-                         (nav! link))}
-           new-page]))
-      (range 5))
+     [:span.page.ellipsis "..."]
+     (let [total-pages 8]
+       (map
+        (fn [i]
+          (let [new-page (if (= i 0)
+                           1 (+ i page))
+                link (page-link query-params new-page)]
+            [:a.page
+             {:key (str "page-" i)
+              :class-name (when (= new-page page) "current")
+              :href link
+              :on-click #(do
+                           (.preventDefault %)
+                           (nav! link))}
+             new-page]))
+        (range 8)))
 
      [:a.nav-link
       {:href next-link
