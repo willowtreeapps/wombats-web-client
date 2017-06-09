@@ -3,8 +3,7 @@
             [cljs.core.async :as async]
             [re-frame.core :as re-frame]
             [ajax.edn :refer [edn-response-format]]
-            [wombats-web-client.events.user :refer [load-wombats
-                                                    load-user-repositories]]
+            [wombats-web-client.events.user :refer [load-wombats]]
             [wombats-web-client.db :refer [default-db]]
             [wombats-web-client.socket-dispatcher :as sd]
             [wombats-web-client.events.spritesheet :refer [get-spritesheet]]
@@ -24,8 +23,7 @@
   ;; get spritesheet, and fetch wombats.
   (let [socket-ch (sd/init-ws-connection)
         sprite-ch (get-spritesheet)
-        wombat-ch (load-wombats id)
-        repository-ch (load-user-repositories id)]
+        wombat-ch (load-wombats id)]
     (go
       (let [socket (async/<! socket-ch)]
         (if socket
@@ -41,11 +39,6 @@
         (if wombats
           (re-frame/dispatch [:update-wombats wombats])
           (bootstrap-failure "Wombats failed to load...")))
-
-      (let [repositories (async/<! repository-ch)]
-        (if repositories
-          (re-frame/dispatch [:update-repositories repositories])
-          (bootstrap-failure "Repositories failed to load...")))
 
       ;; Update bootstrapping in db
       (re-frame/dispatch [:bootstrap-complete]))))

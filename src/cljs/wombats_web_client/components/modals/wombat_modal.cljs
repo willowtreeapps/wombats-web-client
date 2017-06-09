@@ -3,15 +3,11 @@
             [reagent.core :as reagent]
             [wombats-web-client.components.text-input
              :refer [text-input-with-label]]
-            [wombats-web-client.components.select-input
-             :refer [select-input]]
             [wombats-web-client.events.user :refer [create-new-wombat
-                                                    edit-wombat-by-id
-                                                    get-all-repositories]]
+                                                    edit-wombat-by-id]]
             [wombats-web-client.utils.errors :refer [required-field-error]]
             [wombats-web-client.utils.forms :refer [cancel-modal-input
-                                                    submit-modal-input
-                                                    optionize]]))
+                                                    submit-modal-input]]))
 
 (defn callback-success [state]
   "closes modal on success"
@@ -69,12 +65,7 @@
                       wombat-repo-name
                       wombat-file-path]} @cmpnt-state
                       error @modal-error
-              repositories @(re-frame/subscribe [:my-repositories])
-                      username (:user/github-username @current-user)
-              repository-options (optionize [:name]
-                                            [:name]
-                                            repositories)]
-          (prn repository-options)
+                      username (:user/github-username @current-user)]
           [:div {:class "modal add-wombat-modal"}
            [:div.title title]
            (when error [:div.modal-error error])
@@ -82,23 +73,14 @@
             [text-input-with-label {:name "wombat-name"
                                     :label "Wombat Name"
                                     :state cmpnt-state}]
-            [select-input {:id "repository-dropdown"
-                           :name "wombat-repo-name"
-                           :form-state cmpnt-state
-                           :form-key :wombat-repo-name
-                           :error-key :wombat-repo-name-error
-                           :option-list repository-options
-                           :label "Wombat Repository"
-                           :disabled (some? wombat-id)}]
-
-
+            [text-input-with-label {:name "wombat-repo-name"
+                                    :label "Wombat Repository Name"
+                                    :state cmpnt-state
+                                    :disabled (some? wombat-id)}]
             [text-input-with-label {:name "wombat-file-path"
                                     :label "Wombat File Path"
                                     :state cmpnt-state
-                                    :disabled (some? wombat-id)}]
-
-            ]
-           (prn cmpnt-state)
+                                    :disabled (some? wombat-id)}]]
            [:div.action-buttons
             [cancel-modal-input]
             [submit-modal-input
@@ -107,8 +89,3 @@
                cmpnt-state
                username
                wombat-id)]]]))})))
-
-#_[text-input-with-label {:name "wombat-repo-name"
-                                    :label "Wombat Repository Name"
-                                    :state cmpnt-state
-                                    :disabled (some? wombat-id)}]

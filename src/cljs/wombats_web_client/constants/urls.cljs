@@ -12,6 +12,7 @@
 (defonce self-url (str base-api-versioned-url "/self"))
 (defonce github-signout-url (str base-api-versioned-url "/auth/github/signout"))
 (defonce github-signin-url (str base-api-versioned-url "/auth/github/signin"))
+
 (defonce spritesheet-url "/spritesheet.json")
 
 (defonce ws-url (str (case js/window.location.protocol
@@ -19,11 +20,6 @@
                        "ws:")
                      base-api-url
                      "/ws/game"))
-
-
-(defn my-github-repositories-url
-  [user-id]
-  (str base-api-versioned-url "/users/" user-id "/repositories"))
 
 (defn my-wombats-url
   [id]
