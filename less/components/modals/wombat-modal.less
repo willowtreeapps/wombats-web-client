@@ -1,0 +1,17 @@
+@import "../../colors.less";
+@import "../../objects/label.less";
+@import "../../components/inline-error.less";
+@import "../../utils/typography";
+@import "../../z-index.less";
+
+.modal-container {
+    .modal.add-wombat-modal {
+        overflow: visible;
+        .select-input {
+            ul.option-list {
+                max-height: 500%;
+                overflow: scroll;
+            }
+        }
+    }
+}

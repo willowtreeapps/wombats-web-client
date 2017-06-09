@@ -12,7 +12,8 @@
             [wombats-web-client.constants.urls :refer [self-url
                                                        github-signout-url
                                                        my-wombats-url
-                                                       my-wombat-by-id-url]]
+                                                       my-wombat-by-id-url
+                                                       my-github-repositories-url]]
             [wombats-web-client.routes :refer [history]]
             [wombats-web-client.utils.auth :refer [add-auth-header
                                                    get-current-user-id]]
@@ -32,8 +33,6 @@
   (pushy/set-token! history "/welcome")
   (re-frame/dispatch [:sign-out])
   (sign-out-user))
-
-
 
 ;; USER WOMBAT SPECIFIC
 (defn load-wombats
@@ -126,6 +125,26 @@
      (cb-success))
    #(re-frame/dispatch [:update-modal-error (get-error-message %)])))
 
+;; USER REPOSITORY SPECIFIC
+(defn load-user-repositories
+  "loads all repositories that are owned by a user id"
+  [id]
+  (let [ch (async/chan)]
+    (GET (my-github-repositories-url id) {:response-format (edn-response-format)
+                              :keywords? true
+                              :headers (add-auth-header {})
+                              :handler #(go (async/>! ch %))})
+    ch))
+
+(defn get-all-repositories []
+  (let [repository-ch (load-user-repositories (get-current-user-id))]
+    (go
+      (re-frame/dispatch [:update-repositories (async/<! repository-ch)]))))
+
+(defn get-repos [cb-success]
+  (get-all-repositories)
+  (cb-success))
+
 (re-frame/reg-event-db
  :sign-out
  (fn [db [_ _]]
@@ -141,6 +160,11 @@
  :user-error
  (fn [db [_ error]]
    (print "temporary error")))
+
+(re-frame/reg-event-db
+ :update-repositories
+ (fn [db [_ repositories]]
+   (assoc db :my-repositories repositories)))
 
 (re-frame/reg-event-fx
  :bootstrap-user-data
