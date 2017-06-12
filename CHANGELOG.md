@@ -1,9 +1,10 @@
 CHANGELOG
 =========
 
-## Develop
+## Develop (6.12.2017)
 **Enhancements**
-* None
+* User repositories are selectable through a dropdown.
+  [Eli Bosley][/eli] *No Issue*
 
 **Bug Fixes**
 * None
@@ -75,3 +76,4 @@ CHANGELOG
 [/dehli]: https://github.com/dehli
 [/emily]: https://github.com/emilyseibert
 [/oconn]: https://github.com/oconn
+[/eli]: https://github.com/elibosley

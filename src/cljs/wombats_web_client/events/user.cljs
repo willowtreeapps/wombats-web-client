@@ -9,11 +9,12 @@
             [wombats-web-client.utils.errors :refer [get-error-message]]
             [wombats-web-client.utils.local-storage :refer [get-token
                                                             remove-token!]]
-            [wombats-web-client.constants.urls :refer [self-url
-                                                       github-signout-url
-                                                       my-wombats-url
-                                                       my-wombat-by-id-url
-                                                       my-github-repositories-url]]
+            [wombats-web-client.constants.urls
+             :refer [self-url
+                     github-signout-url
+                     my-wombats-url
+                     my-wombat-by-id-url
+                     my-github-repositories-url]]
             [wombats-web-client.routes :refer [history]]
             [wombats-web-client.utils.auth :refer [add-auth-header
                                                    get-current-user-id]]
