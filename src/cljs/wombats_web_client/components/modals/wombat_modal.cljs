@@ -74,7 +74,6 @@
               repository-options (optionize [:name]
                                             [:name]
                                             repositories)]
-          (prn repository-options)
           [:div {:class "modal add-wombat-modal"}
            [:div.title title]
            (when error [:div.modal-error error])
@@ -98,7 +97,6 @@
                                     :disabled (some? wombat-id)}]
 
             ]
-           (prn cmpnt-state)
            [:div.action-buttons
             [cancel-modal-input]
             [submit-modal-input
