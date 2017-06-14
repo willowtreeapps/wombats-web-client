@@ -142,6 +142,21 @@
      (and (not closed) (not mine))
      empty-open-page)])
 
+(defn- abs [n] (max n (- n)))
+
+(defn- page-indicator
+  [query-params current-page new-page]
+  (let [link (page-link query-params new-page)]
+
+    [:a.page
+     {:class-name (when (= new-page current-page) "current")
+      :href link
+      :on-click #(do
+                   (.preventDefault %)
+                   (nav! link))}
+     new-page])
+  )
+
 (defn- page-switcher [{:keys [page] :as query-params}]
   (let [prev-link (previous-page-link query-params)
         next-link (next-page-link query-params)
@@ -155,22 +170,42 @@
                     (nav! prev-link))} "PREVIOUS"]
 
      ;; This is where the possible pages go
-     [:span.page.ellipsis "..."]
-     (let [total-pages 8]
+     ;;[:span.page.ellipsis "..."]
+     (let [new-page 1
+           link (page-link query-params new-page)]
+       [:a.page
+        {:class-name (when (= new-page page) "current")
+         :href link
+         :on-click #(do
+                      (.preventDefault %)
+                      (nav! link))}
+        new-page])
+
+     (let [total-pages 2]
        (map
         (fn [i]
-          (let [new-page (if (= i 0)
-                           1 (+ i page))
-                link (page-link query-params new-page)]
-            [:a.page
-             {:key (str "page-" i)
-              :class-name (when (= new-page page) "current")
-              :href link
-              :on-click #(do
-                           (.preventDefault %)
-                           (nav! link))}
-             new-page]))
-        (range 8)))
+          (let [key (str "page-" i)]
+            (cond
+              (<= i 0) nil
+              (= i 1) nil
+              (= (- page total-pages) i) [:span.page.ellipsis {:key key} "..."]
+              (and (= (+ page total-pages) i) (not (<= page 3))) [:span.page.ellipsis {:key key} "..."]
+              :else (let [new-page i
+                          link (page-link query-params new-page)]
+
+                      [:a.page
+                       {:key key
+                        :class-name (when (= new-page page) "current")
+                        :href link
+                        :on-click #(do
+                                     (.preventDefault %)
+                                     (nav! link))}
+                       new-page]))))
+        (range (- page total-pages) (+ page total-pages 1)))) ;; page is 3, total 2  ->  1 ... 6 (1,2,3,4,5)
+
+     (when (<= page 2) (page-indicator query-params page (+ page 3)))
+     (when (<= page 1) (page-indicator query-params page (+ page 4)))
+     (when (<= page 3) [:span.page.ellipsis "..."])
 
      [:a.nav-link
       {:href next-link
