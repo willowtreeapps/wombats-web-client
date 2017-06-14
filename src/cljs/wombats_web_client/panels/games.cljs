@@ -156,6 +156,11 @@
                    (nav! link))}
      new-page]))
 
+(defn- calculate-offset
+  "Given total-items and current index calculate the necessary offset"
+  [total-items i]
+  (get (into [] (range (- (/ total-items 2)) (+ (/ total-items 2) 1)))i))
+
 (defn- page-switcher [{:keys [page] :as query-params}]
   (let [prev-link (previous-page-link query-params)
         next-link (next-page-link query-params)
@@ -181,10 +186,12 @@
         new-page])
 
      ;; Generate dynamic page numbers for the middle items
-     (let [total-items 4] ;; must be even -
+     (let [total-items 4] ;; must be even
        (map
         (fn [i]
           (let [key (str "page-" i)]
+            (calculate-offset 6 2)
+            (calculate-offset 4 2)
             (cond
               ;; First case: 2 3 4 5 ...
               (<= page 4) (if (= i total-items) ;; generate elipsis for last item
@@ -205,18 +212,16 @@
               (> page 4) (cond
                            (or (= i 0) (= i total-items)) [:span.page.ellipsis {:key key} "..."]
                            (= i (/ total-items 2))  (page-selector-item 0 page query-params key)
-                           (<= i (- (/ total-items 2) 1)) (page-selector-item -1 page query-params key)
-                           (>= i (+ (/ total-items 2) 1))  (page-selector-item 1 page query-params key)
+                           (<= i (- (/ total-items 2) 1)) (page-selector-item (calculate-offset total-items i) page query-params key)
+                           (>= i (+ (/ total-items 2) 1))  (page-selector-item (calculate-offset total-items i) page query-params key)))))
+        (range 0 (+ total-items 1))))
 
-                           ))))
-        (range 0 (+ total-items 1)))) ;; page is 3, total 2  ->  1 ... 6 (1,2,3,4,5)
-
+     ;; TODO max length goes here
      [:a.nav-link
       {:href next-link
        :on-click #(do
                     (.preventDefault %)
                     (nav! next-link))} "NEXT"]]))
-
 (defn main-panel [{:keys [query-params]}]
   (let [current-user (re-frame/subscribe [:current-user])
         games (re-frame/subscribe [:games/games])]
