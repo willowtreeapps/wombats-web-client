@@ -36,9 +36,8 @@
   (swap! form-state assoc error-key nil))
 
 (defn select-input
-  [params]
-  (let [key (keyword (:name params))
-        form-state (:form-state params)
+  [{:keys [name form-state]}]
+  (let [key (keyword name)
         val (get @form-state key)
         cmpnt-state (reagent/atom {:is-closed true
                                    :selected-option val})]
@@ -68,8 +67,8 @@
           [:ul.option-list
            ;; will display default text or selection display name
            [:p.display-selected {:class (str  (when is-no-selection
-                                                "default")
-                                              (when (true? disabled)
+                                                "default ")
+                                              (when disabled
                                                 "disabled"))
                                  :on-click #(select-input-on-click cmpnt-state)}
             displayed-option]
