@@ -15,7 +15,9 @@
             [lein-pdo "0.1.1"]
             [lein-kibit "0.1.3"]
             [lein-auto "0.1.3"]
-            [lein-bikeshed "0.4.1"]]
+            [lein-bikeshed "0.4.1"]
+            [lein-shell "0.5.0"]
+            [lein-npm "0.6.2"]]
 
   :min-lein-version "2.5.3"
 
@@ -25,7 +27,7 @@
                                     "test/js"]
 
   :less {:source-paths ["less"]
-         :target-path "resources/public/css"}
+         :target-path "resources/temp/css"}
 
   :figwheel {:css-dirs ["resources/public/css"]
              :ring-handler figwheel-server.core/handler}
@@ -105,9 +107,18 @@
                     :output-dir    "resources/public/js/compiled/test/out"
                     :optimizations :none}}]}
 
-    :aliases {"run-local"   ["pdo" "clean," ["figwheel" "local"] ["less" "auto"]]
-              "run-dev"     ["pdo" "clean," ["figwheel" "dev"]   ["less" "auto"]]
-              "run-lint"    ["pdo" "bikeshed" ["kibit" "src/cljs/wombats_web_client/"]]
-              "deploy-dev"  ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-dev"]  ["less" "once"]]
-              "deploy-qa"   ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-qa"]   ["less" "once"]]
-              "deploy-prod" ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-prod"] ["less" "once"]]})
+    :aliases {"install-postcss" [["shell" "lein" "npm" "install" "postcss-cli" "autoprefixer"]]
+              "postcss-prefixer-w" [["shell" "postcss" "resources/temp/css/*.css" "resources/temp/css/**/*.css" "resources/temp/css/**/**/*.css"
+                              "--use autoprefixer" "-d" "resources/public/css" "-w"]]
+              "postcss-prefixer" [["shell" "postcss" "resources/temp/css/*.css" "resources/temp/css/**/*.css" "resources/temp/css/**/**/*.css"
+                              "--use autoprefixer" "-d" "resources/public/css"]]
+              "run-local"   ["do"
+                             ["install-postcss"]
+                             ["pdo" "clean," ["figwheel" "local"] ["less" "auto"] "postcss-prefixer-w"]]
+              "run-dev"     ["do"
+                             ["install-postcss"]
+                             ["pdo" "clean," ["figwheel" "dev"]   ["less" "auto"] "postcss-prefixer-w"]]
+              "Run-lint"    ["pdo" "bikeshed" ["kibit" "src/cljs/wombats_web_client/"]]
+              "deploy-dev"  ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-dev"] ["less" "once"] "postcss-prefixer"]
+              "deploy-qa"   ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-qa"] ["less" "once"] "postcss-prefixer"]
+              "deploy-prod" ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-prod"] ["less" "once"] "postcss-prefixer"]})
