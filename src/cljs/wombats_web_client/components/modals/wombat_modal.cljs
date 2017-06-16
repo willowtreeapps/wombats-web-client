@@ -105,8 +105,3 @@
                cmpnt-state
                username
                wombat-id)]]]))})))
-
-#_[text-input-with-label {:name "wombat-repo-name"
-                                    :label "Wombat Repository Name"
-                                    :state cmpnt-state
-                                    :disabled (some? wombat-id)}]

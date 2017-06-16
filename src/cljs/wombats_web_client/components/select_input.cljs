@@ -66,10 +66,10 @@
                                     error-key)}
           [:ul.option-list
            ;; will display default text or selection display name
-           [:p.display-selected {:class (str  (when is-no-selection
-                                                "default ")
-                                              (when disabled
-                                                "disabled"))
+           [:p.display-selected {:class (str (when is-no-selection
+                                               "default ")
+                                             (when disabled
+                                               "disabled"))
                                  :on-click #(select-input-on-click cmpnt-state)}
             displayed-option]
 
