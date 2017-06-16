@@ -68,9 +68,9 @@
         (let [{:keys [wombat-name
                       wombat-repo-name
                       wombat-file-path]} @cmpnt-state
-                      error @modal-error
+              error @modal-error
               repositories @(re-frame/subscribe [:my-repositories])
-                      username (:user/github-username @current-user)
+              username (:user/github-username @current-user)
               repository-options (optionize [:name]
                                             [:name]
                                             repositories)]
@@ -94,9 +94,7 @@
             [text-input-with-label {:name "wombat-file-path"
                                     :label "Wombat File Path"
                                     :state cmpnt-state
-                                    :disabled (some? wombat-id)}]
-
-            ]
+                                    :disabled (some? wombat-id)}]]
            [:div.action-buttons
             [cancel-modal-input]
             [submit-modal-input
