@@ -8,10 +8,10 @@
 
     (when code (-> editor
                    .getSession
-                   (.setValue code))
+                   (.setValue code)))
 
-          (when event-handler
-            (.on editor "change" (event-handler editor))))
+    (when event-handler
+      (.on editor "change" (event-handler editor)))
 
     (when mode (-> editor
                    .getSession
