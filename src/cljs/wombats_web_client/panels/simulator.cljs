@@ -11,11 +11,12 @@
             [wombats-web-client.components.simulator.stack-trace
              :as simulator-stack-trace]
             [wombats-web-client.components.simulator.configure
-             :as simulator-configure]
+             :refer [configuration-modal]]
             [wombats-web-client.components.simulator.controls
              :as simulator-controls]
             [wombats-web-client.events.simulator
-             :refer [get-simulator-templates]]))
+             :refer [get-simulator-templates]]
+            [wombats-web-client.components.add-button :as add-wombat-button]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
@@ -28,6 +29,11 @@
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn open-configure-simulator-modal []
+  (fn []
+    (re-frame/dispatch [:set-modal {:fn configuration-modal
+                                    :show-overlay true}])))
+
 (def panes {:code
             {:label "CODE"
              :render simulator-code/render}
@@ -37,9 +43,8 @@
             :debugger
             {:label "DEBUGGER"
              :render simulator-stack-trace/render}
-            :configure
-            {:label "CONFIGURE"
-             :render simulator-configure/render}})
+
+            })
 
 (defn- render-tabs
   [active-tab stack-trace]
@@ -79,6 +84,7 @@
                              simulator-mini-map
                              active-frame)]
    [render-right-pane @simulator-pane stack-trace]
+   [add-wombat-button/root (open-configure-simulator-modal)]
    [simulator-controls/render simulator-state simulator-display-mini-map]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

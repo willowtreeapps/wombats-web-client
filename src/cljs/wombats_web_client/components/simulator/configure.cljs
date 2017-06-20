@@ -3,7 +3,15 @@
             [re-frame.core :as re-frame]
             [wombats-web-client.utils.forms :as f]
             [wombats-web-client.components.select-input :refer [select-input]]
+            [wombats-web-client.utils.forms :refer [cancel-modal-input
+                                                    submit-modal-input
+                                                    optionize]]
             [wombats-web-client.utils.errors :refer [required-field-error]]))
+
+(defn- callback-success [state]
+  "closes modal on success"
+  (re-frame/dispatch [:update-modal-error nil])
+  (re-frame/dispatch [:set-modal nil]))
 
 (defn- update-simulator-configuration!
   [state]
@@ -18,8 +26,10 @@
     (when (and wombat-id template-id)
       (re-frame/dispatch [:simulator/initialize-simulator
                           {:simulator/template-id template-id
-                           :simulator/wombat-id wombat-id}]))))
-(defn render []
+                           :simulator/wombat-id wombat-id}])
+      (callback-success state))))
+
+(defn configuration-modal []
   (let [wombats (re-frame/subscribe [:my-wombats])
         sim-templates (re-frame/subscribe [:simulator/templates])
         selected-wombat (re-frame/subscribe [:simulator/wombat-id])
@@ -28,29 +38,40 @@
                                   :wombat-id-error nil
                                   :template-id @selected-template
                                   :template-id-error nil})]
-    (fn []
-      (let [wombats @wombats
-            templates @sim-templates]
-        [:div.configure
-         [:p.pane-title "Configure Simulator"]
-         [select-input {:form-state form-state
-                        :form-key :template-id
-                        :error-key :template-id-error
-                        :option-list
-                        (f/optionize
-                         [:simulator-template/id]
-                         [:simulator-template/arena-template :arena/name]
-                         templates)
-                        :label "Select Template"}]
-         [select-input {:form-state form-state
-                        :form-key :wombat-id
-                        :error-key :wombat-id-error
-                        :option-list
-                        (f/optionize
-                         [:wombat/id]
-                         [:wombat/name]
-                         wombats)
-                        :label "Select Wombat"}]
-         [:button.update-btn
-          {:on-click #(update-simulator-configuration! form-state)}
-          "Update Simulator"]]))))
+    (reagent/create-class
+     {:component-will-unmount #(re-frame/dispatch [:update-modal-error nil])
+      :display-name "configuration-modal"
+      :reagent-render
+      (fn []
+        (let [wombats @wombats
+              templates @sim-templates]
+          [:div.configure {:class "modal configuration-modal"}
+           [:div.title "Configure Simulator"]
+
+           [:div.modal-content
+
+            [select-input {:form-state form-state
+                           :form-key :template-id
+                           :error-key :template-id-error
+                           :option-list
+                           (optionize
+                            [:simulator-template/id]
+                            [:simulator-template/arena-template :arena/name]
+                            templates)
+                           :label "Select Template"}]
+            [select-input {:form-state form-state
+                           :form-key :wombat-id
+                           :error-key :wombat-id-error
+                           :option-list
+                           (optionize
+                            [:wombat/id]
+                            [:wombat/name]
+                            wombats)
+                           :label "Select Wombat"}]]
+           [:div.action-buttons
+            [cancel-modal-input]
+            [submit-modal-input
+             "DONE"
+             #(update-simulator-configuration! form-state)]
+            ]
+           ]))})))
