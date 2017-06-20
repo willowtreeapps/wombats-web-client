@@ -22,17 +22,17 @@
       (.setAutoScrollEditorIntoView editor true)
       (.setOption editor "maxLines" 7))
     (.setTheme editor "ace/theme/tomorrow_night_eighties")
-    (.setReadOnly editor false)))
+    (.setReadOnly editor true)))
 
 (defn- render-editor
-  [code id]
+  [id]
   [:div.output-display {:id id}])
 
 (defn render-ace
   [code id]
   (reagent/create-class
    {:reagent-render
-    #(render-editor code id)
+    #(render-editor id)
     :component-did-mount
     #(init-ace code "json" id)}))
 
@@ -42,18 +42,9 @@
     [:div.output-container
      [:div.output-section
       [:h3.output-section-title "Command"]]
+
      [render-ace (str (format-code @command)) "command"]
      [:div.output-section
       [:h3.output-section-title "State"]]
-     [render-ace (str (format-code @player-state)) "state"]]
-    ))
 
-
-#_[:div.output
-     [:div.output-section
-      [:h3.output-section-title "Command"]
-      (format-code @command)]
-
-     [:div.output-section
-      [:h3.output-section-title "State"]
-      (format-code @player-state)]]
+     [render-ace (str (format-code @player-state)) "state"]]))
