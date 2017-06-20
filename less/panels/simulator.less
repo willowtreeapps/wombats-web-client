@@ -36,16 +36,33 @@
                 height: calc(~"100% - " 2 * @editor-padding);
             }
 
-            .output {
-                color: @white;
-                padding: 10px;
+            .output-container {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: wrap;
+                @padding: 2px;
+                position: absolute;
+                width: calc(~"100% - " 2 * @editor-padding);
+                height: calc(~"100% - " 2 * @editor-padding);
+
+                .output-display {
+                    flex-grow: 1;
+                    font-family: monospace;
+
+                    &#command {
+                        flex-grow: 0;
+                    }
+                }
 
                 .output-section {
-                    margin-bottom: 10px;
+                    flex-grow: 0;
 
                     .output-section-title {
-                        margin: 0;
+                        color: @white;
+                        padding: 10px;
+                        margin: auto;
                     }
+
                 }
             }
 
