@@ -1,10 +1,10 @@
 CHANGELOG
 =========
 
-## Develop (6.12.2017)
+## Develop (6.20.2017)
 **Enhancements**
-* User repositories are selectable through a dropdown.
-  [Eli Bosley][/eli] *No Issue*
+* Output from simulator is displayed through Ace
+  [Eli Bosley][/eli] [#189](https://github.com/willowtreeapps/wombats-web-client/issues/189)
 
 **Bug Fixes**
 * None
