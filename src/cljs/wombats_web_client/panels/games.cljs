@@ -72,7 +72,7 @@
   "This is used to retrieve games based on params"
   [{:keys [closed mine page]}]
   ;; Subtract 1 since the API is 0-indexed
-  (let [page (- page 1)]
+  (let [page (dec page)]
     (cond
       (and closed mine)
       (get-my-closed-games page)
@@ -159,7 +159,7 @@
 (defn- calculate-offset
   "Given total-items and current index calculate the necessary offset"
   [total-items i]
-  (get (into [] (range (- (/ total-items 2)) (+ (/ total-items 2) 1)))i))
+  (get (vec (range (- (/ total-items 2)) (inc (/ total-items 2))))i))
 
 (defn- page-switcher [{:keys [page] :as query-params}]
   (let [prev-link (previous-page-link query-params)
@@ -194,27 +194,36 @@
             (calculate-offset 4 2)
             (cond
               ;; First case: 2 3 4 5 ...
-              (<= page 4) (if (= i total-items) ;; generate elipsis for last item
-                         [:span.page.ellipsis {:key key} "..."]
-                         (let [new-page (+ i 2)
-                               link (page-link query-params new-page)]
+              (<= page 4) (if (= i total-items)
+                            ;; generate elipsis for last item
+                            [:span.page.ellipsis {:key key} "..."]
+                            (let [new-page (+ i 2)
+                                  link (page-link query-params new-page)]
 
-                           [:a.page
-                            {:key key
-                             :class-name (when (= new-page page) "current")
-                             :href link
-                             :on-click #(do
-                                          (.preventDefault %)
-                                          (nav! link))}
-                            new-page]))
+                              [:a.page
+                               {:key key
+                                :class-name (when (= new-page page) "current")
+                                :href link
+                                :on-click #(do
+                                             (.preventDefault %)
+                                             (nav! link))}
+                               new-page]))
 
               ;; Second case ... 4 5 6 ...
               (> page 4) (cond
-                           (or (= i 0) (= i total-items)) [:span.page.ellipsis {:key key} "..."]
-                           (= i (/ total-items 2))  (page-selector-item 0 page query-params key)
-                           (<= i (- (/ total-items 2) 1)) (page-selector-item (calculate-offset total-items i) page query-params key)
-                           (>= i (+ (/ total-items 2) 1))  (page-selector-item (calculate-offset total-items i) page query-params key)))))
-        (range 0 (+ total-items 1))))
+                           (or (zero? i) (= i total-items))
+                           [:span.page.ellipsis {:key key} "..."]
+                           (= i (/ total-items 2))
+                           (page-selector-item 0 page query-params key)
+                           (<= i (dec (/ total-items 2)))
+                           (page-selector-item
+                            (calculate-offset total-items i)
+                            page query-params key)
+                           (>= i (inc (/ total-items 2)))
+                           (page-selector-item
+                            (calculate-offset total-items i)
+                            page query-params key)))))
+        (range 0 (inc total-items))))
 
      ;; TODO max length goes here
      [:a.nav-link
