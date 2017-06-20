@@ -3,8 +3,8 @@ CHANGELOG
 
 ## Develop (6.20.2017)
 **Enhancements**
-* Output from simulator is displayed through Ace
-  [Eli Bosley][/eli] [#189](https://github.com/willowtreeapps/wombats-web-client/issues/189)
+* Output from simulator is displayed through Ace [Eli Bosley][/eli] [#189](https://github.com/willowtreeapps/wombats-web-client/issues/189)
+* User repositories are selectable through a dropdown. [Eli Bosley][/eli] *No Issue*
 
 **Bug Fixes**
 * None
