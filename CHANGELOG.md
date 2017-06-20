@@ -1,8 +1,9 @@
 CHANGELOG
 =========
 
-## Develop (6.12.2017)
+## Develop (6.20.2017)
 **Enhancements**
+* Date picker now shows the current time when opened [Eli Bosley][/eli] [#333](https://github.com/willowtreeapps/wombats-web-client/issues/333)
 * User repositories are selectable through a dropdown.
   [Eli Bosley][/eli] *No Issue*
 
