@@ -1,40 +1,11 @@
 (ns wombats-web-client.components.simulator.output
   (:require [reagent.core :as reagent]
-            [re-frame.core :as re-frame]))
+            [re-frame.core :as re-frame]
+            [wombats-web-client.components.ace :refer [ace-component]]))
 
 (defn- format-code
   [clj-object]
-  (.stringify js/JSON (clj->js clj-object) nil 2))
-
-(defn- init-ace [code mode id]
-  (let [editor (-> js/window
-                   .-ace
-                   (.edit id))]
-
-    (when code (-> editor
-                    .getSession
-                    (.setValue code)))
-
-    (when mode (-> editor
-                    .getSession
-                    (.setMode (str "ace/mode/" mode))))
-    (when (= id "command")
-      (.setAutoScrollEditorIntoView editor true)
-      (.setOption editor "maxLines" 7))
-    (.setTheme editor "ace/theme/tomorrow_night_eighties")
-    (.setReadOnly editor true)))
-
-(defn- render-editor
-  [id]
-  [:div.output-display {:id id}])
-
-(defn render-ace
-  [code id]
-  (reagent/create-class
-   {:reagent-render
-    #(render-editor id)
-    :component-did-mount
-    #(init-ace code "json" id)}))
+  (str (.stringify js/JSON (clj->js clj-object) nil 2)))
 
 (defn render []
   (let [command (re-frame/subscribe [:simulator/player-command])
@@ -43,8 +14,17 @@
      [:div.output-section
       [:h3.output-section-title "Command"]]
 
-     [render-ace (str (format-code @command)) "command"]
+     [ace-component  {:code (format-code @command)
+                      :mode "json"
+                      :id "command"
+                      :options {:readOnly true
+                                :highlightActiveLine false
+                                :maxLines 7}}]
      [:div.output-section
       [:h3.output-section-title "State"]]
 
-     [render-ace (str (format-code @player-state)) "state"]]))
+     [ace-component {:code (format-code @player-state)
+                     :mode "json"
+                     :id "state"
+                     :options {:readOnly true
+                               :highlightActiveLine false}}]]))

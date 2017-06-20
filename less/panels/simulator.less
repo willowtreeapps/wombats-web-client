@@ -45,13 +45,13 @@
                 width: calc(~"100% - " 2 * @editor-padding);
                 height: calc(~"100% - " 2 * @editor-padding);
 
-                .output-display {
+                #state {
                     flex-grow: 1;
                     font-family: monospace;
-
-                    &#command {
-                        flex-grow: 0;
-                    }
+                }
+                #command {
+                    flex-grow: 0;
+                    font-family: monospace;
                 }
 
                 .output-section {
