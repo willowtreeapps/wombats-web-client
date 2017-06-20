@@ -1,9 +1,9 @@
 CHANGELOG
 =========
 
-## Develop
+## Develop (6.20.2017
 **Enhancements**
-* None
+* Pagination for the frontend [Eli Bosley][/eli] [#285](https://github.com/willowtreeapps/wombats-web-client/issues/285)
 
 **Bug Fixes**
 * None
@@ -75,3 +75,4 @@ CHANGELOG
 [/dehli]: https://github.com/dehli
 [/emily]: https://github.com/emilyseibert
 [/oconn]: https://github.com/oconn
+[/eli]: https://github.com/elibosley
