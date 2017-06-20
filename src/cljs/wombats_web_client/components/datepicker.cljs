@@ -27,8 +27,6 @@
         val (name-key @state)
         error-val (error-key @state)
         current-time (t/local-date-time (t/now))]
-    (println (format-time current-time))
-    (println "2015-01-02T11:42")
     [:div.datepicker-wrapper {:class class}
      [:label.label {:for name} label]
      [:input.input {:class (when error-val "field-error")
