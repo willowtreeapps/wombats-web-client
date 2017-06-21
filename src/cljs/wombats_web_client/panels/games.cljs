@@ -142,11 +142,22 @@
      (and (not closed) (not mine))
      empty-open-page)])
 
-(defn- page-selector-item
+(defn- page-selector-item-offset
   [offset page query-params key]
   (let [new-page (+ page offset)
         link (page-link query-params new-page)]
+    [:a.page
+     {:key key
+      :class-name (when (= new-page page) "current")
+      :href link
+      :on-click #(do
+                   (.preventDefault %)
+                   (nav! link))}
+     new-page]))
 
+(defn- page-selector-item
+  [new-page page query-params key]
+  (let [link (page-link query-params new-page)]
     [:a.page
      {:key key
       :class-name (when (= new-page page) "current")
@@ -161,6 +172,10 @@
   [total-items i]
   (get (vec (range (- (/ total-items 2)) (inc (/ total-items 2))))i))
 
+(defn- create-ellipsis
+  [key]
+  [:span.page.ellipsis {:key key} "..."])
+
 (defn- page-switcher [{:keys [page] :as query-params}]
   (let [prev-link (previous-page-link query-params)
         next-link (next-page-link query-params)
@@ -173,54 +188,32 @@
                     (.preventDefault %)
                     (nav! prev-link))} "PREVIOUS"]
 
-     ;; This is where the possible pages go
-     ;;[:span.page.ellipsis "..."]
-     (let [new-page 1
-           link (page-link query-params new-page)]
-       [:a.page
-        {:class-name (when (= new-page page) "current")
-         :href link
-         :on-click #(do
-                      (.preventDefault %)
-                      (nav! link))}
-        new-page])
+     (page-selector-item 1 page query-params "page-1")
 
      ;; Generate dynamic page numbers for the middle items
      (let [total-items 4] ;; must be even
        (map
         (fn [i]
           (let [key (str "page-" i)]
-            (calculate-offset 6 2)
-            (calculate-offset 4 2)
             (cond
               ;; First case: 2 3 4 5 ...
               (<= page 4) (if (= i total-items)
-                            ;; generate elipsis for last item
-                            [:span.page.ellipsis {:key key} "..."]
-                            (let [new-page (+ i 2)
-                                  link (page-link query-params new-page)]
-
-                              [:a.page
-                               {:key key
-                                :class-name (when (= new-page page) "current")
-                                :href link
-                                :on-click #(do
-                                             (.preventDefault %)
-                                             (nav! link))}
-                               new-page]))
+                            (create-ellipsis key)
+                            (let [new-page (+ i 2)]
+                              (page-selector-item new-page page query-params key)))
 
               ;; Second case ... 4 5 6 ...
               (> page 4) (cond
                            (or (zero? i) (= i total-items))
-                           [:span.page.ellipsis {:key key} "..."]
+                           (create-ellipsis key)
                            (= i (/ total-items 2))
-                           (page-selector-item 0 page query-params key)
+                           (page-selector-item-offset 0 page query-params key)
                            (<= i (dec (/ total-items 2)))
-                           (page-selector-item
+                           (page-selector-item-offset
                             (calculate-offset total-items i)
                             page query-params key)
                            (>= i (inc (/ total-items 2)))
-                           (page-selector-item
+                           (page-selector-item-offset
                             (calculate-offset total-items i)
                             page query-params key)))))
         (range 0 (inc total-items))))
@@ -231,6 +224,7 @@
        :on-click #(do
                     (.preventDefault %)
                     (nav! next-link))} "NEXT"]]))
+
 (defn main-panel [{:keys [query-params]}]
   (let [current-user (re-frame/subscribe [:current-user])
         games (re-frame/subscribe [:games/games])]

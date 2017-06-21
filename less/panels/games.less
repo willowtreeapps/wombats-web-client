@@ -5,7 +5,8 @@
 
 .games-panel {
     padding: 45px 60px;
-    min-height: ~"calc(100% - 135px)";
+    @panel-padding: 135px;
+    min-height: calc(~"100% - " @panel-padding);
     display: flex;
     flex-direction: column;
 
