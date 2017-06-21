@@ -15,7 +15,7 @@
 
 (defn- update-simulator-configuration!
   [state]
-  (let [wombat-id (:womocbat-id @state)
+  (let [wombat-id (:wombat-id @state)
         wombat-id-error (:wombat-id-error @state)
         template-id (:template-id @state)
         template-id-error (:template-id-error @state)]

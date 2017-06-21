@@ -10,6 +10,7 @@
 (defn render []
   (let [command (re-frame/subscribe [:simulator/player-command])
         player-state (re-frame/subscribe [:simulator/player-state])]
+
     [:div.output-container
      [:div.output-section
       [:h3.output-section-title "Command"]]

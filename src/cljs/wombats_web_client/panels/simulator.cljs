@@ -15,7 +15,8 @@
             [wombats-web-client.components.simulator.controls
              :as simulator-controls]
             [wombats-web-client.events.simulator
-             :refer [get-simulator-templates]]))
+             :refer [get-simulator-templates]]
+            [wombats-web-client.components.simulator.split-pane :as split-pane]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
@@ -28,41 +29,10 @@
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-
-(def panes {:code
-            {:label "CODE"
-             :render simulator-code/render}
-            :output
-            {:label "OUTPUT"
-             :render simulator-output/render}
-            :debugger
-            {:label "DEBUGGER"
-             :render simulator-stack-trace/render}
-            })
-
-(defn- render-tabs
-  [active-tab stack-trace]
-  (for [[tab-name {label :label}] panes]
-    ^{:key label}
-    [:button.tab-btn {:class (when (= tab-name active-tab) "active-line-top")
-                      :on-click #(re-frame/dispatch
-                                  [:simulator/update-active-simulator-pane
-                                   tab-name])}
-     label
-     (when (= tab-name :debugger)
-       (when stack-trace
-         [:span.notifications 1]))]))
-
 (defn- render-right-pane
-  [active-pane stack-trace]
-  (let [{pane-render :render} (active-pane panes)]
-    [:div {:class-name "right-pane"}
-     [:div.tabbed-container
-      [:div.content
-       [pane-render]]
-      [:div.tabs
-       (render-tabs active-pane stack-trace)]]]))
+  [stack-trace]
+  [:div {:class-name "right-pane"}
+   (split-pane/render [simulator-code/render] [simulator-output/render])])
 
 (defn- render-left-pane
   [{:keys [frame simulator-state simulator-display-mini-map]}]
@@ -71,8 +41,7 @@
    [simulator-controls/render simulator-state simulator-display-mini-map]])
 
 (defn- render
-  [{:keys [simulator-pane
-           templates
+  [{:keys [templates
            wombats
            active-frame
            stack-trace
@@ -86,7 +55,7 @@
                                active-frame)
                       :simulator-state simulator-state
                       :simulator-display-mini-map simulator-display-mini-map}]
-   [render-right-pane @simulator-pane stack-trace]])
+   [render-right-pane stack-trace]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main Method
@@ -97,9 +66,7 @@
    {:component-will-mount #(component-will-mount!)
     :props-name "simulator-panel"
     :reagent-render
-    #(render {:simulator-pane (re-frame/subscribe
-                               [:simulator/active-pane])
-              :templates @(re-frame/subscribe
+    #(render {:templates @(re-frame/subscribe
                            [:simulator/templates])
               :wombats @(re-frame/subscribe
                          [:my-wombats])

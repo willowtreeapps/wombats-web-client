@@ -51,11 +51,6 @@
    (assoc db :simulator/error error)))
 
 (re-frame/reg-event-db
- :simulator/update-active-simulator-pane
- (fn [db [_ active-pane]]
-   (assoc db :simulator/active-pane active-pane)))
-
-(re-frame/reg-event-db
  :simulator/toggle-simulator-mini-map
  (fn [db _]
    (update-in db [:simulator/mini-map] not)))

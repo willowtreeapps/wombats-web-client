@@ -10,98 +10,114 @@
     .right-pane {
         width: calc(~"100% - " @canvas-dimensions);
         position: relative;
+        height: 100%;
 
-        .tabbed-container {
-            height: calc(@canvas-dimensions + @controls-height);
+        .split-panel {
+            height: 100%;
+            .panel-top {
+                height: 50%;
+                #editor {
+                    @editor-padding: 2px;
+                    position: absolute;
+                    font-family: monospace;
+                    width: calc(~"100% - " 2 * @editor-padding);
+                    height: inherit;
+                }
 
-            #editor {
-                @editor-padding: 2px;
-                // TODO: #188 - Switch editor to Ace (or something similar)
-                //              and make it its own component
-                position: absolute;
-                font-family: monospace;
-                border: none;
-                width: calc(~"100% - " 2 * @editor-padding);
-                height: calc(~"100% - " 2 * @editor-padding);
             }
+            .panel-divider {
+                color: @simulator-grey;
+                height: 16px;
+                .panel-grabber {
+                    width: 30px;
+                    }
 
-            .output-container {
-                display: flex;
-                flex-direction: column;
-                flex-wrap: wrap;
-                @editor-padding: 2px;
-                position: absolute;
-                width: calc(~"100% - " 2 * @editor-padding);
-                height: calc(~"100% - " 2 * @editor-padding);
+            }
+            .line-bottom {
+                height: 50%;
 
-                #state {
-                    flex-grow: 1;
-                    font-family: monospace;
-                }
-                #command {
-                    flex-grow: 0;
-                    font-family: monospace;
-                }
+                .output-container {
+                    display: flex;
+                    flex-direction: column;
+                    flex-wrap: wrap;
+                    @editor-padding: 2px;
+                    position: absolute;
+                    width: calc(~"100% - " 2 * @editor-padding);
+                    height: inherit;
 
-                .output-section {
-                    flex-grow: 0;
+                    #state {
+                        flex-grow: 1;
+                        font-family: monospace;
+                    }
+                    #command {
+                        flex-grow: 0;
+                        font-family: monospace;
+                    }
 
-                    .output-section-title {
-                        color: @white;
-                        padding: 10px;
-                        margin: auto;
+                    .output-section {
+                        flex-grow: 0;
+
+                        .output-section-title {
+                            color: @white;
+                            padding: 10px;
+                            margin: auto;
+                        }
                     }
                 }
+
+
             }
 
-            .configure {
+        }
+
+        .configure {
+            padding: 10px;
+            color: @white;
+            font-family: monospace;
+
+            .select {
+                font-family: monospace;
+                width: 200px;
+                display: block;
+                margin-bottom: 20px;
+                height: 30px;
+                color: @black;
+            }
+
+            .update-btn {
+                .simple-button(@margin-left: 0);
+                padding: 5px;
+                font-family: monospace;
+            }
+        }
+
+        .no-stack-trace-message {
+            font-family: monospace;
+            color: @white;
+            text-align: center;
+            font-size: @font-size-20;
+        }
+
+        .stack-trace {
+            font-family: monospace;
+            color: @white;
+            max-height: 560px;
+            overflow-y: scroll;
+
+            .stack-trace-message {
                 padding: 10px;
-                color: @white;
-                font-family: monospace;
-
-                .select {
-                    font-family: monospace;
-                    width: 200px;
-                    display: block;
-                    margin-bottom: 20px;
-                    height: 30px;
-                    color: @black;
-                }
-
-                .update-btn {
-                    .simple-button(@margin-left: 0);
-                    padding: 5px;
-                    font-family: monospace;
-                }
-            }
-
-            .no-stack-trace-message {
-                font-family: monospace;
-                color: @white;
-                text-align: center;
                 font-size: @font-size-20;
             }
 
-            .stack-trace {
-                font-family: monospace;
-                color: @white;
-                max-height: 560px;
-                overflow-y: scroll;
+            .stack-trace-details {
+                list-style: none;
+                padding: 10px;
 
-                .stack-trace-message {
-                    padding: 10px;
-                    font-size: @font-size-20;
-                }
-
-                .stack-trace-details {
-                    list-style: none;
-                    padding: 10px;
-
-                    .line-item {
-                        margin-bottom: 5px;
-                    }
+                .line-item {
+                    margin-bottom: 5px;
                 }
             }
         }
+
     }
 }
