@@ -2,6 +2,7 @@
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [wombats-web-client.constants.urls :refer [panel-router-map]]
+            [wombats-web-client.routes :refer [nav!]]
             [wombats-web-client.utils.auth :refer [user-is-coordinator?]]))
 
 (defn- wombat-logo []
@@ -12,7 +13,10 @@
   [:li {:id id
         :class class}
    [:a {:class (when (= current id) "active")
-        :href link} title]])
+        :href link
+        :on-click #(do
+                     (.preventDefault %)
+                     (nav! link))} title]])
 
 (defn- coordinator-links [selected]
   [nav-link {:id "config"

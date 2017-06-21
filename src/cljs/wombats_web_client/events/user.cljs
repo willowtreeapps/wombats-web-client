@@ -4,18 +4,17 @@
             [ajax.core :refer [json-response-format GET PUT POST DELETE]]
             [ajax.edn :refer [edn-request-format edn-response-format]]
             [day8.re-frame.http-fx]
-            [pushy.core :as pushy]
             [wombats-web-client.db :as db]
             [wombats-web-client.utils.errors :refer [get-error-message]]
             [wombats-web-client.utils.local-storage :refer [get-token
                                                             remove-token!]]
+            [wombats-web-client.routes :refer [nav!]]
             [wombats-web-client.constants.urls
              :refer [self-url
                      github-signout-url
                      my-wombats-url
                      my-wombat-by-id-url
                      my-github-repositories-url]]
-            [wombats-web-client.routes :refer [history]]
             [wombats-web-client.utils.auth :refer [add-auth-header
                                                    get-current-user-id]]
             [wombats-web-client.utils.socket :as ws])
@@ -31,7 +30,7 @@
 
 (defn sign-out-event
   []
-  (pushy/set-token! history "/welcome")
+  (nav! "/welcome")
   (re-frame/dispatch [:sign-out])
   (sign-out-user))
 

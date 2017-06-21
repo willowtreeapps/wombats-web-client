@@ -1,24 +1,22 @@
 (ns wombats-web-client.views
-    (:require [re-frame.core :as re-frame]
+  (:require [re-frame.core :as re-frame]
 
-              [pushy.core :as pushy]
+            ;; Components
+            [wombats-web-client.components.navbar :as navbar]
 
-              ;; Components
-              [wombats-web-client.components.navbar :as navbar]
+            ;; Panels
+            [wombats-web-client.panels.games :as view-games-panel]
+            [wombats-web-client.panels.account :as account-panel]
+            [wombats-web-client.panels.game-play :as game-play-panel]
+            [wombats-web-client.panels.welcome :as welcome-panel]
+            [wombats-web-client.panels.simulator :as simulator-panel]
+            [wombats-web-client.panels.config :as config-panel]
+            [wombats-web-client.panels.page-not-found
+             :as page-not-found-panel]
+            [wombats-web-client.routes :refer [history]]
 
-              ;; Panels
-              [wombats-web-client.panels.games :as view-games-panel]
-              [wombats-web-client.panels.account :as account-panel]
-              [wombats-web-client.panels.game-play :as game-play-panel]
-              [wombats-web-client.panels.welcome :as welcome-panel]
-              [wombats-web-client.panels.simulator :as simulator-panel]
-              [wombats-web-client.panels.config :as config-panel]
-              [wombats-web-client.panels.page-not-found
-               :as page-not-found-panel]
-              [wombats-web-client.routes :refer [history]]
-
-              [wombats-web-client.utils.local-storage :refer [get-token
-                                                              remove-token!]]))
+            [wombats-web-client.utils.local-storage :refer [get-token
+                                                            remove-token!]]))
 
 ;; mainutil
 

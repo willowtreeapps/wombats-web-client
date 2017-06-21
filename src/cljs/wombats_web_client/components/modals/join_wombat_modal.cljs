@@ -1,7 +1,6 @@
 (ns wombats-web-client.components.modals.join-wombat-modal
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
-            [pushy.core :as pushy]
             [wombats-web-client.components.modals.game-full-modal
              :refer [game-full-modal]]
             [wombats-web-client.components.modals.game-started-modal
@@ -25,7 +24,7 @@
                                                      wombat-color-missing]]
             [wombats-web-client.constants.colors :refer [colors-8]]
             [wombats-web-client.utils.functions :refer [in?]]
-            [wombats-web-client.routes :refer [history]]))
+            [wombats-web-client.routes :refer [nav!]]))
 
 (defonce private-game-prompt
   "This is a private game. Please enter the password to join.")
@@ -47,7 +46,7 @@
                                                :wombat-color wombat-color}])
                         (re-frame/dispatch [:update-modal-error nil])
                         (re-frame/dispatch [:set-modal nil])
-                        (pushy/set-token! history (str "/games/" game-id))))
+                        (nav! (str "/games/" game-id))))
 
 
 (def callback-error
