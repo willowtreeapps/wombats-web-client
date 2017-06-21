@@ -21,7 +21,8 @@
   "None of your games have ended yet! Check back later.")
 (defonce empty-finished-page
   "No games have ended yet! Check back later.")
-
+(defonce total-items
+  4) ;; Number of items shown to the left and right of the page chooser
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -142,20 +143,7 @@
      (and (not closed) (not mine))
      empty-open-page)])
 
-(defn- page-selector-item-offset
-  [offset page query-params key]
-  (let [new-page (+ page offset)
-        link (page-link query-params new-page)]
-    [:a.page
-     {:key key
-      :class-name (when (= new-page page) "current")
-      :href link
-      :on-click #(do
-                   (.preventDefault %)
-                   (nav! link))}
-     new-page]))
-
-(defn- page-selector-item
+(defn- render-page-selector
   [new-page page query-params key]
   (let [link (page-link query-params new-page)]
     [:a.page
@@ -167,12 +155,17 @@
                    (nav! link))}
      new-page]))
 
+(defn- page-selector-item-offset
+  [offset page query-params key]
+  (let [new-page (+ page offset)]
+    (render-page-selector new-page page query-params key)))
+
 (defn- calculate-offset
   "Given total-items and current index calculate the necessary offset"
   [total-items i]
   (get (vec (range (- (/ total-items 2)) (inc (/ total-items 2))))i))
 
-(defn- create-ellipsis
+(defn- render-ellipsis
   [key]
   [:span.page.ellipsis {:key key} "..."])
 
@@ -188,35 +181,32 @@
                     (.preventDefault %)
                     (nav! prev-link))} "PREVIOUS"]
 
-     (page-selector-item 1 page query-params "page-1")
+     (render-page-selector 1 page query-params "page-1")
+     (map
+      (fn [i]
+        (let [key (str "page-" i)]
+          (cond
+            ;; First case: 2 3 4 5 ...
+            (<= page 4) (if (= i total-items)
+                          (render-ellipsis key)
+                          (let [new-page (+ i 2)]
+                            (render-page-selector new-page page query-params key)))
 
-     ;; Generate dynamic page numbers for the middle items
-     (let [total-items 4] ;; must be even
-       (map
-        (fn [i]
-          (let [key (str "page-" i)]
-            (cond
-              ;; First case: 2 3 4 5 ...
-              (<= page 4) (if (= i total-items)
-                            (create-ellipsis key)
-                            (let [new-page (+ i 2)]
-                              (page-selector-item new-page page query-params key)))
-
-              ;; Second case ... 4 5 6 ...
-              (> page 4) (cond
-                           (or (zero? i) (= i total-items))
-                           (create-ellipsis key)
-                           (= i (/ total-items 2))
-                           (page-selector-item-offset 0 page query-params key)
-                           (<= i (dec (/ total-items 2)))
-                           (page-selector-item-offset
-                            (calculate-offset total-items i)
-                            page query-params key)
-                           (>= i (inc (/ total-items 2)))
-                           (page-selector-item-offset
-                            (calculate-offset total-items i)
-                            page query-params key)))))
-        (range 0 (inc total-items))))
+            ;; Second case ... 4 5 6 ...
+            (> page 4) (cond
+                         (or (zero? i) (= i total-items))
+                         (render-ellipsis key)
+                         (= i (/ total-items 2))
+                         (page-selector-item-offset 0 page query-params key)
+                         (<= i (dec (/ total-items 2)))
+                         (page-selector-item-offset
+                          (calculate-offset total-items i)
+                          page query-params key)
+                         (>= i (inc (/ total-items 2)))
+                         (page-selector-item-offset
+                          (calculate-offset total-items i)
+                          page query-params key)))))
+      (range 0 (inc total-items)))
 
      ;; TODO max length goes here
      [:a.nav-link
