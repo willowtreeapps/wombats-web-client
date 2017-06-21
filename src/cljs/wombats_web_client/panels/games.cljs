@@ -144,7 +144,7 @@
      empty-open-page)])
 
 (defn- render-page-selector
-  [new-page page query-params key]
+  [{:keys [new-page page query-params key]}]
   (let [link (page-link query-params new-page)]
     [:a.page
      {:key key
@@ -156,9 +156,12 @@
      new-page]))
 
 (defn- page-selector-item-offset
-  [offset page query-params key]
+  [{:keys [offset page query-params key]}]
   (let [new-page (+ page offset)]
-    (render-page-selector new-page page query-params key)))
+    (render-page-selector {:new-page new-page
+                           :page page
+                           :query-params query-params
+                           :key key})))
 
 (defn- calculate-offset
   "Given total-items and current index calculate the necessary offset"
@@ -181,7 +184,10 @@
                     (.preventDefault %)
                     (nav! prev-link))} "PREVIOUS"]
 
-     (render-page-selector 1 page query-params "page-1")
+     (render-page-selector {:new-page 1
+                            :page page
+                            :query-params query-params
+                            :key "page-1"})
      (map
       (fn [i]
         (let [key (str "page-" i)]
@@ -190,22 +196,33 @@
             (<= page 4) (if (= i total-items)
                           (render-ellipsis key)
                           (let [new-page (+ i 2)]
-                            (render-page-selector new-page page query-params key)))
+                            (render-page-selector {:new-page new-page
+                                                   :page page
+                                                   :query-params query-params
+                                                   :key key})))
 
             ;; Second case ... 4 5 6 ...
             (> page 4) (cond
                          (or (zero? i) (= i total-items))
                          (render-ellipsis key)
                          (= i (/ total-items 2))
-                         (page-selector-item-offset 0 page query-params key)
+                         (page-selector-item-offset
+                          {:offset 0
+                           :page page
+                           :query-params query-params
+                           :key key})
                          (<= i (dec (/ total-items 2)))
                          (page-selector-item-offset
-                          (calculate-offset total-items i)
-                          page query-params key)
+                          {:offset (calculate-offset total-items i)
+                           :page page
+                           :query-params query-params
+                           :key key})
                          (>= i (inc (/ total-items 2)))
                          (page-selector-item-offset
-                          (calculate-offset total-items i)
-                          page query-params key)))))
+                          {:offset (calculate-offset total-items i)
+                           :page page
+                           :query-params query-params
+                           :key key})))))
       (range 0 (inc total-items)))
 
      ;; TODO max length goes here

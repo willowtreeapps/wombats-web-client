@@ -79,8 +79,7 @@
 
   (defonce history (doto (make-history)
                      (goog.events/listen EventType.NAVIGATE
-                                         ;; wrap in a fn to allow live reloading
-                                         #(handle-url-change %))
+                                         handle-url-change)
                      (.setEnabled true))))
 
 (defn nav! [token]

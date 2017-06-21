@@ -150,9 +150,9 @@
 (re-frame/reg-fx
  :get-open-games
  (fn [_]
-   (get-open-games 0)))
+   (get-open-games)))
 
 (re-frame/reg-fx
  :get-closed-games
  (fn [_]
-   (get-closed-games 0)))
+   (get-closed-games)))
