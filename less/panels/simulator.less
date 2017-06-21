@@ -1,29 +1,18 @@
 @import "../colors.less";
 @import "../components/simple-button.less";
 @import "../utils/typography.less";
+@import "../components/simulator/controls.less";
 
 .simulator-panel {
-    padding: 30px;
     @canvas-dimensions: 600px;
     display: flex;
     flex-wrap: wrap;
-
-    .simulator-controls {
-        display: flex;
-        width: 100%;
-
-        .step,
-        .mini-map {
-            .simple-button;
-        }
-    }
-
     .right-pane {
         width: calc(~"100% - " @canvas-dimensions);
         position: relative;
 
         .tabbed-container {
-            height: @canvas-dimensions;
+            height: calc(@canvas-dimensions + @controls-height);
 
             #editor {
                 @editor-padding: 2px;

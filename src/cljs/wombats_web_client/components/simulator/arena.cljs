@@ -12,7 +12,6 @@
 
 (defn render [frame]
   (arena/arena frame canvas-id)
-  [:div.left-pane
-   [:canvas {:id canvas-id
-             :width dimensions
-             :height dimensions}]])
+  [:canvas {:id canvas-id
+            :width dimensions
+            :height dimensions}])

@@ -1,0 +1,26 @@
+@import "../../colors.less";
+@import "../../components/simple-button.less";
+@import "../../utils/typography.less";
+
+
+@controls-height: 64px;
+.simulator-controls {
+    display: flex;
+    width: 100%;
+    height: @controls-height;
+    background-color: @card-grey;
+    .step,
+    .mini-map {
+        .simple-button;
+    }
+
+    .icon-settings {
+        width: 21px;
+        height: 22px;
+        object-fit: contain;
+        align-self: center;
+        padding: 20px;
+
+    }
+
+}

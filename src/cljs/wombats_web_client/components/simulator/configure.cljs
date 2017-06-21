@@ -15,7 +15,7 @@
 
 (defn- update-simulator-configuration!
   [state]
-  (let [wombat-id (:wombat-id @state)
+  (let [wombat-id (:womocbat-id @state)
         wombat-id-error (:wombat-id-error @state)
         template-id (:template-id @state)
         template-id-error (:template-id-error @state)]
@@ -75,3 +75,8 @@
              #(update-simulator-configuration! form-state)]
             ]
            ]))})))
+
+(defn open-configure-simulator-modal []
+  (fn []
+    (re-frame/dispatch [:set-modal {:fn configuration-modal
+                                    :show-overlay true}])))

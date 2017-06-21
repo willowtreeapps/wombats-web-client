@@ -15,8 +15,7 @@
             [wombats-web-client.components.simulator.controls
              :as simulator-controls]
             [wombats-web-client.events.simulator
-             :refer [get-simulator-templates]]
-            [wombats-web-client.components.add-button :as add-wombat-button]))
+             :refer [get-simulator-templates]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
@@ -29,10 +28,7 @@
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn open-configure-simulator-modal []
-  (fn []
-    (re-frame/dispatch [:set-modal {:fn configuration-modal
-                                    :show-overlay true}])))
+
 
 (def panes {:code
             {:label "CODE"
@@ -68,6 +64,12 @@
       [:div.tabs
        (render-tabs active-pane stack-trace)]]]))
 
+(defn- render-left-pane
+  [{:keys [frame simulator-state simulator-display-mini-map]}]
+  [:div.left-pane
+   [simulator-arena/render frame]
+   [simulator-controls/render simulator-state simulator-display-mini-map]])
+
 (defn- render
   [{:keys [simulator-pane
            templates
@@ -78,12 +80,13 @@
            simulator-mini-map
            simulator-state]}]
   [:div {:class-name "simulator-panel"}
-   [simulator-arena/render (if (and simulator-display-mini-map
-                                    simulator-mini-map)
-                             simulator-mini-map
-                             active-frame)]
-   [render-right-pane @simulator-pane stack-trace]
-   [simulator-controls/render simulator-state simulator-display-mini-map]])
+   [render-left-pane {:frame (if (and simulator-display-mini-map
+                                      simulator-mini-map)
+                               simulator-mini-map
+                               active-frame)
+                      :simulator-state simulator-state
+                      :simulator-display-mini-map simulator-display-mini-map}]
+   [render-right-pane @simulator-pane stack-trace]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main Method
