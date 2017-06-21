@@ -11,6 +11,7 @@
 (defn render
   [sim-state show-mini-map]
   [:div.simulator-controls
+   [add-wombat-button/root (open-configure-simulator-modal)]
    [:button.step {:on-click #(on-step-click! % sim-state)} "Step"]
    [:button.mini-map
     {:on-click #(re-frame/dispatch [:simulator/toggle-simulator-mini-map])}

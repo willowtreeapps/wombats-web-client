@@ -43,7 +43,6 @@
             :debugger
             {:label "DEBUGGER"
              :render simulator-stack-trace/render}
-
             })
 
 (defn- render-tabs
@@ -84,7 +83,6 @@
                              simulator-mini-map
                              active-frame)]
    [render-right-pane @simulator-pane stack-trace]
-   [add-wombat-button/root (open-configure-simulator-modal)]
    [simulator-controls/render simulator-state simulator-display-mini-map]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
