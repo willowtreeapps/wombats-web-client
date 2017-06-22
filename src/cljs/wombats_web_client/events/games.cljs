@@ -113,10 +113,10 @@
     #(print "error on get all closed games"))))
 
 (defn get-all-games []
-  (get-open-games 0)
-  (get-my-open-games 0)
-  (get-closed-games 0)
-  (get-my-closed-games 0))
+  (get-open-games)
+  (get-my-open-games)
+  (get-closed-games)
+  (get-my-closed-games))
 
 (defn join-open-game [game-id wombat-id color password cb-success cb-error]
   (join-game
@@ -150,9 +150,9 @@
 (re-frame/reg-fx
  :get-open-games
  (fn [_]
-   (get-open-games 0)))
+   (get-open-games)))
 
 (re-frame/reg-fx
  :get-closed-games
  (fn [_]
-   (get-closed-games 0)))
+   (get-closed-games)))

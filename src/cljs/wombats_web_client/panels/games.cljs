@@ -27,13 +27,6 @@
 ;; Helpers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-<<<<<<< HEAD
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Helpers
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-=======
->>>>>>> develop
 (defn- construct-query-params
   [{:keys [closed page mine]}]
   ;; Make sure that if page is invalid, replace it with a 1
@@ -80,11 +73,7 @@
   "This is used to retrieve games based on params"
   [{:keys [closed mine page]}]
   ;; Subtract 1 since the API is 0-indexed
-<<<<<<< HEAD
-  (let [page (- page 1)]
-=======
   (let [page (dec page)]
->>>>>>> develop
     (cond
       (and closed mine)
       (get-my-closed-games page)
@@ -154,17 +143,9 @@
      (and (not closed) (not mine))
      empty-open-page)])
 
-<<<<<<< HEAD
-(defn- page-selector-item
-  [offset page query-params key]
-  (let [new-page (+ page offset)
-        link (page-link query-params new-page)]
-
-=======
 (defn- render-page-selector
   [{:keys [new-page page query-params key]}]
   (let [link (page-link query-params new-page)]
->>>>>>> develop
     [:a.page
      {:key key
       :class-name (when (= new-page page) "current")
@@ -174,12 +155,6 @@
                    (nav! link))}
      new-page]))
 
-<<<<<<< HEAD
-(defn- calculate-offset
-  "Given total-items and current index calculate the necessary offset"
-  [total-items i]
-  (get (into [] (range (- (/ total-items 2)) (+ (/ total-items 2) 1)))i))
-=======
 (defn- page-selector-item-offset
   [{:keys [offset page query-params key]}]
   (let [new-page (+ page offset)]
@@ -196,7 +171,6 @@
 (defn- render-ellipsis
   [key]
   [:span.page.ellipsis {:key key} "..."])
->>>>>>> develop
 
 (defn- page-switcher [{:keys [page] :as query-params}]
   (let [prev-link (previous-page-link query-params)
@@ -210,50 +184,6 @@
                     (.preventDefault %)
                     (nav! prev-link))} "PREVIOUS"]
 
-<<<<<<< HEAD
-     ;; This is where the possible pages go
-     ;;[:span.page.ellipsis "..."]
-     (let [new-page 1
-           link (page-link query-params new-page)]
-       [:a.page
-        {:class-name (when (= new-page page) "current")
-         :href link
-         :on-click #(do
-                      (.preventDefault %)
-                      (nav! link))}
-        new-page])
-
-     ;; Generate dynamic page numbers for the middle items
-     (let [total-items 4] ;; must be even
-       (map
-        (fn [i]
-          (let [key (str "page-" i)]
-            (calculate-offset 6 2)
-            (calculate-offset 4 2)
-            (cond
-              ;; First case: 2 3 4 5 ...
-              (<= page 4) (if (= i total-items) ;; generate elipsis for last item
-                         [:span.page.ellipsis {:key key} "..."]
-                         (let [new-page (+ i 2)
-                               link (page-link query-params new-page)]
-
-                           [:a.page
-                            {:key key
-                             :class-name (when (= new-page page) "current")
-                             :href link
-                             :on-click #(do
-                                          (.preventDefault %)
-                                          (nav! link))}
-                            new-page]))
-
-              ;; Second case ... 4 5 6 ...
-              (> page 4) (cond
-                           (or (= i 0) (= i total-items)) [:span.page.ellipsis {:key key} "..."]
-                           (= i (/ total-items 2))  (page-selector-item 0 page query-params key)
-                           (<= i (- (/ total-items 2) 1)) (page-selector-item (calculate-offset total-items i) page query-params key)
-                           (>= i (+ (/ total-items 2) 1))  (page-selector-item (calculate-offset total-items i) page query-params key)))))
-        (range 0 (+ total-items 1))))
-=======
      (render-page-selector {:new-page 1
                             :page page
                             :query-params query-params
@@ -294,7 +224,6 @@
                            :query-params query-params
                            :key key})))))
       (range 0 (inc total-items)))
->>>>>>> develop
 
      ;; TODO max length goes here
      [:a.nav-link
@@ -302,10 +231,7 @@
        :on-click #(do
                     (.preventDefault %)
                     (nav! next-link))} "NEXT"]]))
-<<<<<<< HEAD
-=======
 
->>>>>>> develop
 (defn main-panel [{:keys [query-params]}]
   (let [current-user (re-frame/subscribe [:current-user])
         games (re-frame/subscribe [:games/games])]
