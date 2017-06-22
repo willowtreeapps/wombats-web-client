@@ -16,7 +16,8 @@
    :games {}
 
    :arenas nil
-
+   :simulator/prev-states []
+   :simulator/next-states []
    :simulator/state nil
    :simulator/templates nil
    :simulator/wombat-id nil
