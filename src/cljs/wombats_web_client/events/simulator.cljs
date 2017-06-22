@@ -51,9 +51,14 @@
    (assoc db :simulator/error error)))
 
 (re-frame/reg-event-db
- :simulator/toggle-simulator-mini-map
+ :simulator/show-arena-view
  (fn [db _]
-   (update-in db [:simulator/mini-map] not)))
+   (assoc db :simulator/view-mode :arena)))
+
+(re-frame/reg-event-db
+ :simulator/show-wombat-view
+ (fn [db _]
+   (assoc db :simulator/view-mode :self)))
 
 (re-frame/reg-event-db
  :simulator/update-configuration

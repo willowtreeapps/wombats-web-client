@@ -123,14 +123,9 @@
    (get-in (games/get-player db) [:state :mini-map])))
 
 (re-frame/reg-sub
- :simulator/display-mini-map
+ :simulator/get-view-mode
  (fn [db _]
-   (:simulator/mini-map db)))
-
-(re-frame/reg-sub
- :simulator/active-pane
- (fn [db _]
-   (:simulator/active-pane db)))
+   (:simulator/view-mode db)))
 
 (re-frame/reg-sub
  :simulator/wombat-id

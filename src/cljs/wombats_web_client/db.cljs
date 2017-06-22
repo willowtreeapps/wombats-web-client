@@ -19,11 +19,10 @@
 
    :simulator/state nil
    :simulator/templates nil
-   :simulator/active-pane :code
    :simulator/wombat-id nil
    :simulator/template-id nil
-   :simulator/mini-map false
    :simulator/error nil
+   :simulator/view-mode :arena
 
    :join-game-selections []
    :spritesheet nil

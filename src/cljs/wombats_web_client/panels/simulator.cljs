@@ -35,26 +35,32 @@
    (split-pane/render [simulator-code/render] [simulator-output/render])])
 
 (defn- render-left-pane
-  [{:keys [frame simulator-state simulator-display-mini-map]}]
+  [{:keys [frame simulator-state]}]
   [:div.left-pane
    [simulator-arena/render frame]
-   [simulator-controls/render simulator-state simulator-display-mini-map]])
+   [simulator-controls/render simulator-state]])
+
+(defn- get-mini-map-bool
+  [simulator-view-mode]
+  (if (= simulator-view-mode :self)
+    true
+    false))
 
 (defn- render
   [{:keys [templates
            wombats
            active-frame
            stack-trace
-           simulator-display-mini-map
            simulator-mini-map
-           simulator-state]}]
+           simulator-state
+           simulator-view-mode]}]
+
   [:div {:class-name "simulator-panel"}
-   [render-left-pane {:frame (if (and simulator-display-mini-map
+   [render-left-pane {:frame (if (and (get-mini-map-bool simulator-view-mode)
                                       simulator-mini-map)
                                simulator-mini-map
                                active-frame)
-                      :simulator-state simulator-state
-                      :simulator-display-mini-map simulator-display-mini-map}]
+                      :simulator-state simulator-state}]
    [render-right-pane stack-trace]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -74,9 +80,9 @@
                               [:simulator/active-frame])
               :stack-trace @(re-frame/subscribe
                              [:simulator/player-stack-trace])
-              :simulator-display-mini-map @(re-frame/subscribe
-                                            [:simulator/display-mini-map])
               :simulator-mini-map @(re-frame/subscribe
                                     [:simulator/mini-map])
               :simulator-state (re-frame/subscribe
-                                [:simulator/state])})}))
+                                [:simulator/state])
+              :simulator-view-mode @(re-frame/subscribe
+                                     [:simulator/get-view-mode])})}))

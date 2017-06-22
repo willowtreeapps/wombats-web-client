@@ -25,14 +25,7 @@
     :src "/images/icon-arrow-left.svg"}])
 
 (defn render
-  [sim-state show-mini-map]
+  [sim-state]
   [:div.simulator-controls
-
-   [:button.mini-map
-    {:on-click #(re-frame/dispatch [:simulator/toggle-simulator-mini-map])}
-    (if show-mini-map
-      "Show Full View"
-      "Show Wombat View")]
    [arrow-button #(on-step-click! % sim-state) "right"]
-   [settings-button (open-configure-simulator-modal)]
-   ])
+   [settings-button (open-configure-simulator-modal)]])
