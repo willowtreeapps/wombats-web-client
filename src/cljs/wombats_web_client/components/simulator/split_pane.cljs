@@ -42,8 +42,8 @@
 
 
 (defn- render-divider []
-  [:div [:hr.panel-divider
-         {:on-mouse-down mouse-down-handler}]
+  [:div {:on-mouse-down mouse-down-handler}
+   [:hr.panel-divider]
    [:hr.panel-grabber]])
 
 
