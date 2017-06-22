@@ -47,12 +47,13 @@
 
             .panel-bottom {
                 flex-grow: 1;
+                flex-shrink: 1;
                 position: relative;
                 .output-container {
                     height: 100%;
                     display: flex;
                     flex-direction: column;
-                    flex-wrap: wrap;
+                    flex-wrap: nowrap;
                     @editor-padding: 2px;
                     position: absolute;
                     width: calc(~"100% - " 2 * @editor-padding);
@@ -70,11 +71,13 @@
 
                     .output-section {
                         flex-grow: 0;
+                        flex-shrink: 1;
 
                         .output-section-title {
                             color: @white;
-                            padding: 10px;
-                            margin: auto;
+                            font-weight: 100;
+                            padding-left: 10px;
+                            margin: 2px;
                         }
                     }
                 }

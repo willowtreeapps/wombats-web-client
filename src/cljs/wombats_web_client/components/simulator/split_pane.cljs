@@ -15,7 +15,7 @@
   (fn [evt]
     (let [x (- (.-clientX evt) (:x offset))
           y (- (.-clientY evt) (:y offset))
-          max-height 200]
+          max-height 105]
 
       (if (> y (- js/innerHeight max-height))
         (reset! top-size-px (- js/innerHeight max-height))

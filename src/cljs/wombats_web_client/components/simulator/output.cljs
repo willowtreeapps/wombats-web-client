@@ -13,7 +13,7 @@
 
     [:div.output-container
      [:div.output-section
-      [:h3.output-section-title "Command"]]
+      [:h4.output-section-title "Command"]]
 
      [ace-component  {:code (format-code @command)
                       :mode "json"
@@ -22,7 +22,7 @@
                                 :highlightActiveLine false
                                 :maxLines 7}}]
      [:div.output-section
-      [:h3.output-section-title "State"]]
+      [:h4.output-section-title "State"]]
 
      [ace-component {:code (format-code @player-state)
                      :mode "json"
