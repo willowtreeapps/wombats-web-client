@@ -1,9 +1,13 @@
 CHANGELOG
 =========
 
-## Develop
+## Develop (6.20.2017)
 **Enhancements**
-* None
+* Output from simulator is displayed through Ace [Eli Bosley][/eli] [#189](https://github.com/willowtreeapps/wombats-web-client/issues/189)
+* Date picker now shows the current time when opened [Eli Bosley][/eli] [#333](https://github.com/willowtreeapps/wombats-web-client/issues/333)
+* User repositories are selectable through a dropdown.
+  [Eli Bosley][/eli] *No Issue*
+* Pagination displayed on the games list. [Eli Bosley][/eli], [C.P. Dehli][/dehli] [#285](https://github.com/willowtreeapps/wombats-web-client/issues/285)
 
 **Bug Fixes**
 * None
@@ -75,3 +79,4 @@ CHANGELOG
 [/dehli]: https://github.com/dehli
 [/emily]: https://github.com/emilyseibert
 [/oconn]: https://github.com/oconn
+[/eli]: https://github.com/elibosley

@@ -76,33 +76,41 @@
 
 ;; TODO Scaling Issue with Lots of games - only update with games that are new?
 
-(defn get-open-games [page]
-  (get-games
-   (build-status-query [pending-open pending-closed active active-intermission]
-                       page)
-   #(re-frame/dispatch [:games %])
-   #(print "error on get open games")))
+(defn get-open-games
+  ([] (get-open-games 0))
+  ([page]
+   (get-games
+    (build-status-query [pending-open pending-closed active active-intermission]
+                        page)
+    #(re-frame/dispatch [:games %])
+    #(print "error on get open games"))))
 
-(defn get-my-open-games [page]
-  (get-my-games
-   (build-status-query [pending-open pending-closed active active-intermission]
-                       page)
-   #(re-frame/dispatch [:games %])
-   #(print "error on get my open games")))
+(defn get-my-open-games
+  ([] (get-my-open-games 0))
+  ([page]
+   (get-my-games
+    (build-status-query [pending-open pending-closed active active-intermission]
+                        page)
+    #(re-frame/dispatch [:games %])
+    #(print "error on get my open games"))))
 
-(defn get-closed-games [page]
-  (get-games
-   (build-status-query [closed]
-                       page)
-   #(re-frame/dispatch [:games %])
-   #(print "error on get all closed games")))
+(defn get-closed-games
+  ([] (get-closed-games 0))
+  ([page]
+   (get-games
+    (build-status-query [closed]
+                        page)
+    #(re-frame/dispatch [:games %])
+    #(print "error on get all closed games"))))
 
-(defn get-my-closed-games [page]
-  (get-my-games
-   (build-status-query [closed]
-                       page)
-   #(re-frame/dispatch [:games %])
-   #(print "error on get all closed games")))
+(defn get-my-closed-games
+  ([] (get-my-closed-games 0))
+  ([page]
+   (get-my-games
+    (build-status-query [closed]
+                        page)
+    #(re-frame/dispatch [:games %])
+    #(print "error on get all closed games"))))
 
 (defn get-all-games []
   (get-open-games 0)
