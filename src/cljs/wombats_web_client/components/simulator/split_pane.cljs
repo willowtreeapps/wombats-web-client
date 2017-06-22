@@ -9,13 +9,18 @@
   (let [r (.getBoundingClientRect (.-target evt))]
     {:left (.-left r), :top (.-top r)}))
 
-(def top-size-px (reagent/atom 550))
+(def top-size-px (reagent/atom 145))
 
 (defn mouse-move-handler [offset]
   (fn [evt]
     (let [x (- (.-clientX evt) (:x offset))
-          y (- (.-clientY evt) (:y offset))]
-      (reset! top-size-px y)
+          y (- (.-clientY evt) (:y offset))
+          max-height 200]
+
+      (if (> y (- js/innerHeight max-height))
+        (reset! top-size-px (- js/innerHeight max-height))
+        (reset! top-size-px y))
+
       ;; Run the movement handler here to change the styles
       )))
 
@@ -37,9 +42,9 @@
 
 
 (defn- render-divider []
-  [:hr.panel-divider
-   {:on-mouse-down mouse-down-handler}]
-  [:hr.panel-grabber])
+  [:div [:hr.panel-divider
+         {:on-mouse-down mouse-down-handler}]
+   [:hr.panel-grabber]])
 
 
 (defn render [top bottom]

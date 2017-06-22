@@ -46,19 +46,9 @@
         (let [wombats @wombats
               templates @sim-templates]
           [:div.configure {:class "modal configuration-modal"}
-           [:div.title "Configure Simulator"]
+           [:div.title "CONFIGURATION"]
 
            [:div.modal-content
-
-            [select-input {:form-state form-state
-                           :form-key :template-id
-                           :error-key :template-id-error
-                           :option-list
-                           (optionize
-                            [:simulator-template/id]
-                            [:simulator-template/arena-template :arena/name]
-                            templates)
-                           :label "Select Template"}]
             [select-input {:form-state form-state
                            :form-key :wombat-id
                            :error-key :wombat-id-error
@@ -67,7 +57,16 @@
                             [:wombat/id]
                             [:wombat/name]
                             wombats)
-                           :label "Select Wombat"}]]
+                           :label "Wombat"}]
+            [select-input {:form-state form-state
+                           :form-key :template-id
+                           :error-key :template-id-error
+                           :option-list
+                           (optionize
+                            [:simulator-template/id]
+                            [:simulator-template/arena-template :arena/name]
+                            templates)
+                           :label "Arena"}]]
            [:div.action-buttons
             [cancel-modal-input]
             [submit-modal-input

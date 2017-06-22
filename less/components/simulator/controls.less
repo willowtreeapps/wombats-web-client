@@ -2,12 +2,15 @@
 @import "../../components/simple-button.less";
 @import "../../utils/typography.less";
 
-
 @controls-height: 64px;
+
 .simulator-controls {
+    position: relative;
+    bottom: 0%;
     display: flex;
     width: 100%;
-    height: @controls-height;
+    flex-grow: 1;
+
     background-color: @card-grey;
     .step,
     .mini-map {
@@ -23,4 +26,14 @@
 
     }
 
+    .icon-arrow {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+        align-self: center;
+
+        &.right {
+            transform: rotate(180deg);
+        }
+    }
 }

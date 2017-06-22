@@ -2,20 +2,27 @@
 @import "../components/simple-button.less";
 @import "../utils/typography.less";
 @import "../components/simulator/controls.less";
-
+@import "../components/navbar.less";
 .simulator-panel {
     @canvas-dimensions: 600px;
+    height: calc(~"100% - " @navbar-height);
     display: flex;
     flex-wrap: wrap;
+    .left-pane {
+        position: relative;
+        display:flex;
+        flex-direction: column;
+    }
     .right-pane {
         width: calc(~"100% - " @canvas-dimensions);
         position: relative;
-        height: 100%;
 
         .split-panel {
             height: 100%;
+            display:flex;
+            flex-direction:column;
             .panel-top {
-                height: 50%;
+
                 #editor {
                     @editor-padding: 2px;
                     position: absolute;
@@ -26,33 +33,40 @@
 
             }
             .panel-divider {
-                color: @simulator-grey;
+                background-color: @simulator-grey;
                 height: 16px;
-                .panel-grabber {
-                    width: 30px;
-                    }
-
+                border-style: none;
+                margin: 0px;
             }
-            .line-bottom {
-                height: 50%;
+            .panel-grabber {
+                width: 30px;
+                margin-top: -10px;
+                border-style: solid;
+                color: @warm-grey;
+            }
 
+            .panel-bottom {
+                flex-grow: 1;
+                position: relative;
                 .output-container {
+                    height: 100%;
                     display: flex;
                     flex-direction: column;
                     flex-wrap: wrap;
                     @editor-padding: 2px;
                     position: absolute;
                     width: calc(~"100% - " 2 * @editor-padding);
-                    height: inherit;
-
-                    #state {
-                        flex-grow: 1;
-                        font-family: monospace;
-                    }
                     #command {
                         flex-grow: 0;
+                        flex-shrink: 1;
                         font-family: monospace;
                     }
+                    #state {
+                        flex-grow: 1;
+                        flex-shrink: 1;
+                        font-family: monospace;
+                    }
+
 
                     .output-section {
                         flex-grow: 0;
