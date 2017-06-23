@@ -16,8 +16,8 @@
    :games {}
 
    :arenas nil
-   :simulator/prev-states []
-   :simulator/next-states []
+   :simulator/frames-vec []
+   :simulator/frames-idx 0
    :simulator/state nil
    :simulator/templates nil
    :simulator/wombat-id nil

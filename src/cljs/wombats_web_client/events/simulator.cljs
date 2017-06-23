@@ -42,7 +42,22 @@
 (re-frame/reg-event-db
  :simulator/update-state
  (fn [db [_ sim-state]]
-   (assoc db :simulator/state sim-state)))
+   (assoc db :simulator/state sim-state
+          :simulator/frames-vec
+          (conj (:simulator/frames-vec db)
+                sim-state)
+          :simulator/frames-idx
+          (inc (:simulator/frames-idx db)))))
+
+(re-frame/reg-event-db
+ :simulator/back-frame
+ (fn [db _] ;; TODO this needs to check if the length of the frames vec will allow for a decrement
+   (update db :simulator/frames-idx dec)))
+
+(re-frame/reg-event-db
+ :simulator/forward-frame
+ (fn [db _] ;; TODO this needs to check if the length of the frames vec will allow for an increment
+   (update db :simulator/frames-idx inc)))
 
 (re-frame/reg-event-db
  :simulator/simulator-error

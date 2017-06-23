@@ -117,6 +117,17 @@
  (fn [db _]
    (get-in db [:simulator/state :game/frame :frame/arena])))
 
+;; Frames vector that will hold all game frames
+(re-frame/reg-sub
+ :simulator/frames
+ (fn [db _]
+   (:simulator/frames-vec db)))
+
+(re-frame/reg-sub
+ :simulator/frame-index
+ (fn [db _]
+   (:simulator/frames-idx db)))
+
 (re-frame/reg-sub
  :simulator/mini-map
  (fn [db _]

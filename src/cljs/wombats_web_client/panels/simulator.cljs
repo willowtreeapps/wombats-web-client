@@ -53,8 +53,11 @@
            stack-trace
            simulator-mini-map
            simulator-state
-           simulator-view-mode]}]
-
+           simulator-view-mode
+           simulator-frames
+           simulator-index]}]
+  (js/console.log simulator-frames)
+  (println simulator-index)
   [:div {:class-name "simulator-panel"}
    [render-left-pane {:frame (if (and (get-mini-map-bool simulator-view-mode)
                                       simulator-mini-map)
@@ -85,4 +88,8 @@
               :simulator-state (re-frame/subscribe
                                 [:simulator/state])
               :simulator-view-mode @(re-frame/subscribe
-                                     [:simulator/get-view-mode])})}))
+                                     [:simulator/get-view-mode])
+              :simulator-frames @(re-frame/subscribe
+                                  [:simulator/frames])
+              :simulator-index @(re-frame/subscribe
+                                 [:simulator/frame-index])})}))
