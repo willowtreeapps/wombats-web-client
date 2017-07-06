@@ -35,16 +35,25 @@
    (split-pane/render [simulator-code/render] [simulator-output/render])])
 
 (defn- render-left-pane
-  [{:keys [frame simulator-state]}]
+  [{:keys [frame simulator-state simulator-frames simulator-index]}]
   [:div.left-pane
    [simulator-arena/render frame]
-   [simulator-controls/render simulator-state]])
+   [simulator-controls/render simulator-state simulator-frames simulator-index]])
 
 (defn- get-mini-map-bool
   [simulator-view-mode]
   (if (= simulator-view-mode :self)
     true
     false))
+
+(defn- get-active-frame
+  [frames index]
+  (println index)
+  (get-in (get frames (dec index)) [:game/frame :frame/arena]))
+
+(defn- get-simulator-state
+  [frames index]
+  (get frames index))
 
 (defn- render
   [{:keys [templates
@@ -56,14 +65,14 @@
            simulator-view-mode
            simulator-frames
            simulator-index]}]
-  (js/console.log simulator-frames)
-  (println simulator-index)
+
+  (println simulator-state)
   [:div {:class-name "simulator-panel"}
-   [render-left-pane {:frame (if (and (get-mini-map-bool simulator-view-mode)
-                                      simulator-mini-map)
-                               simulator-mini-map
-                               active-frame)
-                      :simulator-state simulator-state}]
+   [render-left-pane {:frame
+                      (get-active-frame simulator-frames simulator-index)
+                      :simulator-state simulator-state
+                      :simulator-frames simulator-frames
+                      :simulator-index simulator-index}]
    [render-right-pane stack-trace]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -12,12 +12,18 @@
                       {:game-state @sim-state}]))
 
 (defn- forward-button!
-  [evt]
-  (re-frame/dispatch [:simulator/forward-frame]))
+  [evt sim-state sim-frames sim-index]
+  (if (>= sim-index (count sim-frames))
+    (re-frame/dispatch [:simulator/process-simulation-frame
+                        {:game-state @sim-state}])
+    (re-frame/dispatch [:simulator/forward-frame])))
 
 (defn- back-button!
-  [evt]
-  (re-frame/dispatch [:simulator/back-frame]))
+  [evt sim-index]
+  (println sim-index)
+  (if (> sim-index 0)
+    (re-frame/dispatch [:simulator/back-frame])
+    (println "Nowhere to go")))
 
 (defn- settings-button
   [on-click]
@@ -33,9 +39,9 @@
     :src "/images/icon-arrow-left.svg"}])
 
 (defn render
-  [sim-state]
+  [sim-state sim-frames sim-index]
   [:div.simulator-controls
-   [:button.step {:on-click #(back-button! %)} "Step Back"]
-   [:button.step {:on-click #(forward-button! %)} "Step Forward"]
+   [:button.step {:on-click #(back-button! % sim-index)} "Step Back"]
+   [:button.step {:on-click #(forward-button! % sim-state sim-frames sim-index)} "Step Forward"]
    [arrow-button #(on-step-click! % sim-state) "right"]
    [settings-button (open-configure-simulator-modal)]])
