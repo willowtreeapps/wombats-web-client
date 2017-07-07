@@ -113,10 +113,12 @@
               "postcss-prefixer" [["shell" "postcss" "resources/temp/css/*.css" "resources/temp/css/**/*.css" "resources/temp/css/**/**/*.css"
                               "--use autoprefixer" "-d" "resources/public/css"]]
               "run-local"   ["do"
-                             ["install-postcss"]
+                             "install-postcss"
+                             ["less" "once"]
                              ["pdo" "clean," ["figwheel" "local"] ["less" "auto"] "postcss-prefixer-w"]]
               "run-dev"     ["do"
-                             ["install-postcss"]
+                             "install-postcss"
+                             ["less" "once"]
                              ["pdo" "clean," ["figwheel" "dev"]   ["less" "auto"] "postcss-prefixer-w"]]
               "Run-lint"    ["pdo" "bikeshed" ["kibit" "src/cljs/wombats_web_client/"]]
               "deploy-dev"  ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-dev"] ["less" "once"] "postcss-prefixer"]
