@@ -7,6 +7,9 @@
   [clj-object]
   (str (.stringify js/JSON (clj->js clj-object) nil 2)))
 
+(defn- on-change [evt]
+  (reagent/force-update-all))
+
 (defn render [{:keys [command player-state]}]
   [:div.output-container
    [:div.output-section

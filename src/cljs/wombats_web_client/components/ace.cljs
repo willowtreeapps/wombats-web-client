@@ -5,7 +5,6 @@
   (let [editor (-> js/window
                    .-ace
                    (.edit id))]
-
     (when code (-> editor
                    .getSession
                    (.setValue code)))

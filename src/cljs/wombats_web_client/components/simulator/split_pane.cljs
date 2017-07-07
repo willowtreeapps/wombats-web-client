@@ -5,6 +5,8 @@
   (:import [goog.events EventType]))
 
 
+(defonce navbar-height 45)
+
 (defn get-client-rect [evt]
   (let [r (.getBoundingClientRect (.-target evt))]
     {:left (.-left r), :top (.-top r)}))
@@ -16,11 +18,9 @@
     (let [x (- (.-clientX evt) (:x offset))
           y (- (.-clientY evt) (:y offset))
           max-height 105]
-
       (if (> y (- js/innerHeight max-height))
         (reset! top-size-px (- js/innerHeight max-height))
         (reset! top-size-px y))
-
       ;; Run the movement handler here to change the styles
       )))
 
@@ -33,7 +33,7 @@
 (defn mouse-down-handler [e]
   (let [{:keys [left top]} (get-client-rect e)
         offset             {:x (- (.-clientX e) left)
-                            :y (- (.-clientY e) top)}
+                            :y (+ (- (.-clientY e) top) navbar-height)}
         on-move            (mouse-move-handler offset)]
     (events/listen js/window EventType.MOUSEMOVE
                    on-move)
