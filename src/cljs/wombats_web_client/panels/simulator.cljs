@@ -66,7 +66,6 @@
            simulator-frames
            simulator-index]}]
 
-  (println (str "hi" command))
   [:div {:class-name "simulator-panel"}
    [render-left-pane {:frame
                       (get-active-frame simulator-frames simulator-index)

@@ -7,19 +7,10 @@
   [clj-object]
   (str (.stringify js/JSON (clj->js clj-object) nil 2)))
 
-(defn- refresh-ace!
-  [editor]
-  (println "refreshing ace")
-  (.renderer.updateFull editor))
-
-(def force-refresh (reagent/atom 0))
-
 (defn render [{:keys [command player-state]}]
-
   [:div.output-container
    [:div.output-section
     [:h4.output-section-title "Command"]]
-   (println (str "output"  command))
    [:div command]
    [ace-component  {:code (format-code @command)
                     :mode "json"
