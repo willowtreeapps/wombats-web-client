@@ -75,12 +75,23 @@
  (fn [db _]
    (assoc db :simulator/view-mode :self)))
 
+
+;; TODO merge these two functions common functionality
 (re-frame/reg-event-db
  :simulator/update-configuration
  (fn [db [_ {wombat-id :wombat-id
             template-id :template-id}]]
    (merge db {:simulator/template-id template-id
               :simulator/wombat-id wombat-id})))
+
+(re-frame/reg-event-db
+ :simulator/initialize-configuration
+ (fn [db [_ {wombat-id :wombat-id
+            template-id :template-id}]]
+   (merge db {:simulator/template-id template-id
+              :simulator/wombat-id wombat-id
+              :simulator/frames-vec []
+              :simulator/frames-idx 0})))
 
 (re-frame/reg-event-fx
  :simulator/initialize-simulator
@@ -93,7 +104,7 @@
                  :response-format (edn-response-format)
                  :on-success [:simulator/update-state]
                  :on-failure [:simulator/simulator-error]}
-    :dispatch [:simulator/update-configuration simulation-payload]}))
+    :dispatch [:simulator/initialize-configuration simulation-payload]}))
 
 (re-frame/reg-event-fx
  :simulator/process-simulation-frame

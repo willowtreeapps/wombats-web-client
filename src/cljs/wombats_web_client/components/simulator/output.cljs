@@ -7,25 +7,31 @@
   [clj-object]
   (str (.stringify js/JSON (clj->js clj-object) nil 2)))
 
-(defn render []
-  (let [command (re-frame/subscribe [:simulator/player-command])
-        player-state (re-frame/subscribe [:simulator/player-state])]
+(defn- refresh-ace!
+  [editor]
+  (println "refreshing ace")
+  (.renderer.updateFull editor))
 
-    [:div.output-container
-     [:div.output-section
-      [:h4.output-section-title "Command"]]
+(def force-refresh (reagent/atom 0))
 
-     [ace-component  {:code (format-code @command)
-                      :mode "json"
-                      :id "command"
-                      :options {:readOnly true
-                                :highlightActiveLine false
-                                :maxLines 7}}]
-     [:div.output-section
-      [:h4.output-section-title "State"]]
+(defn render [{:keys [command player-state]}]
 
-     [ace-component {:code (format-code @player-state)
-                     :mode "json"
-                     :id "state"
-                     :options {:readOnly true
-                               :highlightActiveLine false}}]]))
+  [:div.output-container
+   [:div.output-section
+    [:h4.output-section-title "Command"]]
+   (println (str "output"  command))
+   [:div command]
+   [ace-component  {:code (format-code @command)
+                    :mode "json"
+                    :id "command"
+                    :options {:readOnly true
+                              :highlightActiveLine false
+                              :maxLines 7}}]
+   [:div.output-section
+    [:h4.output-section-title "State"]]
+
+   [ace-component {:code (format-code @player-state)
+                   :mode "json"
+                   :id "state"
+                   :options {:readOnly true
+                             :highlightActiveLine false}}]])

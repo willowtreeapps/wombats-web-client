@@ -51,6 +51,5 @@
   [:div.split-panel
    [:div.panel-top {:style {:height (str @top-size-px "px")}} top]
    [render-divider]
-
    [:div.panel-bottom
     bottom]])

@@ -39,6 +39,7 @@
       (re-frame/dispatch [:simulator/initialize-simulator
                           {:simulator/template-id template-id
                            :simulator/wombat-id wombat-id}])
+
       (callback-success state))))
 
 (defn- get-selected-val

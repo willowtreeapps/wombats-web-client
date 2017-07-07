@@ -30,9 +30,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn- render-right-pane
-  [stack-trace]
+  [stack-trace command player-state]
   [:div {:class-name "right-pane"}
-   (split-pane/render [simulator-code/render] [simulator-output/render])])
+   (split-pane/render (simulator-code/render)
+                      (simulator-output/render {:command  command
+                                                :player-state  player-state}))])
 
 (defn- render-left-pane
   [{:keys [frame simulator-state simulator-frames simulator-index]}]
@@ -51,12 +53,10 @@
   (println index)
   (get-in (get frames (dec index)) [:game/frame :frame/arena]))
 
-(defn- get-simulator-state
-  [frames index]
-  (get frames index))
-
 (defn- render
-  [{:keys [templates
+  [{:keys [command
+           player-state
+           templates
            wombats
            active-frame
            stack-trace
@@ -66,14 +66,14 @@
            simulator-frames
            simulator-index]}]
 
-  (println simulator-state)
+  (println (str "hi" command))
   [:div {:class-name "simulator-panel"}
    [render-left-pane {:frame
                       (get-active-frame simulator-frames simulator-index)
                       :simulator-state simulator-state
                       :simulator-frames simulator-frames
                       :simulator-index simulator-index}]
-   [render-right-pane stack-trace]])
+   [render-right-pane stack-trace command player-state]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main Method
@@ -84,7 +84,11 @@
    {:component-will-mount #(component-will-mount!)
     :props-name "simulator-panel"
     :reagent-render
-    #(render {:templates @(re-frame/subscribe
+    #(render {:command (re-frame/subscribe
+                        [:simulator/player-command])
+              :player-state (re-frame/subscribe
+                             [:simulator/player-state])
+              :templates @(re-frame/subscribe
                            [:simulator/templates])
               :wombats @(re-frame/subscribe
                          [:my-wombats])

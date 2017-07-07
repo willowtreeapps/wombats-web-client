@@ -6,10 +6,34 @@
              :refer [open-configure-simulator-modal]]
             [wombats-web-client.components.add-button :as add-wombat-button]))
 
-(defn- on-step-click!
-  [evt sim-state]
-  (re-frame/dispatch [:simulator/process-simulation-frame
-                      {:game-state @sim-state}]))
+(defn- get-bar-percentage
+  [sim-frames sim-index]
+  (* 100 (/ sim-index (count sim-frames))))
+
+(def play-status (reagent/atom "paused"))
+
+(defn- play-pause! [evt status]
+  (if (= status "paused")
+    (do ;;do stuff
+      (reset! play-status "playing"))
+    (do ;;other stuff
+      (reset! play-status "paused"))))
+
+(defn- play-button [status]
+  (println status)
+  [:img.icon-play
+   {:on-click #(play-pause! % status)
+    :src (if (= @play-status "paused")
+           "/images/icon-play.svg"
+           "/images/icon-pause.svg")}])
+
+
+(defn- progress-bar
+  [sim-frames sim-index]
+  [:div.progress-bar
+   [:div.progress-bar.filled
+    {:style {:width (str (get-bar-percentage sim-frames sim-index) "%")}}
+    [:div.scrubber]]])
 
 (defn- forward-button!
   [evt sim-state sim-frames sim-index]
@@ -41,7 +65,8 @@
 (defn render
   [sim-state sim-frames sim-index]
   [:div.simulator-controls
-   [:button.step {:on-click #(back-button! % sim-index)} "Step Back"]
-   [:button.step {:on-click #(forward-button! % sim-state sim-frames sim-index)} "Step Forward"]
-   [arrow-button #(on-step-click! % sim-state) "right"]
+   [play-button @play-status]
+   [progress-bar sim-frames sim-index]
+   [arrow-button #(back-button! % sim-index) "left"]
+   [arrow-button #(forward-button! % sim-state sim-frames sim-index) "right"]
    [settings-button (open-configure-simulator-modal)]])
