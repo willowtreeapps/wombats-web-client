@@ -11,7 +11,7 @@
             [wombats-web-client.components.simulator.stack-trace
              :as simulator-stack-trace]
             [wombats-web-client.components.simulator.configure
-             :refer [configuration-modal]]
+             :refer [configuration-panel]]
             [wombats-web-client.components.simulator.controls
              :as simulator-controls]
             [wombats-web-client.events.simulator
@@ -65,16 +65,17 @@
            simulator-frames
            simulator-frames-mini-map
            simulator-index]}]
-
-  [:div {:class-name "simulator-panel"}
-   [render-left-pane {:frame
-                      (if (get-mini-map-bool simulator-view-mode)
+  (if (= nil @simulator-state)
+    [configuration-panel]
+    [:div {:class-name "simulator-panel"}
+     [render-left-pane {:frame
+                        (if (get-mini-map-bool simulator-view-mode)
                           (get simulator-frames-mini-map (dec simulator-index))
                           (get-active-frame simulator-frames simulator-index))
-                      :simulator-state simulator-state
-                      :simulator-frames simulator-frames
-                      :simulator-index simulator-index}]
-   [render-right-pane stack-trace command player-state]])
+                        :simulator-state simulator-state
+                        :simulator-frames simulator-frames
+                        :simulator-index simulator-index}]
+     [render-right-pane stack-trace command player-state]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main Method

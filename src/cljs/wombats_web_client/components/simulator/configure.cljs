@@ -25,7 +25,6 @@
         template-id (:template-id @state)
         template-id-error (:template-id-error @state)
         view-mode (:view-mode @state)]
-    (println view-mode)
     (if (= view-mode (:arena radioKeys))
       (re-frame/dispatch [:simulator/show-arena-view])
       (re-frame/dispatch [:simulator/show-wombat-view]))
@@ -43,6 +42,50 @@
 "Uses the radioKeys to turn the key from re-frame into a radio-button key name"
   [wombat-view]
   (get radioKeys wombat-view))
+
+(defn configuration-panel []
+  (let [wombats (re-frame/subscribe [:my-wombats])
+        sim-templates (re-frame/subscribe [:simulator/templates])
+        selected-wombat (re-frame/subscribe [:simulator/wombat-id])
+        selected-template (re-frame/subscribe [:simulator/template-id])
+        wombat-view (re-frame/subscribe [:simulator/get-view-mode])
+        form-state (reagent/atom {:wombat-id @selected-wombat
+                                  :wombat-id-error nil
+                                  :template-id @selected-template
+                                  :template-id-error nil
+                                  :view-mode (get-selected-val @wombat-view)})]
+    (fn []
+      (let [wombats @wombats
+            templates @sim-templates]
+        [:div {:class-name "configuration-panel"}
+         [:div.title "CONFIGURATION"]
+         [:div.panel-content
+          [select-input {:form-state form-state
+                         :form-key :wombat-id
+                         :error-key :wombat-id-error
+                         :option-list
+                         (optionize
+                          [:wombat/id]
+                          [:wombat/name]
+                          wombats)
+                         :label "Wombat"}]
+          [select-input {:form-state form-state
+                         :form-key :template-id
+                         :error-key :template-id-error
+                         :option-list
+                         (optionize
+                          [:simulator-template/id]
+                          [:simulator-template/arena-template :arena/name]
+                          templates)
+                         :label "Arena"}]
+          [radio-select {:class "view-mode"
+                         :name "view-mode"
+                         :label "View"
+                         :state form-state
+                         :radios radios}]]
+         [:button.update-btn
+          {:on-click #(update-simulator-configuration! form-state)}
+          "START"]]))))
 
 (defn configuration-modal []
   (let [wombats (re-frame/subscribe [:my-wombats])
