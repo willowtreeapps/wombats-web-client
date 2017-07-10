@@ -6,6 +6,7 @@
              :refer [open-configure-simulator-modal]]
             [wombats-web-client.components.add-button :as add-wombat-button]
             [wombats-web-client.utils.time :as time]
+            [wombats-web-client.utils.functions :refer [bind-value]]
             [goog.events :as events])
   (:import [goog.events EventType]))
 
@@ -18,18 +19,10 @@
   (let [r (.getBoundingClientRect (.-target evt))]
     {:left (.-left r), :top (.-top r)}))
 
-(defn bind-val [val lower upper]
-  (cond
-    (> val upper) upper
-    (< val lower) lower
-    :else val))
-
 (defn- get-bar-index
   [x sim-frames]
-  (let [bound-x (bind-val x 0 progress-bar-width)]
+  (let [bound-x (bind-value x 0 progress-bar-width)]
     (js/Math.floor (* (/ bound-x 400) (count sim-frames))))) ;; might need rounding
-
-
 
 (defn mouse-move-handler [offset]
   (fn [evt]
