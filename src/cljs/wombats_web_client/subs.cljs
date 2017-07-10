@@ -134,11 +134,6 @@
    (:simulator/frames-idx db)))
 
 (re-frame/reg-sub
- :simulator/mini-map
- (fn [db _]
-   (get-in (games/get-player db) [:state :mini-map])))
-
-(re-frame/reg-sub
  :simulator/get-view-mode
  (fn [db _]
    (:simulator/view-mode db)))

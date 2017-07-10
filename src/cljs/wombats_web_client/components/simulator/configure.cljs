@@ -15,7 +15,7 @@
   (re-frame/dispatch [:update-modal-error nil])
   (re-frame/dispatch [:set-modal nil]))
 
-(defonce radioKeys {:arena "Full Arena" :self "Wombat"})
+(defonce radioKeys {:arena "Full Arena" :self "Wombat POV"})
 (defonce radios [(:arena radioKeys) (:self radioKeys)])
 
 (defn- update-simulator-configuration!
@@ -138,9 +138,7 @@
             [cancel-modal-input]
             [submit-modal-input
              "DONE"
-             #(update-simulator-configuration! form-state)]
-            ]
-           ]))})))
+             #(update-simulator-configuration! form-state)]]]))})))
 
 (defn open-configure-simulator-modal []
   (fn []

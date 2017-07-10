@@ -59,7 +59,6 @@
            wombats
            active-frame
            stack-trace
-           simulator-mini-map
            simulator-state
            simulator-view-mode
            simulator-frames
@@ -98,8 +97,6 @@
                               [:simulator/active-frame])
               :stack-trace @(re-frame/subscribe
                              [:simulator/player-stack-trace])
-              :simulator-mini-map @(re-frame/subscribe
-                                    [:simulator/mini-map])
               :simulator-state (re-frame/subscribe
                                 [:simulator/state])
               :simulator-view-mode @(re-frame/subscribe
