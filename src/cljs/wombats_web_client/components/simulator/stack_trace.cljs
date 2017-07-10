@@ -10,5 +10,4 @@
        [:p.stack-trace-message message]
        [:ul.stack-trace-details
         (for [line-item stack-trace]
-          ^{:key line-item} [:li.line-item line-item])]]
-      [:p.no-stack-trace-message "No errors to report. Happy Coding."])))
+          ^{:key line-item} [:li.line-item line-item])]])))
