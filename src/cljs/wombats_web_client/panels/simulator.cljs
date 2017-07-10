@@ -33,8 +33,10 @@
   [stack-trace command player-state]
   [:div {:class-name "right-pane"}
    (split-pane/render (simulator-code/render)
-                      (simulator-output/render {:command  command
-                                                :player-state  player-state}))])
+                      (if stack-trace
+                       [simulator-stack-trace/render]
+                       (simulator-output/render {:command  command
+                                                 :player-state  player-state})))])
 
 (defn- render-left-pane
   [{:keys [frame simulator-state simulator-frames simulator-index]}]
