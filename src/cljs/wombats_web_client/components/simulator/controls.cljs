@@ -18,23 +18,31 @@
   (let [r (.getBoundingClientRect (.-target evt))]
     {:left (.-left r), :top (.-top r)}))
 
+(defn bind-val [val lower upper]
+  (cond
+    (> val upper) upper
+    (< val lower) lower
+    :else val))
+
 (defn- get-bar-index
-  [x]
-  (let [sim-frames @(re-frame/subscribe [:simulator/frames])]
-       (println (/ x 400))))
+  [x sim-frames]
+  (let [bound-x (bind-val x 0 progress-bar-width)]
+    (js/Math.floor (* (/ bound-x 400) (count sim-frames))))) ;; might need rounding
+
+
 
 (defn mouse-move-handler [offset]
   (fn [evt]
-    (let [x (- (.-clientX evt) (:x offset))]
-      (when (= @prev-slider-location 0)
-        (reset! prev-slider-location x))
-      (get-bar-index x)
-      (when (< x @prev-slider-location)
-        (println "move back a frame")
-        (reset! prev-slider-location x))
-      (when (> x @prev-slider-location)
-        (println "move forward a frame")
-        (reset! prev-slider-location x)))))
+    (.preventDefault evt)
+    (let [x (- (.-clientX evt) (:x offset))
+          sim-index @(re-frame/subscribe [:simulator/frame-index])
+          sim-frames @(re-frame/subscribe [:simulator/frames])
+          bar-index (get-bar-index x sim-frames)]
+
+      (when (and (> sim-index bar-index) (> sim-index 0))
+        (re-frame/dispatch [:simulator/back-frame]))
+      (when (and (< sim-index bar-index) (< sim-index (count sim-frames)))
+        (re-frame/dispatch [:simulator/forward-frame])))))
 
 (defn mouse-up-handler [on-move]
   (fn me [evt]
@@ -66,8 +74,11 @@
     {:style {:width (str (get-bar-percentage sim-frames sim-index) "%")}}
     [:div.scrubber {:on-mouse-down mouse-down-handler}]]])
 
-
-
+(defn- back-button!
+  [evt sim-index]
+  (if (> sim-index 0)
+    (re-frame/dispatch [:simulator/back-frame])
+    (println "Nowhere to go")))
 
 (defn- forward-button!
   [evt sim-state sim-frames sim-index]
@@ -76,11 +87,7 @@
                         {:game-state @sim-state}])
     (re-frame/dispatch [:simulator/forward-frame])))
 
-(defn- back-button!
-  [evt sim-index]
-  (if (> sim-index 0)
-    (re-frame/dispatch [:simulator/back-frame])
-    (println "Nowhere to go")))
+
 
 (defn- settings-button
   [on-click]
