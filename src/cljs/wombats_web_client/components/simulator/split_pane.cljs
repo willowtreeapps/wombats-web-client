@@ -20,9 +20,7 @@
           max-height 105]
       (if (> y (- js/innerHeight max-height))
         (reset! top-size-px (- js/innerHeight max-height))
-        (reset! top-size-px y))
-      ;; Run the movement handler here to change the styles
-      )))
+        (reset! top-size-px y)))))
 
 
 (defn mouse-up-handler [on-move]
