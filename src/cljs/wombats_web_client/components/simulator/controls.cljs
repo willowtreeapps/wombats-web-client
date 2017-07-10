@@ -13,16 +13,15 @@
 (defonce play-button-width 64)
 (defonce progress-bar-width 400)
 
-(def prev-slider-location (reagent/atom 0))
-
-(defn get-client-rect [evt]
-  (let [r (.getBoundingClientRect (.-target evt))]
-    {:left (.-left r), :top (.-top r)}))
-
 (defn- get-bar-index
   [x sim-frames]
   (let [bound-x (bind-value x 0 progress-bar-width)]
     (js/Math.floor (* (/ bound-x 400) (count sim-frames))))) ;; might need rounding
+
+(defn- get-bar-percentage
+  [sim-frames sim-index]
+  ;; TODO fix the bug with the play-pause button making percentages bigger than 100%
+  (* 100 (/ sim-index (count sim-frames))))
 
 (defn mouse-move-handler [offset]
   (fn [evt]
@@ -31,7 +30,6 @@
           sim-index @(re-frame/subscribe [:simulator/frame-index])
           sim-frames @(re-frame/subscribe [:simulator/frames])
           bar-index (get-bar-index x sim-frames)]
-
       (when (and (> sim-index bar-index) (> sim-index 0))
         (re-frame/dispatch [:simulator/back-frame]))
       (when (and (< sim-index bar-index) (< sim-index (count sim-frames)))
@@ -43,8 +41,7 @@
                      on-move)))
 
 (defn mouse-down-handler [e]
-  (let [{:keys [left top]} (get-client-rect e)
-        offset             {:x play-button-width
+  (let [offset             {:x play-button-width
                             :y  0}
         on-move            (mouse-move-handler offset)]
 
@@ -52,13 +49,6 @@
                    on-move)
     (events/listen js/window EventType.MOUSEUP
                    (mouse-up-handler on-move))))
-
-
-
-(defn- get-bar-percentage
-  [sim-frames sim-index]
-  ;; TODO fix the bug with the play-pause button making percentages bigger than 100%
-  (* 100 (/ sim-index (count sim-frames))))
 
 (defn- progress-bar
   [sim-frames sim-index]
@@ -79,8 +69,6 @@
     (re-frame/dispatch [:simulator/process-simulation-frame
                         {:game-state @sim-state}])
     (re-frame/dispatch [:simulator/forward-frame])))
-
-
 
 (defn- settings-button
   [on-click]
