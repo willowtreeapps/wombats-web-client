@@ -4,6 +4,7 @@
             [re-frame.core :as re-frame]
             [wombats-web-client.constants.urls :refer [simulator-templates-url]]
             [wombats-web-client.utils.auth :refer [add-auth-header]]
+            [wombats-web-client.utils.games :as games]
             [wombats-web-client.constants.urls
              :refer [initialize-simulator-url
                      process-simulator-frame-url]]))
@@ -42,12 +43,14 @@
 (re-frame/reg-event-db
  :simulator/update-state
  (fn [db [_ sim-state]]
-   (assoc db :simulator/state sim-state
-          :simulator/frames-vec
-          (conj (:simulator/frames-vec db)
-                sim-state)
-          :simulator/frames-idx
-          (inc (:simulator/frames-idx db)))))
+   (let [mini-map (get-in (games/get-player db) [:state :mini-map])]
+     (assoc db :simulator/state sim-state
+            :simulator/frames-vec
+            (conj (:simulator/frames-vec db) sim-state)
+            :simulator/frames-vec-mini-map
+            (conj (:simulator/frames-vec-mini-map db) mini-map)
+            :simulator/frames-idx
+            (inc (:simulator/frames-idx db))))))
 
 (re-frame/reg-event-db
  :simulator/back-frame
@@ -91,6 +94,7 @@
    (merge db {:simulator/template-id template-id
               :simulator/wombat-id wombat-id
               :simulator/frames-vec []
+              :simulator/frames-vec-mini-map []
               :simulator/frames-idx 0})))
 
 (re-frame/reg-event-fx

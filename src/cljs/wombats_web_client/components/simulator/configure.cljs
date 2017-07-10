@@ -25,12 +25,10 @@
         template-id (:template-id @state)
         template-id-error (:template-id-error @state)
         view-mode (:view-mode @state)]
-
-    (when (= view-mode (:arena radioKeys))
-      (re-frame/dispatch [:simulator/show-arena-view]))
-    (when (= view-mode (:self radioKeys))
-      (re-frame/dispatch [:simulator/show-wombat-view])
-      (callback-success state))
+    (println view-mode)
+    (if (= view-mode (:arena radioKeys))
+      (re-frame/dispatch [:simulator/show-arena-view])
+      (re-frame/dispatch [:simulator/show-wombat-view]))
     (when (and template-id (nil? wombat-id))
       (swap! state assoc :wombat-id-error required-field-error))
     (when (and wombat-id (nil? template-id))
@@ -39,7 +37,6 @@
       (re-frame/dispatch [:simulator/initialize-simulator
                           {:simulator/template-id template-id
                            :simulator/wombat-id wombat-id}])
-
       (callback-success state))))
 
 (defn- get-selected-val

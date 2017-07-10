@@ -45,12 +45,11 @@
 (defn- get-mini-map-bool
   [simulator-view-mode]
   (if (= simulator-view-mode :self)
-    true
-    false))
+    true ;; show wombat view
+    false)) ;; arena view
 
 (defn- get-active-frame
   [frames index]
-  (println index)
   (get-in (get frames (dec index)) [:game/frame :frame/arena]))
 
 (defn- render
@@ -64,11 +63,14 @@
            simulator-state
            simulator-view-mode
            simulator-frames
+           simulator-frames-mini-map
            simulator-index]}]
 
   [:div {:class-name "simulator-panel"}
    [render-left-pane {:frame
-                      (get-active-frame simulator-frames simulator-index)
+                      (if (get-mini-map-bool simulator-view-mode)
+                          (get simulator-frames-mini-map (dec simulator-index))
+                          (get-active-frame simulator-frames simulator-index))
                       :simulator-state simulator-state
                       :simulator-frames simulator-frames
                       :simulator-index simulator-index}]
@@ -103,5 +105,7 @@
                                      [:simulator/get-view-mode])
               :simulator-frames @(re-frame/subscribe
                                   [:simulator/frames])
+              :simulator-frames-mini-map @(re-frame/subscribe
+                                           [:simulator/frames-mini-map])
               :simulator-index @(re-frame/subscribe
                                  [:simulator/frame-index])})}))

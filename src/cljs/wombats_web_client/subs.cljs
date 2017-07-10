@@ -124,6 +124,11 @@
    (:simulator/frames-vec db)))
 
 (re-frame/reg-sub
+ :simulator/frames-mini-map
+ (fn [db _]
+   (:simulator/frames-vec-mini-map db)))
+
+(re-frame/reg-sub
  :simulator/frame-index
  (fn [db _]
    (:simulator/frames-idx db)))
