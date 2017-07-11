@@ -19,6 +19,9 @@
             [lein-shell "0.5.0"]
             [lein-npm "0.6.2"]]
 
+  :npm {:dependencies [[autoprefixer "7.1.2"]
+                       [postcss-cli "4.1.0"]]}
+
   :min-lein-version "2.5.3"
 
   :source-paths ["src/cljs"]
@@ -107,11 +110,11 @@
                     :output-dir    "resources/public/js/compiled/test/out"
                     :optimizations :none}}]}
 
-    :aliases {"install-postcss" [["shell" "lein" "npm" "install" "postcss-cli" "autoprefixer"]]
-              "postcss-prefixer-w" [["shell" "postcss" "resources/temp/css/*.css" "resources/temp/css/**/*.css" "resources/temp/css/**/**/*.css"
-                              "--use autoprefixer" "-d" "resources/public/css" "-w"]]
-              "postcss-prefixer" [["shell" "postcss" "resources/temp/css/*.css" "resources/temp/css/**/*.css" "resources/temp/css/**/**/*.css"
-                              "--use autoprefixer" "-d" "resources/public/css"]]
+  :aliases {"install-postcss" ["shell" "lein" "npm" "install"]
+              "postcss-prefixer-w" ["shell" "postcss" "resources/temp/css/*.css" "resources/temp/css/**/*.css" "resources/temp/css/**/**/*.css"
+                                    "--use autoprefixer" "-d" "resources/public/css" "-w"]
+              "postcss-prefixer" ["shell" "postcss" "resources/temp/css/*.css" "resources/temp/css/**/*.css" "resources/temp/css/**/**/*.css"
+                                  "--use autoprefixer" "-d" "resources/public/css"]
               "run-local"   ["do"
                              "install-postcss"
                              ["less" "once"]
