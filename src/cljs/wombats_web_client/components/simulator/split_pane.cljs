@@ -25,6 +25,7 @@
 (defn- mouse-down-handler [e]
   (let [offset             {:y (+ 0 navbar-height)}
         on-move            (mouse-move-handler offset)]
+    (.preventDefault e)
     (events/listen js/window EventType.MOUSEMOVE
                    on-move)
     (events/listen js/window EventType.MOUSEUP
