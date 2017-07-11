@@ -1,10 +1,9 @@
 (ns wombats-web-client.components.simulator.stack-trace
   (:require [re-frame.core :as re-frame]))
 
-(defn render []
-  (let [stack @(re-frame/subscribe [:simulator/player-stack-trace])
-        {message :message
-         stack-trace :stackTrace} stack]
+(defn render [simulator-data]
+  (let [{message :message
+         stack-trace :stackTrace} (:player-stack-trace @simulator-data)]
     (if stack-trace
       [:div.stack-trace
        [:p.stack-trace-message message]

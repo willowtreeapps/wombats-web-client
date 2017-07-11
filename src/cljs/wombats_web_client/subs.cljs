@@ -83,36 +83,6 @@
    (:simulator/state db)))
 
 (re-frame/reg-sub
- :simulator/code
- (fn [db _]
-   (get-in (games/get-player db) [:state :code :code])))
-
-(re-frame/reg-sub
- :simulator/code-mode
- (fn [db _]
-   (let [path (get-in (games/get-player db) [:state :code :path])]
-     (when path
-       (get {"clj" "clojure"
-             "js" "javascript"
-             "py" "python"}
-            (last (clojure.string/split path #"\.")))))))
-
-(re-frame/reg-sub
- :simulator/player-command
- (fn [db _]
-   (get-in (games/get-player db) [:state :command])))
-
-(re-frame/reg-sub
- :simulator/player-state
- (fn [db _]
-   (get-in (games/get-player db) [:state :saved-state])))
-
-(re-frame/reg-sub
- :simulator/player-stack-trace
- (fn [db _]
-   (get-in (games/get-player db) [:state :error])))
-
-(re-frame/reg-sub
  :simulator/active-frame
  (fn [db _]
    (get-in db [:simulator/state :game/frame :frame/arena])))
@@ -122,8 +92,6 @@
  :simulator/frames
  (fn [db _]
    (:simulator/frames-vec db)))
-
-
 
 (re-frame/reg-sub
  :simulator/get-data

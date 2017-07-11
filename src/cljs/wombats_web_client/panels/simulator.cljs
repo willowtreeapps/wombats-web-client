@@ -35,8 +35,8 @@
   [:div {:class-name "right-pane"}
    [split-pane/render [simulator-code/render {:simulator-data  simulator-data
                                               :update update-sim}]
-    (if (:stack-trace @simulator-data)
-      [simulator-stack-trace/render]
+    (if (:player-stack-trace @simulator-data)
+      [simulator-stack-trace/render simulator-data]
       [simulator-output/render simulator-data update-sim])
     update-sim]])
 
