@@ -123,7 +123,7 @@
                              "install-postcss"
                              ["less" "once"]
                              ["pdo" "clean," ["figwheel" "dev"]   ["less" "auto"] "postcss-prefixer-w"]]
-              "Run-lint"    ["pdo" "bikeshed" ["kibit" "src/cljs/wombats_web_client/"]]
+              "run-lint"    ["pdo" "bikeshed" ["kibit" "src/cljs/wombats_web_client/"]]
               "deploy-dev"  ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-dev"] ["less" "once"] "postcss-prefixer"]
               "deploy-qa"   ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-qa"] ["less" "once"] "postcss-prefixer"]
               "deploy-prod" ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-prod"] ["less" "once"] "postcss-prefixer"]})
