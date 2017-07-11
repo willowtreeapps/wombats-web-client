@@ -60,7 +60,7 @@
 
 (defn- get-active-frame
   [frames index]
-  (get-in (get frames (dec index)) [:game/frame :frame/arena]))
+  (get-in (:sim-state (get frames (dec index))) [:game/frame :frame/arena]))
 
 (defn- render
   [{:keys [command
@@ -72,14 +72,14 @@
            simulator-state
            simulator-view-mode
            simulator-frames
-           simulator-frames-mini-map
            simulator-index]}]
+  ;; TODO assoc state, stack-trace, command onto the simulator state object
   (if (= nil @simulator-state)
     [configuration-panel]
     [:div {:class-name "simulator-panel"}
      [render-left-pane {:frame
                         (if (get-mini-map-bool simulator-view-mode)
-                          (get simulator-frames-mini-map (dec simulator-index))
+                          (:mini-map (get simulator-frames (dec simulator-index)))
                           (get-active-frame simulator-frames simulator-index))
                         :simulator-state simulator-state
                         :simulator-frames simulator-frames
@@ -113,7 +113,5 @@
                                      [:simulator/get-view-mode])
               :simulator-frames @(re-frame/subscribe
                                   [:simulator/frames])
-              :simulator-frames-mini-map @(re-frame/subscribe
-                                           [:simulator/frames-mini-map])
               :simulator-index @(re-frame/subscribe
                                  [:simulator/frame-index])})}))

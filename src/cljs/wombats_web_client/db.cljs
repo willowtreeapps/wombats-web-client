@@ -17,7 +17,6 @@
 
    :arenas nil
    :simulator/frames-vec []
-   :simulator/frames-vec-mini-map []
    :simulator/frames-idx 0
    :simulator/state nil
    :simulator/templates nil

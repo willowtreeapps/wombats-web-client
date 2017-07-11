@@ -45,12 +45,11 @@
  (fn [db [_ sim-state]]
    (let [mini-map (get-in (games/get-player db) [:state :mini-map])]
      (assoc db :simulator/state sim-state
-            :simulator/frames-vec
-            (conj (:simulator/frames-vec db) sim-state)
-            :simulator/frames-vec-mini-map
-            (conj (:simulator/frames-vec-mini-map db) mini-map)
             :simulator/frames-idx
-            (inc (:simulator/frames-idx db))))))
+            (inc (:simulator/frames-idx db))
+            :simulator/frames-vec
+            (conj (:simulator/frames-vec db) {:sim-state sim-state
+                                                :mini-map mini-map})))))
 
 (re-frame/reg-event-db
  :simulator/back-frame
