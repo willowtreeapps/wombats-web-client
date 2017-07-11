@@ -29,28 +29,22 @@
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def pane-items (reagent/atom {:top nil
-                               :bottom nil
-                               :update false}))
-
 (def update-sim (reagent/atom false))
-
 (defn- render-right-pane
-  [stack-trace command player-state]
+  [simulator-data]
   [:div {:class-name "right-pane"}
-   [split-pane/render [simulator-code/render update-sim]
-    (if stack-trace
+   [split-pane/render [simulator-code/render {:simulator-data  simulator-data
+                                              :update update-sim}]
+    (if (:stack-trace @simulator-data)
       [simulator-stack-trace/render]
-      [simulator-output/render {:command command
-                                :player-state player-state
-                                :update update-sim}])
+      [simulator-output/render simulator-data update-sim])
     update-sim]])
 
 (defn- render-left-pane
-  [{:keys [frame simulator-state simulator-frames simulator-index]}]
+  [{:keys [frame simulator-data simulator-frames simulator-index]}]
   [:div.left-pane
    [simulator-arena/render frame]
-   [simulator-controls/render simulator-state simulator-frames simulator-index]])
+   [simulator-controls/render simulator-data simulator-frames simulator-index]])
 
 (defn- get-mini-map-bool
   [simulator-view-mode]
@@ -58,33 +52,22 @@
     true ;; show wombat view
     false)) ;; arena view
 
-(defn- get-active-frame
-  [frames index]
-  (get-in (:sim-state (get frames (dec index))) [:game/frame :frame/arena]))
-
 (defn- render
-  [{:keys [command
-           player-state
-           templates
-           wombats
-           active-frame
-           stack-trace
-           simulator-state
-           simulator-view-mode
+  [{:keys [simulator-view-mode
            simulator-frames
-           simulator-index]}]
-  ;; TODO assoc state, stack-trace, command onto the simulator state object
-  (if (= nil @simulator-state)
+           simulator-index
+           simulator-data]}]
+  (if (= nil (:state @simulator-data)) ;; fix reset to config screen bug
     [configuration-panel]
     [:div {:class-name "simulator-panel"}
      [render-left-pane {:frame
                         (if (get-mini-map-bool simulator-view-mode)
-                          (:mini-map (get simulator-frames (dec simulator-index)))
-                          (get-active-frame simulator-frames simulator-index))
-                        :simulator-state simulator-state
+                          (:mini-map @simulator-data)
+                          (:frame @simulator-data))
+                        :simulator-data simulator-data
                         :simulator-frames simulator-frames
                         :simulator-index simulator-index}]
-     [render-right-pane stack-trace command player-state]]))
+     [render-right-pane simulator-data]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main Method
@@ -95,23 +78,11 @@
    {:component-will-mount #(component-will-mount!)
     :props-name "simulator-panel"
     :reagent-render
-    #(render {:command (re-frame/subscribe
-                        [:simulator/player-command])
-              :player-state (re-frame/subscribe
-                             [:simulator/player-state])
-              :templates @(re-frame/subscribe
-                           [:simulator/templates])
-              :wombats @(re-frame/subscribe
-                         [:my-wombats])
-              :active-frame @(re-frame/subscribe
-                              [:simulator/active-frame])
-              :stack-trace @(re-frame/subscribe
-                             [:simulator/player-stack-trace])
-              :simulator-state (re-frame/subscribe
-                                [:simulator/state])
-              :simulator-view-mode @(re-frame/subscribe
+    #(render {:simulator-view-mode @(re-frame/subscribe
                                      [:simulator/get-view-mode])
-              :simulator-frames @(re-frame/subscribe
+              :simulator-frames (re-frame/subscribe
                                   [:simulator/frames])
-              :simulator-index @(re-frame/subscribe
+              :simulator-data (re-frame/subscribe
+                                [:simulator/get-data])
+              :simulator-index (re-frame/subscribe
                                  [:simulator/frame-index])})}))

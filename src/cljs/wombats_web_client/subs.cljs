@@ -123,6 +123,28 @@
  (fn [db _]
    (:simulator/frames-vec db)))
 
+
+
+(re-frame/reg-sub
+ :simulator/get-data
+ (fn [db _]
+   (let [state (get (:simulator/frames-vec db) (dec (:simulator/frames-idx db)))
+         player (games/get-player-frames-vec state)
+         player-state (:state player)]
+     {:state state
+      :frame (get-in state [:game/frame :frame/arena])
+      :mini-map (:mini-map player-state)
+      :player-command (:command player-state)
+      :player-state (:saved-state player-state)
+      :player-stack-trace (:error player-state)
+      :code (get-in player-state [:code :code])
+      :code-mode (let [path (get-in player-state [:code :path])]
+                   (when path
+                     (get {"clj" "clojure"
+                           "js" "javascript"
+                           "py" "python"}
+                          (last (clojure.string/split path #"\.")))))})))
+
 (re-frame/reg-sub
  :simulator/frame-index
  (fn [db _]

@@ -10,13 +10,14 @@
 (defn- on-change [evt]
   (reagent/force-update-all))
 
-(defn render [{:keys [command player-state update]}]
+(defn render [simulator-data update]
   [:div.output-container
    [:div.output-section
     [:h4.output-section-title "Command"]]
-   [ace-component  {:code (format-code @command)
+   [ace-component  {:code (format-code (:player-command @simulator-data))
                     :mode "json"
                     :id "command"
+                    :update @update
                     :options {:readOnly true
                               :highlightActiveLine false
                               :minLines 6
@@ -24,7 +25,7 @@
    [:div.output-section
     [:h4.output-section-title "State"]]
 
-   [ace-component {:code (format-code @player-state)
+   [ace-component {:code (format-code (:player-state @simulator-data))
                    :mode "json"
                    :id "state"
                    :update @update

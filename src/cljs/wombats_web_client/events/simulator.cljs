@@ -30,10 +30,12 @@
 (re-frame/reg-event-db
  :simulator/update-code
  (fn [db [_ code]]
-   (let [player-id (first
+   (let [state (get (:simulator/frames-vec db) (dec (:simulator/frames-idx db)))
+         player-id (first
                     (keys
-                     (get-in db [:simulator/state :game/players])))]
-     (assoc-in db [:simulator/state
+                     (:game/players state)))]
+     (assoc-in db [:simulator/frames-vec
+                   (dec (:simulator/frames-idx db))
                    :game/players
                    player-id
                    :state
@@ -44,12 +46,10 @@
  :simulator/update-state
  (fn [db [_ sim-state]]
    (let [mini-map (get-in (games/get-player db) [:state :mini-map])]
-     (assoc db :simulator/state sim-state
-            :simulator/frames-idx
+     (assoc db :simulator/frames-idx
             (inc (:simulator/frames-idx db))
             :simulator/frames-vec
-            (conj (:simulator/frames-vec db) {:sim-state sim-state
-                                                :mini-map mini-map})))))
+            (conj (:simulator/frames-vec db) sim-state)))))
 
 (re-frame/reg-event-db
  :simulator/back-frame
@@ -93,7 +93,6 @@
    (merge db {:simulator/template-id template-id
               :simulator/wombat-id wombat-id
               :simulator/frames-vec []
-              :simulator/frames-vec-mini-map []
               :simulator/frames-idx 0})))
 
 (re-frame/reg-event-fx

@@ -16,7 +16,7 @@
 (defn- get-bar-percentage
   [sim-frames sim-index]
   ;; TODO fix the bug with the play-pause button making percentages bigger than 100%
-  (bind-value (* 100 (/ sim-index (count sim-frames))) 0 100))
+  (bind-value (* 100 (/ @sim-index (count @sim-frames))) 0 100))
 
 (defn- mouse-move-handler [offset]
   (fn [evt]
