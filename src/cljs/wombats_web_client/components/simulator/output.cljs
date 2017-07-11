@@ -10,7 +10,7 @@
 (defn- on-change [evt]
   (reagent/force-update-all))
 
-(defn render [{:keys [command player-state]}]
+(defn render [{:keys [command player-state update]}]
   [:div.output-container
    [:div.output-section
     [:h4.output-section-title "Command"]]
@@ -19,6 +19,7 @@
                     :id "command"
                     :options {:readOnly true
                               :highlightActiveLine false
+                              :minLines 6
                               :maxLines 7}}]
    [:div.output-section
     [:h4.output-section-title "State"]]
@@ -26,5 +27,6 @@
    [ace-component {:code (format-code @player-state)
                    :mode "json"
                    :id "state"
+                   :update @update
                    :options {:readOnly true
                              :highlightActiveLine false}}]])

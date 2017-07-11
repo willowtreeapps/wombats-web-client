@@ -24,7 +24,6 @@
   [props editor]
   (let [ace-element @editor]
     (when ace-element
-      (js/console.log ace-element)
       (let [position (.getCursorPosition ace-element)]
         (-> ace-element
             .getSession
@@ -39,7 +38,8 @@
   (let [editor (reagent/atom nil)]
        (reagent/create-class
         {:reagent-render
-         (fn [{:keys [id]}] [:div {:id id}])
+         (fn [{:keys [id]}]
+           [:div {:id id}])
          :component-did-mount
          #(init-ace settings editor)
          :component-will-receive-props

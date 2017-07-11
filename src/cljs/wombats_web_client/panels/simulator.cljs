@@ -29,14 +29,22 @@
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(def pane-items (reagent/atom {:top nil
+                               :bottom nil
+                               :update false}))
+
+(def update-sim (reagent/atom false))
+
 (defn- render-right-pane
   [stack-trace command player-state]
   [:div {:class-name "right-pane"}
-   (split-pane/render (simulator-code/render)
-                      (if stack-trace
-                       [simulator-stack-trace/render]
-                       (simulator-output/render {:command  command
-                                                 :player-state  player-state})))])
+   [split-pane/render [simulator-code/render update-sim]
+    (if stack-trace
+      [simulator-stack-trace/render]
+      [simulator-output/render {:command command
+                                :player-state player-state
+                                :update update-sim}])
+    update-sim]])
 
 (defn- render-left-pane
   [{:keys [frame simulator-state simulator-frames simulator-index]}]
