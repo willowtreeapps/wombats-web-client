@@ -14,7 +14,6 @@
   [:div.output-container
    [:div.output-section
     [:h4.output-section-title "Command"]]
-   [:div command]
    [ace-component  {:code (format-code @command)
                     :mode "json"
                     :id "command"
