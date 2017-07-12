@@ -33,20 +33,30 @@
    (let [trimmed-frames (subvec
                          (:simulator/frames-vec db)
                          (:simulator/frames-idx db) (inc (:simulator/frames-idx db)))
-         state (get (:simulator/frames-vec db) (dec (:simulator/frames-idx db)))
+         state (get (:simulator/frames-vec db) (:simulator/frames-idx db))
          player-id (first
                     (keys
-                     (:game/players state)))]
-     (-> db
-         #_(assoc :simulator/frames-vec trimmed-frames)
-         #_(assoc :simulator/frames-idx (count trimmed-frames))
-         (assoc-in [:simulator/frames-vec
-                    (:simulator/frames-idx db)
-                    :game/players
-                    player-id
-                    :state
-                    :code
-                    :code] code)))))
+                     (:game/players state)))
+         old-code (get-in db [:simulator/frames-vec
+                              (dec (:simulator/frames-idx db))
+                              :game/players
+                              player-id
+                              :state
+                              :code
+                              :code])]
+
+     (if (and (not= code "") (not= code old-code))
+       (-> db
+           (assoc :simulator/frames-vec trimmed-frames)
+           (assoc :simulator/frames-idx 0)
+           (assoc-in [:simulator/frames-vec
+                      0
+                      :game/players
+                      player-id
+                      :state
+                      :code
+                      :code] code))
+       db))))
 
 (re-frame/reg-event-db
  :simulator/update-state

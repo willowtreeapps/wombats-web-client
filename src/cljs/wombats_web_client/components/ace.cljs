@@ -5,6 +5,7 @@
   (let [editor (-> js/window
                    .-ace
                    (.edit id))]
+    (set! (.-$blockScrolling editor) js/Infinity)
     (reset! atom editor)
     (when code (-> editor
                    .getSession
