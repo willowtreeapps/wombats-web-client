@@ -30,17 +30,23 @@
 (re-frame/reg-event-db
  :simulator/update-code
  (fn [db [_ code]]
-   (let [state (get (:simulator/frames-vec db) (dec (:simulator/frames-idx db)))
+   (let [trimmed-frames (subvec
+                         (:simulator/frames-vec db)
+                         (:simulator/frames-idx db) (inc (:simulator/frames-idx db)))
+         state (get (:simulator/frames-vec db) (dec (:simulator/frames-idx db)))
          player-id (first
                     (keys
                      (:game/players state)))]
-     (assoc-in db [:simulator/frames-vec
-                   (dec (:simulator/frames-idx db))
-                   :game/players
-                   player-id
-                   :state
-                   :code
-                   :code] code))))
+     (-> db
+         #_(assoc :simulator/frames-vec trimmed-frames)
+         #_(assoc :simulator/frames-idx (count trimmed-frames))
+         (assoc-in [:simulator/frames-vec
+                    (:simulator/frames-idx db)
+                    :game/players
+                    player-id
+                    :state
+                    :code
+                    :code] code)))))
 
 (re-frame/reg-event-db
  :simulator/update-state
@@ -54,14 +60,16 @@
 (re-frame/reg-event-db
  :simulator/back-frame
  (fn [db _]
-   (when (pos? (:simulator/frames-idx db))
-     (update db :simulator/frames-idx dec))))
+   (if (pos? (:simulator/frames-idx db))
+     (update db :simulator/frames-idx dec)
+     db)))
 
 (re-frame/reg-event-db
  :simulator/forward-frame
  (fn [db _]
-   (when (< (:simulator/frames-idx db) (count (:simulator/frames-vec db)))
-     (update db :simulator/frames-idx inc))))
+   (if (< (:simulator/frames-idx db) (dec (count (:simulator/frames-vec db))))
+     (update db :simulator/frames-idx inc)
+     db)))
 
 (re-frame/reg-event-db
  :simulator/simulator-error
@@ -95,7 +103,7 @@
    (merge db {:simulator/template-id template-id
               :simulator/wombat-id wombat-id
               :simulator/frames-vec []
-              :simulator/frames-idx 0})))
+              :simulator/frames-idx -1})))
 
 (re-frame/reg-event-fx
  :simulator/initialize-simulator

@@ -17,7 +17,7 @@
 
    :arenas nil
    :simulator/frames-vec []
-   :simulator/frames-idx 0
+   :simulator/frames-idx -1
    :simulator/state nil
    :simulator/templates nil
    :simulator/wombat-id nil

@@ -96,7 +96,7 @@
 (re-frame/reg-sub
  :simulator/get-data
  (fn [db _]
-   (let [state (get (:simulator/frames-vec db) (dec (:simulator/frames-idx db)))
+   (let [state (get (:simulator/frames-vec db) (:simulator/frames-idx db))
          player (games/get-player-frames-vec state)
          player-state (:state player)]
      {:state state

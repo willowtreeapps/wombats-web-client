@@ -10,13 +10,12 @@
 
 (defn- back-button!
   [evt index]
-  (if (pos? @index)
-    (re-frame/dispatch [:simulator/back-frame])
-    (println "Nowhere to go")))
+  (when (pos? @index)
+    (re-frame/dispatch [:simulator/back-frame])))
 
 (defn- forward-button!
   [evt simulator-data frames index]
-  (if (>= @index (count @frames))
+  (if (>= @index (dec (count @frames)))
     (re-frame/dispatch [:simulator/process-simulation-frame
                         {:game-state (:state @simulator-data)}])
     (re-frame/dispatch [:simulator/forward-frame])))

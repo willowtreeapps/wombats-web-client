@@ -15,7 +15,7 @@
 
 (defn- get-bar-percentage
   [sim-frames sim-index]
-  (bind-value (* 100 (/ @sim-index (count @sim-frames))) 0 100))
+  (bind-value (* 100 (/ @sim-index (dec (count @sim-frames)))) 0 100))
 
 (defn- mouse-move-handler [offset sim-frames sim-index]
   (fn [evt]
