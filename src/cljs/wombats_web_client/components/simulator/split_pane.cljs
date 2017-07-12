@@ -6,7 +6,7 @@
 
 
 (defonce navbar-height 45)
-(defonce max-height 105)
+(defonce max-height 107)
 (defonce top-size-px (reagent/atom 145))
 
 (defn- mouse-move-handler [offset update]
