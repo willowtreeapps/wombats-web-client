@@ -15,8 +15,8 @@
   (re-frame/dispatch [:update-modal-error nil])
   (re-frame/dispatch [:set-modal nil]))
 
-(defonce radioKeys {:arena "Full Arena" :self "Wombat POV"})
-(defonce radios [(:arena radioKeys) (:self radioKeys)])
+(defonce radioKeys {:frame "Full Arena" :mini-map "Wombat POV"})
+(defonce radios [(:frame radioKeys) (:mini-map radioKeys)])
 
 (defn- update-simulator-configuration!
   [state]
@@ -25,7 +25,7 @@
         template-id (:template-id @state)
         template-id-error (:template-id-error @state)
         view-mode (:view-mode @state)]
-    (if (= view-mode (:arena radioKeys))
+    (if (= view-mode (:frame radioKeys))
       (re-frame/dispatch [:simulator/show-arena-view])
       (re-frame/dispatch [:simulator/show-wombat-view]))
     (when (and template-id (nil? wombat-id))

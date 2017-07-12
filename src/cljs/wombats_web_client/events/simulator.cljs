@@ -72,12 +72,12 @@
 (re-frame/reg-event-db
  :simulator/show-arena-view
  (fn [db _]
-   (assoc db :simulator/view-mode :arena)))
+   (assoc db :simulator/view-mode :frame)))
 
 (re-frame/reg-event-db
  :simulator/show-wombat-view
  (fn [db _]
-   (assoc db :simulator/view-mode :self)))
+   (assoc db :simulator/view-mode :mini-map)))
 
 
 ;; TODO merge these two functions common functionality

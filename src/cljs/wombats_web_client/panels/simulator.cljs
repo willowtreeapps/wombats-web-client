@@ -49,16 +49,10 @@
       update-sim pane-label]]))
 
 (defn- render-left-pane
-  [{:keys [frame simulator-data simulator-frames simulator-index]}]
+  [{:keys [simulator-view-mode simulator-data simulator-frames simulator-index]}]
   [:div.left-pane
-   [simulator-arena/render frame]
+   [simulator-arena/render simulator-data simulator-view-mode]
    [simulator-controls/render simulator-data simulator-frames simulator-index]])
-
-(defn- get-mini-map-bool
-  [simulator-view-mode]
-  (if (= simulator-view-mode :self)
-    true ;; show wombat view
-    false)) ;; arena view
 
 (defn- render
   [{:keys [simulator-view-mode
@@ -68,10 +62,7 @@
   (if (zero? (count @simulator-frames)) ;; fix reset to config screen bug
     [configuration-panel]
     [:div {:class-name "simulator-panel"}
-     [render-left-pane {:frame
-                        (if (get-mini-map-bool simulator-view-mode)
-                          (:mini-map @simulator-data)
-                          (:frame @simulator-data))
+     [render-left-pane {:simulator-view-mode simulator-view-mode
                         :simulator-data simulator-data
                         :simulator-frames simulator-frames
                         :simulator-index simulator-index}]

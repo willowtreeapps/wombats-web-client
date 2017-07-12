@@ -23,7 +23,7 @@
    :simulator/wombat-id nil
    :simulator/template-id nil
    :simulator/error nil
-   :simulator/view-mode :arena
+   :simulator/view-mode :frame
 
    :join-game-selections []
    :spritesheet nil
