@@ -10,6 +10,7 @@ CHANGELOG
 * Date picker now shows the current time when opened [Eli Bosley][/eli] [#333](https://github.com/willowtreeapps/wombats-web-client/issues/333)
 * User repositories are selectable through a dropdown.
   [Eli Bosley][/eli] *No Issue*
+* Simulator redesigned based on updated diagrams [Eli Bosley][/eli] [#289](https://github.com/willowtreeapps/wombats-web-client/issues/289)
 >>>>>>> develop
 
 **Bug Fixes**
