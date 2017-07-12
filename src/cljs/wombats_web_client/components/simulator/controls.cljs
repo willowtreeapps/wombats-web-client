@@ -4,12 +4,13 @@
             [wombats-web-client.utils.socket :as ws]
             [wombats-web-client.components.simulator.configure
              :refer [open-configure-simulator-modal]]
-            [wombats-web-client.components.simulator.progress-bar :as progress-bar]
+            [wombats-web-client.components.simulator.progress-bar
+             :as progress-bar]
             [wombats-web-client.utils.time :as time]))
 
 (defn- back-button!
   [evt index]
-  (if (> @index 0)
+  (if (pos? @index)
     (re-frame/dispatch [:simulator/back-frame])
     (println "Nowhere to go")))
 
@@ -38,7 +39,8 @@
                         (reset! play-status "playing")
                         (reset! interval
                                 (js/setInterval
-                                 #(forward-button! % simulator-data frames index)
+                                 #(forward-button!
+                                   % simulator-data frames index)
                                  frame-time)))
                       (do
                         (js/clearInterval @interval)

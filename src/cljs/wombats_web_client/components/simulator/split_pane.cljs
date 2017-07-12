@@ -32,22 +32,24 @@
     (events/listen js/window EventType.MOUSEUP
                    (mouse-up-handler on-move))))
 
-(defn- render-divider [panel-change]
-       [:div {:on-mouse-down #(mouse-down-handler % panel-change)}
-        [:hr.panel-divider]
+(defn- render-divider [text update]
+       [:div.panel-divider {:on-mouse-down #(mouse-down-handler % update)}
+        [:p.panel-divider-text @text]
         [:hr.panel-grabber]])
 
-(defn render [top bottom update]
-  (reagent/create-class
-   {:display-name "split-panel"
-    :reagent-render (fn [top bottom update]
-                      [:div.split-panel
+(defn render
+  ([top bottom update]
+   (render top bottom update ""))
+  ([top bottom update divider-text]
+   (reagent/create-class
+    {:display-name "split-panel"
+     :reagent-render (fn [top bottom update]
+                       [:div.split-panel
 
-                       ;; trigger rerender on resize
-                       @update
-
-                       [:div.panel-top
-                        {:style {:height (str @top-size-px "px")}} top]
-                       [render-divider update]
-                       [:div.panel-bottom
-                        bottom]])}))
+                        ;; trigger rerender on resize
+                        @update
+                        [:div.panel-top
+                         {:style {:height (str @top-size-px "px")}} top]
+                        [render-divider divider-text update]
+                        [:div.panel-bottom
+                         bottom]])})))

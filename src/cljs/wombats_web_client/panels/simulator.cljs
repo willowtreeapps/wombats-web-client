@@ -1,11 +1,14 @@
 (ns wombats-web-client.panels.simulator
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
-            [wombats-web-client.components.arena :as arena]
+            [wombats-web-client.components.arena
+             :as arena]
             [wombats-web-client.components.tabbed-container
              :refer [tabbed-container]]
-            [wombats-web-client.components.simulator.arena :as simulator-arena]
-            [wombats-web-client.components.simulator.code :as simulator-code]
+            [wombats-web-client.components.simulator.arena
+             :as simulator-arena]
+            [wombats-web-client.components.simulator.code
+             :as simulator-code]
             [wombats-web-client.components.simulator.output
              :as simulator-output]
             [wombats-web-client.components.simulator.stack-trace
@@ -16,7 +19,8 @@
              :as simulator-controls]
             [wombats-web-client.events.simulator
              :refer [get-simulator-templates]]
-            [wombats-web-client.components.simulator.split-pane :as split-pane]))
+            [wombats-web-client.components.simulator.split-pane
+             :as split-pane]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
@@ -30,15 +34,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def update-sim (reagent/atom false))
+(def pane-label (reagent/atom "Debug Console"))
 (defn- render-right-pane
   [simulator-data]
-  [:div {:class-name "right-pane"}
-   [split-pane/render [simulator-code/render {:simulator-data  simulator-data
-                                              :update update-sim}]
-    (if (:player-stack-trace @simulator-data)
-      [simulator-stack-trace/render simulator-data]
-      [simulator-output/render simulator-data update-sim])
-    update-sim]])
+  (let [bottom-pane (if (:player-stack-trace @simulator-data)
+                      (do (reset! pane-label "Stack Trace")
+                          [simulator-stack-trace/render simulator-data])
+                      (do (reset! pane-label "Debug Console")
+                          [simulator-output/render simulator-data update-sim]))]
+    [:div {:class-name "right-pane"}
+     [split-pane/render [simulator-code/render {:simulator-data  simulator-data
+                                                :update update-sim}]
+      bottom-pane
+      update-sim pane-label]]))
 
 (defn- render-left-pane
   [{:keys [frame simulator-data simulator-frames simulator-index]}]
@@ -57,7 +65,7 @@
            simulator-frames
            simulator-index
            simulator-data]}]
-  (if (= 0 (count @simulator-frames)) ;; fix reset to config screen bug
+  (if (zero? (count @simulator-frames)) ;; fix reset to config screen bug
     [configuration-panel]
     [:div {:class-name "simulator-panel"}
      [render-left-pane {:frame

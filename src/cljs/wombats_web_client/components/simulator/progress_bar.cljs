@@ -11,7 +11,7 @@
 (defn- get-bar-index
   [x sim-frames]
   (let [bound-x (bind-value x 0 progress-bar-width)]
-    (js/Math.floor (* (/ bound-x 400) (count sim-frames))))) ;; might need rounding
+    (js/Math.floor (* (/ bound-x 400) (count sim-frames)))))
 
 (defn- get-bar-percentage
   [sim-frames sim-index]
@@ -28,7 +28,7 @@
         (re-frame/dispatch [:simulator/forward-frame])))))
 
 (defn- mouse-up-handler [on-move]
-  (fn me [evt]
+  (fn [evt]
     (events/unlisten js/window EventType.MOUSEMOVE
                      on-move)))
 
@@ -47,4 +47,5 @@
   [:div.progress-bar
    [:div.progress-bar.filled
     {:style {:width (str (get-bar-percentage sim-frames sim-index) "%")}}
-    [:div.scrubber {:on-mouse-down #(mouse-down-handler % sim-frames sim-index)}]]])
+    [:div.scrubber
+     {:on-mouse-down #(mouse-down-handler % sim-frames sim-index)}]]])

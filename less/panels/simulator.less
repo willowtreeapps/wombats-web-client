@@ -33,17 +33,29 @@
                 }
 
             }
+
             .panel-divider {
                 background-color: @simulator-grey;
                 height: 16px;
                 border-style: none;
                 margin: 0px;
             }
+            .panel-divider-text {
+                font-size: 10px;
+                color: @warm-grey;
+                position: absolute;
+                margin: auto;
+                padding-left: 10px;
+                padding-top: 1px;
+                text-transform: uppercase;
+            }
             .panel-grabber {
-                width: 30px;
-                margin-top: -10px;
+                @width: 30px;
+                width: @width;
                 border-style: solid;
                 color: @warm-grey;
+                position: absolute;
+                right: calc(~"50% - " 0.5 * @width);
             }
 
             .panel-bottom {
