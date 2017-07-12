@@ -54,12 +54,15 @@
 (re-frame/reg-event-db
  :simulator/back-frame
  (fn [db _] ;; TODO this needs to check if the length of the frames vec will allow for a decrement
-   (update db :simulator/frames-idx dec)))
+
+   (when (> (:simulator/frames-idx db) 0)
+     (update db :simulator/frames-idx dec))))
 
 (re-frame/reg-event-db
  :simulator/forward-frame
  (fn [db _] ;; TODO this needs to check if the length of the frames vec will allow for an increment
-   (update db :simulator/frames-idx inc)))
+   (when (< (:simulator/frames-idx db) (count (:simulator/frames-vec db)))
+     (update db :simulator/frames-idx inc))))
 
 (re-frame/reg-event-db
  :simulator/simulator-error

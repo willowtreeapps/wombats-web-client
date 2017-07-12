@@ -15,19 +15,16 @@
 
 (defn- get-bar-percentage
   [sim-frames sim-index]
-  ;; TODO fix the bug with the play-pause button making percentages bigger than 100%
   (bind-value (* 100 (/ @sim-index (count @sim-frames))) 0 100))
 
-(defn- mouse-move-handler [offset]
+(defn- mouse-move-handler [offset sim-frames sim-index]
   (fn [evt]
     (.preventDefault evt)
     (let [x (- (.-clientX evt) (:x offset))
-          sim-index @(re-frame/subscribe [:simulator/frame-index])
-          sim-frames @(re-frame/subscribe [:simulator/frames])
-          bar-index (get-bar-index x sim-frames)]
-      (when (and (> sim-index bar-index) (> sim-index 0))
+          bar-index (get-bar-index x @sim-frames)]
+      (when (> @sim-index bar-index)
         (re-frame/dispatch [:simulator/back-frame]))
-      (when (and (< sim-index bar-index) (< sim-index (count sim-frames)))
+      (when (< @sim-index bar-index)
         (re-frame/dispatch [:simulator/forward-frame])))))
 
 (defn- mouse-up-handler [on-move]
@@ -35,10 +32,10 @@
     (events/unlisten js/window EventType.MOUSEMOVE
                      on-move)))
 
-(defn- mouse-down-handler [e]
+(defn- mouse-down-handler [e sim-frames sim-index]
   (let [offset             {:x play-button-width
                             :y  0}
-        on-move            (mouse-move-handler offset)]
+        on-move            (mouse-move-handler offset sim-frames sim-index)]
 
     (events/listen js/window EventType.MOUSEMOVE
                    on-move)
@@ -50,4 +47,4 @@
   [:div.progress-bar
    [:div.progress-bar.filled
     {:style {:width (str (get-bar-percentage sim-frames sim-index) "%")}}
-    [:div.scrubber {:on-mouse-down mouse-down-handler}]]])
+    [:div.scrubber {:on-mouse-down #(mouse-down-handler % sim-frames sim-index)}]]])

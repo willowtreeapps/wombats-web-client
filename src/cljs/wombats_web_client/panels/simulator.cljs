@@ -57,7 +57,7 @@
            simulator-frames
            simulator-index
            simulator-data]}]
-  (if (= nil (:state @simulator-data)) ;; fix reset to config screen bug
+  (if (= 0 (count @simulator-frames)) ;; fix reset to config screen bug
     [configuration-panel]
     [:div {:class-name "simulator-panel"}
      [render-left-pane {:frame

@@ -21,13 +21,15 @@
     (.setTheme editor "ace/theme/tomorrow_night_eighties")))
 
 (defn- refresh-ace
-  [props editor]
+  [next-props editor]
   (let [ace-element @editor]
     (when ace-element
-      (let [position (.getCursorPosition ace-element)]
-        (-> ace-element
-            .getSession
-            (.setValue (:code (get props 1))))
+      (let [position (.getCursorPosition ace-element)
+            code (:code  (get next-props 1))]
+        (when code
+          (-> ace-element
+              .getSession
+              (.setValue (:code (get next-props 1)))))
         (.resize ace-element)
         (.moveCursorToPosition ace-element position)))))
 
