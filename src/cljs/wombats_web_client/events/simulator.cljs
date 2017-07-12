@@ -32,7 +32,8 @@
  (fn [db [_ code]]
    (let [trimmed-frames (subvec
                          (:simulator/frames-vec db)
-                         (:simulator/frames-idx db) (inc (:simulator/frames-idx db)))
+                         (:simulator/frames-idx inc)
+                         (db (:simulator/frames-idx db)))
          state (get (:simulator/frames-vec db) (:simulator/frames-idx db))
          player-id (first
                     (keys

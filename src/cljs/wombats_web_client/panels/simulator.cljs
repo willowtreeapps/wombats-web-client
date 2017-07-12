@@ -49,7 +49,8 @@
       update-sim pane-label]]))
 
 (defn- render-left-pane
-  [{:keys [simulator-view-mode simulator-data simulator-frames simulator-index]}]
+  [{:keys
+    [simulator-view-mode simulator-data simulator-frames simulator-index]}]
   [:div.left-pane
    [simulator-arena/render simulator-data simulator-view-mode]
    [simulator-controls/render simulator-data simulator-frames simulator-index]])
