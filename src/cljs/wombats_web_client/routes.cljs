@@ -1,16 +1,31 @@
 (ns wombats-web-client.routes
-    (:require-macros [secretary.core :refer [defroute]])
-    (:require [clojure.string :refer [split]]
-              [secretary.core :as secretary]
-              [pushy.core :as pushy]
-              [re-frame.core :as re-frame]
-              [wombats-web-client.utils.auth :refer [get-current-user-id
-                                                     user-is-coordinator?]]))
+  (:require [goog.events]
+            [re-frame.core :as re-frame]
+            [secretary.core :as secretary :refer-macros [defroute]]
+            [wombats-web-client.utils.auth :refer [get-current-user-id
+                                                   user-is-coordinator?]])
+  (:import [goog.history Html5History EventType]))
 
-(defonce history (pushy/pushy secretary/dispatch!
-                              #(when (secretary/locate-route
-                                      (first (split % "?")))
-                                 %)))
+(defn get-token []
+  (str js/window.location.pathname js/window.location.search))
+
+(defn SaneTokenTransformer
+  ;; https://gist.github.com/andrejewski/3887f205fd834eea1b506a908db76e38
+  []
+  (this-as this
+    (.call Html5History.TokenTransformer this)
+    (set! (.-createUrl this)
+          #(+ %2 %1))
+    (set! (.-retrieveToken this)
+          #(subs (.-pathname %2) (count %1)))
+    this))
+
+(defn make-history []
+  (doto (Html5History. nil (SaneTokenTransformer.))
+    (.setPathPrefix (str js/window.location.protocol
+                         "//"
+                         js/window.location.host))
+    (.setUseFragment false)))
 
 (defn- check-for-access-token
   "Access Token was passed by the server. Add token to storage,
@@ -23,8 +38,17 @@
   (when login-error
     (re-frame/dispatch [:login-error login-error])))
 
+(defn handle-url-change [e]
+  (when-not (.-isNavigation e)
+    ;; let's scroll to the top to simulate a navigation
+    (js/window.scrollTo 0 0))
+  (secretary/dispatch! (get-token)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Define routes here
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn app-routes []
-  ;; define routes here
 
   (defroute "/" {:keys [query-params]}
     (re-frame/dispatch [:set-active-panel {:panel-id :view-games-panel
@@ -53,4 +77,10 @@
   (defroute "/account" []
     (re-frame/dispatch [:set-active-panel {:panel-id :account-panel}]))
 
-  (pushy/start! history))
+  (defonce history (doto (make-history)
+                     (goog.events/listen EventType.NAVIGATE
+                                         handle-url-change)
+                     (.setEnabled true))))
+
+(defn nav! [token]
+  (.setToken history token))
