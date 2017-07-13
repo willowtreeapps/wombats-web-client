@@ -37,6 +37,9 @@
 (defonce games-url (str base-api-versioned-url "/games"))
 (defonce access-key-url (str base-api-versioned-url "/access_keys"))
 
+(defn games-id-url [game-id]
+  (str base-api-versioned-url "/games/" game-id))
+
 (defn games-join-url [game-id]
   (str base-api-versioned-url "/games/" game-id "/join"))
 

@@ -1,6 +1,6 @@
 (ns wombats-web-client.events.games
   (:require [re-frame.core :as re-frame]
-            [ajax.core :refer [GET POST PUT]]
+            [ajax.core :refer [GET POST PUT DELETE]]
             [ajax.edn :refer [edn-request-format edn-response-format]]
             [wombats-web-client.constants.games :refer [pending-open
                                                         pending-closed
@@ -11,6 +11,7 @@
              :refer [build-status-query sort-players]]
             [wombats-web-client.constants.urls :refer [games-url
                                                        games-join-url
+                                                       games-id-url
                                                        create-game-url]]
             [wombats-web-client.utils.auth :refer [add-auth-header
                                                    get-current-user-id]]))
@@ -44,6 +45,16 @@
                                  :params {:player/wombat-id wombat-id
                                           :player/color color
                                           :game/password password}}))
+
+(defn delete-game-by-id
+  "deletes a games from db by id"
+  [game-id on-success on-error]
+  (DELETE (games-id-url game-id) {:response-format (edn-response-format)
+                                  :format (edn-request-format)
+                                  :keywords? true
+                                  :headers (add-auth-header {})
+                                  :handler on-success
+                                  :error-handler on-error}))
 
 (defn create-game [{:keys [arena-id
                            start-time
