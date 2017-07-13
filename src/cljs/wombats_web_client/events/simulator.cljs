@@ -30,7 +30,10 @@
 (re-frame/reg-event-db
  :simulator/update-code
  (fn [db [_ code]]
-   (let [trimmed-frames (subvec (:simulator/frames-vec db) (:simulator/frames-idx db) (inc (:simulator/frames-idx db)))
+   (let [trimmed-frames (subvec
+                         (:simulator/frames-vec db)
+                         (:simulator/frames-idx db)
+                         (inc (:simulator/frames-idx db)))
          state (get (:simulator/frames-vec db) (:simulator/frames-idx db))
          player-id (first
                     (keys
