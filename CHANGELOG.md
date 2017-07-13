@@ -10,7 +10,7 @@ CHANGELOG
 * Pagination displayed on the games list. [Eli Bosley][/eli], [C.P. Dehli][/dehli] [#285](https://github.com/willowtreeapps/wombats-web-client/issues/285)
 
 **Bug Fixes**
-* None
+* CSS Prefixing performed automatically using autoprefixer - this is to help improve browser compatibility [Eli Bosley][/eli] *No Issue*
 
 ## QA (3.27.2017)
 **Enhancements**
