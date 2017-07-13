@@ -6,7 +6,7 @@
 
 .simulator-controls {
     position: relative;
-    bottom: 0%;
+    bottom: 0;
     display: flex;
     width: 100%;
     flex-grow: 1;
@@ -22,24 +22,25 @@
         width: inherit;
         margin-right: 10px;
         align-self: center;
+        position: relative;
         background-color: @background-grey;
         .filled {
             background-color: @wombat-green;
-            width: 0%;
-            margin: 0px;
+
+            .scrubber {
+                @scrubber-size: 18px;
+                width: @scrubber-size;
+                height: @scrubber-size;
+                background-color: @white;
+                border-radius: 100%;
+                position: absolute;
+                right: -6px;
+                top: -5px;
+            }
         }
+
     }
-    .scrubber {
-        @scrubber-size: 18px;
-        width: @scrubber-size;
-        height: @scrubber-size;
-        background-color: @white;
-        border-radius: 100%;
-        float: right;
-        position: relative;
-        left: calc(@scrubber-size / 2);
-        top: -@progress-bar-height;
-    }
+
 
     .icon-play {
         width: 44px;
