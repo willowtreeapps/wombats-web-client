@@ -7,9 +7,6 @@
   [clj-object]
   (str (.stringify js/JSON (clj->js clj-object) nil 2)))
 
-(defn- on-change [evt]
-  (reagent/force-update-all))
-
 (defn render [simulator-data update]
   [:div.output-container
    [:div.output-section

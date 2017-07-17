@@ -22,6 +22,7 @@
         width: inherit;
         margin-right: 10px;
         align-self: center;
+        margin-bottom: 3px;
         position: relative;
         background-color: @background-grey;
 
@@ -37,33 +38,49 @@
                 position: absolute;
                 right: -6px;
                 top: -5px;
+                cursor: pointer;
+                cursor: hand;
             }
         }
 
     }
+        .play {
+            align-self: center;
+            background-color: transparent;
+            border: transparent;
+            padding: 0;
+            margin: 0 10px;
+            .icon-play {
 
-    .icon-play {
-        width: 44px;
-        height: 44px;
-        align-self: center;
-        margin: 0 10px;
-    }
+                width: 44px;
+                height: 44px;
 
-    .icon-settings {
-        width: 21px;
-        height: 22px;
-        align-self: center;
-        margin: 20px;
-    }
-
-    .icon-arrow {
-        width: 22px;
-        height: 22px;
-        margin: 5px;
-        align-self: center;
-
-        &.right {
-            transform: rotate(180deg);
+            }
         }
-    }
+        .settings {
+            align-self: center;
+            margin: 20px;
+            background-color: transparent;
+            border: transparent;
+            padding: 0;
+            .icon-settings {
+                width: 21px;
+                height: 22px;
+            }
+        }
+        .arrow {
+            margin: 5px;
+            align-self: center;
+            background-color: transparent;
+            border: transparent;
+            padding: 0;
+            .icon-arrow {
+                width: 22px;
+                height: 22px;
+                &.right {
+                    transform: rotate(180deg);
+                }
+            }
+        }
+
 }
