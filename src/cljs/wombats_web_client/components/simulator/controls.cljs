@@ -8,12 +8,12 @@
              :as progress-bar]
             [wombats-web-client.utils.time :as time]))
 
-(defn- back-button!
+(defn- on-back-button-click!
   [evt index]
   (when (pos? @index)
     (re-frame/dispatch [:simulator/back-frame])))
 
-(defn- forward-button!
+(defn- on-forward-button-click!
   [evt simulator-data frames index]
   (if (>= @index (dec (count @frames)))
     (re-frame/dispatch [:simulator/process-simulation-frame
@@ -38,7 +38,7 @@
                         (reset! play-status "playing")
                         (reset! interval
                                 (js/setInterval
-                                 #(forward-button!
+                                 #(on-forward-button-click!
                                    % simulator-data frames index)
                                  frame-time)))
                       (do
@@ -62,6 +62,6 @@
                  :frames frames
                  :index index}]
    [progress-bar/render frames index]
-   [arrow-button #(back-button! % index) "left"]
-   [arrow-button #(forward-button! % simulator-data frames index) "right"]
+   [arrow-button #(on-back-button-click! % index) "left"]
+   [arrow-button #(on-forward-button-click! % simulator-data frames index) "right"]
    [settings-button (open-configure-simulator-modal)]])

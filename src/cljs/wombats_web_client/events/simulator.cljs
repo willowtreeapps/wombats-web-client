@@ -88,14 +88,9 @@
    (assoc db :simulator/error error)))
 
 (re-frame/reg-event-db
- :simulator/show-arena-view
- (fn [db _]
-   (assoc db :simulator/view-mode :frame)))
-
-(re-frame/reg-event-db
- :simulator/show-wombat-view
- (fn [db _]
-   (assoc db :simulator/view-mode :mini-map)))
+ :simulator/change-view
+ (fn [db [_ view-mode]]
+   (assoc db :simulator/view-mode view-mode)))
 
 
 ;; TODO merge these two functions common functionality

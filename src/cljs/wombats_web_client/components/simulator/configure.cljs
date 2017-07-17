@@ -12,11 +12,9 @@
 
 (defn- callback-success [state]
   "closes modal on success"
-  (re-frame/dispatch [:update-modal-error nil])
-  (re-frame/dispatch [:set-modal nil]))
+  (re-frame/dispatch [:reset-modal]))
 
-(defonce radioKeys {:frame "Full Arena" :mini-map "Wombat POV"})
-(defonce radios [(:frame radioKeys) (:mini-map radioKeys)])
+(defonce radio-keys {:frame "Full Arena" :mini-map "Wombat POV"})
 
 (defn- update-simulator-configuration!
   [state]
@@ -25,9 +23,7 @@
         template-id (:template-id @state)
         template-id-error (:template-id-error @state)
         view-mode (:view-mode @state)]
-    (if (= view-mode (:frame radioKeys))
-      (re-frame/dispatch [:simulator/show-arena-view])
-      (re-frame/dispatch [:simulator/show-wombat-view]))
+    (re-frame/dispatch [:simulator/change-view  (get (clojure.set/map-invert radio-keys) view-mode)])
     (when (and template-id (nil? wombat-id))
       (swap! state assoc :wombat-id-error required-field-error))
     (when (and wombat-id (nil? template-id))
@@ -37,11 +33,6 @@
                           {:simulator/template-id template-id
                            :simulator/wombat-id wombat-id}])
       (callback-success state))))
-
-(defn- get-selected-val
-"Uses the radioKeys to turn the key from re-frame into a radio-button key name"
-  [wombat-view]
-  (get radioKeys wombat-view))
 
 (defn configuration-panel []
   (let [wombats (re-frame/subscribe [:my-wombats])
@@ -53,7 +44,7 @@
                                   :wombat-id-error nil
                                   :template-id @selected-template
                                   :template-id-error nil
-                                  :view-mode (get-selected-val @wombat-view)})]
+                                  :view-mode (get radio-keys @wombat-view)})]
     (fn []
       (let [wombats @wombats
             templates @sim-templates]
@@ -82,7 +73,7 @@
                          :name "view-mode"
                          :label "View"
                          :state form-state
-                         :radios radios}]]
+                         :radios (vals radio-keys)}]]
          [:button.update-btn
           {:on-click #(update-simulator-configuration! form-state)}
           "START"]]))))
@@ -97,7 +88,7 @@
                                   :wombat-id-error nil
                                   :template-id @selected-template
                                   :template-id-error nil
-                                  :view-mode (get-selected-val @wombat-view)})]
+                                  :view-mode (get radio-keys @wombat-view)})]
 
     (reagent/create-class
      {:component-will-unmount #(re-frame/dispatch [:update-modal-error nil])
@@ -133,7 +124,7 @@
                            :name "view-mode"
                            :label "View"
                            :state form-state
-                           :radios radios}]]
+                           :radios (vals radio-keys)}]]
            [:div.action-buttons
             [cancel-modal-input]
             [submit-modal-input
