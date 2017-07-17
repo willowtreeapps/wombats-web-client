@@ -26,12 +26,12 @@
 
 (defn- settings-button
   [on-click]
-  [:button.settings {:on-click on-click}
+  [:button.simulator-button.settings {:on-click on-click}
    [:img.icon-settings
     {:src "/images/icon-settings.svg"}]])
 
 (defn- play-button [{:keys [simulator-data frames index]}]
-  [:button.play {:on-click
+  [:button.simulator-button.play {:on-click
                         (fn [] (if (= @play-status "paused")
                                 (do
                                   (reset! play-status "playing")
@@ -50,7 +50,7 @@
 
 (defn- arrow-button
   [on-click orientation]
-  [:button.arrow {:on-click on-click}
+  [:button.simulator-button.arrow {:on-click on-click}
    [:img.icon-arrow
     {:class orientation
      :src "/images/icon-arrow-left.svg"}]])
