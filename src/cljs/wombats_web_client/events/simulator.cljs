@@ -62,10 +62,10 @@
  :simulator/update-state
  (fn [db [_ sim-state]]
    (let [mini-map (get-in (games/get-player db) [:state :mini-map])]
-     (assoc db :simulator/frames-idx
-            (inc (:simulator/frames-idx db))
-            :simulator/frames-vec
-            (conj (:simulator/frames-vec db) sim-state)))))
+     (assoc db
+            :simulator/frames-idx (inc (:simulator/frames-idx db))
+            :simulator/frames-vec (conj (:simulator/frames-vec db)
+                                        sim-state)))))
 
 (re-frame/reg-event-db
  :simulator/back-frame
@@ -77,7 +77,8 @@
 (re-frame/reg-event-db
  :simulator/forward-frame
  (fn [db _]
-   (if (< (:simulator/frames-idx db) (dec (count (:simulator/frames-vec db))))
+   (if (< (:simulator/frames-idx db)
+          (dec (count (:simulator/frames-vec db))))
      (update db :simulator/frames-idx inc)
      db)))
 

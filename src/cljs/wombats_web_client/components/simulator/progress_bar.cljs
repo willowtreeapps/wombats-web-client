@@ -17,7 +17,7 @@
   [sim-frames sim-index]
   (bind-value (* 100 (/ @sim-index (dec (count @sim-frames)))) 0 100))
 
-(defn- mouse-move-handler [offset sim-frames sim-index]
+(defn- mouse-move-handler-fn [offset sim-frames sim-index]
   (fn [evt]
     (.preventDefault evt)
     (let [x (- (.-clientX evt) (:x offset))
@@ -27,7 +27,7 @@
       (when (< @sim-index bar-index)
         (re-frame/dispatch [:simulator/forward-frame])))))
 
-(defn- mouse-up-handler [on-move]
+(defn- mouse-up-handler-fn [on-move]
   (fn [evt]
     (events/unlisten js/window EventType.MOUSEMOVE
                      on-move)))
@@ -35,12 +35,12 @@
 (defn- mouse-down-handler [e sim-frames sim-index]
   (let [offset             {:x play-button-width
                             :y  0}
-        on-move            (mouse-move-handler offset sim-frames sim-index)]
+        on-move            (mouse-move-handler-fn offset sim-frames sim-index)]
 
     (events/listen js/window EventType.MOUSEMOVE
                    on-move)
     (events/listen js/window EventType.MOUSEUP
-                   (mouse-up-handler on-move))))
+                   (mouse-up-handler-fn on-move))))
 
 (defn render
   [sim-frames sim-index]

@@ -8,8 +8,9 @@
   [list]
   (empty? (filter nil? list)))
 
-(defn bind-value [val lower upper]
-  ;; bind a value between upper and lower bounds
+(defn bind-value
+  "bind a value between upper and lower bounds"
+  [val lower upper]
   (cond
     (> val upper) upper
     (< val lower) lower

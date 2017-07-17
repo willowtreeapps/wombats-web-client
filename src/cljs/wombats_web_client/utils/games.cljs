@@ -41,8 +41,8 @@
     (get players player-key)))
 
 (defn get-player-frames-vec
+  "Given state pull out the first player component"
   [state]
-  "Given state pull the player component out for use in simulator state"
   (let [players (:game/players state)
         player-key (first (keys players))]
     (get players player-key)))
