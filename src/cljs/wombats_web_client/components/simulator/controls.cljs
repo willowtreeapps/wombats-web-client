@@ -63,5 +63,6 @@
                  :index index}]
    [progress-bar/render frames index]
    [arrow-button #(on-back-button-click! % index) "left"]
-   [arrow-button #(on-forward-button-click! % simulator-data frames index) "right"]
+   [arrow-button
+    #(on-forward-button-click! % simulator-data frames index) "right"]
    [settings-button (open-configure-simulator-modal)]])

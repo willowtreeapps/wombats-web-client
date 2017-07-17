@@ -23,7 +23,8 @@
         template-id (:template-id @state)
         template-id-error (:template-id-error @state)
         view-mode (:view-mode @state)]
-    (re-frame/dispatch [:simulator/change-view  (get (clojure.set/map-invert radio-keys) view-mode)])
+    (re-frame/dispatch [:simulator/change-view
+                        (get (clojure.set/map-invert radio-keys) view-mode)])
     (when (and template-id (nil? wombat-id))
       (swap! state assoc :wombat-id-error required-field-error))
     (when (and wombat-id (nil? template-id))
