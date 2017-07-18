@@ -7,6 +7,7 @@
                                                         active
                                                         active-intermission
                                                         closed]]
+            [wombats-web-client.utils.errors :refer [get-error-message]]
             [wombats-web-client.utils.games
              :refer [build-status-query sort-players]]
             [wombats-web-client.constants.urls :refer [games-url
@@ -55,6 +56,14 @@
                                   :headers (add-auth-header {})
                                   :handler on-success
                                   :error-handler on-error}))
+
+(defn delete-game
+  [game-id cb-success]
+  (delete-game-by-id
+   game-id
+   (fn []
+     (cb-success))
+   #(re-frame/dispatch [:update-modal-error (get-error-message %)])))
 
 (defn create-game [{:keys [arena-id
                            start-time

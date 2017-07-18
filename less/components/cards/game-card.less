@@ -28,6 +28,12 @@
                 display: initial;
             }
         }
+        .game-information {
+            .delete {
+                display: block;
+                z-index: @game-card-delete-button-hover-z-idx;
+            }
+        }
     }
 
     .arena-preview {
@@ -135,6 +141,14 @@
                     margin-bottom: -5px;
                 }
             }
+        }
+        .delete {
+            display: none;
+            .simple-button;
+            position: absolute;
+            right: 5px;
+            bottom: 5px;
+
         }
     }
 
