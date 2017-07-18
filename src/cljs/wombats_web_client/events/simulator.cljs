@@ -94,7 +94,7 @@
    (assoc db :simulator/view-mode view-mode)))
 
 
-;; TODO merge these two functions common functionality
+
 (re-frame/reg-event-db
  :simulator/update-configuration
  (fn [db [_ {wombat-id :wombat-id

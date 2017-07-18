@@ -60,7 +60,7 @@
            simulator-frames
            simulator-index
            simulator-data]}]
-  (if (neg? @simulator-index) ;; fix reset to config screen bug
+  (if (neg? @simulator-index)
     [configuration-panel]
     [:div {:class-name "simulator-panel"}
      [render-left-pane {:simulator-view-mode simulator-view-mode
