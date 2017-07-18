@@ -57,14 +57,6 @@
                                   :handler on-success
                                   :error-handler on-error}))
 
-(defn delete-game
-  [game-id cb-success]
-  (delete-game-by-id
-   game-id
-   (fn []
-     (cb-success))
-   #(re-frame/dispatch [:update-modal-error (get-error-message %)])))
-
 (defn create-game [{:keys [arena-id
                            start-time
                            num-rounds
@@ -146,6 +138,16 @@
    password
    cb-success
    cb-error))
+
+(defn delete-game
+  [game-id cb-success]
+  (delete-game-by-id
+   game-id
+   (fn []
+
+     (cb-success))
+   #(re-frame/dispatch [:update-modal-error (get-error-message %)])))
+
 
 (re-frame/reg-event-db
  :add-join-selection
