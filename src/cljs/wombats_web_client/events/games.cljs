@@ -162,12 +162,13 @@
 
 (defn delete-game
   [game-id cb-success]
-  (delete-game-by-id
-   game-id
-   (fn []
-
-     (cb-success))
-   #(re-frame/dispatch [:update-modal-error (get-error-message %)])))
+  (let [query-params (re-frame/subscribe [:query-params])]
+    (delete-game-by-id
+     game-id
+     (fn []
+       (get-games-query-params @query-params)
+       (cb-success))
+     #(re-frame/dispatch [:update-modal-error (get-error-message %)]))))
 
 
 (re-frame/reg-event-db

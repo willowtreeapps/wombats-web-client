@@ -50,12 +50,12 @@
 
 (defn- nav-open!
   [query-params]
-  (let [updated-params (dissoc @query-params :closed)]
+  (let [updated-params (dissoc query-params :closed)]
     (nav! (construct-query-params updated-params))))
 
 (defn- nav-finished!
   [query-params]
-  (let [updated-params (merge @query-params {:closed true})]
+  (let [updated-params (merge query-params {:closed true})]
     (nav! (construct-query-params updated-params))))
 
 (defn- toggle-mine!
@@ -91,23 +91,21 @@
 
 (defn- component-will-receive-props
   [this [_ query-params]]
-  (println "received props")
-  (get-games-query-params @query-params))
+  (get-games-query-params query-params))
 
 (defn- component-will-mount
   [query-params]
-  (println "will mount")
-  (get-games-query-params @query-params)
+  (get-games-query-params query-params)
 
   ;; Make sure the url has valid query params
-  (nav! (construct-query-params @query-params)))
+  (nav! (construct-query-params query-params)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn tab-view-toggle [query-params]
-  (let [closed (:closed @query-params)]
+  (let [closed (:closed query-params)]
     [:div.tab-game-toggle
      [:div.game-tab {:class (when-not closed "active")
                      :on-click #(nav-open! query-params)}
@@ -229,15 +227,14 @@
 (defn main-panel [query-params]
   (let [current-user (re-frame/subscribe [:current-user])
         games (re-frame/subscribe [:games/games])]
-    (println @query-params)
     [:div.games-panel
      [:div.toggles
       [tab-view-toggle query-params]
-      [my-game-toggle @query-params]]
+      [my-game-toggle query-params]]
 
      [:div.games
       (if (empty? @games)
-        [get-empty-state @query-params]
+        [get-empty-state query-params]
         [:ul.games-list
          (doall
           (map
@@ -263,12 +260,11 @@
                                         num-joined]))
            @games))])
 
-      [page-switcher @query-params]]]))
+      [page-switcher query-params]]]))
 
-(defn games []
-  (let [query-params (re-frame/subscribe [:query-params])]
-    (reagent/create-class
-     {:component-will-mount #(component-will-mount query-params)
-      :component-will-receive-props #(component-will-receive-props query-params)
-      :reagent-render (fn []
-                        [main-panel query-params])})))
+(defn games [query-params]
+  (reagent/create-class
+   {:component-will-mount #(component-will-mount query-params)
+    :component-will-receive-props component-will-receive-props
+    :reagent-render (fn [query-params]
+                      [main-panel query-params])}))

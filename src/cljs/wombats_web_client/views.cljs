@@ -22,7 +22,7 @@
 
 (defn- panels [panel-name params]
   (case panel-name
-    :view-games-panel [view-games-panel/games]
+    :view-games-panel [view-games-panel/games @(re-frame/subscribe [:query-params])]
     :account-panel [account-panel/account params]
     :game-play-panel [game-play-panel/game-play params]
     :welcome-panel [welcome-panel/welcome params]
