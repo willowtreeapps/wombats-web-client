@@ -7,15 +7,17 @@
                                                         active
                                                         active-intermission
                                                         closed]]
-            [wombats-web-client.utils.errors :refer [get-error-message]]
-            [wombats-web-client.utils.games
-             :refer [build-status-query sort-players]]
             [wombats-web-client.constants.urls :refer [games-url
                                                        games-join-url
                                                        games-id-url
                                                        create-game-url]]
+            [wombats-web-client.routes :refer [nav!]]
             [wombats-web-client.utils.auth :refer [add-auth-header
-                                                   get-current-user-id]]))
+                                                   get-current-user-id]]
+            [wombats-web-client.utils.errors :refer [get-error-message]]
+
+            [wombats-web-client.utils.games
+             :refer [build-status-query sort-players]]))
 
 (defn get-games [status on-success on-error]
   (GET games-url {:response-format (edn-response-format)
@@ -87,7 +89,6 @@
          :error-handler on-error}))
 
 ;; TODO Scaling Issue with Lots of games - only update with games that are new?
-
 (defn get-open-games
   ([] (get-open-games 0))
   ([page]
@@ -123,6 +124,26 @@
                         page)
     #(re-frame/dispatch [:games %])
     #(print "error on get all closed games"))))
+
+(defn get-games-query-params
+  "This is used to retrieve games based on params"
+  [{:keys [closed mine page]}]
+  ;; Subtract 1 since the API is 0-indexed
+  (let [page (if page
+               (dec page)
+               0)]
+    (cond
+      (and closed mine)
+      (get-my-closed-games page)
+
+      (and closed (not mine))
+      (get-closed-games page)
+
+      (and (not closed) mine)
+      (get-my-open-games page)
+
+      (and (not closed) (not mine))
+      (get-open-games page))))
 
 (defn get-all-games []
   (get-open-games)
@@ -178,3 +199,8 @@
  :get-closed-games
  (fn [_]
    (get-closed-games)))
+
+(re-frame/reg-event-db
+ :set-query-params
+ (fn [db [_ query-params]]
+   (assoc db :query-params query-params)))
