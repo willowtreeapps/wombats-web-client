@@ -4,11 +4,8 @@
             [reagent.core :as reagent]
             [wombats-web-client.components.cards.game :refer [game-card]]
             [wombats-web-client.routes :refer [nav!]]
-            [wombats-web-client.events.games :refer [get-games-query-params
-                                                     get-open-games
-                                                     get-my-open-games
-                                                     get-closed-games
-                                                     get-my-closed-games]]))
+            [wombats-web-client.events.games
+             :refer [get-games-query-params]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Constants
