@@ -11,10 +11,7 @@
 (re-frame/reg-sub
  :query-params
  (fn [db _]
-   (let [query-params (get-in db [:active-panel :params])]
-     (if  (nil? query-params)
-       {}
-       query-params))))
+   (get-in db [:active-panel :params] {})))
 
 (re-frame/reg-sub
  :auth-token
