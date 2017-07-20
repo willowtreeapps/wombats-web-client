@@ -22,7 +22,7 @@
         .split-panel {
             height: 100%;
             display: flex;
-            flex-direction:column;
+            flex-direction: column;
 
             .panel-top {
                 #editor {
@@ -46,7 +46,6 @@
                 font-size: 10px;
                 color: @warm-grey;
                 position: absolute;
-                margin: auto;
                 padding-left: 10px;
                 margin-top: 1px;
                 text-transform: uppercase;
@@ -62,7 +61,6 @@
 
             .panel-bottom {
                 flex-grow: 1;
-                flex-shrink: 1;
                 position: relative;
                 @editor-padding: 2px;
 
@@ -76,17 +74,14 @@
 
                     #command {
                         flex-grow: 0;
-                        flex-shrink: 1;
                         font-family: monospace;
                     }
                     #state {
                         flex-grow: 1;
-                        flex-shrink: 1;
                         font-family: monospace;
                     }
                     .output-section {
                         flex-grow: 0;
-                        flex-shrink: 1;
 
                         .output-section-title {
                             color: @white;
@@ -111,14 +106,12 @@
 
                     .stack-trace-message {
                         padding: 10px;
-                        flex-shrink: 1;
                         font-size: @font-size-14;
                     }
 
                     .stack-trace-details {
-                        flex-shrink: 1;
                         list-style: none;
-                        padding: 0px 10px 10px;
+                        padding: 0 10px 10px;
                         font-size: @font-size-12;
 
                         .line-item {
@@ -126,10 +119,7 @@
                         }
                     }
                 }
-
-
             }
-
         }
 
         .configure {
