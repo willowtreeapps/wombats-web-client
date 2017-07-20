@@ -145,28 +145,29 @@
 
     }
 }
-.configuration-panel {
-    width: 370px;
-    position: fixed;
-    top: calc(@navbar-height + 30px);
-    left: 50%;
-    transform: translate(-50%, 0);
-    align-content: center;
+.configuration-container {
+    display: flex;
+    justify-content: center;
 
-    .title {
-        .bold;
-        font-size: @font-size-30;
-        text-transform: uppercase;
-        text-align: center;
-    }
-    .panel-content {
-        padding: 30px 30px 45px;
+    .configuration-panel {
+        width: 370px;
+        margin-top: calc(@navbar-height + 30px);
 
-    }
-    .update-btn {
-        .emphasized-button(@wombat-green, @black-30, @wombat-dark-green, @white);
-        width: 100%;
-        text-align: center;
-        text-transform: uppercase;
+        .title {
+            .bold;
+            font-size: @font-size-30;
+            text-transform: uppercase;
+            text-align: center;
+        }
+        .panel-content {
+            padding: 30px 30px 45px;
+
+        }
+        .update-btn {
+            .emphasized-button(@wombat-green, @black-30, @wombat-dark-green, @white);
+            width: 100%;
+            text-align: center;
+            text-transform: uppercase;
+        }
     }
 }

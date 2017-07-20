@@ -17,7 +17,7 @@
 
    :arenas nil
    :simulator/frames-vec []
-   :simulator/frames-idx -1
+   :simulator/frames-idx -1 ;; since frames idx is zero indexed, start at -1
    :simulator/state nil
    :simulator/templates nil
    :simulator/wombat-id nil

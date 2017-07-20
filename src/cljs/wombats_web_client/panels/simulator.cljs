@@ -61,7 +61,8 @@
            simulator-index
            simulator-data]}]
   (if (neg? @simulator-index)
-    [configuration-panel]
+    [:div.configuration-container
+     [configuration-panel]]
     [:div {:class-name "simulator-panel"}
      [render-left-pane {:simulator-view-mode simulator-view-mode
                         :simulator-data simulator-data
