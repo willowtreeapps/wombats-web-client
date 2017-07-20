@@ -49,7 +49,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn app-routes []
-
   (defroute "/" {:keys [query-params]}
     (re-frame/dispatch [:set-active-panel {:panel-id :view-games-panel
                                            :params query-params}]))

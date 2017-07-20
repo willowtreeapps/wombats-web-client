@@ -72,7 +72,7 @@
            wombat-id)
           {:response-format (edn-response-format)
            :format (edn-request-format)
-           :keywoards? true
+           :keywords? true
            :headers (add-auth-header {})
            :handler on-success
            :error-handler on-error}))

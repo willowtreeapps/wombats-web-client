@@ -8,7 +8,10 @@
             [wombats-web-client.utils.games :refer [get-user-in-game
                                                     get-game-state-str]]
             [wombats-web-client.components.modals.join-wombat-modal
-             :refer [join-wombat-modal]]))
+             :refer [join-wombat-modal]]
+            [wombats-web-client.components.modals.delete-game-modal
+             :refer [delete-game-modal]]
+            [wombats-web-client.utils.auth :refer [user-is-coordinator?]]))
 
 (defn open-join-game-modal-fn [game-id]
   (fn [e]
@@ -64,6 +67,11 @@
     [:div.wombat-preview-icon
      [:img {:src (str "images/wombat_" color "_right.png")}]]))
 
+(defn open-delete-game-modal [id]
+  (fn []
+    (re-frame/dispatch [:set-modal {:fn #(delete-game-modal id)
+                                    :show-overlay true}])))
+
 
 ;; CARD STATES
 ;; is-joinable - OPEN & JOINABLE - :pending-open & not in-game
@@ -104,5 +112,9 @@
        [:div (get-arena-text-info {:game-type game-type
                                    :rounds game-rounds
                                    :width arena-width
-                                   :height arena-height})]]
+                                   :height arena-height})]
+       (when (user-is-coordinator?)
+         [:input.delete {:type "button"
+                         :value "DELETE"
+                         :on-click (open-delete-game-modal game-id)}])]
       [get-arena-frequencies arena num-joined game-capacity]]]))

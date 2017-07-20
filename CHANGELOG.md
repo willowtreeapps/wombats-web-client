@@ -8,6 +8,7 @@ CHANGELOG
 * User repositories are selectable through a dropdown.
   [Eli Bosley][/eli] *No Issue*
 * Pagination displayed on the games list. [Eli Bosley][/eli], [C.P. Dehli][/dehli] [#285](https://github.com/willowtreeapps/wombats-web-client/issues/285)
+* Added ability to delete games as an administrator [Eli Bosley](/elibosley) #[284](https://github.com/willowtreeapps/wombats-web-client/issues/284)
 
 **Bug Fixes**
 * CSS Prefixing performed automatically using autoprefixer - this is to help improve browser compatibility [Eli Bosley][/eli] *No Issue*

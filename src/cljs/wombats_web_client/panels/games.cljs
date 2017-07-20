@@ -4,10 +4,8 @@
             [reagent.core :as reagent]
             [wombats-web-client.components.cards.game :refer [game-card]]
             [wombats-web-client.routes :refer [nav!]]
-            [wombats-web-client.events.games :refer [get-open-games
-                                                    get-my-open-games
-                                                    get-closed-games
-                                                    get-my-closed-games]]))
+            [wombats-web-client.events.games
+             :refer [get-games-query-params]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Constants
@@ -39,14 +37,23 @@
          (when closed "&closed")
          (when mine "&mine"))))
 
+(defn- construct-nav-token
+  []
+  (let [{:keys [closed page mine]} @(re-frame/subscribe [:games/query-params])
+        page (js/Number page)]
+    (str "/?page=" page
+         (when closed "&closed")
+         (when mine "&mine"))))
+
 (defn- nav-open!
   [query-params]
-  (nav! (construct-query-params (dissoc query-params :closed))))
+  (let [updated-params (dissoc query-params :closed)]
+    (nav! (construct-query-params updated-params))))
 
 (defn- nav-finished!
   [query-params]
-  (nav! (construct-query-params (merge query-params
-                                       {:closed true}))))
+  (let [updated-params (merge query-params {:closed true})]
+    (nav! (construct-query-params updated-params))))
 
 (defn- toggle-mine!
   "This is triggered whenever you press SHOW MY GAMES"
@@ -66,26 +73,7 @@
 
 (defn- next-page-link
   [{:keys [page] :as query-params}]
-  (construct-query-params (merge query-params
-                                 {:page (+ (js/Number page) 1)})))
-
-(defn- get-games
-  "This is used to retrieve games based on params"
-  [{:keys [closed mine page]}]
-  ;; Subtract 1 since the API is 0-indexed
-  (let [page (dec page)]
-    (cond
-      (and closed mine)
-      (get-my-closed-games page)
-
-      (and closed (not mine))
-      (get-closed-games page)
-
-      (and (not closed) mine)
-      (get-my-open-games page)
-
-      (and (not closed) (not mine))
-      (get-open-games page))))
+  (construct-query-params {:page (+ (js/Number page) 1)}))
 
 (defn get-user-in-game [players current-user]
   (let [current-username (:user/github-username current-user)]
@@ -100,11 +88,11 @@
 
 (defn- component-will-receive-props
   [this [_ query-params]]
-  (get-games query-params))
+  (get-games-query-params query-params))
 
 (defn- component-will-mount
   [query-params]
-  (get-games query-params)
+  (get-games-query-params query-params)
 
   ;; Make sure the url has valid query params
   (nav! (construct-query-params query-params)))
@@ -113,14 +101,15 @@
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn tab-view-toggle [{:keys [closed] :as query-params}]
-  [:div.tab-game-toggle
-   [:div.game-tab {:class (when-not closed "active")
-                   :on-click #(nav-open! query-params)}
-    "OPEN"]
-   [:div.game-tab {:class (when closed "active")
-                   :on-click #(nav-finished! query-params)}
-    "FINISHED"]])
+(defn tab-view-toggle [query-params]
+  (let [closed (:closed query-params)]
+    [:div.tab-game-toggle
+     [:div.game-tab {:class (when-not closed "active")
+                     :on-click #(nav-open! query-params)}
+      "OPEN"]
+     [:div.game-tab {:class (when closed "active")
+                     :on-click #(nav-finished! query-params)}
+      "FINISHED"]]))
 
 (defn my-game-toggle [{:keys [mine] :as query-params}]
   [:div.my-game-toggle-wrapper
@@ -232,10 +221,9 @@
                     (.preventDefault %)
                     (nav! next-link))} "NEXT"]]))
 
-(defn main-panel [{:keys [query-params]}]
+(defn main-panel [query-params]
   (let [current-user (re-frame/subscribe [:current-user])
         games (re-frame/subscribe [:games/games])]
-
     [:div.games-panel
      [:div.toggles
       [tab-view-toggle query-params]
@@ -276,4 +264,4 @@
    {:component-will-mount #(component-will-mount query-params)
     :component-will-receive-props component-will-receive-props
     :reagent-render (fn [query-params]
-                      [main-panel {:query-params query-params}])}))
+                      [main-panel query-params])}))
