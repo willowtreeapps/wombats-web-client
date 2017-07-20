@@ -34,18 +34,16 @@
    :else nil))
 
 (defn get-player
-  [db]
   "Pulls the player out of db to use for simulator state"
-  (let [players (get-in db [:simulator/state :game/players])
-        player-key (first (keys players))]
-    (get players player-key)))
+  [db]
+  (let [players (get-in db [:simulator/state :game/players])]
+    (get players (first (keys players)))))
 
 (defn get-player-frames-vec
   "Given state pull out the first player component"
   [state]
-  (let [players (:game/players state)
-        player-key (first (keys players))]
-    (get players player-key)))
+  (let [players (:game/players state)]
+    (get players (first (keys players)))))
 
 (defn- is-open?
   "Whether the game is in an open state"
