@@ -25,14 +25,18 @@
         view-mode (:view-mode @state)]
     (re-frame/dispatch [:simulator/change-view
                         (get (clojure.set/map-invert radio-keys) view-mode)])
-    (when (and template-id (nil? wombat-id))
-      (swap! state assoc :wombat-id-error required-field-error))
-    (when (and wombat-id (nil? template-id))
-      (swap! state assoc :template-id-error required-field-error))
-    (when (and wombat-id template-id)
-      (re-frame/dispatch [:simulator/initialize-simulator
-                          {:simulator/template-id template-id
-                           :simulator/wombat-id wombat-id}])
+    (cond
+      (and template-id (nil? wombat-id))
+      (swap! state assoc :wombat-id-error required-field-error)
+      (and wombat-id (nil? template-id))
+      (swap! state assoc :template-id-error required-field-error)
+      (and wombat-id template-id)
+      (do
+        (re-frame/dispatch [:simulator/initialize-simulator
+                            {:simulator/template-id template-id
+                             :simulator/wombat-id wombat-id}])
+        (callback-success state))
+      (and (nil? template-id) (nil? wombat-id))
       (callback-success state))))
 
 (defn configuration-panel []
