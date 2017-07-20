@@ -33,10 +33,8 @@
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def update-sim (reagent/atom false))
-(def pane-label (reagent/atom "Debug Console"))
 (defn- render-right-pane
-  [simulator-data]
+  [{:keys [simulator-data update-sim pane-label]}]
   (let [bottom-pane (if (:player-stack-trace @simulator-data)
                       (do (reset! pane-label "Stack Trace")
                           [simulator-stack-trace/render simulator-data])
@@ -56,7 +54,9 @@
    [simulator-controls/render simulator-data simulator-frames simulator-index]])
 
 (defn- render
-  [{:keys [simulator-view-mode
+  [{:keys [update-sim
+           pane-label
+           simulator-view-mode
            simulator-frames
            simulator-index
            simulator-data]}]
@@ -67,22 +67,28 @@
                         :simulator-data simulator-data
                         :simulator-frames simulator-frames
                         :simulator-index simulator-index}]
-     [render-right-pane simulator-data]]))
+     [render-right-pane {:simulator-data simulator-data
+                         :update-sim update-sim
+                         :pane-label pane-label}]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main Method
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn simulator []
-  (reagent/create-class
-   {:component-will-mount #(component-will-mount!)
-    :props-name "simulator-panel"
-    :reagent-render
-    #(render {:simulator-view-mode @(re-frame/subscribe
-                                     [:simulator/get-view-mode])
-              :simulator-frames (re-frame/subscribe
-                                  [:simulator/frames])
-              :simulator-data (re-frame/subscribe
-                                [:simulator/get-data])
-              :simulator-index (re-frame/subscribe
-                                 [:simulator/frame-index])})}))
+  (let [update-sim (reagent/atom false)
+        pane-label (reagent/atom "Debug Console")]
+    (reagent/create-class
+     {:component-will-mount #(component-will-mount!)
+      :props-name "simulator-panel"
+      :reagent-render
+      #(render {:update-sim update-sim
+                :pane-label pane-label
+                :simulator-view-mode @(re-frame/subscribe
+                                       [:simulator/get-view-mode])
+                :simulator-frames (re-frame/subscribe
+                                   [:simulator/frames])
+                :simulator-data (re-frame/subscribe
+                                 [:simulator/get-data])
+                :simulator-index (re-frame/subscribe
+                                  [:simulator/frame-index])})})))

@@ -133,6 +133,5 @@
              #(update-simulator-configuration! form-state)]]]))})))
 
 (defn open-configure-simulator-modal []
-  (fn []
-    (re-frame/dispatch [:set-modal {:fn configuration-modal
-                                    :show-overlay true}])))
+  (re-frame/dispatch [:set-modal {:fn configuration-modal
+                                  :show-overlay true}]))

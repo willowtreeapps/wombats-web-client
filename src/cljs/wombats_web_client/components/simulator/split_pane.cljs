@@ -4,12 +4,10 @@
             [goog.events :as events])
   (:import [goog.events EventType]))
 
-
 (defonce navbar-height 45)
 (defonce max-height 107)
-(defonce top-size-px (reagent/atom 145))
 
-(defn- mouse-move-handler [offset update]
+(defn- mouse-move-handler [{:keys [offset update top-size-px]}]
   (fn [evt]
     (let [y (- (.-clientY evt) (:y offset))]
       (if (> y (- js/innerHeight max-height))
@@ -17,39 +15,41 @@
         (reset! top-size-px y))
       (reset! update (not @update)))))
 
-
-(defn- mouse-up-handler [on-move]
-  (fn me [evt]
-    (events/unlisten js/window EventType.MOUSEMOVE
-                     on-move)))
-
-(defn- mouse-down-handler [e update]
+(defn- mouse-down-handler [e {:keys [update top-size-px]}]
   (let [offset             {:y (+ 0 navbar-height)}
-        on-move            (mouse-move-handler offset update)]
+        on-move            (mouse-move-handler {:offset offset
+                                                :update update
+                                                :top-size-px top-size-px})]
     (.preventDefault e)
     (events/listen js/window EventType.MOUSEMOVE
                    on-move)
     (events/listen js/window EventType.MOUSEUP
-                   (mouse-up-handler on-move))))
+                   #(events/unlisten
+                     js/window EventType.MOUSEMOVE on-move))))
 
-(defn- render-divider [text update]
-       [:div.panel-divider {:on-mouse-down #(mouse-down-handler % update)}
-        [:p.panel-divider-text @text]
-        [:hr.panel-grabber]])
+(defn- render-divider [{:keys [divider-text update top-size-px]}]
+  [:div.panel-divider
+   {:on-mouse-down #(mouse-down-handler % {:update update
+                                           :top-size-px top-size-px})}
+   [:p.panel-divider-text @divider-text]
+   [:hr.panel-grabber]])
 
 (defn render
   ([top bottom update]
    (render top bottom update ""))
   ([top bottom update divider-text]
-   (reagent/create-class
-    {:display-name "split-panel"
-     :reagent-render (fn [top bottom update]
-                       [:div.split-panel
+   (let [top-size-px (reagent/atom 145)]
+     (reagent/create-class
+      {:display-name "split-panel"
+       :reagent-render (fn [top bottom update]
+                         [:div.split-panel
 
-                        ;; trigger rerender on resize
-                        @update
-                        [:div.panel-top
-                         {:style {:height (str @top-size-px "px")}} top]
-                        [render-divider divider-text update]
-                        [:div.panel-bottom
-                         bottom]])})))
+                          ;; trigger rerender on resize
+                          @update
+                          [:div.panel-top
+                           {:style {:height (str @top-size-px "px")}} top]
+                          [render-divider {:divider-text divider-text
+                                           :update update
+                                           :top-size-px top-size-px}]
+                          [:div.panel-bottom
+                           bottom]])}))))

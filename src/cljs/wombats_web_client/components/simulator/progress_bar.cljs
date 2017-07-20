@@ -33,9 +33,9 @@
                      on-move)))
 
 (defn- mouse-down-handler [e sim-frames sim-index]
-  (let [offset             {:x play-button-width
-                            :y  0}
-        on-move            (mouse-move-handler-fn offset sim-frames sim-index)]
+  (let [offset {:x play-button-width
+                :y  0}
+        on-move (mouse-move-handler-fn offset sim-frames sim-index)]
 
     (events/listen js/window EventType.MOUSEMOVE
                    on-move)

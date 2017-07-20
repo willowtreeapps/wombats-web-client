@@ -23,16 +23,14 @@
 
 (defn- refresh-ace
   [next-props editor]
-  (let [ace-element @editor]
-    (when ace-element
-      (let [position (.getCursorPosition ace-element)
-            code (:code (get next-props 1))]
-        (when code
-          (-> ace-element
-              .getSession
-              (.setValue code)))
-        (.resize ace-element)
-        (.moveCursorToPosition ace-element position)))))
+  (when-let [ace-element @editor] ace-element
+    (let [position (.getCursorPosition ace-element)]
+      (when-let [code (:code (get next-props 1))] code
+        (-> ace-element
+            .getSession
+            (.setValue code)))
+      (.resize ace-element)
+      (.moveCursorToPosition ace-element position))))
 
 (defn ace-component
   "Takes a settings map and creates an Ace component with the specified settings

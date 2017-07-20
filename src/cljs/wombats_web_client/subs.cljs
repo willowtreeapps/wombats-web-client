@@ -106,12 +106,11 @@
       :player-state (:saved-state player-state)
       :player-stack-trace (:error player-state)
       :code (get-in player-state [:code :code])
-      :code-mode (let [path (get-in player-state [:code :path])]
-                   (when path
-                     (get {"clj" "clojure"
-                           "js" "javascript"
-                           "py" "python"}
-                          (last (clojure.string/split path #"\.")))))})))
+      :code-mode (when-let [path (get-in player-state [:code :path])] path
+                   (get {"clj" "clojure"
+                         "js" "javascript"
+                         "py" "python"}
+                        (last (clojure.string/split path #"\."))))})))
 
 (re-frame/reg-sub
  :simulator/frame-index

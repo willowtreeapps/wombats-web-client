@@ -1,16 +1,13 @@
 (ns wombats-web-client.components.simulator.controls
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
-            [wombats-web-client.utils.socket :as ws]
             [wombats-web-client.components.simulator.configure
              :refer [open-configure-simulator-modal]]
             [wombats-web-client.components.simulator.progress-bar
              :as progress-bar]
+            [wombats-web-client.constants.games :refer [simulator-frame-time]]
+            [wombats-web-client.utils.socket :as ws]
             [wombats-web-client.utils.time :as time]))
-
-(defonce interval (reagent/atom 0))
-(defonce play-status (reagent/atom "paused"))
-(defonce frame-time 1000)
 
 (defn- on-back-button-click!
   [evt index]
@@ -18,38 +15,42 @@
     (re-frame/dispatch [:simulator/back-frame])))
 
 (defn- on-forward-button-click!
-  [evt simulator-data frames index]
+  [evt {:keys [simulator-data frames index]}]
   (if (>= @index (dec (count @frames)))
     (re-frame/dispatch [:simulator/process-simulation-frame
                         {:game-state (:state @simulator-data)}])
     (re-frame/dispatch [:simulator/forward-frame])))
 
 (defn- settings-button
-  [on-click]
+  [{:keys [on-click]}]
   [:button.simulator-button.settings {:on-click on-click}
    [:img.icon-settings
     {:src "/images/icon-settings.svg"}]])
 
-(defn- play-button [{:keys [simulator-data frames index]}]
-  [:button.simulator-button.play {:on-click
-                        (fn [] (if (= @play-status "paused")
-                                (do
-                                  (reset! play-status "playing")
-                                  (reset! interval
-                                          (js/setInterval
-                                           #(on-forward-button-click!
-                                             % simulator-data frames index)
-                                           frame-time)))
-                                (do
-                                  (js/clearInterval @interval)
-                                  (reset! play-status "paused"))))}
+(defn- play-button
+  [{:keys [simulator-data frames index interval play-status]}]
+  [:button.simulator-button.play
+   {:on-click
+    (fn [] (if (= @play-status "paused")
+            (do
+              (reset! play-status "playing")
+              (reset! interval
+                      (js/setInterval
+                       #(on-forward-button-click!
+                         % {:simulator-data simulator-data
+                            :frames frames
+                            :index index})
+                       simulator-frame-time)))
+            (do
+              (js/clearInterval @interval)
+              (reset! play-status "paused"))))}
    [:img.icon-play
     {:src (if (= @play-status "paused")
             "/images/icon-play.svg"
             "/images/icon-pause.svg")}]])
 
 (defn- arrow-button
-  [on-click orientation]
+  [{:keys [on-click orientation]}]
   [:button.simulator-button.arrow {:on-click on-click}
    [:img.icon-arrow
     {:class orientation
@@ -57,12 +58,20 @@
 
 (defn render
   [simulator-data frames index]
-  [:div.simulator-controls
-   [play-button {:simulator-data simulator-data
-                 :frames frames
-                 :index index}]
-   [progress-bar/render frames index]
-   [arrow-button #(on-back-button-click! % index) "left"]
-   [arrow-button
-    #(on-forward-button-click! % simulator-data frames index) "right"]
-   [settings-button (open-configure-simulator-modal)]])
+  (let [interval (reagent/atom 0)
+        play-status (reagent/atom "paused")]
+    [:div.simulator-controls
+     [play-button {:simulator-data simulator-data
+                   :frames frames
+                   :index index
+                   :interval interval
+                   :play-status play-status}]
+     [progress-bar/render frames index]
+     [arrow-button {:on-click  #(on-back-button-click! % index)
+                    :orientation "left"}]
+     [arrow-button {:on-click
+                    #(on-forward-button-click! % {:simulator-data simulator-data
+                                                  :frames frames
+                                                  :index index})
+                    :orientation "right"}]
+     [settings-button {:on-click  open-configure-simulator-modal}]]))
