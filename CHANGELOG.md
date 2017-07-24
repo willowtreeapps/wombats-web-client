@@ -7,6 +7,7 @@ CHANGELOG
 * Date picker now shows the current time when opened [Eli Bosley][/eli] [#333](https://github.com/willowtreeapps/wombats-web-client/issues/333)
 * User repositories are selectable through a dropdown.
   [Eli Bosley][/eli] *No Issue*
+* Simulator redesigned based on updated diagrams [Eli Bosley][/eli] [#289](https://github.com/willowtreeapps/wombats-web-client/issues/289)
 * Pagination displayed on the games list. [Eli Bosley][/eli], [C.P. Dehli][/dehli] [#285](https://github.com/willowtreeapps/wombats-web-client/issues/285)
 * Added ability to delete games as an administrator [Eli Bosley](/elibosley) #[284](https://github.com/willowtreeapps/wombats-web-client/issues/284)
 * Fixed issue with chat box in Safari [Eli Bosley](/elibosley) *No Issue*

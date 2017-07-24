@@ -8,10 +8,9 @@
     ;; Propogate the updated code into db
     (re-frame/dispatch [:simulator/update-code (.getValue editor)])))
 
-(defn render []
-  (let [code (re-frame/subscribe [:simulator/code])
-        mode (re-frame/subscribe [:simulator/code-mode])]
-    [ace-component {:code @code
-                    :mode @mode
-                    :id "editor"
-                    :event-handler on-code-change!}]))
+(defn render [{:keys [simulator-data update]}]
+  [ace-component {:code (:code @simulator-data)
+                  :mode (:code-mode @simulator-data)
+                  :id "editor"
+                  :update @update
+                  :event-handler on-code-change!}])

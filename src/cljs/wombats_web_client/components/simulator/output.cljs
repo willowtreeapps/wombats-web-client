@@ -7,24 +7,24 @@
   [clj-object]
   (str (.stringify js/JSON (clj->js clj-object) nil 2)))
 
-(defn render []
-  (let [command (re-frame/subscribe [:simulator/player-command])
-        player-state (re-frame/subscribe [:simulator/player-state])]
-    [:div.output-container
-     [:div.output-section
-      [:h3.output-section-title "Command"]]
+(defn render [simulator-data update]
+  [:div.output-container
+   [:div.output-section
+    [:h4.output-section-title "Command"]]
+   [ace-component  {:code (format-code (:player-command @simulator-data))
+                    :mode "json"
+                    :id "command"
+                    :update @update
+                    :options {:readOnly true
+                              :highlightActiveLine false
+                              :minLines 6
+                              :maxLines 7}}]
+   [:div.output-section
+    [:h4.output-section-title "State"]]
 
-     [ace-component  {:code (format-code @command)
-                      :mode "json"
-                      :id "command"
-                      :options {:readOnly true
-                                :highlightActiveLine false
-                                :maxLines 7}}]
-     [:div.output-section
-      [:h3.output-section-title "State"]]
-
-     [ace-component {:code (format-code @player-state)
-                     :mode "json"
-                     :id "state"
-                     :options {:readOnly true
-                               :highlightActiveLine false}}]]))
+   [ace-component {:code (format-code (:player-state @simulator-data))
+                   :mode "json"
+                   :id "state"
+                   :update @update
+                   :options {:readOnly true
+                             :highlightActiveLine false}}]])

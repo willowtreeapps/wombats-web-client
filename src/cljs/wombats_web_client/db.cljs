@@ -16,14 +16,14 @@
    :games {}
 
    :arenas nil
-
+   :simulator/frames-vec []
+   :simulator/frames-idx -1 ;; since frames idx is zero indexed, start at -1
    :simulator/state nil
    :simulator/templates nil
-   :simulator/active-pane :code
    :simulator/wombat-id nil
    :simulator/template-id nil
-   :simulator/mini-map false
    :simulator/error nil
+   :simulator/view-mode :frame
 
    :join-game-selections []
    :spritesheet nil

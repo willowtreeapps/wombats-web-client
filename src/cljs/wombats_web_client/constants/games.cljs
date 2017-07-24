@@ -7,3 +7,4 @@
 (defonce closed "closed")
 
 (defonce game-type-str-map {:high-score "High Score"})
+(defonce simulator-frame-time 1000)
