@@ -23,9 +23,9 @@
 
 (defn- refresh-ace
   [next-props editor]
-  (when-let [ace-element @editor] ace-element
+  (when-let [ace-element @editor]
     (let [position (.getCursorPosition ace-element)]
-      (when-let [code (:code (get next-props 1))] code
+      (when-let [code (:code (get next-props 1))]
         (-> ace-element
             .getSession
             (.setValue code)))

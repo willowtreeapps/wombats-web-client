@@ -106,7 +106,7 @@
       :player-state (:saved-state player-state)
       :player-stack-trace (:error player-state)
       :code (get-in player-state [:code :code])
-      :code-mode (when-let [path (get-in player-state [:code :path])] path
+      :code-mode (when-let [path (get-in player-state [:code :path])]
                    (get {"clj" "clojure"
                          "js" "javascript"
                          "py" "python"}
