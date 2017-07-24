@@ -33,12 +33,6 @@
    is-playing "ACTIVE"
    :else nil))
 
-(defn get-player
-  "Pulls the player out of db to use for simulator state"
-  [db]
-  (let [players (get-in db [:simulator/state :game/players])]
-    (get players (first (keys players)))))
-
 (defn get-player-frames-vec
   "Given state pull out the first player component"
   [state]

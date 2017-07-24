@@ -61,10 +61,9 @@
 (re-frame/reg-event-db
  :simulator/update-state
  (fn [db [_ sim-state]]
-   (let [mini-map (get-in (games/get-player db) [:state :mini-map])]
-     (-> db
-         (update :simulator/frames-idx inc)
-         (update :simulator/frames-vec conj sim-state)))))
+   (-> db
+       (update :simulator/frames-idx inc)
+       (update :simulator/frames-vec conj sim-state))))
 
 (re-frame/reg-event-db
  :simulator/back-frame
