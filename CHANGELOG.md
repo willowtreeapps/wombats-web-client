@@ -10,10 +10,11 @@ CHANGELOG
 * Simulator redesigned based on updated diagrams [Eli Bosley][/eli] [#289](https://github.com/willowtreeapps/wombats-web-client/issues/289)
 * Pagination displayed on the games list. [Eli Bosley][/eli], [C.P. Dehli][/dehli] [#285](https://github.com/willowtreeapps/wombats-web-client/issues/285)
 * Added ability to delete games as an administrator [Eli Bosley](/elibosley) #[284](https://github.com/willowtreeapps/wombats-web-client/issues/284)
-* Fixed issue with chat box in Safari [Eli Bosley](/elibosley) *No Issue*
 
 **Bug Fixes**
 * CSS Prefixing performed automatically using autoprefixer - this is to help improve browser compatibility [Eli Bosley][/eli] *No Issue*
+* Fixed issue with chat box in Safari [Eli Bosley](/elibosley) *No Issue*
+* Page indicator always displayed correctly below games [Eli Bosley](/elibosley) #[339](https://github.com/willowtreeapps/wombats-web-client/issues/339)
 
 ## QA (3.27.2017)
 **Enhancements**
