@@ -9,7 +9,7 @@ CHANGELOG
   [Eli Bosley][/eli] *No Issue*
 * Pagination displayed on the games list. [Eli Bosley][/eli], [C.P. Dehli][/dehli] [#285](https://github.com/willowtreeapps/wombats-web-client/issues/285)
 * Added ability to delete games as an administrator [Eli Bosley](/elibosley) #[284](https://github.com/willowtreeapps/wombats-web-client/issues/284)
-* Fixed issue with chat box in Safari [Eli Bosley](/elibosley) #[290](https://github.com/willowtreeapps/wombats-web-client/issues/290)
+* Fixed issue with chat box in Safari [Eli Bosley](/elibosley) *No Issue*
 
 **Bug Fixes**
 * CSS Prefixing performed automatically using autoprefixer - this is to help improve browser compatibility [Eli Bosley][/eli] *No Issue*
