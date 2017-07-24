@@ -6,7 +6,7 @@
 
 .games-panel {
     @padding-top: 45px;
-    padding: @padding-top 60px;
+    padding: @padding-top 5%;
     @panel-padding: 2 * @padding-top + @navbar-height;
     min-height: calc(~"100% - " @panel-padding);
     display: flex;
@@ -16,6 +16,11 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
+        @media @midsize-and-down {
+            justify-content: initial;
+            //flex-direction: column;
+        }
 
         .my-game-toggle-wrapper {
             display: inline-flex;
@@ -91,19 +96,18 @@
             margin: 0 auto;
             display: flex;
             flex-flow: row wrap;
-            justify-content: flex-start;
-            width: 1200px;
+            justify-content: space-between;
+            width: 100%;
 
             .game-card {
-                margin: 0 20px 20px;
+                margin: 20px 0;
             }
 
-            @media @midsize {
+            @media @mobile {
                 width: 100%;
             }
 
-
-            @media @mobile {
+            @media @midsize {
                 width: 100%;
             }
 
