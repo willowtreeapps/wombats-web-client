@@ -30,7 +30,7 @@
 ;; Helper Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- resize-canvas [arena-atom]
+(defn- resize-canvas []
   (let [root-element (first
                       (array-seq
                        (.getElementsByClassName
@@ -42,20 +42,13 @@
         height (.-offsetHeight root-element)
         dimension (min height half-width)]
 
-    (arena/arena @arena-atom canvas-id)
-
-    ;; Set dimensions of canvas-container and canvas
-    (set! (.-width (.-style container-element))
-          (str dimension "px"))
-    (set! (.-height (.-style container-element))
-          (str dimension "px"))
-
     (set! (.-width canvas-element) dimension)
     (set! (.-height canvas-element) dimension)))
 
-(defn- on-resize [arena-atom]
-  (resize-canvas arena-atom)
-  (js/setTimeout #(resize-canvas arena-atom)
+(defn- on-resize []
+  (println "resized")
+  (resize-canvas)
+  (js/setTimeout #(resize-canvas)
                  100))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -64,6 +57,18 @@
 
 (defn- component-will-mount! []
   (get-simulator-templates))
+
+(defn- component-did-mount [resize-fn]
+  ;; Add resize listener
+  (.addEventListener js/window
+                     "resize"
+                     @resize-fn)
+  (resize-canvas))
+
+(defn- component-will-unmount [resize-fn]
+  (.removeEventListener js/window
+                        "resize"
+                        @resize-fn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Render Methods
@@ -85,7 +90,7 @@
 (defn- render-left-pane
   [{:keys
     [simulator-view-mode simulator-data simulator-frames simulator-index]}]
-  [:div.left-pane
+  [:div.left-pane {:id "left-pane"}
    [simulator-arena/render simulator-data simulator-view-mode]
    [simulator-controls/render simulator-data simulator-frames simulator-index]])
 
@@ -114,9 +119,12 @@
 
 (defn simulator []
   (let [update-sim (reagent/atom false)
-        pane-label (reagent/atom "Debug Console")]
+        pane-label (reagent/atom "Debug Console")
+        resize-fn (reagent/atom #(on-resize))]
     (reagent/create-class
      {:component-will-mount #(component-will-mount!)
+      :component-did-mount #(component-did-mount resize-fn)
+      :component-will-unmount #(component-will-unmount resize-fn)
       :props-name "simulator-panel"
       :reagent-render
       #(render {:update-sim update-sim

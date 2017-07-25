@@ -14,9 +14,14 @@
         position: relative;
         display: flex;
         flex-direction: column;
+        .simulator-controls {
+            width: 100%;
+            flex-grow: 1;
+        }
     }
     .right-pane {
-        width: calc(~"100% - " @canvas-dimensions);
+        flex-grow: 1;
+
         position: relative;
         height: 100%;
         .split-panel {
