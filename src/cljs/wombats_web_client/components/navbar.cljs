@@ -24,6 +24,9 @@
 (defn- toggle-nav-menu [nav-status]
   (swap! nav-status update-in [:visible] not))
 
+(defn- hide-nav-menu [nav-status]
+  (swap! nav-status assoc :visible false))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -39,34 +42,40 @@
         :href link
         :on-click #(do
                      (.preventDefault %)
+                     (when on-click
+                       (on-click))
                      (nav! link))} title]])
 
-(defn- coordinator-links [selected]
+(defn- coordinator-links [selected nav-status]
   [nav-link {:id "config"
              :class "regular-link"
+             :on-click #(hide-nav-menu nav-status)
              :link "/config"
              :title "CONFIG"
              :current selected}])
 
 (defn- nav-links
-  [selected]
+  [selected nav-status]
   [:ul.navbar
    [nav-link {:id "games"
               :class "regular-link"
+              :on-click #(hide-nav-menu nav-status)
               :link "/"
               :title "GAMES"
               :current selected}]
 
-   (when (user-is-coordinator?) [coordinator-links selected])
+   (when (user-is-coordinator?) [coordinator-links selected nav-status])
 
    [nav-link {:id "simulator"
               :class "regular-link"
+              :on-click #(hide-nav-menu nav-status)
               :link "/simulator"
               :title "SIMULATOR"
               :current selected}]
 
    [nav-link {:id "account"
               :class "regular-link account"
+              :on-click #(hide-nav-menu nav-status)
               :link "/account"
               :title "MY WOMBATS"
               :current selected}]])
@@ -115,7 +124,7 @@
                 [hamburger-menu nav-status]]
                (when (:visible @nav-status)
                  [:div.nav-menu
-                  [nav-links selected]])]
+                  [nav-links selected nav-status]])]
               [:div.navbar-component
                [wombat-logo wombat-logo-full]
-               [nav-links selected]]))))})))
+               [nav-links selected nav-status]]))))})))
