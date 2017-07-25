@@ -25,12 +25,13 @@
 (defonce root-class "simulator-panel")
 (defonce canvas-container-id "left-pane")
 (defonce canvas-id "simulator-canvas")
+(defonce controls-height 64)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- resize-canvas []
+(defn- resize-canvas [simulator-view-mode simulator-data]
   (let [root-element (first
                       (array-seq
                        (.getElementsByClassName
@@ -39,16 +40,15 @@
         container-element (.getElementById js/document canvas-container-id)
         canvas-element (.getElementById js/document canvas-id)
         half-width (/ (.-offsetWidth root-element) 2)
-        height (.-offsetHeight root-element)
+        height (- (.-offsetHeight root-element) controls-height)
         dimension (min height half-width)]
-
     (set! (.-width canvas-element) dimension)
-    (set! (.-height canvas-element) dimension)))
+    (set! (.-height canvas-element) dimension)
+    (arena/arena (@simulator-view-mode @simulator-data) canvas-id)))
 
-(defn- on-resize []
-  (println "resized")
-  (resize-canvas)
-  (js/setTimeout #(resize-canvas)
+(defn- on-resize [simulator-data simulator-view-mode]
+  (resize-canvas simulator-view-mode simulator-data)
+  (js/setTimeout #(resize-canvas simulator-view-mode simulator-data)
                  100))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -58,12 +58,12 @@
 (defn- component-will-mount! []
   (get-simulator-templates))
 
-(defn- component-did-mount [resize-fn]
+(defn- component-did-mount [{:keys [simulator-data simulator-view-mode resize-fn]}]
   ;; Add resize listener
   (.addEventListener js/window
                      "resize"
                      @resize-fn)
-  (resize-canvas))
+  (resize-canvas simulator-view-mode simulator-data))
 
 (defn- component-will-unmount [resize-fn]
   (.removeEventListener js/window
@@ -101,39 +101,68 @@
            simulator-frames
            simulator-index
            simulator-data]}]
-  (if (neg? @simulator-index)
-    [:div.configuration-container
-     [configuration-panel]]
-    [:div {:class-name "simulator-panel"}
-     [render-left-pane {:simulator-view-mode simulator-view-mode
-                        :simulator-data simulator-data
-                        :simulator-frames simulator-frames
-                        :simulator-index simulator-index}]
-     [render-right-pane {:simulator-data simulator-data
-                         :update-sim update-sim
-                         :pane-label pane-label}]]))
+  [:div {:class-name "simulator-panel"}
+   ;;(arena/arena (@simulator-view-mode @simulator-data) canvas-id)
+   [render-left-pane {:simulator-view-mode @simulator-view-mode
+                      :simulator-data simulator-data
+                      :simulator-frames simulator-frames
+                      :simulator-index simulator-index}]
+   [render-right-pane {:simulator-data simulator-data
+                       :update-sim update-sim
+                       :pane-label pane-label}]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main Method
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn- config-panel []
+   [:div.configuration-container
+    [configuration-panel]])
+
+(defn- simulator-panel
+  [{:keys [update-sim
+           pane-label
+           simulator-data
+           simulator-view-mode
+           simulator-index
+           resize-fn]}]
+  (reagent/create-class
+   {:component-did-mount #(component-did-mount
+                           {:simulator-data simulator-data
+                            :simulator-view-mode simulator-view-mode
+                            :resize-fn resize-fn})
+    :component-will-unmount #(component-will-unmount resize-fn)
+
+    :props-name "simulator-panel"
+    :reagent-render
+    #(render {:update-sim update-sim
+              :pane-label pane-label
+              :simulator-view-mode simulator-view-mode
+              :simulator-frames (re-frame/subscribe
+                                 [:simulator/frames])
+              :simulator-data simulator-data
+              :simulator-index simulator-index})}))
+
 (defn simulator []
   (let [update-sim (reagent/atom false)
         pane-label (reagent/atom "Debug Console")
-        resize-fn (reagent/atom #(on-resize))]
+        simulator-data (re-frame/subscribe
+                        [:simulator/get-data])
+        simulator-view-mode (re-frame/subscribe
+                             [:simulator/get-view-mode])
+        simulator-index (re-frame/subscribe
+                         [:simulator/frame-index])
+        resize-fn (reagent/atom #(on-resize simulator-data
+                                            simulator-view-mode))]
+
     (reagent/create-class
      {:component-will-mount #(component-will-mount!)
-      :component-did-mount #(component-did-mount resize-fn)
-      :component-will-unmount #(component-will-unmount resize-fn)
-      :props-name "simulator-panel"
       :reagent-render
-      #(render {:update-sim update-sim
-                :pane-label pane-label
-                :simulator-view-mode @(re-frame/subscribe
-                                       [:simulator/get-view-mode])
-                :simulator-frames (re-frame/subscribe
-                                   [:simulator/frames])
-                :simulator-data (re-frame/subscribe
-                                 [:simulator/get-data])
-                :simulator-index (re-frame/subscribe
-                                  [:simulator/frame-index])})})))
+      #(if (neg? @simulator-index)
+         [config-panel]
+         [simulator-panel {:update-sim update-sim
+                           :pane-label pane-label
+                           :simulator-data simulator-data
+                           :simulator-view-mode simulator-view-mode
+                           :simulator-index simulator-index
+                           :resize-fn resize-fn}])})))
