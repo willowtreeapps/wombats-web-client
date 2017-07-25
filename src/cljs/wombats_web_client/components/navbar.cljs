@@ -113,8 +113,6 @@
       :component-will-unmount #(component-will-unmount resize-fn)
       :reagent-render
       (fn []
-
-
         (when-let [active-panel @active-panel]
           (let [selected ((:panel-id active-panel) panel-router-map)]
             (if (:mobile @nav-status)

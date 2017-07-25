@@ -22,6 +22,42 @@
             [wombats-web-client.components.simulator.split-pane
              :as split-pane]))
 
+(defonce root-class "simulator-panel")
+(defonce canvas-container-id "left-pane")
+(defonce canvas-id "simulator-canvas")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helper Methods
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- resize-canvas [arena-atom]
+  (let [root-element (first
+                      (array-seq
+                       (.getElementsByClassName
+                        js/document
+                        root-class)))
+        container-element (.getElementById js/document canvas-container-id)
+        canvas-element (.getElementById js/document canvas-id)
+        half-width (/ (.-offsetWidth root-element) 2)
+        height (.-offsetHeight root-element)
+        dimension (min height half-width)]
+
+    (arena/arena @arena-atom canvas-id)
+
+    ;; Set dimensions of canvas-container and canvas
+    (set! (.-width (.-style container-element))
+          (str dimension "px"))
+    (set! (.-height (.-style container-element))
+          (str dimension "px"))
+
+    (set! (.-width canvas-element) dimension)
+    (set! (.-height canvas-element) dimension)))
+
+(defn- on-resize [arena-atom]
+  (resize-canvas arena-atom)
+  (js/setTimeout #(resize-canvas arena-atom)
+                 100))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
