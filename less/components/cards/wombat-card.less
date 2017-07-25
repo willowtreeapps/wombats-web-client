@@ -1,12 +1,24 @@
 @import "../../colors.less";
 @import "../simple-button.less";
 @import "../../utils/typography";
+@import "../../utils/responsive-screens.less";
 
 .wombat-card {
     position: relative;
     background-color: @white;
     width: 275px;
-    display: inline-block;
+    height: 224px;
+
+    display: flex;
+    flex-direction: column;
+
+    @media @midsize {
+        width: 47.5%;
+    }
+
+    @media @mobile {
+        width: 100%;
+    }
 
     &:hover {
         .wombat-information {
@@ -17,33 +29,40 @@
     }
 
     .wombat-image {
-        width: 142px;
-        height: 142px;
-        padding: 20px 66px;
+        width: 121px;
+        height: 121px;
+        display: block;
+        margin: 13.39% auto;
+
     }
+
 
     .wombat-information {
         @hover-height: 45px;
-
         position: absolute;
-        bottom: -@hover-height;
+        width: 100%;
+        bottom: 0;
         display: block;
 
-        .name {
+        .name-container {
             background-color: @card-grey;
             color: @white;
             font-size: @font-size-18;
-            padding: 10px;
-            width: 255px;
+            padding: 10px 0;
+            width: 100%;
+            .name {
+                margin: 0 10px;
+            }
         }
 
         .hover-state-edit {
-            @hover-padding: 30px;
 
+            position: relative;
+            top: 0;
             height: @hover-height;
-            width: calc(~"100% - " @hover-padding);
+            width: 100%;
             background-color: @card-grey;
-            padding-right: @hover-padding;
+
             display: none;
 
             .delete {
@@ -55,6 +74,7 @@
             .edit {
                 .simple-button;
                 float: right;
+                margin-right: 30px;
             }
         }
     }

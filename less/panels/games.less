@@ -1,7 +1,7 @@
 @import "../colors.less";
 @import "../components/simple-button.less";
 @import "../utils/typography";
-@import "../utils/responsive-screens";
+@import "../utils/responsive-screens.less";
 @import "../components/navbar.less";
 
 .games-panel {
@@ -19,7 +19,31 @@
 
         @media @midsize-and-down {
             justify-content: initial;
-            //flex-direction: column;
+        }
+        @media @mobile {
+            flex-direction: column;
+        }
+        .tab-game-toggle {
+            display: inline-flex;
+            justify-content: center;
+
+            .game-tab {
+                .bold;
+
+                width: 80px;
+                height: 40px;
+                letter-spacing: 2px;
+                color: @white;
+                text-align: center;
+                line-height: 40px;
+                margin-left: 20px;
+                cursor: pointer;
+
+                &.active,
+                &:hover {
+                    border-bottom: 3px solid @wombat-green;
+                }
+            }
         }
 
         .my-game-toggle-wrapper {
@@ -30,6 +54,11 @@
             right: 60px;
             cursor: pointer;
 
+            @media @mobile {
+                position: relative;
+                right: 0;
+                padding-top: 20px;
+            }
             .checkbox {
                 width: 14px;
                 height: 14px;
@@ -56,28 +85,7 @@
                 margin-left: 10px;
             }
         }
-        .tab-game-toggle {
-            display: inline-flex;
-            justify-content: center;
 
-            .game-tab {
-                .bold;
-
-                width: 80px;
-                height: 40px;
-                letter-spacing: 2px;
-                color: @white;
-                text-align: center;
-                line-height: 40px;
-                margin-left: 20px;
-                cursor: pointer;
-
-                &.active,
-                &:hover {
-                    border-bottom: 3px solid @wombat-green;
-                }
-            }
-        }
     }
 
     .games {

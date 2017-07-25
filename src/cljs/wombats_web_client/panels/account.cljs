@@ -17,7 +17,8 @@
 (defn account []
   (let [my-wombats @(re-frame/subscribe [:my-wombats])]
     [:div.account-panel
-     [header "MY WOMBATS"]
-     [:button.logout {:on-click #(sign-out-event)} "LOG OUT"]
+     [:div.heading-bar
+      [header "MY WOMBATS"]
+      [:button.logout {:on-click #(sign-out-event)} "LOG OUT"]]
      [:div.wombats (map wombat-card/root my-wombats)]
      [add-wombat-button/root (open-add-wombat-modal) "add-wombat"]]))
