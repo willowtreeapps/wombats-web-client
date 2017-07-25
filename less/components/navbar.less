@@ -1,7 +1,53 @@
 @import "../colors";
 @import "../utils/typography";
+@import "../z-index.less";
 
 @navbar-height: 45px;
+
+.mobile-navbar {
+    height: @navbar-height;
+    background-color: @card-grey;
+    position: relative;
+    .nav-items {
+        display: flex;
+        justify-content: space-between;
+        .nav-button {
+            margin: 7px 7px 0;
+            height: 100%;
+
+        }
+        .wombat-logo {
+            margin: 7px 7px 0;
+        }
+    }
+    .nav-menu {
+        flex: 0;
+        z-index: @nav-menu-z-idx;
+        position: relative;
+        display: flex;
+        background-color: @card-grey;
+        .navbar {
+            list-style-type: none;
+            padding: 0 5%;
+            .regular-link {
+                margin: 10px 0 0 0;
+                a {
+                    font-size: large;
+                    .bold;
+                    color: @warm-grey;
+                    text-decoration: none;
+                    text-align: right;
+                    padding-left: 3px;
+                    &.active, &.hover {
+                        color: white;
+                        border-left: 3px solid @wombat-green;
+                        padding-right: 9px;
+                    }
+                }
+            }
+        }
+    }
+}
 
 .navbar-component {
     margin: 0;
@@ -12,10 +58,10 @@
         list-style-type: none;
         padding: 0;
         margin: 0 40px 0 215px;
-        overflow: hidden;     
-        
+        overflow: hidden;
+
         .regular-link {
-            float: left;  
+            float: left;
 
             a {
                 .bold;
@@ -32,7 +78,7 @@
                     color: white;
                     border-bottom: 3px solid @wombat-green;
                     padding-bottom: 9px;
-                }                
+                }
             }
 
             &.account {

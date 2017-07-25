@@ -5,8 +5,31 @@
             [wombats-web-client.routes :refer [nav!]]
             [wombats-web-client.utils.auth :refer [user-is-coordinator?]]))
 
-(defn- wombat-logo []
-  [:a {:href "/"} [:img.wombat-logo {:src "/images/img-logo-horizontal.svg"}]])
+(def mobile-window-width 600)
+(def wombat-logo-full "/images/img-logo-horizontal.svg")
+(def wombat-logo-head "/images/img-logo-head.svg")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helper Methods
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- get-mobile-status []
+  (let [width (.-innerWidth js/window)]
+    (< width mobile-window-width)))
+
+(defn- on-resize [nav-status]
+  (swap! nav-status assoc :mobile (get-mobile-status)))
+
+(defn- toggle-nav-menu [nav-status]
+  (swap! nav-status update-in [:visible] not))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Render Methods
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- wombat-logo [src]
+  [:a {:href "/"} [:img.wombat-logo {:src src}]])
 
 (defn- nav-link
   [{:keys [id class on-click link title current]}]
@@ -48,13 +71,51 @@
               :title "MY WOMBATS"
               :current selected}]])
 
+(defn- hamburger-menu [nav-status]
+  [:button.nav-button
+   {:on-click #(toggle-nav-menu nav-status)} "MENU"])
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Lifecycle Methods
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn- component-did-mount [resize-fn]
+  (.addEventListener js/window
+                     "resize"
+                     @resize-fn))
+
+(defn- component-will-unmount [resize-fn]
+  (.removeEventListener js/window
+                        "resize"
+                        @resize-fn))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Main Method
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn root
   []
-  (let [active-panel (re-frame/subscribe [:active-panel])]
-    (fn []
-      (let [active-panel @active-panel]
-        (when active-panel
+  (let [active-panel (re-frame/subscribe [:active-panel])
+        nav-status (reagent/atom {:mobile (get-mobile-status)
+                                  :visible false})
+        resize-fn (reagent/atom #(on-resize nav-status))]
+    (reagent/create-class
+     {:component-did-mount #(component-did-mount resize-fn)
+      :component-will-unmount #(component-will-unmount resize-fn)
+      :reagent-render
+      (fn []
+
+
+        (when-let [active-panel @active-panel]
           (let [selected ((:panel-id active-panel) panel-router-map)]
-            [:div.navbar-component
-             [wombat-logo]
-             [nav-links selected]]))))))
+            (if (:mobile @nav-status)
+              [:div.mobile-navbar
+               [:div.nav-items
+                [wombat-logo wombat-logo-head]
+                [hamburger-menu nav-status]]
+               (when (:visible @nav-status)
+                 [:div.nav-menu
+                  [nav-links selected]])]
+              [:div.navbar-component
+               [wombat-logo wombat-logo-full]
+               [nav-links selected]]))))})))
