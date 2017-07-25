@@ -1,11 +1,12 @@
 (ns wombats-web-client.components.navbar
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
+            [wombats-web-client.constants.ui :refer [mobile-window-width]]
             [wombats-web-client.constants.urls :refer [panel-router-map]]
             [wombats-web-client.routes :refer [nav!]]
-            [wombats-web-client.utils.auth :refer [user-is-coordinator?]]))
+            [wombats-web-client.utils.auth :refer [user-is-coordinator?]]
+            [wombats-web-client.utils.functions :refer [get-mobile-status]]))
 
-(def mobile-window-width 600)
 (def wombat-logo-full "/images/img-logo-horizontal.svg")
 (def wombat-logo-head "/images/img-logo-head.svg")
 
@@ -13,10 +14,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defn- get-mobile-status []
-  (let [width (.-innerWidth js/window)]
-    (< width mobile-window-width)))
 
 (defn- on-resize [nav-status]
   (swap! nav-status assoc :mobile (get-mobile-status)))

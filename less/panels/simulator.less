@@ -1,6 +1,7 @@
 @import "../colors.less";
 @import "../components/simple-button.less";
 @import "../utils/typography.less";
+@import "../utils/responsive-screens.less";
 @import "../components/simulator/controls.less";
 @import "../components/navbar.less";
 @import "../components/emphasized-button.less";
@@ -9,6 +10,10 @@
     height: calc(~"100% - " @navbar-height);
     display: flex;
     flex-wrap: wrap;
+    @media @mobile {
+        height: 150%;
+        flex-direction: column;
+    }
 
     .left-pane {
         position: relative;
@@ -21,9 +26,15 @@
     }
     .right-pane {
         flex-grow: 1;
-
         position: relative;
         height: 100%;
+
+        @media @mobile {
+            overflow: auto;
+            flex: 1;
+            height: initial;
+        }
+
         .split-panel {
             height: 100%;
             display: flex;

@@ -3,29 +3,32 @@
             [re-frame.core :as re-frame]
             [wombats-web-client.components.arena
              :as arena]
-            [wombats-web-client.components.tabbed-container
-             :refer [tabbed-container]]
             [wombats-web-client.components.simulator.arena
              :as simulator-arena]
             [wombats-web-client.components.simulator.code
              :as simulator-code]
-            [wombats-web-client.components.simulator.output
-             :as simulator-output]
-            [wombats-web-client.components.simulator.stack-trace
-             :as simulator-stack-trace]
             [wombats-web-client.components.simulator.configure
              :refer [configuration-panel]]
             [wombats-web-client.components.simulator.controls
              :as simulator-controls]
+            [wombats-web-client.components.simulator.output
+             :as simulator-output]
+            [wombats-web-client.components.simulator.split-pane
+             :as split-pane]
+            [wombats-web-client.components.simulator.stack-trace
+             :as simulator-stack-trace]
+            [wombats-web-client.constants.ui
+             :refer [mobile-window-width
+                     controls-height]]
             [wombats-web-client.events.simulator
              :refer [get-simulator-templates]]
-            [wombats-web-client.components.simulator.split-pane
-             :as split-pane]))
+            [wombats-web-client.components.tabbed-container
+             :refer [tabbed-container]]))
 
 (defonce root-class "simulator-panel")
 (defonce canvas-container-id "left-pane")
 (defonce canvas-id "simulator-canvas")
-(defonce controls-height 64)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper Methods
@@ -39,9 +42,15 @@
                         root-class)))
         container-element (.getElementById js/document canvas-container-id)
         canvas-element (.getElementById js/document canvas-id)
-        half-width (/ (.-offsetWidth root-element) 2)
+        width (.-offsetWidth root-element)
+        half-width (/ width 2)
         height (- (.-offsetHeight root-element) controls-height)
-        dimension (min height half-width)]
+        mobile-mode (< width mobile-window-width)
+        dimension (if mobile-mode
+                    width
+                    (min height half-width))]
+
+    ;; Check to see if canvas should be rendered in mobile mode
     (set! (.-width canvas-element) dimension)
     (set! (.-height canvas-element) dimension)
     (arena/arena (@simulator-view-mode @simulator-data) canvas-id)))
