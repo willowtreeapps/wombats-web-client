@@ -4,7 +4,6 @@
             [wombats-web-client.components.arena :as arena]))
 
 (defonce canvas-id "simulator-canvas")
-;;(defonce dimensions 600)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main Method

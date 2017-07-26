@@ -7,11 +7,9 @@
 @large-width: 30%;
 
 .arena-display {
-
     .arena-table {
         display: block;
         overflow-x: scroll;
-
         .header-cell:nth-child(1),
         .data-cell:nth-child(1) {
             width: @large-width;
@@ -57,13 +55,11 @@
                 }
             }
         }
-
         .data-row:hover .data-cell:last-child {
             .create-game {
                 visibility: visible;
             }
         }
-
         .create-game {
             .simple-button(@bg-color: @transparent, @margin-left: 0, @margin-right: 35px);
         }

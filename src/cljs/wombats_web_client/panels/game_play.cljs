@@ -19,7 +19,6 @@
             [reagent.core :as reagent]))
 
 (defonce root-class "game-play-panel")
-(defonce canvas-container-id "wombat-arena")
 (defonce canvas-id "arena-canvas")
 
 ;; This is how long "ROUND x OVER" will show for (between rounds)
@@ -35,7 +34,6 @@
                        (.getElementsByClassName
                         js/document
                         root-class)))
-        container-element (.getElementById js/document canvas-container-id)
         canvas-element (.getElementById js/document canvas-id)
         width (.-offsetWidth root-element)
         half-width (/ width 2)
@@ -45,15 +43,7 @@
                     width
                     (min height half-width))]
 
-
-
-
-    ;; Set dimensions of canvas-container and canvas
-    #_(set! (.-width (.-style container-element))
-          (str dimension "px"))
-    #_(set! (.-height (.-style container-element))
-          (str dimension "px"))
-
+    ;; Set dimensions of canvas
     (set! (.-width canvas-element) dimension)
     (set! (.-height canvas-element) dimension)
     (arena/arena @arena-atom canvas-id)))
@@ -91,7 +81,7 @@
       ;; When we need to transition to show "READY"
       (let [show-ready-ms (- millis-left transition-time)]
         (when (pos? show-ready-ms)
-          (timeout-fn show-ready-ms))=
+          (timeout-fn show-ready-ms))
         nil))))
 
 (defn- get-transition-text

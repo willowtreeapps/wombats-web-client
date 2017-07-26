@@ -14,7 +14,6 @@
         z-index: @modal-overlay;
         background-color: @black-80;
     }
-
     .modal {
         z-index: @modal-container;
         color: @white;
@@ -37,16 +36,17 @@
             padding-top: 30px;
             text-align: center;
         }
-
         .modal-error {
             color: @error-red;
             font-size: @font-size-12;
             margin: 0 30px 10px;
             text-align: center;
         }
-
         .modal-content {
             padding: 30px 30px 45px;
+            @media @mobile {
+
+            }
 
         }
         .action-buttons {
