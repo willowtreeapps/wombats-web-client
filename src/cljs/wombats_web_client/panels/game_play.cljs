@@ -10,6 +10,7 @@
             [wombats-web-client.components.modals.winner-modal
              :refer [winner-modal]]
             [wombats-web-client.constants.games :refer [game-type-str-map]]
+            [wombats-web-client.constants.ui :refer [mobile-window-width]]
             [wombats-web-client.utils.games
              :refer [get-player-by-username get-player-score]]
             [wombats-web-client.utils.socket :as ws]
@@ -36,20 +37,26 @@
                         root-class)))
         container-element (.getElementById js/document canvas-container-id)
         canvas-element (.getElementById js/document canvas-id)
-        half-width (/ (.-offsetWidth root-element) 2)
+        width (.-offsetWidth root-element)
+        half-width (/ width 2)
         height (.-offsetHeight root-element)
-        dimension (min height half-width)]
+        mobile-mode (< width mobile-window-width)
+        dimension (if mobile-mode
+                    width
+                    (min height half-width))]
 
-    (arena/arena @arena-atom canvas-id)
+
+
 
     ;; Set dimensions of canvas-container and canvas
-    (set! (.-width (.-style container-element))
+    #_(set! (.-width (.-style container-element))
           (str dimension "px"))
-    (set! (.-height (.-style container-element))
+    #_(set! (.-height (.-style container-element))
           (str dimension "px"))
 
     (set! (.-width canvas-element) dimension)
-    (set! (.-height canvas-element) dimension)))
+    (set! (.-height canvas-element) dimension)
+    (arena/arena @arena-atom canvas-id)))
 
 (defn- on-resize [arena-atom]
   (resize-canvas arena-atom)
@@ -84,7 +91,7 @@
       ;; When we need to transition to show "READY"
       (let [show-ready-ms (- millis-left transition-time)]
         (when (pos? show-ready-ms)
-          (timeout-fn show-ready-ms))
+          (timeout-fn show-ready-ms))=
         nil))))
 
 (defn- get-transition-text
