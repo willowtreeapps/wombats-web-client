@@ -79,7 +79,9 @@
 
 (defn- hamburger-menu [nav-status]
   [:button.nav-button
-   {:on-click #(toggle-nav-menu nav-status)} "MENU"])
+   {:class (when (:visible @nav-status)
+             "active")
+    :on-click #(toggle-nav-menu nav-status)} "MENU"])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods

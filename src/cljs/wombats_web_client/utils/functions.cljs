@@ -21,4 +21,4 @@
   "Returns true if the client has a screen width less than mobile-window-width"
   []
   (let [width (.-innerWidth js/window)]
-    (< width mobile-window-width)))
+    (<= width mobile-window-width)))

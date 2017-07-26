@@ -1,6 +1,7 @@
 @import '../../colors.less';
 @import '../simple-button.less';
 @import '../../utils/typography.less';
+@import '../../utils/responsive-screens.less';
 @import '../../z-index.less';
 
 .modal-container {
@@ -24,8 +25,11 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 370px;
+        width: 400px;
 
+        @media @mobile {
+            width: 90%;
+        }
         .title {
             .bold;
 
@@ -40,7 +44,7 @@
             margin: 0 30px 10px;
             text-align: center;
         }
-        
+
         .modal-content {
             padding: 30px 30px 45px;
 

@@ -1,5 +1,6 @@
 @import "../colors";
 @import "../utils/typography";
+@import "../utils/responsive-screens.less";
 @import "../z-index.less";
 
 @navbar-height: 45px;
@@ -16,9 +17,12 @@
             border: none;
             background-color: transparent;
             margin: 7px 7px 5px;
-            height: 100%;
             .bold;
             color: @warm-grey;
+            &.active {
+                color: white;
+                border-bottom: 3px solid @wombat-green;
+            }
         }
         .wombat-logo {
             margin: 7px 7px 5px;
@@ -56,18 +60,20 @@
 }
 
 .navbar-component {
+    width: 100%;
     margin: 0;
     height: @navbar-height;
     background-color: @card-grey;
-
+    display: flex;
     .navbar {
+        width: 100%;
         list-style-type: none;
         padding: 0;
-        margin: 0 40px 0 215px;
+        margin: 0;
         overflow: hidden;
-
+        display: inline-flex;
+        white-space: nowrap;
         .regular-link {
-            float: left;
 
             a {
                 .bold;
@@ -88,17 +94,18 @@
             }
 
             &.account {
-                float: right;
-                right: 40px;
+                margin: 0 3.125% 0 auto;
             }
         }
     }
 
     .wombat-logo {
-        position: absolute;
         display: inline-block;
         top: 0;
         left: 0;
-        margin: 7px 40px 30px;
+        margin: 7px 40px 7px 30px;
+        @media @midsize {
+            margin: 7px 5px;
+        }
     }
 }

@@ -14,36 +14,21 @@
     .left-game-play-panel {
         position: relative;
         display: flex;
-        flex-direction: column;
+        align-items: center;
+
         &.disabled {
             #arena-canvas {
                 opacity: 0.3;
             }
         }
         .transition-text {
-            font-size: 60px;
+            font-size: 5vmax;
             z-index: @game-play-transition-text;
-            width: 50%;
+            width: 100%;
+            vertical-align: middle;
             text-align: center;
             position: absolute;
         }
-        /*&#wombat-arena {
-
-
-
-
-            .transition-text {
-                font-size: 60px;
-                z-index: @game-play-transition-text;
-                width: 50%;
-                text-align: center;
-            }
-
-            #arena-canvas {
-                position: absolute;
-                left: 0;
-            }
-        } */
     }
 
     .right-game-play-panel {
