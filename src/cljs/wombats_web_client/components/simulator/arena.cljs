@@ -11,7 +11,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn render
-  "Takes the simulator data object as well as the view mode key and renders the arena"
+  "Takes the simulator data object and the view mode key and renders the arena"
   [simulator-data simulator-view-mode]
 
   (arena/arena (simulator-view-mode @simulator-data) canvas-id)

@@ -67,7 +67,8 @@
 (defn- component-will-mount! []
   (get-simulator-templates))
 
-(defn- component-did-mount [{:keys [simulator-data simulator-view-mode resize-fn]}]
+(defn- component-did-mount
+  [{:keys [simulator-data simulator-view-mode resize-fn]}]
   ;; Add resize listener
   (.addEventListener js/window
                      "resize"
@@ -87,9 +88,11 @@
   [{:keys [simulator-data update-sim pane-label]}]
   (let [bottom-pane (if (:player-stack-trace @simulator-data)
                       (do (reset! pane-label "Stack Trace")
-                          [simulator-stack-trace/render simulator-data])
+                          [simulator-stack-trace/render
+                           simulator-data])
                       (do (reset! pane-label "Debug Console")
-                          [simulator-output/render simulator-data update-sim]))]
+                          [simulator-output/render
+                           simulator-data update-sim]))]
     [:div {:class-name "right-pane"}
      [split-pane/render [simulator-code/render {:simulator-data  simulator-data
                                                 :update update-sim}]
@@ -120,10 +123,6 @@
                        :update-sim update-sim
                        :pane-label pane-label}]])
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Main Method
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defn- config-panel []
    [:div.configuration-container
     [configuration-panel]])
@@ -151,6 +150,10 @@
                                  [:simulator/frames])
               :simulator-data simulator-data
               :simulator-index simulator-index})}))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Main Method
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn simulator []
   (let [update-sim (reagent/atom false)
