@@ -9,7 +9,8 @@
             [wombats-web-client.components.join-button :refer [join-button]]
             [wombats-web-client.components.modals.winner-modal
              :refer [winner-modal]]
-            [wombats-web-client.constants.games :refer [game-type-str-map]]
+            [wombats-web-client.constants.games
+             :refer [game-type-str-map transition-time]]
             [wombats-web-client.constants.ui :refer [mobile-window-width]]
             [wombats-web-client.utils.games
              :refer [get-player-by-username get-player-score]]
@@ -20,9 +21,6 @@
 
 (defonce root-class "game-play-panel")
 (defonce canvas-id "arena-canvas")
-
-;; This is how long "ROUND x OVER" will show for (between rounds)
-(defonce transition-time 3000)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper Methods
@@ -233,8 +231,7 @@
           (:update @cmpnt-state)
 
           [:div {:class-name root-class}
-           [:div.left-game-play-panel {:id canvas-container-id
-                                       :class (when (or game-over
+           [:div.left-game-play-panel {:class (when (or game-over
                                                         transition-text)
                                                 "disabled")}
             [:span.transition-text
