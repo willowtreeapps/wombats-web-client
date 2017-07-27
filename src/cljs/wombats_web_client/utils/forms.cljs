@@ -24,6 +24,5 @@
         input (key-name @cmpnt-state)
         key-string (name key-name)
         error-key (keyword (str key-string "-error"))]
-
     (when (test-fn input)
       (swap! cmpnt-state assoc error-key error))))

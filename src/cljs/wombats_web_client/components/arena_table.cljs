@@ -1,6 +1,9 @@
 (ns wombats-web-client.components.arena-table
   (:require [re-frame.core :as re-frame]
+            [wombats-web-client.components.add-button :as add-button]
             [wombats-web-client.components.table :refer [table]]
+            [wombats-web-client.components.modals.create-arena-modal
+             :refer [create-arena-modal]]
             [wombats-web-client.components.modals.create-game-modal
              :refer [create-game-modal]]))
 
@@ -16,6 +19,10 @@
 
 (defn open-create-game-modal [arena-id]
   (re-frame/dispatch [:set-modal {:fn #(create-game-modal arena-id)
+                                  :show-overlay true}]))
+
+(defn open-add-arena-modal []
+  (re-frame/dispatch [:set-modal {:fn #(create-arena-modal)
                                   :show-overlay true}]))
 
 (defn create-game-button [arena-id]
@@ -46,4 +53,5 @@
 
 (defn arena-table [arenas]
   [:div.arena-display
+   [add-button/root open-add-arena-modal "add-arena"]
    [table "arena-table" headers @arenas get-items-fn]])
