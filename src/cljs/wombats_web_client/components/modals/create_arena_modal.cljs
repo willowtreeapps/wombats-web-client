@@ -21,10 +21,13 @@
             [wombats-web-client.utils.functions :refer [no-blanks?]]
             [wombats-web-client.utils.time :refer [local-time-to-utc]]))
 
-(defonce perimeter-radios ["true" "false"])
+(defonce perimeter-radios ["on" "off"])
 (defonce initial-state {:arena/name nil
+                        :arena/name-error nil
                         :arena/width nil
+                        :arena/width-error nil
                         :arena/height nil
+                        :arena/height-error nil
                         :arena/perimeter (first perimeter-radios)
                         :arena/shot-damage nil
                         :arena/smoke-duration nil
@@ -45,7 +48,9 @@
 
 (def callback-error
   (fn [error cmpnt-state]
+    (println (get-error-message error))
     (re-frame/dispatch [:update-modal-error (get-error-message error)])
+    (println "dispatching error")
     (reset! cmpnt-state initial-state)))
 
 (defn check-for-errors [cmpnt-state]
@@ -53,33 +58,39 @@
         [{:key-name :arena/name
           :test-fn clojure.string/blank?
           :error required-field-error}
-         {:key-name :arena/perimeter
-          :test-fn clojure.string/blank?
-          :error required-field-error}
+
          {:key-name :arena/width
           :test-fn #(not
                      (integer? (js/parseInt %)))
           :error not-an-integer}
+
          {:key-name :arena/height
           :test-fn #(not
                      (integer? (js/parseInt %)))
           :error not-an-integer}
+
          {:key-name :arena/perimeter
-          :test-fn #(not
-                     (integer? (js/parseInt %)))
-          :error not-an-integer}
+          :test-fn clojure.string/blank?
+          :error required-field-error}
+
          {:key-name :arena/shot-damage
           :test-fn #(not
                      (integer? (js/parseInt %)))
           :error not-an-integer}
+
          {:key-name :arena/smoke-duration
           :test-fn #(not
                      (integer? (js/parseInt %)))
           :error not-an-integer}
+
+         {:key-name :arena/food
+          :test-fn clojure.string/blank?
+          :error required-field-error}
          {:key-name :arena/food
           :test-fn #(not
                      (integer? (js/parseInt %)))
           :error not-an-integer}
+
          {:key-name :arena/poison
           :test-fn #(not
                      (integer? (js/parseInt %)))
@@ -98,14 +109,50 @@
           :error not-an-integer}]]
     (doall (map #(input-error! % cmpnt-state) validation-checks))))
 
-(defn on-submit-form-valid [cmpnt-state]
-  (let [ready-to-submit true
-        event-handlers {:on-success #(callback-success)
-                        :on-error #(callback-error % cmpnt-state)}]
+(defn get-perimeter-bool
+  [perimeter-status]
+  (= perimeter-status "on"))
 
-    ;;(check-for-errors cmpnt-state)
+(defn- map-map-val
+  [m f]
+  (into {} (for [[k v] m] [k (f v)])))
+
+(defn- all-integers?
+  [m]
+  (every? true? (map #(integer? (js/parseInt %))
+                      (vals m))))
+
+(defn on-submit-form-valid [cmpnt-state]
+  (let [test-data  (select-keys @cmpnt-state
+                                [:arena/perimeter
+                                 :arena/name
+                                 :arena/width
+                                 :arena/height
+                                 :arena/shot-damage
+                                 :arena/smoke-duration
+                                 :arena/food
+                                 :arena/poison
+                                 :arena/steel-walls
+                                 :arena/wood-walls
+                                 :arena/zakano
+                                 :arena/wood-wall-hp
+                                 :arena/steel-wall-hp
+                                 :arena/zakano-hp
+                                 :arena/wombat-hp])
+        integer-data (map-map-val (dissoc test-data
+                                           :arena/perimeter
+                                           :arena/name) #(js/parseInt %))
+        perimeter-bool {:arena/perimeter
+                        (get-perimeter-bool (:arena/perimeter test-data))}
+        not-blank (no-blanks? (vals test-data))
+        all-integers (all-integers? integer-data)
+        ready-to-submit (and not-blank all-integers)
+        handlers {:on-success #(callback-success)
+                  :on-error #(callback-error % cmpnt-state)}]
+
+    (check-for-errors cmpnt-state)
     (when ready-to-submit
-      (create-arena (merge @cmpnt-state event-handlers)))))
+      (create-arena (merge test-data integer-data perimeter-bool handlers)))))
 
 (defn create-arena-modal []
   (let [modal-error (re-frame/subscribe [:modal-error])
