@@ -1,4 +1,4 @@
-(ns wombats-web-client.components.modals.create-arena-modal
+(ns wombats-web-client.components.modals.arena-modal
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
 
@@ -199,8 +199,8 @@
         (edit-arena (merge test-data integer-data perimeter-bool handlers))
         (create-arena (merge test-data integer-data perimeter-bool handlers))))))
 
-(defn create-arena-modal
-  ([] (create-arena-modal {}))
+(defn arena-modal
+  ([] (arena-modal {}))
   ([row-data]
    (let [arena-data (filter-arena-fields row-data)
          perimeter-walls {:arena/perimeter

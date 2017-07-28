@@ -3,7 +3,7 @@
             [wombats-web-client.constants.urls :refer [arenas-url
                                                        arena-id-url]]
             [ajax.edn :refer [edn-request-format edn-response-format]]
-            [ajax.core :refer [GET POST PUT]]
+            [ajax.core :refer [GET POST PUT DELETE]]
             [wombats-web-client.utils.auth :refer [add-auth-header]]))
 
 (defn create-arena
@@ -88,6 +88,17 @@
                            :params params
                            :handler on-success
                            :error-handler on-error})))
+
+(defn delete-arena
+  "Delete an arena by id"
+  [arena-id on-success on-error]
+  (DELETE (arena-id-url arena-id)
+          {:response-format (edn-response-format)
+           :keywords? true
+           :format (edn-request-format)
+           :headers (add-auth-header {})
+           :handler on-success
+           :error-handler on-error}))
 
 (defn get-arenas []
   (GET arenas-url {:response-format (edn-response-format)

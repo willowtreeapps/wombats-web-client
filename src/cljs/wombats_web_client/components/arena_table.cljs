@@ -2,8 +2,8 @@
   (:require [re-frame.core :as re-frame]
             [wombats-web-client.components.add-button :as add-button]
             [wombats-web-client.components.table :refer [table]]
-            [wombats-web-client.components.modals.create-arena-modal
-             :refer [create-arena-modal]]
+            [wombats-web-client.components.modals.arena-modal
+             :refer [arena-modal]]
             [wombats-web-client.components.modals.create-game-modal
              :refer [create-game-modal]]))
 
@@ -22,17 +22,17 @@
                                   :show-overlay true}]))
 
 (defn open-add-arena-modal []
-  (re-frame/dispatch [:set-modal {:fn #(create-arena-modal)
+  (re-frame/dispatch [:set-modal {:fn #(arena-modal)
                                   :show-overlay true}]))
 
 (defn open-edit-arena-modal [row-data]
-  (re-frame/dispatch [:set-modal {:fn #(create-arena-modal row-data)
+  (re-frame/dispatch [:set-modal {:fn #(arena-modal row-data)
                                   :show-overlay true}]))
 
 (defn edit-arena-button [row-data]
-  [:input.create-game {:type "button"
-                       :value "EDIT"
-                       :on-click #(open-edit-arena-modal row-data)}])
+  [:input.edit-arena {:type "button"
+                      :value "EDIT"
+                      :on-click #(open-edit-arena-modal row-data)}])
 
 (defn create-game-button [arena-id]
   [:input.create-game {:type "button"

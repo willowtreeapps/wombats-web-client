@@ -47,7 +47,12 @@
         .data-cell:nth-child(7) {
             width: @small-width;
         }
-
+        .header-cell:nth-child(8),
+        .data-cell:nth-child(8) {
+            .edit-arena {
+                visibility: hidden;
+            }
+        }
         .data-cell:last-child {
             width: @medium-width;
             text-align: right;
@@ -55,11 +60,18 @@
                 visibility: hidden;
             }
         }
-
+        .data-row:hover .data-cell:nth-child(8) {
+            .edit-arena {
+                visibility: visible;
+            }
+        }
         .data-row:hover .data-cell:last-child {
             .create-game {
                 visibility: visible;
             }
+        }
+        .edit-arena {
+            .simple-button(@bg-color: @transparent, @margin-left: 0, @margin-right: auto);
         }
 
         .create-game {
