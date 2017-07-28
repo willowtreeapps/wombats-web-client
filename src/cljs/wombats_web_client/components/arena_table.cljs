@@ -25,6 +25,15 @@
   (re-frame/dispatch [:set-modal {:fn #(create-arena-modal)
                                   :show-overlay true}]))
 
+(defn open-edit-arena-modal [row-data]
+  (re-frame/dispatch [:set-modal {:fn #(create-arena-modal row-data)
+                                  :show-overlay true}]))
+
+(defn edit-arena-button [row-data]
+  [:input.create-game {:type "button"
+                       :value "EDIT"
+                       :on-click #(open-edit-arena-modal row-data)}])
+
 (defn create-game-button [arena-id]
   [:input.create-game {:type "button"
                        :value "CREATE GAME"
@@ -40,8 +49,9 @@
                 :arena/zakano
                 :arena/id
                 :arena/name]} row-data
-                dimension (str width "x" height)
-                create-game (create-game-button id)]
+        dimension (str width "x" height)
+        edit-arena (edit-arena-button row-data)
+        create-game (create-game-button id)]
     [name
      dimension
      food
@@ -49,6 +59,7 @@
      steel-walls
      wood-walls
      zakano
+     edit-arena
      create-game]))
 
 (defn arena-table [arenas]

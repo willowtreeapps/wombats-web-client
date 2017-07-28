@@ -10,10 +10,13 @@
              :refer [radio-select]]
             [wombats-web-client.events.arenas
              :refer [get-arenas
+                     edit-arena
                      create-arena]]
             [wombats-web-client.utils.errors :refer [get-error-message
                                                      required-field-error
-                                                     not-an-integer]]
+                                                     not-an-integer
+                                                     max-twenty-five
+                                                     min-five]]
             [wombats-web-client.utils.forms
              :refer [cancel-modal-input
                      submit-modal-input
@@ -64,10 +67,37 @@
                      (integer? (js/parseInt %)))
           :error not-an-integer}
 
+         {:key-name :arena/width
+          :test-fn #(not
+                     (<= (js/parseInt %) 25))
+          :error max-twenty-five}
+
+         {:key-name :arena/width
+          :test-fn #(not
+                     (>= (js/parseInt %) 5))
+          :error min-five}
+
+         {:key-name :arena/width
+          :test-fn clojure.string/blank?
+          :error required-field-error}
+
+         {:key-name :arena/height
+          :test-fn #(not
+                     (<= (js/parseInt %) 25))
+          :error max-twenty-five}
+
+         {:key-name :arena/height
+          :test-fn #(not
+                     (>= (js/parseInt %) 5))
+          :error min-five}
          {:key-name :arena/height
           :test-fn #(not
                      (integer? (js/parseInt %)))
           :error not-an-integer}
+
+         {:key-name :arena/height
+          :test-fn clojure.string/blank?
+          :error required-field-error}
 
          {:key-name :arena/perimeter
           :test-fn clojure.string/blank?
@@ -113,6 +143,12 @@
   [perimeter-status]
   (= perimeter-status "on"))
 
+(defn get-perimeter-string
+  [perimeter-bool]
+  (if perimeter-bool
+    "on"
+    "off"))
+
 (defn- map-map-val
   [m f]
   (into {} (for [[k v] m] [k (f v)])))
@@ -122,26 +158,32 @@
   (every? true? (map #(integer? (js/parseInt %))
                       (vals m))))
 
+(defn- filter-arena-fields
+  [m]
+  (select-keys m
+               [:arena/id
+                :arena/perimeter
+                :arena/name
+                :arena/width
+                :arena/height
+                :arena/shot-damage
+                :arena/smoke-duration
+                :arena/food
+                :arena/poison
+                :arena/steel-walls
+                :arena/wood-walls
+                :arena/zakano
+                :arena/wood-wall-hp
+                :arena/steel-wall-hp
+                :arena/zakano-hp
+                :arena/wombat-hp]))
+
 (defn on-submit-form-valid [cmpnt-state]
-  (let [test-data  (select-keys @cmpnt-state
-                                [:arena/perimeter
-                                 :arena/name
-                                 :arena/width
-                                 :arena/height
-                                 :arena/shot-damage
-                                 :arena/smoke-duration
-                                 :arena/food
-                                 :arena/poison
-                                 :arena/steel-walls
-                                 :arena/wood-walls
-                                 :arena/zakano
-                                 :arena/wood-wall-hp
-                                 :arena/steel-wall-hp
-                                 :arena/zakano-hp
-                                 :arena/wombat-hp])
+  (let [test-data (filter-arena-fields @cmpnt-state)
         integer-data (map-map-val (dissoc test-data
-                                           :arena/perimeter
-                                           :arena/name) #(js/parseInt %))
+                                          :arena/id
+                                          :arena/perimeter
+                                          :arena/name) #(js/parseInt %))
         perimeter-bool {:arena/perimeter
                         (get-perimeter-bool (:arena/perimeter test-data))}
         not-blank (no-blanks? (vals test-data))
@@ -151,66 +193,79 @@
                   :on-error #(callback-error % cmpnt-state)}]
 
     (check-for-errors cmpnt-state)
+    (println (:arena/id test-data))
     (when ready-to-submit
-      (create-arena (merge test-data integer-data perimeter-bool handlers)))))
+      (if (:arena/id test-data)
+        (edit-arena (merge test-data integer-data perimeter-bool handlers))
+        (create-arena (merge test-data integer-data perimeter-bool handlers))))))
 
-(defn create-arena-modal []
-  (let [modal-error (re-frame/subscribe [:modal-error])
-        cmpnt-state (reagent/atom initial-state)]
-    (fn []
-      [:div.modal.create-arena-modal
-       [:div.title "CREATE ARENA"]
-       (when @modal-error [:div.modal-error @modal-error])
-       [:div.modal-content
-        [text-input-with-label {:class "name"
-                                :name "arena/name"
-                                :label "Arena Name"
-                                :state cmpnt-state}]
-        [text-input-with-label {:class "width"
-                                :name "arena/width"
-                                :label "Width"
-                                :state cmpnt-state}]
-        [text-input-with-label {:class "height"
-                                :name "arena/height"
-                                :label "Height"
-                                :state cmpnt-state}]
-        [radio-select {:class "perimeter"
-                       :name "arena/perimeter"
-                       :label "Perimeter Walls"
-                       :state cmpnt-state
-                       :radios perimeter-radios}]
-        [text-input-with-label {:class "shot-damage"
-                                :name "arena/shot-damage"
-                                :label "Shot Damage"
-                                :state cmpnt-state}]
-        [text-input-with-label {:class "smoke-duration"
-                                :name "arena/smoke-duration"
-                                :label "Smoke Duration"
-                                :state cmpnt-state}]
-        [text-input-with-label {:class "food"
-                                :name "arena/food"
-                                :label "Food"
-                                :state cmpnt-state}]
-        [text-input-with-label {:class "poison"
-                                :name "arena/poison"
-                                :label "Poison"
-                                :state cmpnt-state}]
-        [text-input-with-label {:class "steel-walls"
-                                :name "arena/steel-walls"
-                                :label "Steel Barriers"
-                                :state cmpnt-state}]
-        [text-input-with-label {:class "wood-walls"
-                                :name "arena/wood-walls"
-                                :label "Wood Barriers"
-                                :state cmpnt-state}]
-        [text-input-with-label {:class "zakano"
-                                :name "arena/zakano"
-                                :label "Zakano"
-                                :state cmpnt-state}]]
+(defn create-arena-modal
+  ([] (create-arena-modal {}))
+  ([row-data]
+   (let [arena-data (filter-arena-fields row-data)
+         perimeter-walls {:arena/perimeter
+                          (get-perimeter-string
+                           (:arena/perimeter arena-data))}
+         modal-error (re-frame/subscribe [:modal-error])
+         cmpnt-state (reagent/atom (merge
+                                    initial-state
+                                    arena-data
+                                    perimeter-walls))
+         title (if (:arena/id arena-data) "EDIT ARENA" "CREATE ARENA")]
+     (fn []
+       [:div.modal.create-arena-modal
+        [:div.title title]
+        (when @modal-error [:div.modal-error @modal-error])
+        [:div.modal-content
+         [text-input-with-label {:class "name"
+                                 :name "arena/name"
+                                 :label "Arena Name"
+                                 :state cmpnt-state}]
+         [radio-select {:class "perimeter"
+                        :name "arena/perimeter"
+                        :label "Perimeter Walls"
+                        :state cmpnt-state
+                        :radios perimeter-radios}]
+         [text-input-with-label {:class "width"
+                                 :name "arena/width"
+                                 :label "Width"
+                                 :state cmpnt-state}]
+         [text-input-with-label {:class "height"
+                                 :name "arena/height"
+                                 :label "Height"
+                                 :state cmpnt-state}]
+         [text-input-with-label {:class "shot-damage"
+                                 :name "arena/shot-damage"
+                                 :label "Shot Damage"
+                                 :state cmpnt-state}]
+         [text-input-with-label {:class "smoke-duration"
+                                 :name "arena/smoke-duration"
+                                 :label "Smoke Duration"
+                                 :state cmpnt-state}]
+         [text-input-with-label {:class "food"
+                                 :name "arena/food"
+                                 :label "Food"
+                                 :state cmpnt-state}]
+         [text-input-with-label {:class "poison"
+                                 :name "arena/poison"
+                                 :label "Poison"
+                                 :state cmpnt-state}]
+         [text-input-with-label {:class "steel-walls"
+                                 :name "arena/steel-walls"
+                                 :label "Steel Barriers"
+                                 :state cmpnt-state}]
+         [text-input-with-label {:class "wood-walls"
+                                 :name "arena/wood-walls"
+                                 :label "Wood Barriers"
+                                 :state cmpnt-state}]
+         [text-input-with-label {:class "zakano"
+                                 :name "arena/zakano"
+                                 :label "Zakano"
+                                 :state cmpnt-state}]]
 
 
-       [:div.action-buttons
-        [cancel-modal-input]
-        [submit-modal-input
-         "CREATE"
-         #(on-submit-form-valid cmpnt-state)]]])))
+        [:div.action-buttons
+         [cancel-modal-input]
+         [submit-modal-input
+          "CREATE"
+          #(on-submit-form-valid cmpnt-state)]]]))))

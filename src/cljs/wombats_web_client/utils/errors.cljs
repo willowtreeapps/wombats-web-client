@@ -10,7 +10,9 @@
   "This game has already started. Please try joining another game.")
 (defonce not-an-integer
   "Not an integer.")
+(defonce min-five "Minimum is 5.")
 (defonce max-eight "Max is 8.")
+(defonce max-twenty-five "Max is 25.")
 (defonce incorrect-format-colon "Format is mm:ss.")
 
 (def login-error "login-error")
