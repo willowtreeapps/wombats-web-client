@@ -191,7 +191,6 @@
                   :on-error #(callback-error % cmpnt-state)}]
 
     (check-for-errors cmpnt-state)
-    (println (:arena/id test-data))
     (when ready-to-submit
       (if (:arena/id test-data)
         (edit-arena (merge test-data integer-data perimeter-bool handlers))
@@ -209,7 +208,8 @@
                                     initial-state
                                     arena-data
                                     perimeter-walls))
-         title (if (:arena/id arena-data) "EDIT ARENA" "CREATE ARENA")]
+         title (if (:arena/id arena-data) "EDIT ARENA" "CREATE ARENA")
+         confirm (if (:arena/id arena-data) "SAVE" "CREATE")]
      (fn []
        [:div.modal.create-arena-modal
         [:div.title title]
@@ -265,5 +265,5 @@
         [:div.action-buttons
          [cancel-modal-input]
          [submit-modal-input
-          "CREATE"
+          confirm
           #(on-submit-form-valid cmpnt-state)]]]))))
