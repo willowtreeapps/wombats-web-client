@@ -13,7 +13,8 @@
 
 (defn- wombat-logo []
   [:a {:href "/"
-       :on-click #(nav-link-handler % "/")} [:img.wombat-logo {:src "/images/img-logo-horizontal.svg"}]])
+       :on-click #(nav-link-handler % "/")}
+   [:img.wombat-logo {:src "/images/img-logo-horizontal.svg"}]])
 
 (defn- nav-link
   [{:keys [id class on-click link title current]}]
