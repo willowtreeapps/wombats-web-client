@@ -1,5 +1,4 @@
 var ace  = {
-
   edit: {
     getSession: {
       setValue: function() {},

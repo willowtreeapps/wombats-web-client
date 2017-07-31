@@ -101,8 +101,6 @@
   (get-games-query-params query-params)
   (query-params-on-change query-params))
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
