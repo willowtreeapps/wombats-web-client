@@ -47,8 +47,14 @@
         .data-cell:nth-child(7) {
             width: @small-width;
         }
-        .header-cell:nth-child(8),
+         .header-cell:nth-child(8),
         .data-cell:nth-child(8) {
+            .delete-arena {
+                visibility: hidden;
+            }
+        }
+        .header-cell:nth-child(9),
+        .data-cell:nth-child(9) {
             .edit-arena {
                 visibility: hidden;
             }
@@ -61,6 +67,11 @@
             }
         }
         .data-row:hover .data-cell:nth-child(8) {
+            .delete-arena {
+                visibility: visible;
+            }
+        }
+        .data-row:hover .data-cell:nth-child(9) {
             .edit-arena {
                 visibility: visible;
             }
@@ -69,6 +80,9 @@
             .create-game {
                 visibility: visible;
             }
+        }
+        .delete-arena {
+            .simple-button(@bg-color: @transparent, @margin-left: 0, @margin-right: auto);
         }
         .edit-arena {
             .simple-button(@bg-color: @transparent, @margin-left: 0, @margin-right: auto);

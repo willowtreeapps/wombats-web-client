@@ -51,9 +51,7 @@
 
 (def callback-error
   (fn [error cmpnt-state]
-    (println (get-error-message error))
     (re-frame/dispatch [:update-modal-error (get-error-message error)])
-    (println "dispatching error")
     (reset! cmpnt-state initial-state)))
 
 (defn check-for-errors [cmpnt-state]

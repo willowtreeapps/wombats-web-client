@@ -4,6 +4,8 @@
             [wombats-web-client.components.table :refer [table]]
             [wombats-web-client.components.modals.arena-modal
              :refer [arena-modal]]
+            [wombats-web-client.components.modals.delete-arena-modal
+             :refer [delete-arena-modal]]
             [wombats-web-client.components.modals.create-game-modal
              :refer [create-game-modal]]))
 
@@ -14,11 +16,17 @@
                   "Steel Barrier"
                   "Wood Barrier"
                   "Zakano"
+                  ""
+                  ""
                   ""])
 
 
 (defn open-create-game-modal [arena-id]
   (re-frame/dispatch [:set-modal {:fn #(create-game-modal arena-id)
+                                  :show-overlay true}]))
+
+(defn open-delete-arena-modal [arena-id]
+  (re-frame/dispatch [:set-modal {:fn #(delete-arena-modal arena-id)
                                   :show-overlay true}]))
 
 (defn open-add-arena-modal []
@@ -28,6 +36,11 @@
 (defn open-edit-arena-modal [row-data]
   (re-frame/dispatch [:set-modal {:fn #(arena-modal row-data)
                                   :show-overlay true}]))
+
+(defn delete-arena-button [arena-id]
+  [:input.delete-arena {:type "button"
+                        :value "DELETE"
+                        :on-click #(open-delete-arena-modal arena-id)}])
 
 (defn edit-arena-button [row-data]
   [:input.edit-arena {:type "button"
@@ -50,6 +63,7 @@
                 :arena/id
                 :arena/name]} row-data
         dimension (str width "x" height)
+        delete-arena (delete-arena-button id)
         edit-arena (edit-arena-button row-data)
         create-game (create-game-button id)]
     [name
@@ -59,6 +73,7 @@
      steel-walls
      wood-walls
      zakano
+     delete-arena
      edit-arena
      create-game]))
 
