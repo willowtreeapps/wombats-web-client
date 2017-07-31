@@ -116,30 +116,30 @@
             "postcss-prefixer" ["shell" "node_modules/postcss-cli/bin/postcss" "resources/temp/css/*.css" "resources/temp/css/**/*.css" "resources/temp/css/**/**/*.css"
                                 "--use autoprefixer" "-d" "resources/public/css"]
             "run-local"   ["do"
-                           "install-postcss"
+                           "install-postcss,"
                            ["less" "once"]
                            ["pdo" "clean," ["figwheel" "local"] ["less" "auto"] "postcss-prefixer-w"]]
             "run-dev"     ["do"
-                           "install-postcss"
+                           "install-postcss,"
                            ["less" "once"]
                            ["pdo" "clean," ["figwheel" "dev"]   ["less" "auto"] "postcss-prefixer-w"]]
             "run-lint"    ["pdo" "bikeshed" ["kibit" "src/cljs/wombats_web_client/"]]
             "deploy-dev"  ["do"
-                           "install-postcss"
+                           "install-postcss,"
                            "clean,"
                            "run-lint"
                            ["cljsbuild" "once" "deploy-dev"]
                            ["less" "once"]
                            "postcss-prefixer"]
             "deploy-qa"   ["do"
-                           "install-postcss"
+                           "install-postcss,"
                            "clean,"
                            "run-lint"
                            ["cljsbuild" "once" "deploy-qa"]
                            ["less" "once"]
                            "postcss-prefixer"]
             "deploy-prod" ["do"
-                           "install-postcss"
+                           "install-postcss,"
                            "clean,"
                            "run-lint"
                            ["cljsbuild" "once" "deploy-prod"]
