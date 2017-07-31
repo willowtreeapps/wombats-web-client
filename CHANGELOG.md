@@ -12,7 +12,6 @@ CHANGELOG
 * Added ability to delete games as an administrator [Eli Bosley](/elibosley) #[284](https://github.com/willowtreeapps/wombats-web-client/issues/284)
 
 **Bug Fixes**
-* CSS Prefixing performed automatically using autoprefixer - this is to help improve browser compatibility [Eli Bosley][/eli] *No Issue*
 * Fixed issue with chat box in Safari [Eli Bosley](/elibosley) *No Issue*
 * Page indicator always displayed correctly below games [Eli Bosley](/elibosley) #[339](https://github.com/willowtreeapps/wombats-web-client/issues/339)
 
