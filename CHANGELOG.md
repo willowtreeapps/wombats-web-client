@@ -16,6 +16,7 @@ CHANGELOG
 * CSS Prefixing performed automatically using autoprefixer - this is to help improve browser compatibility [Eli Bosley][/eli] *No Issue*
 * Fixed issue with chat box in Safari [Eli Bosley](/elibosley) *No Issue*
 * Page indicator always displayed correctly below games [Eli Bosley](/elibosley) #[339](https://github.com/willowtreeapps/wombats-web-client/issues/339)
+* Arena aspect ratio is set based on the arena size [Eli Bosley](/elibosley) #[345](https://github.com/willowtreeapps/wombats-web-client/issues/345)
 
 ## QA (3.27.2017)
 **Enhancements**

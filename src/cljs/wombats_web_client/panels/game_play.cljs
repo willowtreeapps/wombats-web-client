@@ -26,12 +26,27 @@
 ;; Helper Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- resize-canvas [arena-atom]
+(defn- get-ratio
+  "Returns an object containing width and
+  height as the ratios of the different sides"
+  [{:keys [width height]}]
+  (cond
+    (> width height) {:width 1
+                      :height (/ height width)}
+    (> height width) {:width (/ width height)
+                      :height 1}
+    :else {:width 1
+           :height 1}))
+
+
+(defn- resize-canvas [arena-atom dimensions]
   (let [root-element (first
                       (array-seq
                        (.getElementsByClassName
                         js/document
                         root-class)))
+        height (get-in @arena-atom [:arena/height])
+        arena-ratio (get-ratio dimensions)
         canvas-element (.getElementById js/document canvas-id)
         width (.-offsetWidth root-element)
         half-width (/ width 2)
@@ -40,15 +55,14 @@
         dimension (if mobile-mode
                     width
                     (min height half-width))]
-
     ;; Set dimensions of canvas
-    (set! (.-width canvas-element) dimension)
-    (set! (.-height canvas-element) dimension)
+    (set! (.-width canvas-element) (*  dimension (:width arena-ratio)))
+    (set! (.-height canvas-element) (* dimension (:height arena-ratio)))
     (arena/arena @arena-atom canvas-id)))
 
-(defn- on-resize [arena-atom]
-  (resize-canvas arena-atom)
-  (js/setTimeout #(resize-canvas arena-atom)
+(defn- on-resize [arena-atom dimensions]
+  (resize-canvas arena-atom dimensions)
+  (js/setTimeout #(resize-canvas arena-atom dimensions)
                  100))
 
 (defn- show-winner-modal
@@ -111,12 +125,12 @@
 ;; Lifecycle Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- component-did-mount [arena cmpnt-state]
+(defn- component-did-mount [arena dimensions cmpnt-state]
   ;; Add resize listener
   (.addEventListener js/window
                      "resize"
                      (:resize-fn @cmpnt-state))
-  (resize-canvas arena))
+  (resize-canvas arena dimensions))
 
 (defn- component-did-update [arena]
   (arena/arena @arena canvas-id))
@@ -209,14 +223,16 @@
 
 (defn game-play [{:keys [game-id]}]
   (let [arena (re-frame/subscribe [:game/arena])
-        cmpnt-state (reagent/atom {:resize-fn #(on-resize arena)
+        game (re-frame/subscribe [:games/game-by-id game-id])
+        dimensions {:width (get-in @game [:game/arena :arena/width])
+                    :height (get-in @game [:game/arena :arena/height])}
+        cmpnt-state (reagent/atom {:resize-fn #(on-resize arena dimensions)
                                    :update nil})
         messages (re-frame/subscribe [:game/messages])
-        user (re-frame/subscribe [:current-user])
-        game (re-frame/subscribe [:games/game-by-id game-id])]
+        user (re-frame/subscribe [:current-user])]
 
     (reagent/create-class
-     {:component-did-mount #(component-did-mount arena cmpnt-state)
+     {:component-did-mount #(component-did-mount arena dimensions cmpnt-state)
       :component-did-update #(component-did-update arena)
       :component-will-mount #(component-will-mount game-id)
       :component-will-unmount #(component-will-unmount game-id cmpnt-state)
@@ -226,7 +242,7 @@
         (let [game-over (:game/end-time @game)
               transition-text (get-transition-text @game cmpnt-state)]
           (arena/arena @arena canvas-id)
-
+          ;;(println (get-in @game [:game/arena :arena/height]))
           ;; Trigger rerender for transition screen
           (:update @cmpnt-state)
 
