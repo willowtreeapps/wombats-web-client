@@ -1,19 +1,23 @@
 (ns wombats-web-client.events.games
   (:require [re-frame.core :as re-frame]
-            [ajax.core :refer [GET POST PUT]]
+            [ajax.core :refer [GET POST PUT DELETE]]
             [ajax.edn :refer [edn-request-format edn-response-format]]
             [wombats-web-client.constants.games :refer [pending-open
                                                         pending-closed
                                                         active
                                                         active-intermission
                                                         closed]]
-            [wombats-web-client.utils.games
-             :refer [build-status-query sort-players]]
             [wombats-web-client.constants.urls :refer [games-url
                                                        games-join-url
+                                                       games-id-url
                                                        create-game-url]]
+            [wombats-web-client.routes :refer [nav!]]
             [wombats-web-client.utils.auth :refer [add-auth-header
-                                                   get-current-user-id]]))
+                                                   get-current-user-id]]
+            [wombats-web-client.utils.errors :refer [get-error-message]]
+
+            [wombats-web-client.utils.games
+             :refer [build-status-query sort-players]]))
 
 (defn get-games [status on-success on-error]
   (GET games-url {:response-format (edn-response-format)
@@ -45,6 +49,16 @@
                                           :player/color color
                                           :game/password password}}))
 
+(defn delete-game-by-id
+  "deletes a games from db by id"
+  [game-id on-success on-error]
+  (DELETE (games-id-url game-id) {:response-format (edn-response-format)
+                                  :format (edn-request-format)
+                                  :keywords? true
+                                  :headers (add-auth-header {})
+                                  :handler on-success
+                                  :error-handler on-error}))
+
 (defn create-game [{:keys [arena-id
                            start-time
                            num-rounds
@@ -75,30 +89,61 @@
          :error-handler on-error}))
 
 ;; TODO Scaling Issue with Lots of games - only update with games that are new?
+(defn get-open-games
+  ([] (get-open-games 0))
+  ([page]
+   (get-games
+    (build-status-query [pending-open pending-closed active active-intermission]
+                        page)
+    #(re-frame/dispatch [:games %])
+    #(print "error on get open games"))))
 
-(defn get-open-games []
-  (get-games
-   (build-status-query [pending-open pending-closed active active-intermission])
-   #(re-frame/dispatch [:games %])
-   #(print "error on get open games")))
+(defn get-my-open-games
+  ([] (get-my-open-games 0))
+  ([page]
+   (get-my-games
+    (build-status-query [pending-open pending-closed active active-intermission]
+                        page)
+    #(re-frame/dispatch [:games %])
+    #(print "error on get my open games"))))
 
-(defn get-my-open-games []
-  (get-my-games
-   (build-status-query [pending-open pending-closed active active-intermission])
-   #(re-frame/dispatch [:games %])
-   #(print "error on get my open games")))
+(defn get-closed-games
+  ([] (get-closed-games 0))
+  ([page]
+   (get-games
+    (build-status-query [closed]
+                        page)
+    #(re-frame/dispatch [:games %])
+    #(print "error on get all closed games"))))
 
-(defn get-closed-games []
-  (get-games
-   (build-status-query [closed])
-   #(re-frame/dispatch [:games %])
-   #(print "error on get all closed games")))
+(defn get-my-closed-games
+  ([] (get-my-closed-games 0))
+  ([page]
+   (get-my-games
+    (build-status-query [closed]
+                        page)
+    #(re-frame/dispatch [:games %])
+    #(print "error on get all closed games"))))
 
-(defn get-my-closed-games []
-  (get-my-games
-   (build-status-query [closed])
-   #(re-frame/dispatch [:games %])
-   #(print "error on get all closed games")))
+(defn get-games-query-params
+  "This is used to retrieve games based on params"
+  [{:keys [closed mine page]}]
+  ;; Subtract 1 since the API is 0-indexed
+  (let [page (if page
+               (dec page)
+               0)]
+    (cond
+      (and closed mine)
+      (get-my-closed-games page)
+
+      (and closed (not mine))
+      (get-closed-games page)
+
+      (and (not closed) mine)
+      (get-my-open-games page)
+
+      (and (not closed) (not mine))
+      (get-open-games page))))
 
 (defn get-all-games []
   (get-open-games)
@@ -115,6 +160,17 @@
    cb-success
    cb-error))
 
+(defn delete-game
+  [game-id cb-success]
+  (let [query-params (re-frame/subscribe [:query-params])]
+    (delete-game-by-id
+     game-id
+     (fn []
+       (get-games-query-params @query-params)
+       (cb-success))
+     #(re-frame/dispatch [:update-modal-error (get-error-message %)]))))
+
+
 (re-frame/reg-event-db
  :add-join-selection
  (fn [db [_ sel]]
@@ -123,10 +179,9 @@
 (re-frame/reg-event-db
  :games
  (fn [db [_ games]]
-   (update-in
+   (assoc
     db
-    [:games]
-    merge
+    :games
     (reduce (fn [map game]
               (assoc map
                 (:game/id game)
@@ -145,3 +200,8 @@
  :get-closed-games
  (fn [_]
    (get-closed-games)))
+
+(re-frame/reg-event-db
+ :set-query-params
+ (fn [db [_ query-params]]
+   (assoc db :query-params query-params)))

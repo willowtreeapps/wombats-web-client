@@ -1,12 +1,20 @@
 CHANGELOG
 =========
 
-## Develop
+## Develop (6.20.2017)
 **Enhancements**
-* None
+* Output from simulator is displayed through Ace [Eli Bosley][/eli] [#189](https://github.com/willowtreeapps/wombats-web-client/issues/189)
+* Date picker now shows the current time when opened [Eli Bosley][/eli] [#333](https://github.com/willowtreeapps/wombats-web-client/issues/333)
+* User repositories are selectable through a dropdown.
+  [Eli Bosley][/eli] *No Issue*
+* Simulator redesigned based on updated diagrams [Eli Bosley][/eli] [#289](https://github.com/willowtreeapps/wombats-web-client/issues/289)
+* Pagination displayed on the games list. [Eli Bosley][/eli], [C.P. Dehli][/dehli] [#285](https://github.com/willowtreeapps/wombats-web-client/issues/285)
+* Added ability to delete games as an administrator [Eli Bosley](/elibosley) #[284](https://github.com/willowtreeapps/wombats-web-client/issues/284)
 
 **Bug Fixes**
-* None
+* CSS Prefixing performed automatically using autoprefixer - this is to help improve browser compatibility [Eli Bosley][/eli] *No Issue*
+* Fixed issue with chat box in Safari [Eli Bosley](/elibosley) *No Issue*
+* Page indicator always displayed correctly below games [Eli Bosley](/elibosley) #[339](https://github.com/willowtreeapps/wombats-web-client/issues/339)
 
 ## QA (3.27.2017)
 **Enhancements**
@@ -75,3 +83,4 @@ CHANGELOG
 [/dehli]: https://github.com/dehli
 [/emily]: https://github.com/emilyseibert
 [/oconn]: https://github.com/oconn
+[/eli]: https://github.com/elibosley

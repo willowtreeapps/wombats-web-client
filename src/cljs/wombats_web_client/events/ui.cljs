@@ -15,3 +15,10 @@
  :update-modal-error
  (fn [db [_ modal-error]]
    (assoc db :modal-error modal-error)))
+
+(re-frame/reg-event-db
+ :reset-modal
+ (fn [db _]
+   (assoc db
+          :modal nil
+          :modal-error nil)))

@@ -1,16 +1,15 @@
 (ns wombats-web-client.utils.bootstrap
-  (:require [pushy.core :as pushy]
-            [re-frame.core :as re-frame]
-            [wombats-web-client.routes :refer [history]]
+  (:require [re-frame.core :as re-frame]
+            [wombats-web-client.routes :refer [nav!]]
             [wombats-web-client.utils.local-storage :refer [remove-token!
                                                             set-token!]]))
 
 (defn redirect-authenticated [token]
   (set-token! token)
-  (pushy/replace-token! history "/"))
+  (nav! "/"))
 
 (defn redirect-unauthenticated []
-  (pushy/replace-token! history "/welcome"))
+  (nav! "/welcome"))
 
 (defn bootstrap-failure [error]
   (js/console.error error)
