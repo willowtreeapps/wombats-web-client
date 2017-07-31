@@ -5,8 +5,15 @@
             [wombats-web-client.routes :refer [nav!]]
             [wombats-web-client.utils.auth :refer [user-is-coordinator?]]))
 
+(defn- nav-link-handler
+  [evt url]
+  (do
+    (.preventDefault evt)
+    (nav! url)))
+
 (defn- wombat-logo []
-  [:a {:href "/"} [:img.wombat-logo {:src "/images/img-logo-horizontal.svg"}]])
+  [:a {:href "/"
+       :on-click #(nav-link-handler % "/")} [:img.wombat-logo {:src "/images/img-logo-horizontal.svg"}]])
 
 (defn- nav-link
   [{:keys [id class on-click link title current]}]
@@ -14,9 +21,7 @@
         :class class}
    [:a {:class (when (= current id) "active")
         :href link
-        :on-click #(do
-                     (.preventDefault %)
-                     (nav! link))} title]])
+        :on-click #(nav-link-handler % link)} title]])
 
 (defn- coordinator-links [selected]
   [nav-link {:id "config"
