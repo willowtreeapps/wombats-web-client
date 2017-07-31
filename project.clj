@@ -30,7 +30,7 @@
                                     "test/js"]
 
   :less {:source-paths ["less"]
-         :target-path "resources/temp/css"}
+         :target-path "resources/public/css"}
 
   :figwheel {:css-dirs ["resources/public/css"]
              :ring-handler figwheel-server.core/handler}
@@ -116,32 +116,24 @@
             "postcss-prefixer" ["shell" "node_modules/postcss-cli/bin/postcss" "resources/temp/css/*.css" "resources/temp/css/**/*.css" "resources/temp/css/**/**/*.css"
                                 "--use autoprefixer" "-d" "resources/public/css"]
             "run-local"   ["do"
-                           "install-postcss"
                            ["less" "once"]
-                           ["pdo" "clean," ["figwheel" "local"] ["less" "auto"] "postcss-prefixer-w"]]
+                           ["pdo" "clean," ["figwheel" "local"] ["less" "auto"]]]
             "run-dev"     ["do"
-                           "install-postcss"
                            ["less" "once"]
-                           ["pdo" "clean," ["figwheel" "dev"]   ["less" "auto"] "postcss-prefixer-w"]]
+                           ["pdo" "clean," ["figwheel" "dev"] ["less" "auto"]]]
             "run-lint"    ["pdo" "bikeshed" ["kibit" "src/cljs/wombats_web_client/"]]
             "deploy-dev"  ["do"
-                           "install-postcss"
                            "clean,"
                            "run-lint"
                            ["cljsbuild" "once" "deploy-dev"]
-                           ["less" "once"]
-                           "postcss-prefixer"]
+                           ["less" "once"]]
             "deploy-qa"   ["do"
-                           "install-postcss"
                            "clean,"
                            "run-lint"
                            ["cljsbuild" "once" "deploy-qa"]
-                           ["less" "once"]
-                           "postcss-prefixer"]
+                           ["less" "once"]]
             "deploy-prod" ["do"
-                           "install-postcss"
                            "clean,"
                            "run-lint"
                            ["cljsbuild" "once" "deploy-prod"]
-                           ["less" "once"]
-                           "postcss-prefixer"]})
+                           ["less" "once"]]})
