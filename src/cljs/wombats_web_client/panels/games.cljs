@@ -94,6 +94,7 @@
 
 (defn- component-will-receive-props
   [this [_ query-params]]
+  (query-params-on-change query-params)
   (get-games-query-params query-params))
 
 (defn- component-will-mount
@@ -228,7 +229,6 @@
 (defn main-panel [query-params]
   (let [current-user (re-frame/subscribe [:current-user])
         games (re-frame/subscribe [:games/games])]
-    (query-params-on-change query-params)
     [:div.games-panel
      [:div.toggles
       [tab-view-toggle query-params]
