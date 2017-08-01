@@ -193,8 +193,10 @@
     (check-for-errors cmpnt-state)
     (when ready-to-submit
       (if (:arena/id test-data)
-        (edit-arena (merge test-data integer-data perimeter-bool handlers))
-        (create-arena (merge test-data integer-data perimeter-bool handlers))))))
+        (edit-arena
+         (merge test-data integer-data perimeter-bool handlers))
+        (create-arena
+         (merge test-data integer-data perimeter-bool handlers))))))
 
 (defn arena-modal
   ([] (arena-modal {}))

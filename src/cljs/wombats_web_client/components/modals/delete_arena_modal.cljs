@@ -40,4 +40,5 @@
              (delete-arena
               id
               #(callback-success cmpnt-state)
-              #(re-frame/dispatch [:update-modal-error (get-error-message %)])))]]])})))
+              #(re-frame/dispatch
+                [:update-modal-error (get-error-message %)])))]]])})))
