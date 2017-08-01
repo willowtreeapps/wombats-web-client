@@ -44,7 +44,10 @@
         :class class}
    [:a {:class (when (= current id) "active")
         :href link
-        :on-click #(nav-link-handler % link)} title]])
+        :on-click #(do
+                     (when on-click
+                       (on-click))
+                     (nav-link-handler % link))} title]])
 
 (defn- coordinator-links [selected nav-status]
   [nav-link {:id "config"
