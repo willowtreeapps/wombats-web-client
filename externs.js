@@ -6,6 +6,11 @@ var ace  = {
     },
     setTheme: function() {},
     on: function() {},
-    getValue: function() {}
+    getValue: function() {},
+    setOptions: function() {},
+    getCursorPosition: function() {},
+    moveCursorToPosition: function() {},
+    resize: function() {},
+    $blockScrolling: {}
   }
 };
