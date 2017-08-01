@@ -5,7 +5,7 @@
             [wombats-web-client.constants.urls :refer [panel-router-map]]
             [wombats-web-client.routes :refer [nav!]]
             [wombats-web-client.utils.auth :refer [user-is-coordinator?]]
-            [wombats-web-client.utils.functions :refer [get-mobile-status]]))
+            [wombats-web-client.utils.functions :refer [mobile-device?]]))
 
 (def wombat-logo-full "/images/img-logo-horizontal.svg")
 (def wombat-logo-head "/images/img-logo-head.svg")
@@ -16,10 +16,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn- on-resize [nav-status]
-  (swap! nav-status assoc :mobile (get-mobile-status)))
+  (swap! nav-status assoc :mobile (mobile-device?)))
 
 (defn- toggle-nav-menu [nav-status]
-  (swap! nav-status update-in [:visible] not))
+  (swap! nav-status update :visible not))
 
 (defn- hide-nav-menu [nav-status]
   (swap! nav-status assoc :visible false))
@@ -104,7 +104,7 @@
 (defn root
   []
   (let [active-panel (re-frame/subscribe [:active-panel])
-        nav-status (reagent/atom {:mobile (get-mobile-status)
+        nav-status (reagent/atom {:mobile (mobile-device?)
                                   :visible false})
         resize-fn (reagent/atom #(on-resize nav-status))]
     (reagent/create-class

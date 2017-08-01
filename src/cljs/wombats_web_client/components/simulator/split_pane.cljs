@@ -4,9 +4,7 @@
             [goog.events :as events]
             [wombats-web-client.constants.ui
              :refer [navbar-height
-                     controls-height]]
-            [wombats-web-client.utils.functions
-             :refer [get-mobile-status]])
+                     controls-height]])
   (:import [goog.events EventType]))
 
 (defonce split-pane-id "split-pane")
