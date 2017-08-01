@@ -10,9 +10,13 @@
 ;; Main Method
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn render [simulator-data simulator-view-mode]
+(defn render [simulator-frames simulator-index simulator-view-mode]
 
-  (arena/arena (simulator-view-mode @simulator-data) canvas-id)
+  (arena/arena-history
+   {:frames-vec  simulator-frames
+    :frames-idx  simulator-index
+    :view-mode simulator-view-mode
+    :canvas-id canvas-id})
   [:canvas {:id canvas-id
             :width dimensions
             :height dimensions}])

@@ -300,25 +300,49 @@
 
       (js/console.log "Unhandled: " cell-type))))
 
-(defn arena
-  "Renders the arena on a canvas element, and subscribes to arena updates"
-  [arena canvas-id]
-  (let [canvas-element (.getElementById js/document canvas-id)]
-    (when-not (nil? canvas-element)
-      ;; Calculate the width and height of each cell
-      (def height (/ (canvas/height canvas-element) (count arena)))
-      (def width  (/ (canvas/width  canvas-element) (count (get arena 0))))
+(defn- draw-arena-canvas
+  "Given a canvas element and the arena, draw the canvas"
+  [{:keys [arena
+           canvas-element]}]
+  ;; Calculate the width and height of each cell
+  (let [height (/ (canvas/height canvas-element) (count arena))
+        width  (/ (canvas/width  canvas-element) (count (get arena 0)))]
 
-      ;; Iterate through all of the arena rows
-      (doseq [[y row] (map-indexed vector arena)]
-        (doseq [[x cell] (map-indexed vector row)]
-
-          (def x-coord (* x width))
-          (def y-coord (* y height))
-
+    ;; Iterate through all of the arena rows
+    (doseq [[y row] (map-indexed vector arena)]
+      (doseq [[x cell] (map-indexed vector row)]
+        (let
+            [x-coord (* x width)
+             y-coord (* y height)]
           (draw-cell cell
                      x-coord
                      y-coord
                      width
                      height
                      canvas-element))))))
+
+(defn arena
+  "Renders the arena on a canvas element, and subscribes to arena updates"
+  [arena canvas-id]
+  (let [canvas-element (.getElementById js/document canvas-id)]
+    (when-not (nil? canvas-element)
+
+      (draw-arena-canvas {:arena arena
+                          :canvas-element canvas-element}))))
+
+(defn arena-history
+  "Renders the arena on a canvas element, given the frames item and an index,
+  allowing for animation between the frames"
+  [{:keys [frames-vec frames-idx view-mode canvas-id]}]
+  (let [arena (get-in @frames-vec
+                      [@frames-idx
+                       :game/frame
+                       :frame/arena])
+        prev-frame (get-in @frames-vec
+                           [(dec @frames-idx)
+                            :game/frame
+                            :frame/arena])
+        canvas-element (.getElementById js/document canvas-id)]
+    (when-not (nil? canvas-element)
+      (draw-arena-canvas {:arena arena
+                          :canvas-element canvas-element}))))
