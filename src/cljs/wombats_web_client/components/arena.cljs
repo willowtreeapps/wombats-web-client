@@ -300,6 +300,10 @@
 
       (js/console.log "Unhandled: " cell-type))))
 
+(defn- draw-cell-animate
+  "Draw arena cells given the x and y of the previous and the next frame"
+  [cell x-prev x-next])
+
 (defn- draw-arena-canvas
   "Given a canvas element and the arena, draw the canvas"
   [{:keys [arena
@@ -314,6 +318,7 @@
         (let
             [x-coord (* x width)
              y-coord (* y height)]
+
           (draw-cell cell
                      x-coord
                      y-coord
