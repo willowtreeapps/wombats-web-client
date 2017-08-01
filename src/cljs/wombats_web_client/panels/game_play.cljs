@@ -9,7 +9,9 @@
             [wombats-web-client.components.join-button :refer [join-button]]
             [wombats-web-client.components.modals.winner-modal
              :refer [winner-modal]]
-            [wombats-web-client.constants.games :refer [game-type-str-map]]
+            [wombats-web-client.constants.games
+             :refer [game-type-str-map transition-time]]
+            [wombats-web-client.constants.ui :refer [mobile-window-width]]
             [wombats-web-client.utils.games
              :refer [get-player-by-username get-player-score]]
             [wombats-web-client.utils.socket :as ws]
@@ -18,11 +20,7 @@
             [reagent.core :as reagent]))
 
 (defonce root-class "game-play-panel")
-(defonce canvas-container-id "wombat-arena")
 (defonce canvas-id "arena-canvas")
-
-;; This is how long "ROUND x OVER" will show for (between rounds)
-(defonce transition-time 3000)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper Methods
@@ -34,22 +32,19 @@
                        (.getElementsByClassName
                         js/document
                         root-class)))
-        container-element (.getElementById js/document canvas-container-id)
         canvas-element (.getElementById js/document canvas-id)
-        half-width (/ (.-offsetWidth root-element) 2)
+        width (.-offsetWidth root-element)
+        half-width (/ width 2)
         height (.-offsetHeight root-element)
-        dimension (min height half-width)]
+        mobile-mode (< width mobile-window-width)
+        dimension (if mobile-mode
+                    width
+                    (min height half-width))]
 
-    (arena/arena @arena-atom canvas-id)
-
-    ;; Set dimensions of canvas-container and canvas
-    (set! (.-width (.-style container-element))
-          (str dimension "px"))
-    (set! (.-height (.-style container-element))
-          (str dimension "px"))
-
+    ;; Set dimensions of canvas
     (set! (.-width canvas-element) dimension)
-    (set! (.-height canvas-element) dimension)))
+    (set! (.-height canvas-element) dimension)
+    (arena/arena @arena-atom canvas-id)))
 
 (defn- on-resize [arena-atom]
   (resize-canvas arena-atom)
@@ -236,8 +231,7 @@
           (:update @cmpnt-state)
 
           [:div {:class-name root-class}
-           [:div.left-game-play-panel {:id canvas-container-id
-                                       :class (when (or game-over
+           [:div.left-game-play-panel {:class (when (or game-over
                                                         transition-text)
                                                 "disabled")}
             [:span.transition-text

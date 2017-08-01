@@ -1,5 +1,6 @@
 @import "simple-button.less";
 @import "../colors.less";
+@import "../utils/responsive-screens.less";
 
 @small-width: 10%;
 @medium-width: 15%;
@@ -13,6 +14,8 @@
         right: -28px;
     }
     .arena-table {
+        display: block;
+        overflow-x: scroll;
         .header-cell:nth-child(1),
         .data-cell:nth-child(1) {
             width: @large-width;
@@ -64,6 +67,9 @@
             text-align: right;
             .create-game {
                 visibility: hidden;
+                @media @mobile {
+                    visibility: visible;
+                }
             }
         }
         .data-row:hover .data-cell:nth-child(8) {
@@ -87,7 +93,6 @@
         .edit-arena {
             .simple-button(@bg-color: @transparent, @margin-left: 0, @margin-right: auto);
         }
-
         .create-game {
             .simple-button(@bg-color: @transparent, @margin-left: 0, @margin-right: 35px);
         }
