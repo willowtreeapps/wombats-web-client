@@ -1,24 +1,39 @@
 @import "../colors.less";
 @import "../components/simple-button.less";
 @import "../utils/typography.less";
+@import "../utils/responsive-screens.less";
 @import "../components/simulator/controls.less";
 @import "../components/navbar.less";
 @import "../components/emphasized-button.less";
 .simulator-panel {
-    @canvas-dimensions: 600px;
     height: calc(~"100% - " @navbar-height);
     display: flex;
     flex-wrap: wrap;
+    @media @mobile {
+        height: 150%;
+        flex-direction: column;
+    }
 
     .left-pane {
         position: relative;
         display: flex;
         flex-direction: column;
+        .simulator-controls {
+            width: 100%;
+            flex-grow: 1;
+        }
     }
     .right-pane {
-        width: calc(~"100% - " @canvas-dimensions);
+        flex-grow: 1;
         position: relative;
         height: 100%;
+
+        @media @mobile {
+            overflow: auto;
+            flex: 1;
+
+        }
+
         .split-panel {
             height: 100%;
             display: flex;
@@ -152,15 +167,24 @@
     .configuration-panel {
         width: 370px;
         margin-top: calc(@navbar-height + 30px);
-
+        @media @mobile {
+            width: 90%;
+        }
         .title {
             .bold;
             font-size: @font-size-30;
             text-transform: uppercase;
             text-align: center;
+
+            @media @mobile {
+                font-size: @font-size-20;
+            }
         }
         .panel-content {
             padding: 30px 30px 45px;
+            @media @mobile {
+                padding: 30px 0;
+            }
 
         }
         .update-btn {

@@ -10,6 +10,7 @@ CHANGELOG
 * Simulator redesigned based on updated diagrams [Eli Bosley][/eli] [#289](https://github.com/willowtreeapps/wombats-web-client/issues/289)
 * Pagination displayed on the games list. [Eli Bosley][/eli], [C.P. Dehli][/dehli] [#285](https://github.com/willowtreeapps/wombats-web-client/issues/285)
 * Added ability to delete games as an administrator [Eli Bosley](/elibosley) #[284](https://github.com/willowtreeapps/wombats-web-client/issues/284)
+* Mobile styles added [Eli Bosley](/elibosley) *No Issue*
 
 **Bug Fixes**
 * Fixed navigation to games page twice removing query params [Eli Bosley](/elibosley) #[350](https://github.com/willowtreeapps/wombats-web-client/issues/350)

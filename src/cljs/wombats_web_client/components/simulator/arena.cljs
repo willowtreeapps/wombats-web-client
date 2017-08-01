@@ -4,15 +4,14 @@
             [wombats-web-client.components.arena :as arena]))
 
 (defonce canvas-id "simulator-canvas")
-(defonce dimensions 600)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main Method
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn render [simulator-data simulator-view-mode]
+(defn render
+  "Takes the simulator data object and the view mode key and renders the arena"
+  [simulator-data simulator-view-mode]
 
   (arena/arena (simulator-view-mode @simulator-data) canvas-id)
-  [:canvas {:id canvas-id
-            :width dimensions
-            :height dimensions}])
+  [:canvas {:id canvas-id}])

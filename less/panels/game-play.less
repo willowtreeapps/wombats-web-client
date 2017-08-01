@@ -1,46 +1,53 @@
 @import "../colors.less";
 @import "../z-index.less";
 @import "../components/navbar.less";
+@import "../utils/responsive-screens.less";
 @import "../utils/typography";
 
 .game-play-panel {
     display: flex;
     height: calc(~"100% - " @navbar-height);
-
+    @media @mobile {
+        height: 120%;
+        flex-direction: column;
+    }
     .left-game-play-panel {
-        height: 100%;
+        position: relative;
+        display: flex;
+        align-items: center;
+
         &.disabled {
             #arena-canvas {
                 opacity: 0.3;
             }
         }
-
-        &#wombat-arena {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            .transition-text {
-                font-size: 60px;
-                z-index: @game-play-transition-text;
-                width: 50%;
-                text-align: center;
-            }
-
-            #arena-canvas {
-                position: absolute;
-                left: 0;
-            }
+        .transition-text {
+            font-size: 5vmax;
+            z-index: @game-play-transition-text;
+            width: 100%;
+            top: calc(50% - 5vmax);
+            text-align: center;
+            position: absolute;
         }
     }
 
     .right-game-play-panel {
+        position: relative;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
         height: 100%;
+
+        @media @mobile {
+            overflow: auto;
+            flex: 1;
+            height: initial;
+        }
         .top-panel {
             height: 60%;
+            @media @mobile {
+                height: initial;
+            }
             padding: 10px 19px;
 
             .game-play-title-container {
@@ -72,7 +79,7 @@
         }
 
         .chat-panel {
-            height: 40%;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
 
@@ -103,7 +110,7 @@
             }
 
             .chat-box {
-                height: calc(~"100% - " @chat-title-height);
+                flex-grow: 1;
                 padding: 10px 19px;
             }
         }
