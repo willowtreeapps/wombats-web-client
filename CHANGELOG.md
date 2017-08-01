@@ -13,6 +13,8 @@ CHANGELOG
 * Mobile styles added [Eli Bosley](/elibosley) *No Issue*
 
 **Bug Fixes**
+* Fixed navigation to games page twice removing query params [Eli Bosley](/elibosley) #[350](https://github.com/willowtreeapps/wombats-web-client/issues/350)
+* Fixed issue with minified Ace editor function calls [Eli Bosley](/elibosley) #[350](https://github.com/willowtreeapps/wombats-web-client/issues/350)
 * CSS Prefixing performed automatically using autoprefixer - this is to help improve browser compatibility [Eli Bosley][/eli] *No Issue*
 * Fixed issue with chat box in Safari [Eli Bosley](/elibosley) *No Issue*
 * Page indicator always displayed correctly below games [Eli Bosley](/elibosley) #[339](https://github.com/willowtreeapps/wombats-web-client/issues/339)

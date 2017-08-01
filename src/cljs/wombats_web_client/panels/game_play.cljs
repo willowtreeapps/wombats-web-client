@@ -45,7 +45,6 @@
                        (.getElementsByClassName
                         js/document
                         root-class)))
-        height (get-in @arena-atom [:arena/height])
         arena-ratio (get-ratio dimensions)
         canvas-element (.getElementById js/document canvas-id)
         width (.-offsetWidth root-element)

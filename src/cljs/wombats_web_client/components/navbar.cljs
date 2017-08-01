@@ -5,21 +5,20 @@
             [wombats-web-client.constants.urls :refer [panel-router-map]]
             [wombats-web-client.routes :refer [nav!]]
             [wombats-web-client.utils.auth :refer [user-is-coordinator?]]
-            [wombats-web-client.utils.functions :refer [get-mobile-status]]))
+            [wombats-web-client.utils.functions :refer [mobile-device?]]))
 
 (def wombat-logo-full "/images/img-logo-horizontal.svg")
 (def wombat-logo-head "/images/img-logo-head.svg")
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn- on-resize [nav-status]
-  (swap! nav-status assoc :mobile (get-mobile-status)))
+  (swap! nav-status assoc :mobile (mobile-device?)))
 
 (defn- toggle-nav-menu [nav-status]
-  (swap! nav-status update-in [:visible] not))
+  (swap! nav-status update :visible not))
 
 (defn- hide-nav-menu [nav-status]
   (swap! nav-status assoc :visible false))
@@ -28,8 +27,16 @@
 ;; Render Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn- nav-link-handler
+  [evt url]
+  (do
+    (.preventDefault evt)
+    (nav! url)))
+
 (defn- wombat-logo [src]
-  [:a {:href "/"} [:img.wombat-logo {:src src}]])
+  [:a {:href "/"
+       :on-click #(nav-link-handler % "/")}
+   [:img.wombat-logo {:src src}]])
 
 (defn- nav-link
   [{:keys [id class on-click link title current]}]
@@ -38,10 +45,9 @@
    [:a {:class (when (= current id) "active")
         :href link
         :on-click #(do
-                     (.preventDefault %)
                      (when on-click
                        (on-click))
-                     (nav! link))} title]])
+                     (nav-link-handler % link))} title]])
 
 (defn- coordinator-links [selected nav-status]
   [nav-link {:id "config"
@@ -104,7 +110,7 @@
 (defn root
   []
   (let [active-panel (re-frame/subscribe [:active-panel])
-        nav-status (reagent/atom {:mobile (get-mobile-status)
+        nav-status (reagent/atom {:mobile (mobile-device?)
                                   :visible false})
         resize-fn (reagent/atom #(on-resize nav-status))]
     (reagent/create-class

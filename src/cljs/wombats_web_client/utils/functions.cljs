@@ -17,7 +17,7 @@
     (< val lower) lower
     :else val))
 
-(defn- get-mobile-status
+(defn- mobile-device?
   "Returns true if the client has a screen width less than mobile-window-width"
   []
   (let [width (.-innerWidth js/window)]
