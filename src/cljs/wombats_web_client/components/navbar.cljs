@@ -7,6 +7,7 @@
             [wombats-web-client.utils.auth :refer [user-is-coordinator?]]
             [wombats-web-client.utils.functions :refer [mobile-device?]]))
 
+<<<<<<< HEAD
 (def wombat-logo-full "/images/img-logo-horizontal.svg")
 (def wombat-logo-head "/images/img-logo-head.svg")
 
@@ -30,6 +31,18 @@
 
 (defn- wombat-logo [src]
   [:a {:href "/"} [:img.wombat-logo {:src src}]])
+=======
+(defn- nav-link-handler
+  [evt url]
+  (do
+    (.preventDefault evt)
+    (nav! url)))
+
+(defn- wombat-logo []
+  [:a {:href "/"
+       :on-click #(nav-link-handler % "/")}
+   [:img.wombat-logo {:src "/images/img-logo-horizontal.svg"}]])
+>>>>>>> develop
 
 (defn- nav-link
   [{:keys [id class on-click link title current]}]
@@ -37,11 +50,15 @@
         :class class}
    [:a {:class (when (= current id) "active")
         :href link
+<<<<<<< HEAD
         :on-click #(do
                      (.preventDefault %)
                      (when on-click
                        (on-click))
                      (nav! link))} title]])
+=======
+        :on-click #(nav-link-handler % link)} title]])
+>>>>>>> develop
 
 (defn- coordinator-links [selected nav-status]
   [nav-link {:id "config"

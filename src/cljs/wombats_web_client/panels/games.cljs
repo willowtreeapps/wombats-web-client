@@ -86,16 +86,24 @@
 ;; Lifecycle Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn- query-params-on-change
+  "Ensure the URL has valid query params"
+  [query-params]
+  (when-not query-params
+    (nav! (construct-query-params query-params))))
+
+(defn- update-component
+  [query-params]
+  (query-params-on-change query-params)
+  (get-games-query-params query-params))
+
 (defn- component-will-receive-props
   [this [_ query-params]]
-  (get-games-query-params query-params))
+  (update-component query-params))
 
 (defn- component-will-mount
   [query-params]
-  (get-games-query-params query-params)
-
-  ;; Make sure the url has valid query params
-  (nav! (construct-query-params query-params)))
+  (update-component query-params))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Render Methods
