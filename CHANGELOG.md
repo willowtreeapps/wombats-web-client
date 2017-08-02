@@ -1,32 +1,29 @@
 CHANGELOG
 =========
 
-## Develop (6.20.2017)
+## Develop
 **Enhancements**
-* Output from simulator is displayed through Ace [Eli Bosley][/eli] [#189](https://github.com/willowtreeapps/wombats-web-client/issues/189)
-* Date picker now shows the current time when opened [Eli Bosley][/eli] [#333](https://github.com/willowtreeapps/wombats-web-client/issues/333)
-* User repositories are selectable through a dropdown.
-  [Eli Bosley][/eli] *No Issue*
-* Simulator redesigned based on updated diagrams [Eli Bosley][/eli] [#289](https://github.com/willowtreeapps/wombats-web-client/issues/289)
-* Pagination displayed on the games list. [Eli Bosley][/eli], [C.P. Dehli][/dehli] [#285](https://github.com/willowtreeapps/wombats-web-client/issues/285)
-* Added ability to delete games as an administrator [Eli Bosley](/elibosley) #[284](https://github.com/willowtreeapps/wombats-web-client/issues/284)
-* Mobile styles added [Eli Bosley](/elibosley) *No Issue*
+* Mobile styles added
+    [Eli Bosley](/elibosley) *No Issue*
 
 **Bug Fixes**
-* Fixed navigation to games page twice removing query params [Eli Bosley](/elibosley) #[350](https://github.com/willowtreeapps/wombats-web-client/issues/350)
-* Fixed issue with minified Ace editor function calls [Eli Bosley](/elibosley) #[350](https://github.com/willowtreeapps/wombats-web-client/issues/350)
-* CSS Prefixing performed automatically using autoprefixer - this is to help improve browser compatibility [Eli Bosley][/eli] *No Issue*
-* Fixed issue with chat box in Safari [Eli Bosley](/elibosley) *No Issue*
-* Page indicator always displayed correctly below games [Eli Bosley](/elibosley) #[339](https://github.com/willowtreeapps/wombats-web-client/issues/339)
+* None
 
-## QA (3.27.2017)
+## QA
 **Enhancements**
 * None
 
 **Bug Fixes**
 * None
 
-## Master (3.29.2017)
+## Master
+**Enhancements**
+* None
+
+**Bug Fixes**
+* None
+
+## 1.0.0-alpha2 (8.2.2017)
 **Enhancements**
 * Create Game Modal
     [Emily Seibert][/emily] [#283](https://github.com/willowtreeapps/wombats-web-client/issues/283) [#93](https://github.com/willowtreeapps/wombats-web-client/issues/93)
@@ -50,6 +47,18 @@ CHANGELOG
     [C.P. Dehli][/dehli] [#303](https://github.com/willowtreeapps/wombats-web-client/issues/303)
 * Create Access Keys in Config
     [Emily Seibert][/emily] [#287](https://github.com/willowtreeapps/wombats-web-client/issues/287)
+* Output from simulator is displayed through Ace
+    [Eli Bosley][/eli] [#189](https://github.com/willowtreeapps/wombats-web-client/issues/189)
+* Date picker now shows the current time when opened
+    [Eli Bosley][/eli] [#333](https://github.com/willowtreeapps/wombats-web-client/issues/333)
+* User repositories are selectable through a dropdown.
+    [Eli Bosley][/eli] *No Issue*
+* Simulator redesigned based on updated diagrams
+    [Eli Bosley][/eli] [#289](https://github.com/willowtreeapps/wombats-web-client/issues/289)
+* Pagination displayed on the games list.
+    [Eli Bosley][/eli], [C.P. Dehli][/dehli] [#285](https://github.com/willowtreeapps/wombats-web-client/issues/285)
+* Added ability to delete games as an administrator
+    [Eli Bosley](/elibosley) #[284](https://github.com/willowtreeapps/wombats-web-client/issues/284)
 
 **Bug Fixes**
 * Fixed simulator code editing
@@ -70,6 +79,16 @@ CHANGELOG
     [C.P. Dehli][/dehli] #[307](https://github.com/willowtreeapps/wombats-web-client/issues/307)
 * Fixed Flickering of Canvas
     [CP Dehli](https://github.com/dehli) No issue created.
+* Fixed navigation to games page twice removing query params
+    [Eli Bosley](/elibosley) #[350](https://github.com/willowtreeapps/wombats-web-client/issues/350)
+* Fixed issue with minified Ace editor function calls
+    [Eli Bosley](/elibosley) #[350](https://github.com/willowtreeapps/wombats-web-client/issues/350)
+* CSS Prefixing performed automatically using autoprefixer - this is to help improve browser compatibility
+    [Eli Bosley][/eli] *No Issue*
+* Fixed issue with chat box in Safari
+    [Eli Bosley](/elibosley) *No Issue*
+* Page indicator always displayed correctly below games
+    [Eli Bosley](/elibosley) #[339](https://github.com/willowtreeapps/wombats-web-client/issues/339)
 
 ## 1.0.0-alpha1 (3.10.2017)
 **Enhancements**
