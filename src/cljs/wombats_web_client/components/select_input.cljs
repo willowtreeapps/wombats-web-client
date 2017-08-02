@@ -36,15 +36,18 @@
   (swap! form-state assoc error-key nil))
 
 (defn select-input
-  [params]
-  (let [cmpnt-state (reagent/atom {:is-closed true
-                                   :selected-option nil})]
+  [{:keys [name form-state]}]
+  (let [key (keyword name)
+        val (get @form-state key)
+        cmpnt-state (reagent/atom {:is-closed true
+                                   :selected-option val})]
     (fn [params]
       (let [{:keys [form-state
                     form-key
                     error-key
                     option-list
-                    label]} params
+                    label
+                    disabled]} params
             closed (:is-closed @cmpnt-state)
             selected-option (:selected-option @cmpnt-state)
             is-no-selection (nil? selected-option)
@@ -63,12 +66,15 @@
                                     error-key)}
           [:ul.option-list
            ;; will display default text or selection display name
-           [:p.display-selected {:class (when is-no-selection "default")
+           [:p.display-selected {:class (str (when is-no-selection
+                                               "default ")
+                                             (when disabled
+                                               "disabled"))
                                  :on-click #(select-input-on-click cmpnt-state)}
             displayed-option]
 
            ;; when dropdown is open, show options.
-           (when-not closed
+           (when-not (or disabled closed)
              (for [option option-list]
                ^{:key (:id option)}
                [render-option
@@ -77,6 +83,7 @@
                 form-state
                 cmpnt-state]))]
           ;; arrow toggles on openness of dropdown
-          [:img.icon-arrow {:class (when-not closed "open-dropdown")
-                            :src "/images/icon-arrow.svg"}]]
+          (when-not disabled [:img.icon-arrow
+                              {:class (when-not closed "open-dropdown")
+                               :src "/images/icon-arrow.svg"}])]
          [inline-error error-val]]))))

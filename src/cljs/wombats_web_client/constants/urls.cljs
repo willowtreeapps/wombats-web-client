@@ -12,7 +12,6 @@
 (defonce self-url (str base-api-versioned-url "/self"))
 (defonce github-signout-url (str base-api-versioned-url "/auth/github/signout"))
 (defonce github-signin-url (str base-api-versioned-url "/auth/github/signin"))
-
 (defonce spritesheet-url "/spritesheet.json")
 
 (defonce ws-url (str (case js/window.location.protocol
@@ -20,6 +19,11 @@
                        "ws:")
                      base-api-url
                      "/ws/game"))
+
+
+(defn my-github-repositories-url
+  [user-id]
+  (str base-api-versioned-url "/users/" user-id "/repositories"))
 
 (defn my-wombats-url
   [id]
@@ -32,6 +36,9 @@
 (defonce arenas-url (str base-api-versioned-url "/arenas"))
 (defonce games-url (str base-api-versioned-url "/games"))
 (defonce access-key-url (str base-api-versioned-url "/access_keys"))
+
+(defn games-id-url [game-id]
+  (str base-api-versioned-url "/games/" game-id))
 
 (defn games-join-url [game-id]
   (str base-api-versioned-url "/games/" game-id "/join"))

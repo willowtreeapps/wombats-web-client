@@ -1,102 +1,173 @@
 @import "../colors.less";
 @import "../components/simple-button.less";
 @import "../utils/typography.less";
-
+@import "../components/simulator/controls.less";
+@import "../components/navbar.less";
+@import "../components/emphasized-button.less";
 .simulator-panel {
-    padding: 30px;
     @canvas-dimensions: 600px;
+    height: calc(~"100% - " @navbar-height);
     display: flex;
     flex-wrap: wrap;
 
-    .simulator-controls {
+    .left-pane {
+        position: relative;
         display: flex;
-        width: 100%;
-
-        .step,
-        .mini-map {
-            .simple-button;
-        }
+        flex-direction: column;
     }
-
     .right-pane {
         width: calc(~"100% - " @canvas-dimensions);
         position: relative;
+        height: 100%;
+        .split-panel {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
 
-        .tabbed-container {
-            height: @canvas-dimensions;
+            .panel-top {
+                #editor {
+                    @editor-padding: 2px;
+                    position: absolute;
+                    font-family: monospace;
+                    width: calc(~"100% - " 2 * @editor-padding);
+                    height: inherit;
+                }
+            }
 
-            #editor {
-                @editor-padding: 2px;
-                // TODO: #188 - Switch editor to Ace (or something similar)
-                //              and make it its own component
+            .panel-divider {
+                background-color: @simulator-grey;
+                height: 16px;
+                border-style: none;
+                margin: 0;
+                cursor: pointer;
+                cursor: hand;
+            }
+            .panel-divider-text {
+                font-size: 10px;
+                color: @warm-grey;
                 position: absolute;
-                font-family: monospace;
-                border: none;
-                width: calc(~"100% - " 2 * @editor-padding);
-                height: calc(~"100% - " 2 * @editor-padding);
+                padding-left: 10px;
+                margin-top: 1px;
+                text-transform: uppercase;
+            }
+            .panel-grabber {
+                @width: 30px;
+                width: @width;
+                border-style: solid;
+                color: @warm-grey;
+                position: absolute;
+                right: calc(~"50% - " 0.5 * @width);
             }
 
-            .output {
-                color: @white;
-                padding: 10px;
+            .panel-bottom {
+                flex-grow: 1;
+                position: relative;
+                @editor-padding: 2px;
 
-                .output-section {
-                    margin-bottom: 10px;
+                .output-container {
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    flex-wrap: nowrap;
+                    position: absolute;
+                    width: calc(~"100% - " 2 * @editor-padding);
 
-                    .output-section-title {
-                        margin: 0;
+                    #command {
+                        flex-grow: 0;
+                        font-family: monospace;
+                    }
+                    #state {
+                        flex-grow: 1;
+                        font-family: monospace;
+                    }
+                    .output-section {
+                        flex-grow: 0;
+
+                        .output-section-title {
+                            color: @white;
+                            font-weight: 100;
+                            padding-left: 10px;
+                            margin: 2px;
+                        }
+                    }
+                }
+
+                .stack-trace {
+                    font-family: monospace;
+                    color: @white;
+                    height: 100%;
+                    position: absolute;
+                    width: calc(~"100% - " 2 * @editor-padding);
+                    display: flex;
+                    flex-direction: column;
+                    flex-wrap: nowrap;
+                    overflow: scroll;
+                    word-wrap: break-word;
+
+                    .stack-trace-message {
+                        padding: 10px;
+                        font-size: @font-size-14;
+                    }
+
+                    .stack-trace-details {
+                        list-style: none;
+                        padding: 0 10px 10px;
+                        font-size: @font-size-12;
+
+                        .line-item {
+                            margin-bottom: 5px;
+                        }
                     }
                 }
             }
+        }
 
-            .configure {
-                padding: 10px;
-                color: @white;
+        .configure {
+            padding: 10px;
+            color: @white;
+            font-family: monospace;
+
+            .select {
                 font-family: monospace;
-
-                .select {
-                    font-family: monospace;
-                    width: 200px;
-                    display: block;
-                    margin-bottom: 20px;
-                    height: 30px;
-                    color: @black;
-                }
-
-                .update-btn {
-                    .simple-button(@margin-left: 0);
-                    padding: 5px;
-                    font-family: monospace;
-                }
+                width: 200px;
+                display: block;
+                margin-bottom: 20px;
+                height: 30px;
+                color: @black;
             }
-
-            .no-stack-trace-message {
+            .update-btn {
+                .simple-button(@margin-left: 0);
+                padding: 5px;
                 font-family: monospace;
-                color: @white;
-                text-align: center;
-                font-size: @font-size-20;
             }
+        }
 
-            .stack-trace {
-                font-family: monospace;
-                color: @white;
-                max-height: 560px;
-                overflow-y: scroll;
 
-                .stack-trace-message {
-                    padding: 10px;
-                    font-size: @font-size-20;
-                }
+    }
+}
+.configuration-container {
+    display: flex;
+    justify-content: center;
 
-                .stack-trace-details {
-                    list-style: none;
-                    padding: 10px;
+    .configuration-panel {
+        width: 370px;
+        margin-top: calc(@navbar-height + 30px);
 
-                    .line-item {
-                        margin-bottom: 5px;
-                    }
-                }
-            }
+        .title {
+            .bold;
+            font-size: @font-size-30;
+            text-transform: uppercase;
+            text-align: center;
+        }
+        .panel-content {
+            padding: 30px 30px 45px;
+
+        }
+        .update-btn {
+            .emphasized-button(@wombat-green, @black-30, @wombat-dark-green, @white);
+            width: 100%;
+            text-align: center;
+            text-transform: uppercase;
         }
     }
 }

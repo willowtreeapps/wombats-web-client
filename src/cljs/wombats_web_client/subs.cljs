@@ -9,6 +9,11 @@
    (:active-panel db)))
 
 (re-frame/reg-sub
+ :query-params
+ (fn [db _]
+   (get-in db [:active-panel :params] {})))
+
+(re-frame/reg-sub
  :auth-token
  (fn [db _]
    (:auth-token db)))
@@ -27,6 +32,11 @@
  :modal-error
  (fn [db _]
    (:modal-error db)))
+
+(re-frame/reg-sub
+ :my-repositories
+ (fn [db _]
+   (:my-repositories db)))
 
 (re-frame/reg-sub
  :my-wombats
@@ -78,54 +88,44 @@
    (:simulator/state db)))
 
 (re-frame/reg-sub
- :simulator/code
- (fn [db _]
-   (get-in (games/get-player db) [:state :code :code])))
-
-(re-frame/reg-sub
- :simulator/code-mode
- (fn [db _]
-   (let [path (get-in (games/get-player db) [:state :code :path])]
-     (when path
-       (get {"clj" "clojure"
-             "js" "javascript"
-             "py" "python"}
-            (last (clojure.string/split path #"\.")))))))
-
-(re-frame/reg-sub
- :simulator/player-command
- (fn [db _]
-   (get-in (games/get-player db) [:state :command])))
-
-(re-frame/reg-sub
- :simulator/player-state
- (fn [db _]
-   (get-in (games/get-player db) [:state :saved-state])))
-
-(re-frame/reg-sub
- :simulator/player-stack-trace
- (fn [db _]
-   (get-in (games/get-player db) [:state :error])))
-
-(re-frame/reg-sub
  :simulator/active-frame
  (fn [db _]
    (get-in db [:simulator/state :game/frame :frame/arena])))
 
+;; Frames vector that will hold all game frames
 (re-frame/reg-sub
- :simulator/mini-map
+ :simulator/frames
  (fn [db _]
-   (get-in (games/get-player db) [:state :mini-map])))
+   (:simulator/frames-vec db)))
 
 (re-frame/reg-sub
- :simulator/display-mini-map
+ :simulator/get-data
  (fn [db _]
-   (:simulator/mini-map db)))
+   (let [state (get (:simulator/frames-vec db) (:simulator/frames-idx db))
+         player (games/get-player-frames-vec state)
+         player-state (:state player)]
+     {:state state
+      :frame (get-in state [:game/frame :frame/arena])
+      :mini-map (:mini-map player-state)
+      :player-command (:command player-state)
+      :player-state (:saved-state player-state)
+      :player-stack-trace (:error player-state)
+      :code (get-in player-state [:code :code])
+      :code-mode (when-let [path (get-in player-state [:code :path])]
+                   (get {"clj" "clojure"
+                         "js" "javascript"
+                         "py" "python"}
+                        (last (clojure.string/split path #"\."))))})))
 
 (re-frame/reg-sub
- :simulator/active-pane
+ :simulator/frame-index
  (fn [db _]
-   (:simulator/active-pane db)))
+   (:simulator/frames-idx db)))
+
+(re-frame/reg-sub
+ :simulator/get-view-mode
+ (fn [db _]
+   (:simulator/view-mode db)))
 
 (re-frame/reg-sub
  :simulator/wombat-id

@@ -8,15 +8,19 @@
                  [com.cemerick/url "0.1.1"]
                  [cljs-ajax "0.5.4"]
                  [com.andrewmcveigh/cljs-time "0.4.0"]
-                 [day8.re-frame/http-fx "0.1.3"]
-                 [kibu/pushy "0.3.6"]]
+                 [day8.re-frame/http-fx "0.1.3"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]
             [lein-less "1.7.5"]
             [lein-pdo "0.1.1"]
             [lein-kibit "0.1.3"]
             [lein-auto "0.1.3"]
-            [lein-bikeshed "0.4.1"]]
+            [lein-bikeshed "0.4.1"]
+            [lein-shell "0.5.0"]
+            [lein-npm "0.6.2"]]
+
+  :npm {:dependencies [[autoprefixer "7.1.2"]
+                       [postcss-cli "4.1.0"]]}
 
   :min-lein-version "2.5.3"
 
@@ -26,7 +30,7 @@
                                     "test/js"]
 
   :less {:source-paths ["less"]
-         :target-path "resources/public/css"}
+         :target-path "resources/temp/css"}
 
   :figwheel {:css-dirs ["resources/public/css"]
              :ring-handler figwheel-server.core/handler}
@@ -106,9 +110,38 @@
                     :output-dir    "resources/public/js/compiled/test/out"
                     :optimizations :none}}]}
 
-    :aliases {"run-local"   ["pdo" "clean," ["figwheel" "local"] ["less" "auto"]]
-              "run-dev"     ["pdo" "clean," ["figwheel" "dev"]   ["less" "auto"]]
-              "run-lint"    ["pdo" "bikeshed" ["kibit" "src/cljs/wombats_web_client/"]]
-              "deploy-dev"  ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-dev"]  ["less" "once"]]
-              "deploy-qa"   ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-qa"]   ["less" "once"]]
-              "deploy-prod" ["do"  "clean," "run-lint" ["cljsbuild" "once" "deploy-prod"] ["less" "once"]]})
+  :aliases {"install-postcss" ["shell" "lein" "npm" "install"]
+            "postcss-prefixer-w" ["shell" "node_modules/postcss-cli/bin/postcss" "resources/temp/css/*.css" "resources/temp/css/**/*.css" "resources/temp/css/**/**/*.css"
+                                  "--use autoprefixer" "-d" "resources/public/css" "-w"]
+            "postcss-prefixer" ["shell" "node_modules/postcss-cli/bin/postcss" "resources/temp/css/*.css" "resources/temp/css/**/*.css" "resources/temp/css/**/**/*.css"
+                                "--use autoprefixer" "-d" "resources/public/css"]
+            "run-local"   ["do"
+                           "install-postcss,"
+                           ["less" "once"]
+                           ["pdo" "clean," ["figwheel" "local"] ["less" "auto"] "postcss-prefixer-w"]]
+            "run-dev"     ["do"
+                           "install-postcss,"
+                           ["less" "once"]
+                           ["pdo" "clean," ["figwheel" "dev"]   ["less" "auto"] "postcss-prefixer-w"]]
+            "run-lint"    ["pdo" "bikeshed" ["kibit" "src/cljs/wombats_web_client/"]]
+            "deploy-dev"  ["do"
+                           "install-postcss,"
+                           "clean,"
+                           "run-lint"
+                           ["cljsbuild" "once" "deploy-dev"]
+                           ["less" "once"]
+                           "postcss-prefixer"]
+            "deploy-qa"   ["do"
+                           "install-postcss,"
+                           "clean,"
+                           "run-lint"
+                           ["cljsbuild" "once" "deploy-qa"]
+                           ["less" "once"]
+                           "postcss-prefixer"]
+            "deploy-prod" ["do"
+                           "install-postcss,"
+                           "clean,"
+                           "run-lint"
+                           ["cljsbuild" "once" "deploy-prod"]
+                           ["less" "once"]
+                           "postcss-prefixer"]})

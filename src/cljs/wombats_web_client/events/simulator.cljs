@@ -4,6 +4,7 @@
             [re-frame.core :as re-frame]
             [wombats-web-client.constants.urls :refer [simulator-templates-url]]
             [wombats-web-client.utils.auth :refer [add-auth-header]]
+            [wombats-web-client.utils.games :as games]
             [wombats-web-client.constants.urls
              :refer [initialize-simulator-url
                      process-simulator-frame-url]]))
@@ -29,20 +30,55 @@
 (re-frame/reg-event-db
  :simulator/update-code
  (fn [db [_ code]]
-   (let [player-id (first
+   (let [trimmed-frames (subvec
+                         (:simulator/frames-vec db)
+                         (:simulator/frames-idx db)
+                         (inc (:simulator/frames-idx db)))
+         state (get (:simulator/frames-vec db) (:simulator/frames-idx db))
+         player-id (first
                     (keys
-                     (get-in db [:simulator/state :game/players])))]
-     (assoc-in db [:simulator/state
-                   :game/players
-                   player-id
-                   :state
-                   :code
-                   :code] code))))
+                     (:game/players state)))
+         old-code (get-in db [:simulator/frames-vec
+                              (dec (:simulator/frames-idx db))
+                              :game/players
+                              player-id
+                              :state
+                              :code
+                              :code])]
+     (if (and (not= code "") (not= code old-code))
+       (-> db
+           (assoc :simulator/frames-vec trimmed-frames)
+           (assoc :simulator/frames-idx 0)
+           (assoc-in [:simulator/frames-vec
+                      0
+                      :game/players
+                      player-id
+                      :state
+                      :code
+                      :code] code))
+       db))))
 
 (re-frame/reg-event-db
  :simulator/update-state
  (fn [db [_ sim-state]]
-   (assoc db :simulator/state sim-state)))
+   (-> db
+       (update :simulator/frames-idx inc)
+       (update :simulator/frames-vec conj sim-state))))
+
+(re-frame/reg-event-db
+ :simulator/back-frame
+ (fn [db _]
+   (if (pos? (:simulator/frames-idx db))
+     (update db :simulator/frames-idx dec)
+     db)))
+
+(re-frame/reg-event-db
+ :simulator/forward-frame
+ (fn [db _]
+   (if (< (:simulator/frames-idx db)
+          (dec (count (:simulator/frames-vec db))))
+     (update db :simulator/frames-idx inc)
+     db)))
 
 (re-frame/reg-event-db
  :simulator/simulator-error
@@ -51,14 +87,11 @@
    (assoc db :simulator/error error)))
 
 (re-frame/reg-event-db
- :simulator/update-active-simulator-pane
- (fn [db [_ active-pane]]
-   (assoc db :simulator/active-pane active-pane)))
+ :simulator/change-view
+ (fn [db [_ view-mode]]
+   (assoc db :simulator/view-mode view-mode)))
 
-(re-frame/reg-event-db
- :simulator/toggle-simulator-mini-map
- (fn [db _]
-   (update-in db [:simulator/mini-map] not)))
+
 
 (re-frame/reg-event-db
  :simulator/update-configuration
@@ -66,6 +99,15 @@
             template-id :template-id}]]
    (merge db {:simulator/template-id template-id
               :simulator/wombat-id wombat-id})))
+
+(re-frame/reg-event-db
+ :simulator/initialize-configuration
+ (fn [db [_ {wombat-id :wombat-id
+            template-id :template-id}]]
+   (merge db {:simulator/template-id template-id
+              :simulator/wombat-id wombat-id
+              :simulator/frames-vec []
+              :simulator/frames-idx -1})))
 
 (re-frame/reg-event-fx
  :simulator/initialize-simulator
@@ -78,7 +120,7 @@
                  :response-format (edn-response-format)
                  :on-success [:simulator/update-state]
                  :on-failure [:simulator/simulator-error]}
-    :dispatch [:simulator/update-configuration simulation-payload]}))
+    :dispatch [:simulator/initialize-configuration simulation-payload]}))
 
 (re-frame/reg-event-fx
  :simulator/process-simulation-frame

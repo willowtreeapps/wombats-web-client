@@ -1,7 +1,8 @@
 (ns wombats-web-client.utils.games)
 
-(defn build-status-query [statuses]
-  (clojure.string/join "&status=" statuses))
+(defn build-status-query [statuses page]
+  (str (clojure.string/join "&status=" statuses)
+       "&page=" page))
 
 (defn get-occupied-colors [game]
   (let [players (:game/players game)]
@@ -32,12 +33,11 @@
    is-playing "ACTIVE"
    :else nil))
 
-(defn get-player
-  [db]
-  "Pulls the player out of db to use for simulator state"
-  (let [players (get-in db [:simulator/state :game/players])
-        player-key (first (keys players))]
-    (get players player-key)))
+(defn get-player-frames-vec
+  "Given state pull out the first player component"
+  [state]
+  (let [players (:game/players state)]
+    (get players (first (keys players)))))
 
 (defn- is-open?
   "Whether the game is in an open state"

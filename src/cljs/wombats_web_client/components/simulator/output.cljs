@@ -1,19 +1,30 @@
 (ns wombats-web-client.components.simulator.output
   (:require [reagent.core :as reagent]
-            [re-frame.core :as re-frame]))
+            [re-frame.core :as re-frame]
+            [wombats-web-client.components.ace :refer [ace-component]]))
 
 (defn- format-code
   [clj-object]
-  [:pre (.stringify js/JSON (clj->js clj-object) nil 2)])
+  (str (.stringify js/JSON (clj->js clj-object) nil 2)))
 
-(defn render []
-  (let [command (re-frame/subscribe [:simulator/player-command])
-        player-state (re-frame/subscribe [:simulator/player-state])]
-    [:div.output
-     [:div.output-section
-      [:h3.output-section-title "Command"]
-      (format-code @command)]
+(defn render [simulator-data update]
+  [:div.output-container
+   [:div.output-section
+    [:h4.output-section-title "Command"]]
+   [ace-component  {:code (format-code (:player-command @simulator-data))
+                    :mode "json"
+                    :id "command"
+                    :update @update
+                    :options {:readOnly true
+                              :highlightActiveLine false
+                              :minLines 6
+                              :maxLines 7}}]
+   [:div.output-section
+    [:h4.output-section-title "State"]]
 
-     [:div.output-section
-      [:h3.output-section-title "State"]
-      (format-code @player-state)]]))
+   [ace-component {:code (format-code (:player-state @simulator-data))
+                   :mode "json"
+                   :id "state"
+                   :update @update
+                   :options {:readOnly true
+                             :highlightActiveLine false}}]])

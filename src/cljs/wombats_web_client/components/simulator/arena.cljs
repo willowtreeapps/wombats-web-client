@@ -10,9 +10,9 @@
 ;; Main Method
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn render [frame]
-  (arena/arena frame canvas-id)
-  [:div.left-pane
-   [:canvas {:id canvas-id
-             :width dimensions
-             :height dimensions}]])
+(defn render [simulator-data simulator-view-mode]
+
+  (arena/arena (simulator-view-mode @simulator-data) canvas-id)
+  [:canvas {:id canvas-id
+            :width dimensions
+            :height dimensions}])
