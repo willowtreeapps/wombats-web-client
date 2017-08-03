@@ -26,25 +26,26 @@
 ;; Helper Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn extract-props [v]
+  (let [p (nth v 1 nil)]
+    (if (map? p) p)))
+
 (defn- get-ratio
   "Returns an object containing width and
   height as the ratios of the different sides"
   [{:keys [width height]}]
-  (cond
-    (> width height) {:width 1
-                      :height (/ height width)}
-    (> height width) {:width (/ width height)
-                      :height 1}
-    :else {:width 1
-           :height 1}))
+  {:width (if (> height width) (/ width height) 1)
+   :height (if (> width height) (/ height width) 1)})
 
 
-(defn- resize-canvas [arena-atom dimensions]
+(defn- resize-canvas [arena-atom game]
   (let [root-element (first
                       (array-seq
                        (.getElementsByClassName
                         js/document
                         root-class)))
+        dimensions {:width (get-in @game [:game/arena :arena/width])
+                    :height (get-in @game [:game/arena :arena/height])}
         arena-ratio (get-ratio dimensions)
         canvas-element (.getElementById js/document canvas-id)
         width (.-offsetWidth root-element)
@@ -59,9 +60,9 @@
     (set! (.-height canvas-element) (* dimension (:height arena-ratio)))
     (arena/arena @arena-atom canvas-id)))
 
-(defn- on-resize [arena-atom dimensions]
-  (resize-canvas arena-atom dimensions)
-  (js/setTimeout #(resize-canvas arena-atom dimensions)
+(defn- on-resize [arena-atom game]
+  (resize-canvas arena-atom game)
+  (js/setTimeout #(resize-canvas arena-atom game)
                  100))
 
 (defn- show-winner-modal
@@ -124,14 +125,20 @@
 ;; Lifecycle Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- component-did-mount [arena dimensions cmpnt-state]
+(defn- component-did-mount [arena game cmpnt-state]
   ;; Add resize listener
   (.addEventListener js/window
                      "resize"
                      (:resize-fn @cmpnt-state))
-  (resize-canvas arena dimensions))
+  (add-watch game :game-watcher
+             (fn [key atom old-state new-state]
+               (when (and (nil? old-state) (some? new-state))
+                 (resize-canvas arena game)
+                 (remove-watch game :game-watcher))))
+  (resize-canvas arena game))
 
 (defn- component-did-update [arena]
+
   (arena/arena @arena canvas-id))
 
 (defn- component-will-mount [game-id]
@@ -223,17 +230,15 @@
 (defn game-play [{:keys [game-id]}]
   (let [arena (re-frame/subscribe [:game/arena])
         game (re-frame/subscribe [:games/game-by-id game-id])
-        dimensions {:width (get-in @game [:game/arena :arena/width])
-                    :height (get-in @game [:game/arena :arena/height])}
-        cmpnt-state (reagent/atom {:resize-fn #(on-resize arena dimensions)
+        cmpnt-state (reagent/atom {:resize-fn #(on-resize arena game)
                                    :update nil})
         messages (re-frame/subscribe [:game/messages])
         user (re-frame/subscribe [:current-user])]
 
     (reagent/create-class
-     {:component-did-mount #(component-did-mount arena dimensions cmpnt-state)
+     {:component-will-mount #(component-will-mount game-id)
+      :component-did-mount #(component-did-mount arena game cmpnt-state)
       :component-did-update #(component-did-update arena)
-      :component-will-mount #(component-will-mount game-id)
       :component-will-unmount #(component-will-unmount game-id cmpnt-state)
       :display-name "game-play-panel"
       :reagent-render
@@ -241,10 +246,8 @@
         (let [game-over (:game/end-time @game)
               transition-text (get-transition-text @game cmpnt-state)]
           (arena/arena @arena canvas-id)
-          ;;(println (get-in @game [:game/arena :arena/height]))
           ;; Trigger rerender for transition screen
           (:update @cmpnt-state)
-
           [:div {:class-name root-class}
            [:div.left-game-play-panel {:class (when (or game-over
                                                         transition-text)
@@ -252,4 +255,5 @@
             [:span.transition-text
              transition-text]
             [:canvas {:id canvas-id}]]
+
            [right-game-play-panel game messages user]]))})))
