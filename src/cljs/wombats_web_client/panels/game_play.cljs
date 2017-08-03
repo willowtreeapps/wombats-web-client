@@ -26,10 +26,6 @@
 ;; Helper Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn extract-props [v]
-  (let [p (nth v 1 nil)]
-    (if (map? p) p)))
-
 (defn- get-ratio
   "Returns an object containing width and
   height as the ratios of the different sides"
