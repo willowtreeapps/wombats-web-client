@@ -33,7 +33,6 @@
   {:width (if (> height width) (/ width height) 1)
    :height (if (> width height) (/ height width) 1)})
 
-
 (defn- resize-canvas [arena-atom game]
   (let [root-element (first
                       (array-seq
@@ -115,7 +114,6 @@
         (get-next-round-text game
                              millis-left
                              timeout-fn)))))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
