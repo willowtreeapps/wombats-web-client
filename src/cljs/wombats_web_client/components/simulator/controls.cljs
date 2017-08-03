@@ -31,21 +31,23 @@
   [{:keys [simulator-data frames index interval play-status]}]
   [:button.simulator-button.play
    {:on-click
-    (fn [] (if (= @play-status "paused")
+    (fn [] (if (= (:play-status @play-status) :paused)
             (do
-              (reset! play-status "playing")
-              (reset! interval
-                      (js/setInterval
-                       #(on-forward-button-click!
-                         % {:simulator-data simulator-data
-                            :frames frames
-                            :index index})
-                       simulator-frame-time)))
+              (re-frame/dispatch
+               [:simulator/play-state
+                {:play-status :playing
+                 :interval (js/setInterval
+                            #(on-forward-button-click!
+                              % {:simulator-data simulator-data
+                                 :frames frames
+                                 :index index})
+                            simulator-frame-time)}]))
             (do
-              (js/clearInterval @interval)
-              (reset! play-status "paused"))))}
+              (js/clearInterval (:interval @play-status))
+              (re-frame/dispatch [:simulator/play-state {:play-status  :paused
+                                                         :interval nil}]))))}
    [:img.icon-play
-    {:src (if (= @play-status "paused")
+    {:src (if (= (:play-status @play-status) :paused)
             "/images/icon-play.svg"
             "/images/icon-pause.svg")}]])
 
@@ -59,7 +61,7 @@
 (defn render
   [simulator-data frames index]
   (let [interval (reagent/atom 0)
-        play-status (reagent/atom "paused")]
+        play-status (re-frame/subscribe [:simulator/play-state])]
     [:div.simulator-controls
      [play-button {:simulator-data simulator-data
                    :frames frames

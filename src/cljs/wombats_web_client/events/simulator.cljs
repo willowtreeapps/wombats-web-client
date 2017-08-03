@@ -91,7 +91,10 @@
  (fn [db [_ view-mode]]
    (assoc db :simulator/view-mode view-mode)))
 
-
+(re-frame/reg-event-db
+ :simulator/play-state
+ (fn [db [_ play-state]]
+   (assoc db :simulator/play-state play-state)))
 
 (re-frame/reg-event-db
  :simulator/update-configuration
