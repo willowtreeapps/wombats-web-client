@@ -107,10 +107,15 @@
  :simulator/initialize-configuration
  (fn [db [_ {wombat-id :wombat-id
             template-id :template-id}]]
+   (let [play-state (:simulator/play-state db)]
+     (when (:interval play-state)
+       (js/clearInterval (:interval play-state))))
    (merge db {:simulator/template-id template-id
               :simulator/wombat-id wombat-id
               :simulator/frames-vec []
-              :simulator/frames-idx -1})))
+              :simulator/frames-idx -1
+              :simulator/play-state {:play-status :paused
+                                     :interval nil}})))
 
 (re-frame/reg-event-fx
  :simulator/initialize-simulator
