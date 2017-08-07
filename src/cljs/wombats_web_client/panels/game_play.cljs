@@ -123,12 +123,9 @@
   ;; Add resize listener
   (.addEventListener js/window
                      "resize"
-                     (:resize-fn @cmpnt-state))
-  (add-watch game :game-watcher
-             (fn [key atom old-state new-state]
-               (when (and (nil? old-state) (some? new-state))
-                 (resize-canvas arena game)
-                 (remove-watch game :game-watcher))))
+                     (:resize-fn @cmpnt-state)))
+
+(defn- component-will-receive-props [arena game]
   (resize-canvas arena game))
 
 (defn- component-did-update [arena]
@@ -220,22 +217,18 @@
 ;; Main Method
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn game-play [{:keys [game-id]}]
-  (let [arena (re-frame/subscribe [:game/arena])
-        game (re-frame/subscribe [:games/game-by-id game-id])
-        cmpnt-state (reagent/atom {:resize-fn #(on-resize arena game)
-                                   :update nil})
-        messages (re-frame/subscribe [:game/messages])
-        user (re-frame/subscribe [:current-user])]
-
+(defn game-play [{:keys [game-id arena game messages user]}]
+  (let [cmpnt-state (reagent/atom {:resize-fn #(on-resize arena game)
+                                   :update nil})]
     (reagent/create-class
      {:component-will-mount #(component-will-mount game-id)
       :component-did-mount #(component-did-mount arena game cmpnt-state)
+      :component-will-receive-props #(component-will-receive-props arena game)
       :component-did-update #(component-did-update arena)
       :component-will-unmount #(component-will-unmount game-id cmpnt-state)
       :display-name "game-play-panel"
       :reagent-render
-      (fn [{:keys [game-id]}]
+      (fn []
         (let [game-over (:game/end-time @game)
               transition-text (get-transition-text @game cmpnt-state)]
           (arena/arena @arena canvas-id)
@@ -249,3 +242,16 @@
              transition-text]
             [:canvas {:id canvas-id}]]
            [right-game-play-panel game messages user]]))})))
+
+(defn game-play-outer [{:keys [game-id]}]
+  (let [arena (re-frame/subscribe [:game/arena])
+        game (re-frame/subscribe [:games/game-by-id game-id])
+        messages (re-frame/subscribe [:game/messages])
+        user (re-frame/subscribe [:current-user])]
+    (fn [{:keys [game-id]}]
+      [game-play {:game-id game-id
+                  :arena arena
+                  :game game
+                  :update @game ;; deref to trigger update when atom changes
+                  :messages messages
+                  :user user}])))
