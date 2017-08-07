@@ -51,7 +51,7 @@
                     width
                     (min height half-width))]
     ;; Set dimensions of canvas
-    (set! (.-width canvas-element) (*  dimension (:width arena-ratio)))
+    (set! (.-width canvas-element) (* dimension (:width arena-ratio)))
     (set! (.-height canvas-element) (* dimension (:height arena-ratio)))
     (arena/arena @arena-atom canvas-id)))
 
@@ -132,7 +132,6 @@
   (resize-canvas arena game))
 
 (defn- component-did-update [arena]
-
   (arena/arena @arena canvas-id))
 
 (defn- component-will-mount [game-id]
@@ -249,5 +248,4 @@
             [:span.transition-text
              transition-text]
             [:canvas {:id canvas-id}]]
-
            [right-game-play-panel game messages user]]))})))
