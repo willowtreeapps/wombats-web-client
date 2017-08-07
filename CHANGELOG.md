@@ -7,7 +7,7 @@ CHANGELOG
     [Eli Bosley](/elibosley) *No Issue*
 
 **Bug Fixes**
-* None
+* Fixed issue with simualator pause button not working after window change [Eli Bosley][/eli] [#359](https://github.com/willowtreeapps/wombats-web-client/issues/359)
 
 ## QA
 **Enhancements**
