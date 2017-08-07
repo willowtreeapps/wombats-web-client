@@ -32,16 +32,15 @@
   [:button.simulator-button.play
    {:on-click
     (fn [] (if (= (:play-status @play-status) :paused)
-            (do
-              (re-frame/dispatch
-               [:simulator/play-state
-                {:play-status :playing
-                 :interval (js/setInterval
-                            #(on-forward-button-click!
-                              % {:simulator-data simulator-data
-                                 :frames frames
-                                 :index index})
-                            simulator-frame-time)}]))
+            (re-frame/dispatch
+             [:simulator/play-state
+              {:play-status :playing
+               :interval (js/setInterval
+                          #(on-forward-button-click!
+                            % {:simulator-data simulator-data
+                               :frames frames
+                               :index index})
+                          simulator-frame-time)}])
             (do
               (js/clearInterval (:interval @play-status))
               (re-frame/dispatch [:simulator/play-state {:play-status  :paused
