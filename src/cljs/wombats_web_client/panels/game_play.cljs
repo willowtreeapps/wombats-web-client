@@ -228,7 +228,7 @@
       :component-will-unmount #(component-will-unmount game-id cmpnt-state)
       :display-name "game-play-panel"
       :reagent-render
-      (fn []
+      (fn [{:keys [game-id arena game messages user]}]
         (let [game-over (:game/end-time @game)
               transition-text (get-transition-text @game cmpnt-state)]
           (arena/arena @arena canvas-id)
@@ -249,9 +249,9 @@
         messages (re-frame/subscribe [:game/messages])
         user (re-frame/subscribe [:current-user])]
     (fn [{:keys [game-id]}]
+      @game
       [game-play {:game-id game-id
                   :arena arena
                   :game game
-                  :update @game ;; deref to trigger update when atom changes
                   :messages messages
                   :user user}])))
