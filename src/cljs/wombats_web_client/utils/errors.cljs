@@ -2,6 +2,8 @@
 
 (defonce required-field-error
   "This field is required.")
+(defonce required-field-fn
+  clojure.string/blank?)
 (defonce wombat-color-missing
   "Please select a color for your wombat.")
 (defonce game-full-error
@@ -10,7 +12,15 @@
   "This game has already started. Please try joining another game.")
 (defonce not-an-integer
   "Not an integer.")
+(defonce not-an-integer-fn
+  #(not (integer? (js/parseInt %))))
+(defonce min-five "Minimum is 5.")
+(defonce min-five-fn
+  #(not (>= (js/parseInt %) 5)))
 (defonce max-eight "Max is 8.")
+(defonce max-twenty-five "Max is 25.")
+(defonce max-twenty-five-fn
+  #(not (<= (js/parseInt %) 25)))
 (defonce incorrect-format-colon "Format is mm:ss.")
 
 (def login-error "login-error")

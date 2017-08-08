@@ -1,0 +1,23 @@
+.create-arena-modal {
+    .modal-content {
+        display: flex;
+        justify-content: space-between;
+        flex-flow: row wrap;
+
+        .text-input-wrapper {
+            width: 100px;
+            &.name {
+                width: calc(~"100% - " 120px);
+            }
+        }
+        .radio-select-wrapper {
+            width: 100px;
+            .label {
+                margin-bottom: 2px;
+            }
+            .radio-input {
+                padding-top: 3px;
+            }
+        }
+    }
+}

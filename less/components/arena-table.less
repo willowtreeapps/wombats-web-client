@@ -7,6 +7,12 @@
 @large-width: 30%;
 
 .arena-display {
+    position: relative;
+    .add-arena {
+        position: absolute;
+        top: -28px;
+        right: -28px;
+    }
     .arena-table {
         display: block;
         overflow-x: scroll;
@@ -45,6 +51,20 @@
             width: @small-width;
         }
 
+        .header-cell:nth-child(8),
+        .data-cell:nth-child(8) {
+            .delete-arena {
+                visibility: hidden;
+            }
+        }
+
+        .header-cell:nth-child(9),
+        .data-cell:nth-child(9) {
+            .edit-arena {
+                visibility: hidden;
+            }
+        }
+
         .data-cell:last-child {
             width: @medium-width;
             text-align: right;
@@ -55,11 +75,33 @@
                 }
             }
         }
+
+        .data-row:hover .data-cell:nth-child(8) {
+            .delete-arena {
+                visibility: visible;
+            }
+        }
+
+        .data-row:hover .data-cell:nth-child(9) {
+            .edit-arena {
+                visibility: visible;
+            }
+        }
+
         .data-row:hover .data-cell:last-child {
             .create-game {
                 visibility: visible;
             }
         }
+
+        .delete-arena {
+            .simple-button(@bg-color: @transparent, @margin-left: 0, @margin-right: auto);
+        }
+
+        .edit-arena {
+            .simple-button(@bg-color: @transparent, @margin-left: 0, @margin-right: auto);
+        }
+
         .create-game {
             .simple-button(@bg-color: @transparent, @margin-left: 0, @margin-right: 35px);
         }
