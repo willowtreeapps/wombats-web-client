@@ -7,6 +7,7 @@ CHANGELOG
     [Eli Bosley](/elibosley) *No Issue*
 
 **Bug Fixes**
+* Arena aspect ratio is set based on the arena size [Eli Bosley](/elibosley) #[345](https://github.com/willowtreeapps/wombats-web-client/issues/345)
 * Fixed issue with simualator pause button not working after window change [Eli Bosley][/eli] [#359](https://github.com/willowtreeapps/wombats-web-client/issues/359)
 
 ## QA
