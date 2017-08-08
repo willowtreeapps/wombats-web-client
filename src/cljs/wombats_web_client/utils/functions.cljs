@@ -1,4 +1,5 @@
-(ns wombats-web-client.utils.functions)
+(ns wombats-web-client.utils.functions
+  (:require [wombats-web-client.constants.ui :refer [mobile-window-width]]))
 
 (defn in? [coll element]
   (some #(= element %) coll))
@@ -15,3 +16,15 @@
     (> val upper) upper
     (< val lower) lower
     :else val))
+
+(defn mobile-device?
+  "Returns true if the client has a screen width less than mobile-window-width"
+  []
+  (let [width (.-innerWidth js/window)]
+    (<= width mobile-window-width)))
+
+(defn round
+  "Round a number given number of decimal places"
+  [number decimals]
+  (let [factor (Math/pow 10 decimals)]
+    (/ (Math/round (* number factor)) factor)))

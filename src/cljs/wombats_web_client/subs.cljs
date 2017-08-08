@@ -137,6 +137,11 @@
  (fn [db _]
    (:simulator/template-id db)))
 
+(re-frame/reg-sub
+ :simulator/play-state
+ (fn [db _]
+   (:simulator/play-state db)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Games subs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

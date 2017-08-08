@@ -21,7 +21,8 @@
 (defn wombat-information
   [name id url]
   [:div.wombat-information
-   [:div.name name]
+   [:div.name-container
+    [:p.name name]]
    [:div.hover-state-edit
     [:input.edit {:type "button"
                   :value "EDIT"

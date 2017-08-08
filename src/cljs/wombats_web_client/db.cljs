@@ -18,6 +18,8 @@
    :arenas nil
    :simulator/frames-vec []
    :simulator/frames-idx -1 ;; since frames idx is zero indexed, start at -1
+   :simulator/play-state {:play-status :paused
+                          :interval nil}
    :simulator/state nil
    :simulator/templates nil
    :simulator/wombat-id nil

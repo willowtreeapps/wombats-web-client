@@ -9,52 +9,73 @@
             [wombats-web-client.components.join-button :refer [join-button]]
             [wombats-web-client.components.modals.winner-modal
              :refer [winner-modal]]
-            [wombats-web-client.constants.games :refer [game-type-str-map]]
+            [wombats-web-client.constants.games
+             :refer [game-type-str-map transition-time]]
+            [wombats-web-client.constants.ui :refer [mobile-window-width]]
+            [wombats-web-client.utils.functions
+             :refer [round]]
             [wombats-web-client.utils.games
              :refer [get-player-by-username get-player-score]]
             [wombats-web-client.utils.socket :as ws]
             [wombats-web-client.utils.time :as time]
+            [clojure.browser.dom :as dom]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
 
 (defonce root-class "game-play-panel")
-(defonce canvas-container-id "wombat-arena")
 (defonce canvas-id "arena-canvas")
-
-;; This is how long "ROUND x OVER" will show for (between rounds)
-(defonce transition-time 3000)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helper Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- resize-canvas [arena-atom]
+(defn- get-ratio
+  "Returns an object containing width and
+  height as the ratios of the different sides.
+  Rounds to a single decimal to prevent crazy ratios"
+  [{:keys [width height]}]
+  {:width  (if (> height width)
+             (round (/ width height) 1)
+             1)
+   :height (if (> width height)
+             (round (/ height width) 1)
+             1)})
+
+(defn- resize-canvas [arena-atom game]
   (let [root-element (first
                       (array-seq
                        (.getElementsByClassName
                         js/document
                         root-class)))
-        container-element (.getElementById js/document canvas-container-id)
+        dimensions {:width (get-in @game [:game/arena :arena/width])
+                    :height (get-in @game [:game/arena :arena/height])}
+        arena-ratio (get-ratio dimensions)
         canvas-element (.getElementById js/document canvas-id)
-        half-width (/ (.-offsetWidth root-element) 2)
+        width (.-offsetWidth root-element)
+        half-width (/ width 2)
         height (.-offsetHeight root-element)
-        dimension (min height half-width)]
+        mobile-mode (< width mobile-window-width)
+        dimension (if mobile-mode
+                    width
+                    (min height half-width))]
+    ;; Set dimensions of canvas
+    (set! (.-width canvas-element) (* dimension (:width arena-ratio)))
+    (set! (.-height canvas-element) (* dimension (:height arena-ratio)))
+    (arena/arena @arena-atom canvas-id)))
 
-    (arena/arena @arena-atom canvas-id)
-
-    ;; Set dimensions of canvas-container and canvas
-    (set! (.-width (.-style container-element))
-          (str dimension "px"))
-    (set! (.-height (.-style container-element))
-          (str dimension "px"))
-
-    (set! (.-width canvas-element) dimension)
-    (set! (.-height canvas-element) dimension)))
-
-(defn- on-resize [arena-atom]
-  (resize-canvas arena-atom)
-  (js/setTimeout #(resize-canvas arena-atom)
+(defn- on-resize [arena-atom game]
+  (resize-canvas arena-atom game)
+  (js/setTimeout #(resize-canvas arena-atom game)
                  100))
+
+(defn- should-arena-resize? [game]
+  (let [arena-canvas (dom/get-element canvas-id)
+        desired-dimensions {:width (get-in @game [:game/arena :arena/width])
+                            :height (get-in @game [:game/arena :arena/height])}
+        current-ratio (get-ratio {:width (.-offsetWidth arena-canvas)
+                                  :height (.-offsetHeight arena-canvas)})
+        arena-ratio (get-ratio desired-dimensions)]
+    (not= current-ratio arena-ratio)))
 
 (defn- show-winner-modal
   ;; Players are always sorted by score
@@ -111,19 +132,19 @@
                              millis-left
                              timeout-fn)))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn- component-did-mount [arena cmpnt-state]
+(defn- component-did-mount [arena game cmpnt-state]
   ;; Add resize listener
   (.addEventListener js/window
                      "resize"
-                     (:resize-fn @cmpnt-state))
-  (resize-canvas arena))
+                     (:resize-fn @cmpnt-state)))
 
-(defn- component-did-update [arena]
+(defn- component-did-update [arena game]
+  (when (should-arena-resize? game)
+    (resize-canvas arena game))
   (arena/arena @arena canvas-id))
 
 (defn- component-will-mount [game-id]
@@ -212,35 +233,40 @@
 ;; Main Method
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn game-play [{:keys [game-id]}]
-  (let [arena (re-frame/subscribe [:game/arena])
-        cmpnt-state (reagent/atom {:resize-fn #(on-resize arena)
-                                   :update nil})
-        messages (re-frame/subscribe [:game/messages])
-        user (re-frame/subscribe [:current-user])
-        game (re-frame/subscribe [:games/game-by-id game-id])]
-
+(defn game-play [{:keys [game-id arena game messages user]}]
+  (let [cmpnt-state (reagent/atom {:resize-fn #(on-resize arena game)
+                                   :update nil})]
     (reagent/create-class
-     {:component-did-mount #(component-did-mount arena cmpnt-state)
-      :component-did-update #(component-did-update arena)
-      :component-will-mount #(component-will-mount game-id)
+     {:component-will-mount #(component-will-mount game-id)
+      :component-did-mount #(component-did-mount arena game cmpnt-state)
+      :component-did-update #(component-did-update arena game)
       :component-will-unmount #(component-will-unmount game-id cmpnt-state)
       :display-name "game-play-panel"
       :reagent-render
-      (fn [{:keys [game-id]}]
+      (fn [{:keys [game-id arena game messages user]}]
         (let [game-over (:game/end-time @game)
               transition-text (get-transition-text @game cmpnt-state)]
           (arena/arena @arena canvas-id)
-
           ;; Trigger rerender for transition screen
           (:update @cmpnt-state)
-
           [:div {:class-name root-class}
-           [:div.left-game-play-panel {:id canvas-container-id
-                                       :class (when (or game-over
+           [:div.left-game-play-panel {:class (when (or game-over
                                                         transition-text)
                                                 "disabled")}
             [:span.transition-text
              transition-text]
             [:canvas {:id canvas-id}]]
            [right-game-play-panel game messages user]]))})))
+
+(defn game-play-outer [{:keys [game-id]}]
+  (let [arena (re-frame/subscribe [:game/arena])
+        game (re-frame/subscribe [:games/game-by-id game-id])
+        messages (re-frame/subscribe [:game/messages])
+        user (re-frame/subscribe [:current-user])]
+    (fn [{:keys [game-id]}]
+      @game
+      [game-play {:game-id game-id
+                  :arena arena
+                  :game game
+                  :messages messages
+                  :user user}])))
