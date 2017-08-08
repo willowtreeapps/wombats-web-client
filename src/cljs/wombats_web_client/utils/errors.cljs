@@ -13,7 +13,7 @@
 (defonce not-an-integer
   "Not an integer.")
 (defonce not-an-integer-fn
-  #(not (integer? js/parseInt %)))
+  #(not (integer? (js/parseInt %))))
 (defonce min-five "Minimum is 5.")
 (defonce min-five-fn
   #(not (>= (js/parseInt %) 5)))
@@ -21,6 +21,8 @@
 (defonce max-twenty-five "Max is 25.")
 (defonce max-twenty-five-fn
   #(not (<= (js/parseInt %) 25)))
+(defonce default-error-fn
+  #())
 (defonce incorrect-format-colon "Format is mm:ss.")
 
 (def login-error "login-error")

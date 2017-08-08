@@ -8,7 +8,7 @@
 
 (defn create-arena
   [{:keys [on-success
-           on-error], :as all}]
+           on-error] :as all}]
   (let [params (dissoc all :on-success :on-error)]
     (POST arenas-url {:response-format (edn-response-format)
                       :keywords? true
@@ -21,7 +21,7 @@
 (defn edit-arena
   [{:keys [arena/id
            on-success
-           on-error], :as all}]
+           on-error] :as all}]
   (let [params (dissoc all :on-success :on-error)]
     (PUT (arena-id-url id) {:response-format (edn-response-format)
                            :keywords? true

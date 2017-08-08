@@ -33,7 +33,7 @@
     e/not-an-integer e/not-an-integer-fn
     e/min-five e/min-five-fn
     e/max-twenty-five e/max-twenty-five-fn
-    "default"))
+    "default" e/default-error-fn))
 
 (defn input-error! [check cmpnt-state]
   (let [{:keys [key-name test-fn error]} check

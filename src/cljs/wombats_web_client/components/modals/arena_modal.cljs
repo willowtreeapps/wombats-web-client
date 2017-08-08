@@ -151,10 +151,8 @@
     (check-for-errors cmpnt-state)
     (when ready-to-submit
       (if (:arena/id test-data)
-        (edit-arena
-         submission-data)
-        (create-arena
-         submission-data)))))
+        (edit-arena submission-data)
+        (create-arena submission-data)))))
 
 (defn arena-modal
   ([] (arena-modal {}))
@@ -220,7 +218,6 @@
                                  :name "arena/zakano"
                                  :label "Zakano"
                                  :state cmpnt-state}]]
-
 
         [:div.action-buttons
          [cancel-modal-input]
