@@ -16,6 +16,7 @@
              :refer [get-player-by-username get-player-score]]
             [wombats-web-client.utils.socket :as ws]
             [wombats-web-client.utils.time :as time]
+            [clojure.browser.dom :as dom]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
 
@@ -30,8 +31,8 @@
   "Returns an object containing width and
   height as the ratios of the different sides"
   [{:keys [width height]}]
-  {:width (if (> height width) (/ width height) 1)
-   :height (if (> width height) (/ height width) 1)})
+  {:width (/ (Math/round (* (if (> height width) (/ width height) 1) 10)) 10)
+   :height (/ (Math/round (* (if (> width height) (/ height width) 1) 10)) 10)})
 
 (defn- resize-canvas [arena-atom game]
   (let [root-element (first
@@ -59,6 +60,16 @@
   (resize-canvas arena-atom game)
   (js/setTimeout #(resize-canvas arena-atom game)
                  100))
+
+(defn- should-arena-resize [game]
+  (let [arena-canvas (dom/get-element canvas-id)
+        desired-dimensions {:width (get-in @game [:game/arena :arena/width])
+                            :height (get-in @game [:game/arena :arena/height])}
+        current-ratio (get-ratio {:width (.-offsetWidth arena-canvas)
+                                  :height (.-offsetHeight arena-canvas)})
+        arena-ratio (get-ratio desired-dimensions)]
+    (not= current-ratio arena-ratio)))
+
 
 (defn- show-winner-modal
   ;; Players are always sorted by score
@@ -115,6 +126,8 @@
                              millis-left
                              timeout-fn)))))
 
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -125,10 +138,9 @@
                      "resize"
                      (:resize-fn @cmpnt-state)))
 
-(defn- component-will-receive-props [arena game]
-  (resize-canvas arena game))
-
-(defn- component-did-update [arena]
+(defn- component-did-update [arena game]
+  (when (should-arena-resize game)
+    (resize-canvas arena game))
   (arena/arena @arena canvas-id))
 
 (defn- component-will-mount [game-id]
@@ -223,8 +235,7 @@
     (reagent/create-class
      {:component-will-mount #(component-will-mount game-id)
       :component-did-mount #(component-did-mount arena game cmpnt-state)
-      :component-will-receive-props #(component-will-receive-props arena game)
-      :component-did-update #(component-did-update arena)
+      :component-did-update #(component-did-update arena game)
       :component-will-unmount #(component-will-unmount game-id cmpnt-state)
       :display-name "game-play-panel"
       :reagent-render
