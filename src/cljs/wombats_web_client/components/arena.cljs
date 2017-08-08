@@ -1,5 +1,6 @@
 (ns wombats-web-client.components.arena
-  (:require [re-frame.core :as re-frame]
+  (:require [reagent.core :as reagent]
+            [re-frame.core :as re-frame]
             [wombats-web-client.utils.canvas :as canvas]))
 
 (defonce spritesheet-png "/images/spritesheet.png")
@@ -359,6 +360,27 @@
                        height
                        canvas-element)))))))
 
+(defn- draw-arena-animated-items
+  "Given a canvas element and the arena - animate transitions for movement"
+  [{:keys [arena
+           canvas-element
+           animations]}]
+   ;; Calculate the width and height of each cell
+  (let [height (/ (canvas/height canvas-element) (count arena))
+        width  (/ (canvas/width  canvas-element) (count (get arena 0)))]
+    ;; map through all items in animations - animate their transitions from :start to :end
+    (let
+        [x-coord (* (get-in animations [0 :x]) width)
+         y-coord (* (get-in animations [0 :y]) height)]
+
+      ;; this incredibly obnoxious logic thing checks to see if the cell that it's on is contained in the animated thing
+      (draw-cell (get-in animations [0  :cell])
+                 x-coord
+                 y-coord
+                 width
+                 height
+                 canvas-element))))
+
 (defn arena
   "Renders the arena on a canvas element, and subscribes to arena updates"
   [arena canvas-id]
@@ -368,7 +390,7 @@
       (draw-arena-canvas {:arena arena
                           :canvas-element canvas-element}))))
 
-(defn add-locs
+(defn- add-locs
   "Add local :x and :y coordinates to arena matrix"
   [arena]
   (map-indexed
@@ -377,18 +399,22 @@
                   row))
     arena))
 
-(defn filter-arena
+(defn- filter-arena
   "Filter the arena to return only nodes that contain one of the supplied types"
   ([arena] (flatten arena))
   ([arena filters]
   (let [node-list (flatten arena)]
     (filter #(in? (get-in % [:contents :type]) filters) node-list))))
 
-(defn flatten-item
+(defn- flatten-item
   [item]
   {:x (get item :x)
    :y (get item :y)
    :type (get-in item [:contents :type])})
+
+(defn- create-animations-vector
+  [prev-coords new-coords]
+  )
 
 (defn arena-history
   "Renders the arena on a canvas element, given the frames item and an index,
@@ -401,12 +427,19 @@
         ;; Get the coordinates of the wombats on the grid, reduce them into maps with
         ;; just the x, y, and type associated
         new-coords (map flatten-item (filter-arena (add-locs arena) [:wombat]))
+        _ (println (filter-arena (add-locs arena) [:wombat]))
         prev-frame (get-in @frames-vec
                            [(dec @frames-idx)
                             :game/frame
-                            :frame/arena])
+                            :frame/arena]) ;; need to keep the cell data handy for rendering with the animator function
         prev-coords (map flatten-item (filter-arena (add-locs prev-frame) [:wombat]))
-        canvas-element (.getElementById js/document canvas-id)]
+        canvas-element (.getElementById js/document canvas-id)
+        animations [{:start prev-coords
+                     :end new-coords
+                     :type (get new-coords :type)
+                     :progress (reagent/atom prev-coords)}]
+        ;; animations needs to be replaced with algorithm to generate the list of coordinate - coordinate animations for every type
+        ]
     (println (str prev-coords "\n" new-coords))
     (when-not (nil? canvas-element)
       (draw-arena-canvas-skip-animated {:arena arena
