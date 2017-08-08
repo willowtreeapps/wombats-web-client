@@ -37,11 +37,11 @@
           [cancel-modal-input]
           [submit-modal-input "DELETE"
            (fn []
-             (delete-arena
-              id
-              #(callback-success cmpnt-state)
-              #(re-frame/dispatch
-                [:update-modal-error (get-error-message %)])))]]])})))
+             (delete-arena id
+                           #(callback-success cmpnt-state)
+                           #(re-frame/dispatch
+                             [:update-modal-error
+                              (get-error-message %)])))]]])})))
 
 (defn render-delete-arena-modal [id]
   [delete-arena-modal id])

@@ -21,8 +21,6 @@
 (defonce max-twenty-five "Max is 25.")
 (defonce max-twenty-five-fn
   #(not (<= (js/parseInt %) 25)))
-(defonce default-error-fn
-  #())
 (defonce incorrect-format-colon "Format is mm:ss.")
 
 (def login-error "login-error")

@@ -168,7 +168,7 @@
                                     perimeter-walls))
          title (if (:arena/id arena-data) "EDIT ARENA" "CREATE ARENA")
          confirm (if (:arena/id arena-data) "SAVE" "CREATE")]
-     (fn []
+     (fn [row-data]
        [:div.modal.create-arena-modal
         [:div.title title]
         (when @modal-error [:div.modal-error @modal-error])
@@ -218,7 +218,6 @@
                                  :name "arena/zakano"
                                  :label "Zakano"
                                  :state cmpnt-state}]]
-
         [:div.action-buttons
          [cancel-modal-input]
          [submit-modal-input
