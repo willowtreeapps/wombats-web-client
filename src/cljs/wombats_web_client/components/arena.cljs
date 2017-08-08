@@ -3,6 +3,7 @@
             [wombats-web-client.utils.canvas :as canvas]))
 
 (defonce spritesheet-png "/images/spritesheet.png")
+(defonce frame-time 1000)
 
 (defn subscribe-to-spritesheet
   [img-name callback]
@@ -326,6 +327,11 @@
                      height
                      canvas-element))))))
 
+(defn in?
+  "Return true if coll contains elem"
+  [elem coll]
+  (some #(= elem %) coll))
+
 (defn arena
   "Renders the arena on a canvas element, and subscribes to arena updates"
   [arena canvas-id]
@@ -335,6 +341,28 @@
       (draw-arena-canvas {:arena arena
                           :canvas-element canvas-element}))))
 
+(defn add-locs
+  "Add local :x and :y coordinates to arena matrix"
+  [arena]
+  (map-indexed
+    (fn [y row] (map-indexed
+                  (fn [x tile] (assoc tile :x x :y y))
+                  row))
+    arena))
+
+(defn filter-arena
+  "Filter the arena to return only nodes that contain one of the supplied types"
+  ([arena] (flatten arena))
+  ([arena filters]
+  (let [node-list (flatten arena)]
+    (filter #(in? (get-in % [:contents :type]) filters) node-list))))
+
+(defn flatten-item
+  [item]
+  {:x (get item :x)
+   :y (get item :y)
+   :type (get-in item [:contents :type])})
+
 (defn arena-history
   "Renders the arena on a canvas element, given the frames item and an index,
   allowing for animation between the frames"
@@ -343,10 +371,14 @@
                       [@frames-idx
                        :game/frame
                        :frame/arena])
+        ;; Get the coordinates of the wombats on the grid, reduce them into maps with
+        ;; just the x, y, and type associated
+        new-coords (println (map flatten-item (filter-arena (add-locs arena) [:wombat])))
         prev-frame (get-in @frames-vec
                            [(dec @frames-idx)
                             :game/frame
                             :frame/arena])
+        prev-coords (println (map flatten-item (filter-arena (add-locs prev-frame) [:wombat])))
         canvas-element (.getElementById js/document canvas-id)]
     (when-not (nil? canvas-element)
       (draw-arena-canvas {:arena arena
