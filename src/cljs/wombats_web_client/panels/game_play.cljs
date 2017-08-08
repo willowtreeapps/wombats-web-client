@@ -70,7 +70,6 @@
         arena-ratio (get-ratio desired-dimensions)]
     (not= current-ratio arena-ratio)))
 
-
 (defn- show-winner-modal
   ;; Players are always sorted by score
   [players]
@@ -125,8 +124,6 @@
         (get-next-round-text game
                              millis-left
                              timeout-fn)))))
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lifecycle Methods
