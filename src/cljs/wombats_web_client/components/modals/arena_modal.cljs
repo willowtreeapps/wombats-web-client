@@ -57,83 +57,40 @@
 (defn check-for-errors [cmpnt-state]
   (let [validation-checks
         [{:key-name :arena/name
-          :test-fn clojure.string/blank?
           :error required-field-error}
-
          {:key-name :arena/width
-          :test-fn #(not
-                     (integer? (js/parseInt %)))
           :error not-an-integer}
-
          {:key-name :arena/width
-          :test-fn #(not
-                     (<= (js/parseInt %) 25))
           :error max-twenty-five}
-
          {:key-name :arena/width
-          :test-fn #(not
-                     (>= (js/parseInt %) 5))
           :error min-five}
-
          {:key-name :arena/width
-          :test-fn clojure.string/blank?
           :error required-field-error}
-
          {:key-name :arena/height
-          :test-fn #(not
-                     (<= (js/parseInt %) 25))
+          :error not-an-integer}
+         {:key-name :arena/height
           :error max-twenty-five}
-
          {:key-name :arena/height
-          :test-fn #(not
-                     (>= (js/parseInt %) 5))
           :error min-five}
          {:key-name :arena/height
-          :test-fn #(not
-                     (integer? (js/parseInt %)))
-          :error not-an-integer}
-
-         {:key-name :arena/height
-          :test-fn clojure.string/blank?
           :error required-field-error}
-
          {:key-name :arena/perimeter
-          :test-fn clojure.string/blank?
           :error required-field-error}
-
          {:key-name :arena/shot-damage
-          :test-fn #(not
-                     (integer? (js/parseInt %)))
           :error not-an-integer}
-
          {:key-name :arena/smoke-duration
-          :test-fn #(not
-                     (integer? (js/parseInt %)))
           :error not-an-integer}
-
          {:key-name :arena/food
-          :test-fn clojure.string/blank?
           :error required-field-error}
          {:key-name :arena/food
-          :test-fn #(not
-                     (integer? (js/parseInt %)))
           :error not-an-integer}
-
          {:key-name :arena/poison
-          :test-fn #(not
-                     (integer? (js/parseInt %)))
           :error not-an-integer}
          {:key-name :arena/steel-walls
-          :test-fn #(not
-                     (integer? (js/parseInt %)))
           :error not-an-integer}
          {:key-name :arena/wood-walls
-          :test-fn #(not
-                     (integer? (js/parseInt %)))
           :error not-an-integer}
          {:key-name :arena/zakano
-          :test-fn #(not
-                     (integer? (js/parseInt %)))
           :error not-an-integer}]]
     (doall (map #(input-error! % cmpnt-state) validation-checks))))
 
