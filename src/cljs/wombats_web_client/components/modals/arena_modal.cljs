@@ -145,15 +145,16 @@
         all-integers (all-integers? integer-data)
         ready-to-submit (and not-blank all-integers)
         handlers {:on-success #(callback-success)
-                  :on-error #(callback-error % cmpnt-state)}]
+                  :on-error #(callback-error % cmpnt-state)}
+        submission-data (merge test-data integer-data perimeter-bool handlers)]
 
     (check-for-errors cmpnt-state)
     (when ready-to-submit
       (if (:arena/id test-data)
         (edit-arena
-         (merge test-data integer-data perimeter-bool handlers))
+         submission-data)
         (create-arena
-         (merge test-data integer-data perimeter-bool handlers))))))
+         submission-data)))))
 
 (defn arena-modal
   ([] (arena-modal {}))

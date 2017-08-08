@@ -5,7 +5,7 @@
             [wombats-web-client.components.modals.arena-modal
              :refer [arena-modal]]
             [wombats-web-client.components.modals.delete-arena-modal
-             :refer [delete-arena-modal]]
+             :refer [render-delete-arena-modal]]
             [wombats-web-client.components.modals.create-game-modal
              :refer [create-game-modal]]))
 
@@ -25,7 +25,7 @@
                                   :show-overlay true}]))
 
 (defn open-delete-arena-modal [arena-id]
-  (re-frame/dispatch [:set-modal {:fn #(delete-arena-modal arena-id)
+  (re-frame/dispatch [:set-modal {:fn #(render-delete-arena-modal arena-id)
                                   :show-overlay true}]))
 
 (defn open-add-arena-modal []

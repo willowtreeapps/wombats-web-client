@@ -30,15 +30,19 @@
       (fn []
         [:div {:class "modal delete-game-modal"}
          [:div.title "DELETE ARENA"]
+         (println id)
          (when @modal-error [:div.modal-error @modal-error])
          [:div.modal-content
           [:div.desc delete-desc]]
          [:div.action-buttons
           [cancel-modal-input]
           [submit-modal-input "DELETE"
-           (fn []
+           (fn [id]
              (delete-arena
               id
               #(callback-success cmpnt-state)
               #(re-frame/dispatch
                 [:update-modal-error (get-error-message %)])))]]])})))
+
+(defn render-delete-arena-modal [id]
+  [delete-arena-modal id])
