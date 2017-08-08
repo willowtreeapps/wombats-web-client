@@ -12,6 +12,8 @@
             [wombats-web-client.constants.games
              :refer [game-type-str-map transition-time]]
             [wombats-web-client.constants.ui :refer [mobile-window-width]]
+            [wombats-web-client.utils.functions
+             :refer [round]]
             [wombats-web-client.utils.games
              :refer [get-player-by-username get-player-score]]
             [wombats-web-client.utils.socket :as ws]
@@ -32,8 +34,12 @@
   height as the ratios of the different sides.
   Rounds to a single decimal to prevent crazy ratios"
   [{:keys [width height]}]
-  {:width (/ (Math/round (* (if (> height width) (/ width height) 1) 10)) 10)
-   :height (/ (Math/round (* (if (> width height) (/ height width) 1) 10)) 10)})
+  {:width  (if (> height width)
+             (round (/ width height) 1)
+             1)
+   :height (if (> width height)
+             (round (/ height width) 1)
+             1)})
 
 (defn- resize-canvas [arena-atom game]
   (let [root-element (first
@@ -69,6 +75,7 @@
         current-ratio (get-ratio {:width (.-offsetWidth arena-canvas)
                                   :height (.-offsetHeight arena-canvas)})
         arena-ratio (get-ratio desired-dimensions)]
+    (println (str current-ratio arena-ratio))
     (not= current-ratio arena-ratio)))
 
 (defn- show-winner-modal
