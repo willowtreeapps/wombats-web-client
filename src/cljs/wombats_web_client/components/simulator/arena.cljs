@@ -16,6 +16,4 @@
     :frames-idx  simulator-index
     :view-mode simulator-view-mode
     :canvas-id canvas-id})
-  [:canvas {:id canvas-id
-            :width dimensions
-            :height dimensions}])
+  [:canvas {:id canvas-id}])
