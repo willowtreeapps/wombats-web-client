@@ -305,6 +305,11 @@
   "Draw arena cells given the x and y of the previous and the next frame"
   [cell x-prev x-next])
 
+(defn in?
+  "Return true if coll contains elem"
+  [elem coll]
+  (some #(= elem %) coll))
+
 (defn- draw-arena-canvas
   "Given a canvas element and the arena, draw the canvas"
   [{:keys [arena
@@ -327,10 +332,32 @@
                      height
                      canvas-element))))))
 
-(defn in?
-  "Return true if coll contains elem"
-  [elem coll]
-  (some #(= elem %) coll))
+(defn- draw-arena-canvas-skip-animated
+  "Given a canvas element and the arena - skip the animated items"
+  [{:keys [arena
+           canvas-element
+           animated]}]
+   ;; Calculate the width and height of each cell
+  (let [height (/ (canvas/height canvas-element) (count arena))
+        width  (/ (canvas/width  canvas-element) (count (get arena 0)))
+        bad-xs (map :x animated)
+        bad-ys (map :y animated)
+        bad-types (map :type animated)]
+    (println bad-xs)
+    ;; Iterate through all of the arena rows
+    (doseq [[y row] (map-indexed vector arena)]
+      (doseq [[x cell] (map-indexed vector row)]
+        (let
+            [x-coord (* x width)
+             y-coord (* y height)]
+          ;; this incredibly obnoxious logic thing checks to see if the cell that it's on is contained in the animated thing
+          (when (not  (and (in? x bad-xs) (in? y bad-ys) (in? (get-in cell [:contents :type]) bad-types)))
+            (draw-cell cell
+                       x-coord
+                       y-coord
+                       width
+                       height
+                       canvas-element)))))))
 
 (defn arena
   "Renders the arena on a canvas element, and subscribes to arena updates"
@@ -373,13 +400,15 @@
                        :frame/arena])
         ;; Get the coordinates of the wombats on the grid, reduce them into maps with
         ;; just the x, y, and type associated
-        new-coords (println (map flatten-item (filter-arena (add-locs arena) [:wombat])))
+        new-coords (map flatten-item (filter-arena (add-locs arena) [:wombat]))
         prev-frame (get-in @frames-vec
                            [(dec @frames-idx)
                             :game/frame
                             :frame/arena])
-        prev-coords (println (map flatten-item (filter-arena (add-locs prev-frame) [:wombat])))
+        prev-coords (map flatten-item (filter-arena (add-locs prev-frame) [:wombat]))
         canvas-element (.getElementById js/document canvas-id)]
+    (println (str prev-coords "\n" new-coords))
     (when-not (nil? canvas-element)
-      (draw-arena-canvas {:arena arena
-                          :canvas-element canvas-element}))))
+      (draw-arena-canvas-skip-animated {:arena arena
+                                        :canvas-element canvas-element
+                                        :animated new-coords}))))
