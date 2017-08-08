@@ -75,7 +75,6 @@
         current-ratio (get-ratio {:width (.-offsetWidth arena-canvas)
                                   :height (.-offsetHeight arena-canvas)})
         arena-ratio (get-ratio desired-dimensions)]
-    (println (str current-ratio arena-ratio))
     (not= current-ratio arena-ratio)))
 
 (defn- show-winner-modal
