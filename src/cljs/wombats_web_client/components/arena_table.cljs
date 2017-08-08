@@ -20,7 +20,6 @@
                   ""
                   ""])
 
-
 (defn open-create-game-modal [arena-id]
   (re-frame/dispatch [:set-modal {:fn #(create-game-modal arena-id)
                                   :show-overlay true}]))
