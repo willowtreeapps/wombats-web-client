@@ -91,7 +91,10 @@
  (fn [db [_ view-mode]]
    (assoc db :simulator/view-mode view-mode)))
 
-
+(re-frame/reg-event-db
+ :simulator/play-state
+ (fn [db [_ play-state]]
+   (assoc db :simulator/play-state play-state)))
 
 (re-frame/reg-event-db
  :simulator/update-configuration
@@ -104,10 +107,14 @@
  :simulator/initialize-configuration
  (fn [db [_ {wombat-id :wombat-id
             template-id :template-id}]]
+   (when-let [interval (get-in db [:simulator/play-state :interval])]
+     (js/clearInterval interval))
    (merge db {:simulator/template-id template-id
               :simulator/wombat-id wombat-id
               :simulator/frames-vec []
-              :simulator/frames-idx -1})))
+              :simulator/frames-idx -1
+              :simulator/play-state {:play-status :paused
+                                     :interval nil}})))
 
 (re-frame/reg-event-fx
  :simulator/initialize-simulator
