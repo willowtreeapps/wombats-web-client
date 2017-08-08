@@ -29,7 +29,8 @@
 
 (defn- get-ratio
   "Returns an object containing width and
-  height as the ratios of the different sides"
+  height as the ratios of the different sides.
+  Rounds to a single decimal to prevent crazy ratios"
   [{:keys [width height]}]
   {:width (/ (Math/round (* (if (> height width) (/ width height) 1) 10)) 10)
    :height (/ (Math/round (* (if (> width height) (/ height width) 1) 10)) 10)})
@@ -61,7 +62,7 @@
   (js/setTimeout #(resize-canvas arena-atom game)
                  100))
 
-(defn- should-arena-resize [game]
+(defn- should-arena-resize? [game]
   (let [arena-canvas (dom/get-element canvas-id)
         desired-dimensions {:width (get-in @game [:game/arena :arena/width])
                             :height (get-in @game [:game/arena :arena/height])}
@@ -136,7 +137,7 @@
                      (:resize-fn @cmpnt-state)))
 
 (defn- component-did-update [arena game]
-  (when (should-arena-resize game)
+  (when (should-arena-resize? game)
     (resize-canvas arena game))
   (arena/arena @arena canvas-id))
 
