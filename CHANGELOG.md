@@ -7,8 +7,12 @@ CHANGELOG
     [Eli Bosley](/elibosley) *No Issue*
 
 **Bug Fixes**
-* Arena aspect ratio is set based on the arena size [Eli Bosley](/elibosley) #[345](https://github.com/willowtreeapps/wombats-web-client/issues/345)
-* Fixed issue with simualator pause button not working after window change [Eli Bosley][/eli] [#359](https://github.com/willowtreeapps/wombats-web-client/issues/359)
+* Arena aspect ratio is set based on the arena size
+    [Eli Bosley](/elibosley) #[345](https://github.com/willowtreeapps/wombats-web-client/issues/345)
+* Fixed issue with simulator pause button not working after window change
+    [Eli Bosley][/eli] [#359](https://github.com/willowtreeapps/wombats-web-client/issues/359)
+* Added button click indicator for simulator buttons
+    [Eli Bosley](/elibosley) [#341](https://github.com/willowtreeapps/wombats-web-client/issues/341)
 
 ## QA
 **Enhancements**
