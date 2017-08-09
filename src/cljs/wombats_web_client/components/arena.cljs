@@ -4,7 +4,7 @@
             [wombats-web-client.utils.canvas :as canvas]))
 
 (defonce spritesheet-png "/images/spritesheet.png")
-(defonce frame-time 10)
+(defonce frame-time 20)
 
 (defn subscribe-to-spritesheet
   [img-name callback]
@@ -302,11 +302,6 @@
 
       (js/console.log "Unhandled: " cell-type))))
 
-(defn in?
-  "Return true if coll contains elem"
-  [elem coll]
-  (some #(= elem %) coll))
-
 (defn- draw-arena-canvas
   "Given a canvas element and the arena, draw the canvas"
   [{:keys [arena
@@ -329,11 +324,18 @@
                      height
                      canvas-element))))))
 
-(defn- draw-arena-canvas-skip-animated
+(defn in?
+  "Return true if coll contains elem"
+  [elem coll]
+  (some #(= elem %) coll))
+
+
+(defn- draw-arena-canvas-animated
   "Given a canvas element and the arena - skip the animated items"
   [{:keys [arena
            canvas-element
-           animated]}]
+           animated
+           animation-progress]}]
 
    ;; Calculate the width and height of each cell
   (let [height (/ (canvas/height canvas-element) (count arena))
@@ -341,6 +343,7 @@
         bad-xs (map :x animated)
         bad-ys (map :y animated)
         bad-types (map #(get-in % [:contents :type]) animated)]
+
     ;; Iterate through all of the arena rows
     (doseq [[y row] (map-indexed vector arena)]
       (doseq [[x cell] (map-indexed vector row)]
@@ -354,7 +357,12 @@
                        y-coord
                        width
                        height
-                       canvas-element)))))))
+                       canvas-element))))))
+  (when (<= (:progress animation-progress) (:end animation-progress))
+    (.requestAnimationFrame js/window #(draw-arena-canvas-animated {:arena arena
+                                                                    :canvas-element canvas-element
+                                                                    :animated animated
+                                                                    :animation-progress (update-in animation-progress [:progress] inc)}))))
 
 (defn- get-step
   [start end dimension-key]
@@ -509,14 +517,14 @@
         next-coords (filter-arena (add-locs next-frame) [:zakano :wombat])
         canvas-element (.getElementById js/document canvas-id)
         animations (create-animations-vector prev-coords next-coords)
-        animation-status {:start 0
-                          :progress 0
-                          :end frame-time}]
+        animation-progress {:current 0
+                            :end frame-time}]
 
     (when-not (nil? canvas-element)
-      (draw-arena-canvas-animations {:arena next-frame
+      #_(draw-arena-canvas-animations {:arena next-frame
                                      :canvas-element canvas-element
                                      :animations animations})
-      (draw-arena-canvas-skip-animated {:arena next-frame
+      (draw-arena-canvas-animated {:arena next-frame
                                         :canvas-element canvas-element
-                                        :animated next-coords}))))
+                                        :animated next-coords
+                                        :animation-progress animation-progress}))))
