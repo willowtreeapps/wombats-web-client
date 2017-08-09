@@ -373,7 +373,7 @@
         [x-coord (* (get-in animations [0 :x]) width)
          y-coord (* (get-in animations [0 :y]) height)]
 
-      ;; this incredibly obnoxious logic thing checks to see if the cell that it's on is contained in the animated thing
+
       (draw-cell (get-in animations [0  :cell])
                  x-coord
                  y-coord
@@ -410,7 +410,8 @@
   [item]
   {:x (get item :x)
    :y (get item :y)
-   :type (get-in item [:contents :type])})
+   :type (get-in item [:contents :type])
+   :cell item})
 
 (defn- create-animations-vector
   [prev-coords new-coords]
