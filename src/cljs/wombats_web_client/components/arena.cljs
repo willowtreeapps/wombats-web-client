@@ -453,10 +453,10 @@
   "Add local :x and :y coordinates to arena matrix"
   [arena]
   (map-indexed
-    (fn [y row] (map-indexed
-                  (fn [x tile] (assoc tile :x x :y y))
-                  row))
-    arena))
+   (fn [y row] (map-indexed
+               (fn [x tile] (assoc tile :x x :y y))
+               row))
+   arena))
 
 (defn- filter-arena
   "Filter the arena to return only nodes that contain one of the supplied types"
@@ -464,13 +464,6 @@
   ([arena filters]
   (let [node-list (flatten arena)]
     (filter #(in? (get-in % [:contents :type]) filters) node-list))))
-
-(defn- flatten-item
-  [item]
-  {:x (get item :x)
-   :y (get item :y)
-   :type (get-in item [:contents :type])
-   :cell item})
 
 (defn- get-uuid
   [item]
@@ -484,15 +477,18 @@
 (defn- create-animations-vector
   "Input is two vectors of flatten-item responses, output is a vector of the animations"
   [prev-coords next-coords]
-  (reduce (fn [out-vec prev]
-            (conj out-vec (reduce (fn [obj next] ;; could use (first (filter (fn ...)))
-                                    (if (= (get-uuid next) (get-uuid prev))
+  (remove nil?
+          (reduce (fn [out-vec prev]
+                    (conj out-vec
+                          (reduce (fn [obj next] ;; could use (first (filter (fn ...)))
+                                    (if (and (= (get-uuid next) (get-uuid prev))
+                                             (not= (dimensions prev) (dimensions next)))
                                       {:start (dimensions prev)
                                        :end (dimensions next)
                                        :progress (dimensions prev)
                                        :cell next}
                                       obj))
-                                  nil next-coords))) [] prev-coords))
+                                  nil next-coords))) [] prev-coords)))
 
 
 (defn arena-history
@@ -511,9 +507,12 @@
         ;; just the x, y, and type associated
         prev-coords (filter-arena (add-locs prev-frame) [:zakano :wombat])
         next-coords (filter-arena (add-locs next-frame) [:zakano :wombat])
-
         canvas-element (.getElementById js/document canvas-id)
-         animations (create-animations-vector prev-coords next-coords)]
+        animations (create-animations-vector prev-coords next-coords)
+        animation-status {:start 0
+                          :progress 0
+                          :end frame-time}]
+
     (when-not (nil? canvas-element)
       (draw-arena-canvas-animations {:arena next-frame
                                      :canvas-element canvas-element
