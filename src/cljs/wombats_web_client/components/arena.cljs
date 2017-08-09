@@ -4,7 +4,7 @@
             [wombats-web-client.utils.canvas :as canvas]))
 
 (defonce spritesheet-png "/images/spritesheet.png")
-(defonce frame-time 1000)
+(defonce frame-time 100)
 
 (defn subscribe-to-spritesheet
   [img-name callback]
@@ -338,13 +338,13 @@
   [{:keys [arena
            canvas-element
            animated]}]
+
    ;; Calculate the width and height of each cell
   (let [height (/ (canvas/height canvas-element) (count arena))
         width  (/ (canvas/width  canvas-element) (count (get arena 0)))
         bad-xs (map :x animated)
         bad-ys (map :y animated)
-        bad-types (map :type animated)]
-    (println bad-xs)
+        bad-types (map #(get-in % [:contents :type]) animated)]
     ;; Iterate through all of the arena rows
     (doseq [[y row] (map-indexed vector arena)]
       (doseq [[x cell] (map-indexed vector row)]
@@ -360,7 +360,53 @@
                        height
                        canvas-element)))))))
 
-(defn- draw-arena-animated-items
+(defn- get-step
+  [start end dimension-key]
+  (let [start-pos (dimension-key start)
+        end-pos (dimension-key end)]
+    (- end-pos start-pos)))
+
+(defn- get-movement-key
+  [start end]
+  (if (pos? (Math/abs (- (:x start) (:x end))))
+    :x
+    :y))
+
+(defn- animate
+  [{:keys [animation-item
+           width
+           height
+           frames
+           canvas-element]}]
+  (let [start (:start animation-item) ;; start dimensions item - looks like {:x 10 :y 5}
+        end (:end animation-item)     ;; end dimensions item
+        animation-progress (:progress animation-item)
+        animation-direction-key (get-movement-key start end)
+        max-step (get-step start end animation-direction-key)
+        step-size (/ max-step frames)
+        item (:cell end)]
+    (swap! animation-progress update-in [animation-direction-key] #(+ % step-size)) ;; can't always add- sometimes you step backwards
+    (println start)
+    (println @animation-progress)
+    (let [x-coord (* (:x @animation-progress) width)
+          y-coord (* (:y @animation-progress) height)]
+      (draw-cell (:cell animation-item)
+                 x-coord
+                 y-coord
+                 width
+                 height
+                 canvas-element))
+    (println end)
+    (when (not= @animation-progress end)
+      (.requestAnimationFrame js/window #(animate {:animation-item animation-item
+                                                   :width width
+                                                   :height height
+                                                   :frames frames
+                                                   :canvas-element canvas-element})))
+
+    ))
+
+(defn- draw-arena-canvas-animations
   "Given a canvas element and the arena - animate transitions for movement"
   [{:keys [arena
            canvas-element
@@ -369,17 +415,14 @@
   (let [height (/ (canvas/height canvas-element) (count arena))
         width  (/ (canvas/width  canvas-element) (count (get arena 0)))]
     ;; map through all items in animations - animate their transitions from :start to :end
-    (let
-        [x-coord (* (get-in animations [0 :x]) width)
-         y-coord (* (get-in animations [0 :y]) height)]
 
-
-      (draw-cell (get-in animations [0  :cell])
-                 x-coord
-                 y-coord
-                 width
-                 height
-                 canvas-element))))
+    (doseq [item animations]
+      (animate {:animation-item item
+                :width width
+                :height height
+                :frames frame-time
+                :canvas-element canvas-element}) ;; TODO frame-time is the amount of frames in the animation - more frames = longer animation
+      )))
 
 (defn arena
   "Renders the arena on a canvas element, and subscribes to arena updates"
@@ -413,36 +456,62 @@
    :type (get-in item [:contents :type])
    :cell item})
 
+(defn- get-uuid
+  [item]
+  (get-in item [:contents :uuid]))
+
+(defn- dimensions
+  [item]
+  {:x (:x item)
+   :y (:y item)})
+
 (defn- create-animations-vector
-  [prev-coords new-coords]
-  )
+  "Input is two vectors of flatten-item responses, output is a vector of the animations that should take place"
+  [prev-coords next-coords]
+  (println prev-coords)
+  (let [animations-vec (reagent/atom [])]
+    (doseq [prev prev-coords]
+      (doseq [next next-coords]
+        (let [prev-uuid (get-uuid prev)
+              next-uuid (get-uuid next)
+              prev-dimensions (dimensions prev)
+              next-dimensions (dimensions next)] ;; Use prev and next to ensure movement
+          (when (and (= prev-uuid next-uuid) (not= prev-dimensions next-dimensions))
+            (swap! animations-vec conj {:start prev-dimensions
+                                        :end next-dimensions
+                                        :progress (reagent/atom prev-dimensions)
+                                        :cell next})))))
+    animations-vec)
+
+  #_(doseq [prev prev-coords] Should be reimplemented using reduce but I'm gonna use an atom for now
+    (prn (str "prev: " prev))
+    (prn (reduce (fn [vec next] (when (=  (get-uuid next) (get-uuid prev))
+                                 (conj vec next))) [] next-coords))))
 
 (defn arena-history
   "Renders the arena on a canvas element, given the frames item and an index,
   allowing for animation between the frames"
   [{:keys [frames-vec frames-idx view-mode canvas-id]}]
-  (let [arena (get-in @frames-vec
-                      [@frames-idx
-                       :game/frame
-                       :frame/arena])
-        ;; Get the coordinates of the wombats on the grid, reduce them into maps with
-        ;; just the x, y, and type associated
-        new-coords (map flatten-item (filter-arena (add-locs arena) [:wombat]))
-        _ (println (filter-arena (add-locs arena) [:wombat]))
-        prev-frame (get-in @frames-vec
+  (let [prev-frame (get-in @frames-vec
                            [(dec @frames-idx)
                             :game/frame
-                            :frame/arena]) ;; need to keep the cell data handy for rendering with the animator function
-        prev-coords (map flatten-item (filter-arena (add-locs prev-frame) [:wombat]))
+                            :frame/arena])
+        next-frame (get-in @frames-vec
+                           [@frames-idx
+                            :game/frame
+                            :frame/arena])
+        ;; Get the coordinates of the wombats on the grid, reduce them into maps with
+        ;; just the x, y, and type associated
+        prev-coords (filter-arena (add-locs prev-frame) [:zakano :wombat])
+        next-coords (filter-arena (add-locs next-frame) [:zakano :wombat])
+
         canvas-element (.getElementById js/document canvas-id)
-        animations [{:start prev-coords
-                     :end new-coords
-                     :type (get new-coords :type)
-                     :progress (reagent/atom prev-coords)}]
-        ;; animations needs to be replaced with algorithm to generate the list of coordinate - coordinate animations for every type
-        ]
-    (println (str prev-coords "\n" new-coords))
+        animations @(create-animations-vector prev-coords next-coords)]
+
     (when-not (nil? canvas-element)
-      (draw-arena-canvas-skip-animated {:arena arena
+      (draw-arena-canvas-skip-animated {:arena next-frame
                                         :canvas-element canvas-element
-                                        :animated new-coords}))))
+                                        :animated next-coords})
+      (draw-arena-canvas-animations {:arena next-frame
+                                     :canvas-element canvas-element
+                                     :animations animations}))))
