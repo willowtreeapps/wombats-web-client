@@ -4,7 +4,7 @@
             [wombats-web-client.utils.canvas :as canvas]))
 
 (defonce spritesheet-png "/images/spritesheet.png")
-(defonce frame-time 100)
+(defonce frame-time 10)
 
 (defn subscribe-to-spritesheet
   [img-name callback]
@@ -372,39 +372,51 @@
     :x
     :y))
 
+
+
 (defn- animate
-  [{:keys [animation-item
+  [{:keys [start
+           end
+           progress
+           direction-key
+           step-size
+           cell
            width
            height
-           frames
            canvas-element]}]
-  (let [start (:start animation-item) ;; start dimensions item - looks like {:x 10 :y 5}
-        end (:end animation-item)     ;; end dimensions item
-        animation-progress (:progress animation-item)
-        animation-direction-key (get-movement-key start end)
-        max-step (get-step start end animation-direction-key)
-        step-size (/ max-step frames)
-        item (:cell end)]
-    (swap! animation-progress update-in [animation-direction-key] #(+ % step-size)) ;; can't always add- sometimes you step backwards
-    (println start)
-    (println @animation-progress)
-    (let [x-coord (* (:x @animation-progress) width)
-          y-coord (* (:y @animation-progress) height)]
-      (draw-cell (:cell animation-item)
-                 x-coord
-                 y-coord
-                 width
-                 height
-                 canvas-element))
-    (println end)
-    (when (not= @animation-progress end)
-      (.requestAnimationFrame js/window #(animate {:animation-item animation-item
+
+  #_(swap! animation-progress update-in [animation-direction-key] #(+ % step-size)) ;; can't always add- sometimes you step backwards
+  (let [x-coord (* (:x progress) width)
+        y-coord (* (:y progress) height)]
+
+    (draw-cell cell
+               x-coord
+               y-coord
+               width
+               height
+               canvas-element))
+  (if (neg? step-size) ;; should use less than
+    (when (>= (direction-key progress) (direction-key end))
+      (.requestAnimationFrame js/window #(animate {:start start
+                                                   :end end
+                                                   :progress (update-in progress [direction-key] + step-size)
+                                                   :direction-key direction-key
+                                                   :step-size step-size
+                                                   :cell cell
                                                    :width width
                                                    :height height
-                                                   :frames frames
                                                    :canvas-element canvas-element})))
-
-    ))
+    (when (<= (direction-key progress) (direction-key end))
+      (.requestAnimationFrame js/window #(animate {:start start
+                                                   :end end
+                                                   :progress (update-in progress [direction-key] + step-size)
+                                                   :direction-key direction-key
+                                                   :step-size step-size
+                                                   :cell cell
+                                                   :width width
+                                                   :height height
+                                                   :canvas-element canvas-element}))
+      )))
 
 (defn- draw-arena-canvas-animations
   "Given a canvas element and the arena - animate transitions for movement"
@@ -417,11 +429,22 @@
     ;; map through all items in animations - animate their transitions from :start to :end
 
     (doseq [item animations]
-      (animate {:animation-item item
-                :width width
-                :height height
-                :frames frame-time
-                :canvas-element canvas-element}) ;; TODO frame-time is the amount of frames in the animation - more frames = longer animation
+
+      (let [start (:start item)
+            progress (:progress item)
+            end (:end item)
+            direction-key (get-movement-key start end)
+            step-size (/ (get-step start end direction-key) frame-time)
+            cell (:cell item)]
+        (animate {:start start
+                  :end end
+                  :progress progress
+                  :direction-key direction-key
+                  :step-size step-size
+                  :cell cell
+                  :width width
+                  :height height
+                  :canvas-element canvas-element})) ;; TODO frame-time is the amount of frames in the animation - more frames = longer animation
       )))
 
 (defn arena
@@ -468,7 +491,7 @@
 (defn- create-animations-vector
   "Input is two vectors of flatten-item responses, output is a vector of the animations that should take place"
   [prev-coords next-coords]
-  (println prev-coords)
+
   (let [animations-vec (reagent/atom [])]
     (doseq [prev prev-coords]
       (doseq [next next-coords]
@@ -479,7 +502,7 @@
           (when (and (= prev-uuid next-uuid) (not= prev-dimensions next-dimensions))
             (swap! animations-vec conj {:start prev-dimensions
                                         :end next-dimensions
-                                        :progress (reagent/atom prev-dimensions)
+                                        :progress prev-dimensions
                                         :cell next})))))
     animations-vec)
 
@@ -509,9 +532,10 @@
         animations @(create-animations-vector prev-coords next-coords)]
 
     (when-not (nil? canvas-element)
+      (draw-arena-canvas-animations {:arena next-frame
+                                     :canvas-element canvas-element
+                                     :animations animations})
       (draw-arena-canvas-skip-animated {:arena next-frame
                                         :canvas-element canvas-element
                                         :animated next-coords})
-      (draw-arena-canvas-animations {:arena next-frame
-                                     :canvas-element canvas-element
-                                     :animations animations}))))
+      )))
