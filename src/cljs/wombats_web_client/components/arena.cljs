@@ -302,10 +302,6 @@
 
       (js/console.log "Unhandled: " cell-type))))
 
-(defn- draw-cell-animate
-  "Draw arena cells given the x and y of the previous and the next frame"
-  [cell x-prev x-next])
-
 (defn in?
   "Return true if coll contains elem"
   [elem coll]
@@ -351,7 +347,7 @@
         (let
             [x-coord (* x width)
              y-coord (* y height)]
-          ;; this incredibly obnoxious logic thing checks to see if the cell that it's on is contained in the animated thing
+          ;; checks to see if the cell that it's on is contained in the animated thing
           (when (not  (and (in? x bad-xs) (in? y bad-ys) (in? (get-in cell [:contents :type]) bad-types)))
             (draw-cell cell
                        x-coord
@@ -372,8 +368,6 @@
     :x
     :y))
 
-
-
 (defn- animate
   [{:keys [start
            end
@@ -384,7 +378,6 @@
            width
            height
            canvas-element]}]
-
   #_(swap! animation-progress update-in [animation-direction-key] #(+ % step-size)) ;; can't always add- sometimes you step backwards
   (let [x-coord (* (:x progress) width)
         y-coord (* (:y progress) height)]
@@ -489,27 +482,18 @@
    :y (:y item)})
 
 (defn- create-animations-vector
-  "Input is two vectors of flatten-item responses, output is a vector of the animations that should take place"
+  "Input is two vectors of flatten-item responses, output is a vector of the animations"
   [prev-coords next-coords]
+  (reduce (fn [out-vec prev]
+            (conj out-vec (reduce (fn [obj next] ;; could use (first (filter (fn ...)))
+                                    (if (= (get-uuid next) (get-uuid prev))
+                                      {:start (dimensions prev)
+                                       :end (dimensions next)
+                                       :progress (dimensions prev)
+                                       :cell next}
+                                      obj))
+                                  nil next-coords))) [] prev-coords))
 
-  (let [animations-vec (reagent/atom [])]
-    (doseq [prev prev-coords]
-      (doseq [next next-coords]
-        (let [prev-uuid (get-uuid prev)
-              next-uuid (get-uuid next)
-              prev-dimensions (dimensions prev)
-              next-dimensions (dimensions next)] ;; Use prev and next to ensure movement
-          (when (and (= prev-uuid next-uuid) (not= prev-dimensions next-dimensions))
-            (swap! animations-vec conj {:start prev-dimensions
-                                        :end next-dimensions
-                                        :progress prev-dimensions
-                                        :cell next})))))
-    animations-vec)
-
-  #_(doseq [prev prev-coords] Should be reimplemented using reduce but I'm gonna use an atom for now
-    (prn (str "prev: " prev))
-    (prn (reduce (fn [vec next] (when (=  (get-uuid next) (get-uuid prev))
-                                 (conj vec next))) [] next-coords))))
 
 (defn arena-history
   "Renders the arena on a canvas element, given the frames item and an index,
@@ -529,13 +513,11 @@
         next-coords (filter-arena (add-locs next-frame) [:zakano :wombat])
 
         canvas-element (.getElementById js/document canvas-id)
-        animations @(create-animations-vector prev-coords next-coords)]
-
+         animations (create-animations-vector prev-coords next-coords)]
     (when-not (nil? canvas-element)
       (draw-arena-canvas-animations {:arena next-frame
                                      :canvas-element canvas-element
                                      :animations animations})
       (draw-arena-canvas-skip-animated {:arena next-frame
                                         :canvas-element canvas-element
-                                        :animated next-coords})
-      )))
+                                        :animated next-coords}))))
