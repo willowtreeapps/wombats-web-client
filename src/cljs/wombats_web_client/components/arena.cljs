@@ -469,10 +469,10 @@
   Returns arena"
   [arena animations]
   (let [uuid-animation-set
-        (into #{}
-              (map #(get-in %
-                            [:cell :contents :uuid])
-                   animations))]
+        (set
+         (map #(get-in %
+                       [:cell :contents :uuid])
+              animations))]
     (remove
      (fn [item]
        (some (partial = (get-in item [:contents :uuid])) uuid-animation-set))
@@ -481,11 +481,11 @@
 (defn- create-nonanimated-vectors
   "Creates animation objects from non-animated items for standardization"
   [arena]
-  (into [] (map #(assoc {}
-                        :start (dimensions %)
-                        :end (dimensions %)
-                        :animated false
-                        :cell %) arena)))
+  (vec (map #(assoc {}
+                    :start (dimensions %)
+                    :end (dimensions %)
+                    :animated false
+                    :cell %) arena)))
 
 (defn arena-history
   "Renders the arena on a canvas element, given the frames item and an index,
@@ -510,7 +510,8 @@
                             :end frame-time}
         dimensions {:width (count prev-frame)
                     :height (count (get prev-frame 0))}
-        arena-no-anims (create-nonanimated-vectors (remove-animations next-frame-locs animations))
+        arena-no-anims (create-nonanimated-vectors
+                        (remove-animations next-frame-locs animations))
 
         finalized-arena (concat arena-no-anims animations)]
     (when-not (nil? canvas-element)
