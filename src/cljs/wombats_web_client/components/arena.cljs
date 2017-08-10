@@ -330,12 +330,15 @@
   (some #(= elem %) coll))
 
 (defn- get-step-size
+  "Calculate the size of the step, as well as whether it is forward or back"
   [start end dimension-key]
   (let [start-pos (dimension-key start)
         end-pos (dimension-key end)]
     (- end-pos start-pos)))
 
-(defn- get-movement-key
+(defn- get-direction-key
+  "Given the start and the end dimension object, calculate which direction
+  has movement"
   [start end]
   (if (pos? (Math/abs (- (:x start) (:x end))))
     :x
@@ -363,19 +366,19 @@
    ;; Calculate the width and height of each cell
   (let [height (/ (canvas/height canvas-element) (count arena))
         width  (/ (canvas/width  canvas-element) (count (get arena 0)))
-        bad-xs (map #(get-in % [:end :x]) animated)
-        bad-ys (map #(get-in % [:end :y]) animated)
-        bad-types (map #(get-in % [:cell :contents :type]) animated)]
+        animated-x (map #(get-in % [:end :x]) animated)
+        animated-y (map #(get-in % [:end :y]) animated)
+        animated-types (map #(get-in % [:cell :contents :type]) animated)]
     ;; Iterate through all of the arena rows - draw non-animated items
     (doseq [[y row] (map-indexed vector arena)]
       (doseq [[x cell] (map-indexed vector row)]
         (let
             [x-coord (* x width)
              y-coord (* y height)]
-          (when (not
-                 (and (in? x bad-xs)
-                      (in? y bad-ys)
-                      (in? (get-in cell [:contents :type]) bad-types)))
+          (when-not
+            (and (in? x animated-x)
+                 (in? y animated-y)
+                 (in? (get-in cell [:contents :type]) animated-types))
             (draw-cell cell
                        x-coord
                        y-coord
@@ -387,39 +390,43 @@
     (doseq [item animated]
       (let [item-start (:start item)
             item-end (:end item)
-            direction-key (get-movement-key item-start item-end)
+            direction-key (get-direction-key item-start item-end)
             step-size (/ (get-step-size item-start
                                         item-end
-                                        direction-key)
-                         frame-time) ;; revisit this logic to use progress
+                                        direction-key) frame-time)
             cell (:cell item)
             x (get-in item [:start :x])
             y (get-in item [:start :y])
-            new-coords (get-animated-coord {:x x
-                                            :y y
-                                            :width width
-                                            :height height
-                                            :direction-key direction-key
-                                            :animation-progress animation-progress
-                                            :step-size step-size})]
-        (draw-cell cell
-                   (:x new-coords)
-                   (:y new-coords)
-                   width
-                   height
-                   canvas-element))))
+            new-coords (get-animated-coord
+                        {:x x
+                         :y y
+                         :width width
+                         :height height
+                         :direction-key direction-key
+                         :animation-progress animation-progress
+                         :step-size step-size})]
+        (when (<= (Math/abs (get-step-size item-start
+                                           item-end
+                                           direction-key)) 1)
+          (draw-cell cell
+                     (:x new-coords)
+                     (:y new-coords)
+                     width
+                     height
+                     canvas-element)))))
 
   ;; this when subtracts one from the end because the animation runs once
   ;; before it gets a callback
-  (when (<= (:progress animation-progress) (- (:end animation-progress) 1))
+  (when (<= (:progress animation-progress) (dec (:end animation-progress)))
     (.requestAnimationFrame js/window
                             #(draw-arena-canvas-animated
                               {:arena arena
                                :canvas-element canvas-element
                                :animated animated
-                               :animation-progress (update-in animation-progress
-                                                              [:progress]
-                                                              inc)}))))
+                               :animation-progress
+                               (update-in animation-progress
+                                          [:progress]
+                                          inc)}))))
 
 (defn arena
   "Renders the arena on a canvas element, and subscribes to arena updates"
@@ -456,19 +463,22 @@
    :y (:y item)})
 
 (defn- create-animations-vector
-  "Input is two vectors of flatten-item responses, output is a vector of the animations"
+  "Input is two vectors of flatten-item responses,
+  output is a vector of the animations"
   [prev-coords next-coords]
   (remove nil?
           (reduce (fn [out-vec prev]
                     (conj out-vec
-                          (reduce (fn [obj next] ;; could use (first (filter (fn ...)))
-                                    (if (and (= (get-uuid next) (get-uuid prev))
-                                             (not= (dimensions prev) (dimensions next)))
-                                      {:start (dimensions prev)
-                                       :end (dimensions next)
-                                       :progress (dimensions prev)
-                                       :cell next}
-                                      obj))
+                          (reduce
+                           (fn [obj next] ;; could use (first (filter (fn ...)))
+                             (if (and (= (get-uuid next) (get-uuid prev))
+                                      (not= (dimensions prev)
+                                            (dimensions next)))
+                               {:start (dimensions prev)
+                                :end (dimensions next)
+                                :progress (dimensions prev)
+                                :cell next}
+                               obj))
                                   nil next-coords))) [] prev-coords)))
 
 
@@ -484,8 +494,7 @@
                            [@frames-idx
                             :game/frame
                             :frame/arena])
-        ;; Get the coordinates of the wombats on the grid, reduce them into maps with
-        ;; just the x, y, and type associated
+        ;; Get the coordinates of the animated items on the grid
         prev-coords (filter-arena (add-locs prev-frame) [:zakano :wombat])
         next-coords (filter-arena (add-locs next-frame) [:zakano :wombat])
         canvas-element (.getElementById js/document canvas-id)
