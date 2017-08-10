@@ -313,10 +313,8 @@
     ;; Iterate through all of the arena rows
     (doseq [[y row] (map-indexed vector arena)]
       (doseq [[x cell] (map-indexed vector row)]
-        (let
-            [x-coord (* x width)
-             y-coord (* y height)]
-
+        (let [x-coord (* x width)
+              y-coord (* y height)]
           (draw-cell cell
                      x-coord
                      y-coord
@@ -340,9 +338,9 @@
   "Given the start and the end dimension object, calculate which direction
   has movement"
   [start end]
-  (if (pos? (Math/abs (- (:x start) (:x end))))
-    :x
-    :y))
+  (if (= (:x start) (:x end))
+    :y
+    :x))
 
 (defn get-animated-coord
   "Uses the progress of the animation to
