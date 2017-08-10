@@ -265,10 +265,11 @@
 
 (defn- draw-cell
   "Draw an arena cell on the canvas"
-  [cell x y width height canvas-element]
+  [{:keys [cell x y width height canvas-element background]}]
 
   ;; Draw background first
-  (draw-background canvas-element x y width height)
+  (when (= background true)
+    (draw-background canvas-element x y width height))
 
   (let [{contents :contents
          meta :meta} cell
@@ -315,12 +316,13 @@
       (doseq [[x cell] (map-indexed vector row)]
         (let [x-coord (* x width)
               y-coord (* y height)]
-          (draw-cell cell
-                     x-coord
-                     y-coord
-                     width
-                     height
-                     canvas-element))))))
+          (draw-cell {:cell cell
+                      :x x-coord
+                      :y y-coord
+                      :width width
+                      :height height
+                      :canvas-element canvas-element
+                      :background true}))))))
 
 (defn in?
   "Return true if coll contains elem"
@@ -342,7 +344,7 @@
     :y
     :x))
 
-(defn get-animated-coord
+(defn- get-animated-coord
   "Uses the progress of the animation to
   calculate where the wombats/zakano should be placed"
   [{:keys [x y width height direction-key animation-progress step-size]}]
@@ -359,7 +361,7 @@
   [{:keys [arena
            canvas-element
            animated
-           animation-progress]}]
+           animation-progress]}] ;; Maybe pull both functions together and
 
   ;; Calculate the width and height of each cell
   (let [height (/ (canvas/height canvas-element) (count arena))
@@ -372,16 +374,18 @@
       (doseq [[x cell] (map-indexed vector row)]
         (let [x-coord (* x width)
               y-coord (* y height)]
-          (when-not
+          (if-not
               (and (in? x animated-x)
                    (in? y animated-y)
                    (in? (get-in cell [:contents :type]) animated-types))
-            (draw-cell cell
-                       x-coord
-                       y-coord
-                       width
-                       height
-                       canvas-element)))))
+            (draw-cell {:cell cell
+                        :x x-coord
+                        :y y-coord
+                        :width width
+                        :height height
+                        :canvas-element canvas-element
+                        :background true})
+            (draw-background canvas-element x-coord y-coord width height)))))
 
     ;; run through animated items and apply the animation to them
     (doseq [item animated]
@@ -404,13 +408,14 @@
                          :step-size step-size})]
         (when (<= (Math/abs (get-step-size item-start
                                            item-end
-                                           direction-key)) 1)
-          (draw-cell cell
-                     (:x new-coords)
-                     (:y new-coords)
-                     width
-                     height
-                     canvas-element)))))
+                                           direction-key)) 1) ;; wrap if false
+          (draw-cell {:cell cell
+                      :x (:x new-coords)
+                      :y (:y new-coords)
+                      :width width
+                      :height height
+                      :canvas-element canvas-element
+                      :background false})))))
 
   ;; this when subtracts one from the end because the animation runs once
   ;; before it gets a callback
