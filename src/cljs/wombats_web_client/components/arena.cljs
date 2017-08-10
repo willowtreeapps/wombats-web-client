@@ -369,7 +369,7 @@
       (let [cell (:cell item)
             x (get-in item [:start :x])
             y (get-in item [:start :y])
-            animated? (:animated item)] ;; check if (dimensions start) are = (dimensions end) and don't run animated coord
+            animated? (:animated item)]
         (if animated?
           (let [start (:start item)
                 end (:end item)
@@ -468,7 +468,11 @@
   "Given arena and animations vector, remove all animation items
   Returns arena"
   [arena animations]
-  (let [uuid-animation-set (into #{} (map #(get-in % [:cell :contents :uuid]) animations))]
+  (let [uuid-animation-set
+        (into #{}
+              (map #(get-in %
+                            [:cell :contents :uuid])
+                   animations))]
     (remove
      (fn [item]
        (some (partial = (get-in item [:contents :uuid])) uuid-animation-set))
