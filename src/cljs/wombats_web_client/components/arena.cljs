@@ -363,7 +363,7 @@
            animated
            animation-progress]}]
 
-   ;; Calculate the width and height of each cell
+  ;; Calculate the width and height of each cell
   (let [height (/ (canvas/height canvas-element) (count arena))
         width  (/ (canvas/width  canvas-element) (count (get arena 0)))
         animated-x (map #(get-in % [:end :x]) animated)
@@ -372,13 +372,12 @@
     ;; Iterate through all of the arena rows - draw non-animated items
     (doseq [[y row] (map-indexed vector arena)]
       (doseq [[x cell] (map-indexed vector row)]
-        (let
-            [x-coord (* x width)
-             y-coord (* y height)]
+        (let [x-coord (* x width)
+              y-coord (* y height)]
           (when-not
-            (and (in? x animated-x)
-                 (in? y animated-y)
-                 (in? (get-in cell [:contents :type]) animated-types))
+              (and (in? x animated-x)
+                   (in? y animated-y)
+                   (in? (get-in cell [:contents :type]) animated-types))
             (draw-cell cell
                        x-coord
                        y-coord
