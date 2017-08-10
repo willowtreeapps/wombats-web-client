@@ -266,7 +266,6 @@
 (defn- draw-cell
   "Draw an arena cell on the canvas"
   [{:keys [cell x y width height canvas-element background]}]
-
   ;; Draw background first
   (when (= background true)
     (draw-background canvas-element x y width height))
@@ -360,62 +359,44 @@
   "Given a canvas element and the arena - skip the animated items"
   [{:keys [arena
            canvas-element
-           animated
-           animation-progress]}] ;; Maybe pull both functions together and
-
+           dimensions
+           animation-progress]}]
   ;; Calculate the width and height of each cell
-  (let [height (/ (canvas/height canvas-element) (count arena))
-        width  (/ (canvas/width  canvas-element) (count (get arena 0)))
-        animated-x (map #(get-in % [:end :x]) animated)
-        animated-y (map #(get-in % [:end :y]) animated)
-        animated-types (map #(get-in % [:cell :contents :type]) animated)]
-    ;; Iterate through all of the arena rows - draw non-animated items
-    (doseq [[y row] (map-indexed vector arena)]
-      (doseq [[x cell] (map-indexed vector row)]
-        (let [x-coord (* x width)
-              y-coord (* y height)]
-          (if-not
-              (and (in? x animated-x)
-                   (in? y animated-y)
-                   (in? (get-in cell [:contents :type]) animated-types))
+  (let [height (/ (canvas/height canvas-element) (:height dimensions))
+        width  (/ (canvas/width  canvas-element) (:width dimensions))]
+    ;; Iterate through all of the arena items
+    (doseq [item arena]
+      (let [cell (:cell item)
+            x (get-in item [:start :x])
+            y (get-in item [:start :y])
+            animated? (:animated item)] ;; check if (dimensions start) are = (dimensions end) and don't run animated coord
+        (if animated?
+          (let [start (:start item)
+                end (:end item)
+                direction-key (get-direction-key start end)
+                step-size (/ (get-step-size start end direction-key) frame-time)
+                new-coords (get-animated-coord
+                            {:x x
+                             :y y
+                             :width width
+                             :height height
+                             :direction-key direction-key
+                             :animation-progress animation-progress
+                             :step-size step-size})]
             (draw-cell {:cell cell
-                        :x x-coord
-                        :y y-coord
+                        :x (:x new-coords)
+                        :y (:y new-coords)
                         :width width
                         :height height
                         :canvas-element canvas-element
-                        :background true})
-            (draw-background canvas-element x-coord y-coord width height)))))
-
-    ;; run through animated items and apply the animation to them
-    (doseq [item animated]
-      (let [item-start (:start item)
-            item-end (:end item)
-            direction-key (get-direction-key item-start item-end)
-            step-size (/ (get-step-size item-start
-                                        item-end
-                                        direction-key) frame-time)
-            cell (:cell item)
-            x (get-in item [:start :x])
-            y (get-in item [:start :y])
-            new-coords (get-animated-coord
-                        {:x x
-                         :y y
-                         :width width
-                         :height height
-                         :direction-key direction-key
-                         :animation-progress animation-progress
-                         :step-size step-size})]
-        (when (<= (Math/abs (get-step-size item-start
-                                           item-end
-                                           direction-key)) 1) ;; wrap if false
+                        :background false}))
           (draw-cell {:cell cell
-                      :x (:x new-coords)
-                      :y (:y new-coords)
+                      :x (* x width)
+                      :y (* y height)
                       :width width
                       :height height
                       :canvas-element canvas-element
-                      :background false})))))
+                      :background true})))))
 
   ;; this when subtracts one from the end because the animation runs once
   ;; before it gets a callback
@@ -424,7 +405,7 @@
                             #(draw-arena-canvas-animated
                               {:arena arena
                                :canvas-element canvas-element
-                               :animated animated
+                               :dimensions dimensions
                                :animation-progress
                                (update-in animation-progress
                                           [:progress]
@@ -465,7 +446,7 @@
    :y (:y item)})
 
 (defn- create-animations-vector
-  "Input is two vectors of flatten-item responses,
+  "Input is two vectors of arena data with add-locs
   output is a vector of the animations"
   [prev-coords next-coords]
   (remove nil?
@@ -478,11 +459,29 @@
                                             (dimensions next)))
                                {:start (dimensions prev)
                                 :end (dimensions next)
-                                :progress (dimensions prev)
+                                :animated true
                                 :cell next}
                                obj))
                                   nil next-coords))) [] prev-coords)))
 
+(defn- remove-animations
+  "Given arena and animations vector, remove all animation items
+  Returns arena"
+  [arena animations]
+  (let [uuid-animation-set (into #{} (map #(get-in % [:cell :contents :uuid]) animations))]
+    (remove
+     (fn [item]
+       (some (partial = (get-in item [:contents :uuid])) uuid-animation-set))
+     (flatten arena))))
+
+(defn- create-nonanimated-vectors
+  "Creates animation objects from non-animated items for standardization"
+  [arena]
+  (into [] (map #(assoc {}
+                        :start (dimensions %)
+                        :end (dimensions %)
+                        :animated false
+                        :cell %) arena)))
 
 (defn arena-history
   "Renders the arena on a canvas element, given the frames item and an index,
@@ -496,15 +495,22 @@
                            [@frames-idx
                             :game/frame
                             :frame/arena])
+        prev-frame-locs (add-locs prev-frame)
+        next-frame-locs (add-locs next-frame)
         ;; Get the coordinates of the animated items on the grid
-        prev-coords (filter-arena (add-locs prev-frame) [:zakano :wombat])
-        next-coords (filter-arena (add-locs next-frame) [:zakano :wombat])
+        prev-coords (filter-arena prev-frame-locs [:zakano :wombat])
+        next-coords (filter-arena next-frame-locs [:zakano :wombat])
         canvas-element (.getElementById js/document canvas-id)
         animations (create-animations-vector prev-coords next-coords)
         animation-progress {:progress 0
-                            :end frame-time}]
+                            :end frame-time}
+        dimensions {:width (count prev-frame)
+                    :height (count (get prev-frame 0))}
+        arena-no-anims (create-nonanimated-vectors (remove-animations next-frame-locs animations))
+
+        finalized-arena (concat arena-no-anims animations)]
     (when-not (nil? canvas-element)
-      (draw-arena-canvas-animated {:arena next-frame
+      (draw-arena-canvas-animated {:arena finalized-arena
                                    :canvas-element canvas-element
-                                   :animated animations
+                                   :dimensions dimensions
                                    :animation-progress animation-progress}))))
