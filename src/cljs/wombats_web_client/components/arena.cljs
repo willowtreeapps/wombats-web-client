@@ -385,7 +385,7 @@
              (+ (:height dimensions)
                 (* (:progress animation-progress)
                    (- (/ 1 frame-time)))))
-          (* height x))}
+          (* height y))}
     {:x (if (= direction-key :x)
           (* width
              (+ -1
