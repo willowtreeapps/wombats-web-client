@@ -103,7 +103,7 @@
   [{:keys
     [simulator-view-mode simulator-data simulator-frames simulator-index]}]
   [:div.left-pane {:id "left-pane"}
-   [simulator-arena/render simulator-data simulator-view-mode]
+   [simulator-arena/render simulator-frames simulator-index simulator-view-mode]
    [simulator-controls/render simulator-data simulator-frames simulator-index]])
 
 (defn- render

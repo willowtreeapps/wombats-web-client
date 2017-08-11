@@ -9,9 +9,11 @@
 ;; Main Method
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn render
-  "Takes the simulator data object and the view mode key and renders the arena"
-  [simulator-data simulator-view-mode]
+(defn render [simulator-frames simulator-index simulator-view-mode]
 
-  (arena/arena (simulator-view-mode @simulator-data) canvas-id)
+  (arena/arena-history
+   {:frames-vec  simulator-frames
+    :frames-idx  simulator-index
+    :view-mode simulator-view-mode
+    :canvas-id canvas-id})
   [:canvas {:id canvas-id}])
