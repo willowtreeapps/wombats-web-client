@@ -355,6 +355,26 @@
         (* height (+ y (* (:progress animation-progress) step-size)))
         (* height y))})
 
+(defn- get-wrapped-coord
+  "Get the coordinate on the other side of the board from the movement"
+  [{:keys [x y width height dimensions direction-key step-size]}]
+  ;; step size is neg if moving up or left, so wrap to the largest dimension,
+  ;; this logic is reversed because step-size is calculated differently when
+  ;; wrapping occurs
+  (if (pos? step-size)
+    {:x (if (= direction-key :x)
+          (* (dec (:width dimensions)) width)
+          (* width x))
+     :y (if (= direction-key :y)
+          (* (dec  (:height dimensions)) height)
+          (* height x))}
+    {:x (if (= direction-key :x)
+          (* 0 width)
+          (* width x))
+     :y (if (= direction-key :y)
+          (* 0 height)
+          (* height y))}))
+
 (defn- draw-arena-canvas-animated
   "Given a canvas element and the arena - skip the animated items"
   [{:keys [arena
@@ -370,11 +390,13 @@
             x (get-in item [:start :x])
             y (get-in item [:start :y])
             animated? (:animated item)]
+
         (if animated?
           (let [start (:start item)
                 end (:end item)
                 direction-key (get-direction-key start end)
-                step-size (/ (get-step-size start end direction-key) frame-time)
+                total-step-size (get-step-size start end direction-key)
+                step-size (/ total-step-size frame-time)
                 new-coords (get-animated-coord
                             {:x x
                              :y y
@@ -382,14 +404,45 @@
                              :height height
                              :direction-key direction-key
                              :animation-progress animation-progress
-                             :step-size step-size})]
-            (draw-cell {:cell cell
-                        :x (:x new-coords)
-                        :y (:y new-coords)
-                        :width width
-                        :height height
-                        :canvas-element canvas-element
-                        :background false}))
+                             :step-size step-size})
+                wrapped-coords (get-wrapped-coord
+                                {:x x
+                                 :y y
+                                 :width width
+                                 :height height
+                                 :dimensions dimensions
+                                 :direction-key direction-key
+                                 :step-size step-size})]
+            (if (> (Math/abs total-step-size) 1)
+
+              (do
+                (draw-cell {:cell cell
+                            :x (:x wrapped-coords)
+                            :y (:y wrapped-coords)
+                            :width width
+                            :height height
+                            :canvas-element canvas-element
+                            :background false}))
+              (do
+                ;; Draw a blank tile before the animated item to fix
+                ;; weird drawing issues
+                (draw-cell {:cell {:contents {:type :open}
+                                   :meta []
+                                   :x (:x end)
+                                   :y (:y end)}
+                            :x (* (:x end) width)
+                            :y (* (:y end) height)
+                            :width width
+                            :height height
+                            :canvas-element canvas-element
+                            :background true})
+                (draw-cell {:cell cell
+                            :x (:x new-coords)
+                            :y (:y new-coords)
+                            :width width
+                            :height height
+                            :canvas-element canvas-element
+                            :background false}))))
           (draw-cell {:cell cell
                       :x (* x width)
                       :y (* y height)
@@ -512,7 +565,6 @@
                     :height (count (get prev-frame 0))}
         arena-no-anims (create-nonanimated-vectors
                         (remove-animations next-frame-locs animations))
-
         finalized-arena (concat arena-no-anims animations)]
     (when-not (nil? canvas-element)
       (draw-arena-canvas-animated {:arena finalized-arena
