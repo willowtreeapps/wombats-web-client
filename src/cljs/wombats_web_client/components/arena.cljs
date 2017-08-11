@@ -308,27 +308,6 @@
 
       (js/console.log "Unhandled: " cell-type))))
 
-(defn- draw-arena-canvas
-  "Given a canvas element and the arena, draw the canvas"
-  [{:keys [arena
-           canvas-element]}]
-  ;; Calculate the width and height of each cell
-  (let [height (/ (canvas/height canvas-element) (count arena))
-        width  (/ (canvas/width  canvas-element) (count (get arena 0)))]
-
-    ;; Iterate through all of the arena rows
-    (doseq [[y row] (map-indexed vector arena)]
-      (doseq [[x cell] (map-indexed vector row)]
-        (let [x-coord (* x width)
-              y-coord (* y height)]
-          (draw-cell {:cell cell
-                      :x x-coord
-                      :y y-coord
-                      :width width
-                      :height height
-                      :canvas-element canvas-element
-                      :background true}))))))
-
 (defn in?
   "Return true if coll contains elem"
   [elem coll]
