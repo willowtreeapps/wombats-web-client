@@ -368,13 +368,13 @@
           (* height y))}
     {:x (if (= direction-key :x)
           (* width
-             (+ -1
+             (dec
                 (* (:progress animation-progress)
                    (/ 1 frame-time))))
           (* width x))
      :y (if (= direction-key :y)
           (* height
-             (+ -1
+             (dec
                 (* (:progress animation-progress)
                    (/ 1 frame-time))))
           (* height y))}))
