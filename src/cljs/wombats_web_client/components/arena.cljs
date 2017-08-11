@@ -66,7 +66,7 @@
 
 (defn- draw-background
   "This draws the background of a cell (only called for cells that need it)"
-  [canvas-element x y width height]
+  [{:keys [canvas-element x y width height]}]
   (draw-image canvas-element
               "arena_bg.png"
               x y width height))
@@ -268,7 +268,11 @@
   [{:keys [cell x y width height canvas-element background]}]
   ;; Draw background first
   (when (= background true)
-    (draw-background canvas-element x y width height))
+    (draw-background {:canvas-element canvas-element
+                      :x x
+                      :y y
+                      :width width
+                      :height height}))
 
   (let [{contents :contents
          meta :meta} cell
@@ -357,23 +361,46 @@
 
 (defn- get-wrapped-coord
   "Get the coordinate on the other side of the board from the movement"
-  [{:keys [x y width height dimensions direction-key step-size]}]
+  [{:keys [x
+           y
+           width
+           height
+           dimensions
+           direction-key
+           animation-progress
+           step-size]}]
   ;; step size is neg if moving up or left, so wrap to the largest dimension,
-  ;; this logic is reversed because step-size is calculated differently when
+  ;; this logic is reversed because step-size is calculated as the opposite when
   ;; wrapping occurs
+
   (if (pos? step-size)
     {:x (if (= direction-key :x)
-          (* (dec (:width dimensions)) width)
+          (* width
+             (+ (:width dimensions)
+                (* (:progress animation-progress)
+                   (- (/ 1 frame-time)))))
           (* width x))
      :y (if (= direction-key :y)
-          (* (dec  (:height dimensions)) height)
+          (* height
+             (+ (:height dimensions)
+                (* (:progress animation-progress)
+                   (- (/ 1 frame-time)))))
           (* height x))}
     {:x (if (= direction-key :x)
-          (* 0 width)
+          (* width
+             (+ -1
+                (* (:progress animation-progress)
+                   (/ 1 frame-time))))
           (* width x))
      :y (if (= direction-key :y)
-          (* 0 height)
+          (* height
+             (+ -1
+                (* (:progress animation-progress)
+                   (/ 1 frame-time))))
           (* height y))}))
+
+;; Need to get two sets of coordinates -
+;; one to run wombat off the screen, one to wrap the new wombat on
 
 (defn- draw-arena-canvas-animated
   "Given a canvas element and the arena - skip the animated items"
@@ -390,32 +417,37 @@
             x (get-in item [:start :x])
             y (get-in item [:start :y])
             animated? (:animated item)]
-
         (if animated?
           (let [start (:start item)
                 end (:end item)
                 direction-key (get-direction-key start end)
                 total-step-size (get-step-size start end direction-key)
-                step-size (/ total-step-size frame-time)
-                new-coords (get-animated-coord
-                            {:x x
-                             :y y
-                             :width width
-                             :height height
-                             :direction-key direction-key
-                             :animation-progress animation-progress
-                             :step-size step-size})
-                wrapped-coords (get-wrapped-coord
-                                {:x x
-                                 :y y
-                                 :width width
-                                 :height height
-                                 :dimensions dimensions
-                                 :direction-key direction-key
-                                 :step-size step-size})]
-            (if (> (Math/abs total-step-size) 1)
-
-              (do
+                step-size (/ total-step-size frame-time)]
+            (if (> (Math/abs total-step-size) 1) ;; wrap-around
+              (let [cell-coords (get-wrapped-coord
+                                  {:x x
+                                   :y y
+                                   :width width
+                                   :height height
+                                   :dimensions dimensions
+                                   :direction-key direction-key
+                                   :animation-progress {:progress frame-time}
+                                   :step-size step-size})
+                    wrapped-coords (get-wrapped-coord
+                                    {:x x
+                                     :y y
+                                     :width width
+                                     :height height
+                                     :dimensions dimensions
+                                     :direction-key direction-key
+                                     :animation-progress animation-progress
+                                     :step-size step-size})]
+                (draw-background
+                 {:canvas-element canvas-element
+                  :x (:x cell-coords)
+                  :y (:y cell-coords)
+                  :width width
+                  :height height})
                 (draw-cell {:cell cell
                             :x (:x wrapped-coords)
                             :y (:y wrapped-coords)
@@ -423,19 +455,22 @@
                             :height height
                             :canvas-element canvas-element
                             :background false}))
-              (do
+              (let [new-coords (get-animated-coord
+                            {:x x
+                             :y y
+                             :width width
+                             :height height
+                             :direction-key direction-key
+                             :animation-progress animation-progress
+                             :step-size step-size})]
                 ;; Draw a blank tile before the animated item to fix
                 ;; weird drawing issues
-                (draw-cell {:cell {:contents {:type :open}
-                                   :meta []
-                                   :x (:x end)
-                                   :y (:y end)}
-                            :x (* (:x end) width)
-                            :y (* (:y end) height)
-                            :width width
-                            :height height
-                            :canvas-element canvas-element
-                            :background true})
+                (draw-background
+                 {:canvas-element canvas-element
+                  :x (* (:x end) width)
+                  :y (* (:y end) height)
+                  :width width
+                  :height height})
                 (draw-cell {:cell cell
                             :x (:x new-coords)
                             :y (:y new-coords)
