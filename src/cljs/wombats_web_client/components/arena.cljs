@@ -277,7 +277,9 @@
   (let [{contents :contents
          meta :meta} cell
          cell-type (:type contents)]
-
+    (when (nil? cell-type)
+      (prn cell)
+      (prn ""))
     (case cell-type
 
       :wood-barrier
@@ -515,15 +517,6 @@
                                           [:progress]
                                           inc)}))))
 
-(defn arena
-  "Renders the arena on a canvas element, and subscribes to arena updates"
-  [arena canvas-id]
-  (let [canvas-element (.getElementById js/document canvas-id)]
-    (when-not (nil? canvas-element)
-
-      (draw-arena-canvas {:arena arena
-                          :canvas-element canvas-element}))))
-
 (defn- add-locs
   "Add local :x and :y coordinates to arena matrix"
   [arena]
@@ -622,3 +615,17 @@
                                    :canvas-element canvas-element
                                    :dimensions dimensions
                                    :animation-progress animation-progress}))))
+
+(defn arena
+  "Renders the arena on a canvas element, and subscribes to arena updates"
+  [arena canvas-id]
+  (let [canvas-element (.getElementById js/document canvas-id)
+        finalized-arena (create-nonanimated-vectors (flatten (add-locs arena)))
+        dimensions {:width (count arena)
+                    :height (count (get arena 0))}]
+    (when-not (nil? canvas-element)
+      (draw-arena-canvas-animated {:arena finalized-arena
+                                   :canvas-element canvas-element
+                                   :dimensions dimensions
+                                   :animation-progress {:progress 0
+                                                        :end 1}}))))
