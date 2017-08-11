@@ -370,9 +370,8 @@
            animation-progress
            step-size]}]
   ;; step size is neg if moving up or left, so wrap to the largest dimension,
-  ;; this logic is reversed because step-size is calculated as the opposite when
-  ;; wrapping occurs
-
+  ;; this logic is reversed because step-size is calculated as the opposite
+  ;; sign when wrapping occurs
   (if (pos? step-size)
     {:x (if (= direction-key :x)
           (* width
@@ -441,13 +440,30 @@
                                      :dimensions dimensions
                                      :direction-key direction-key
                                      :animation-progress animation-progress
-                                     :step-size step-size})]
+                                     :step-size step-size})
+                    same-side-wrap (get-animated-coord
+                                    {:x x
+                                     :y y
+                                     :width width
+                                     :height height
+                                     :direction-key direction-key
+                                     :animation-progress animation-progress
+                                     :step-size (if (pos? step-size)
+                                                  (-  (/ 1 frame-time))
+                                                  (/ 1 frame-time))})]
                 (draw-background
                  {:canvas-element canvas-element
                   :x (:x cell-coords)
                   :y (:y cell-coords)
                   :width width
                   :height height})
+                (draw-cell {:cell cell
+                            :x (:x same-side-wrap)
+                            :y (:y same-side-wrap)
+                            :width width
+                            :height height
+                            :canvas-element canvas-element
+                            :background false})
                 (draw-cell {:cell cell
                             :x (:x wrapped-coords)
                             :y (:y wrapped-coords)
